@@ -1,0 +1,21 @@
+# Temporary files
+.ipynb_checkpoints
+*~
+\#*\#
+
+# latex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.nav
+*.snm
+*.synctex.gz
+auto
+
+# Python auxiliary files
+*.pyc
+.ropeproject
