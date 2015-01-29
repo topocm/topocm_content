@@ -1,0 +1,174 @@
+%matplotlib inline
+
+# In order to keep it clear in the notebooks which imports are provided,
+# add all the import statements to the following string.
+
+imports = """
+from __future__ import division, print_function
+import re
+import feedparser
+import sys
+import os
+import numpy as np
+import kwant
+import ipywidgets
+from IPython.html.widgets import interact
+from ipywidgets import StaticInteract, RangeWidget, RadioWidget
+from IPython import display
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+
+sys.path.extend(os.path.dirname(__file__))
+import pfaffian as pf
+
+randn = np.random.randn
+"""
+
+print("Performing the necessary imports.")
+print(imports)
+for line in imports.split('\n'):
+    try:
+        exec(line)
+    except ImportError:
+        print("Executing '{0}' failed.".format(line))
+
+matplotlib.rc_file(os.path.dirname(__file__) + "/matplotlibrc")
+
+def pprint_matrix(data, digits=3):
+    """Print a numpy array as a latex matrix."""
+    header = (r"\begin{{equation}}\begin{{pmatrix}}"
+              r"{d}\end{{pmatrix}}\end{{equation}}")
+    d=data.__str__()[1:-1]
+    d = d.replace(']', '')
+    d = d.replace('\n', r'\\')
+    d = re.sub(r' *\[ *', '', d)
+    d = re.sub(r' +', ' & ', d)
+    display.display_latex(display.Latex(header.format(d=d)))
+
+
+def pretty_fmt_complex(num, digits=2):
+    """Return a string representation of a number designed to be human-readable."""
+    def strip_trailing(num_str):
+        return num_str.rstrip('0').rstrip('.')
+
+    if np.round(num, digits) == 0:
+        return '0'
+
+    if np.round(num.imag, digits) == 0:
+        return strip_trailing(str(round(num.real, digits)))
+
+    if np.round(num.real, digits) == 0:
+        return strip_trailing(str(round(num.imag, digits))) + 'i'
+
+    return (pretty_fmt_complex(num.real) + ('+' * (num.imag > 0)) +
+            pretty_fmt_complex(num.imag) + 'i')
+
+np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
+
+
+class MoocVideo(display.YouTubeVideo):
+    def __init__(self, id, display_name="", **kwargs):
+        """A video component of an EdX mooc embeddable in IPython notebook."""
+        kwargs['youtube_id_1_0'] = id
+        kwargs['youtube'] ="1.00:%s" % id
+        kwargs['display_name'] = display_name
+
+        self.xml_params = kwargs
+        super(MoocVideo, self).__init__(id)
+
+    def __repr__(self):
+        return 'MoocVideo(**' + self.xml_params.__repr__() + ')'
+
+class PreprintReference(object):
+    def __init__(self, index, description=""):
+        self.index = index
+        self.description = description
+
+    def _get_html_repr_of_paper(self, ind, descr):
+        data = feedparser.parse("http://export.arxiv.org/api/query?id_list=%s"%ind)
+        s = '<h3 class="title mathjax">'\
+              + data['entries'][0]['title'] + '</h3>'
+
+        s += '<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a></p>' % (ind, ind)
+
+        s += '<p><div class="authors">'
+        s += ", ".join(author.name for author in data['entries'][0]['authors'])
+        s += '</div></p>'
+
+        s += '<p><blockquote class="abstract mathjax">'
+        s += data['entries'][0]['summary']
+        s += '</blockquote></p>'
+
+        if descr:
+            s += '<p><b>Hint:</b> %s </p>' % descr
+
+        return s
+
+    def _repr_html_(self):
+        return self._get_html_repr_of_paper(self.index, self.description)
+
+
+with open(os.path.dirname(__file__)+'/xmls/openassessment.xml', 'r') as content_file:
+    openassessment_peer = content_file.read()
+
+
+class MoocPeerAssessment(object):
+    def __init__(self, must_grade="5", must_be_graded_by="3", url_name=None, **kwargs):
+
+        self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
+                            'related to the current topic.</b></p>\n'
+                            '<p><b>In the live version of the course, you would '
+                            'need to write a summary which is then assessed by '
+                            'your peers.</b></p>')
+
+        kwargs['must_grade'] = must_grade
+        kwargs['must_be_graded_by'] = must_be_graded_by
+        kwargs['url_name'] = url_name
+        kwargs['openassessment_peer'] = openassessment_peer
+
+        self.param = kwargs
+
+    def __repr__(self):
+        return 'MoocPeerAssessment(**' + self.param.__repr__() + ')'
+    
+    def _repr_html_(self):
+        return self.placeholder
+
+display.display_html(display.HTML("""
+<script type="text/javascript">
+/* Add a button for showing or hiding input */
+on = "Show input";
+off = "Hide input"
+function onoff(){
+  currentvalue = document.getElementById('onoff').value;
+  if(currentvalue == off){
+    document.getElementById("onoff").value=on;
+      $('div.input').hide();
+  }else{
+    document.getElementById("onoff").value=off;
+      $('div.input').show();
+  }
+}
+
+/* Hide input if we are just viewing */
+$(document).ready(function (){
+if(!("IPython" in window)){
+  onoff();}})
+
+/* Launch first notebook cell on start */
+function launch_first_cell (evt) {
+  if (!launch_first_cell.executed
+      && IPython.notebook.kernel
+  ) {
+    IPython.notebook.get_cells()[0].execute();
+    launch_first_cell.executed = true;
+  }
+}
+
+$([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
+</script>
+
+Press this button to show/hide the code used in the notebook:
+<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" value="Hide input" id="onoff" onclick="onoff();">
+"""))
