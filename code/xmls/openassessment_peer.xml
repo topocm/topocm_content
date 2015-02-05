@@ -67,17 +67,18 @@ Explain why you think that way.</prompt>
       </criterion>
       <criterion feedback="optional">
         <name>1</name>
-        <label>Evaluation</label>
-        <prompt>Do you find the evaluation of the paper shown in the report convincing?</prompt>
+        <label>Paper Evaluation</label>
+        <prompt>Do you find the evaluation of the strengths and weaknesses of the paper shown in the report convincing?</prompt>
         <option points="1">
           <name>0</name>
           <label>Weak</label>
-          <explanation>I don't understand why what is written in the report about the paper is correct</explanation>
+          <explanation>I could not find the strengths and weaknesses of the paper that were pointed out in the report.
+</explanation>
         </option>
         <option points="3">
           <name>1</name>
           <label>Competent</label>
-          <explanation>I agree with the evaluation, but the argumentation was not completely clear.</explanation>
+          <explanation>I agree with the evaluation of the strengths and weaknesses, but the argumentation presented was not completely clear.</explanation>
         </option>
         <option points="5">
           <name>2</name>

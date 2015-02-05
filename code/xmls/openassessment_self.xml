@@ -12,7 +12,7 @@ Consider this grade also a way to providing information to us. Are we going too 
 
 If you didn't manage to get some part done, feel free to ask for advice in discussions.
 
-In the text entry field just leave a link to your notebooks. 
+In the text entry field just leave a link to your notebooks.
 
 But there's also a much better use for them: go to the discussion below and share the notebooks also with your colleagues.</prompt>
       <criterion>
@@ -32,7 +32,7 @@ But there's also a much better use for them: go to the discussion below and shar
         <option points="8">
           <name>2</name>
           <label>Half-half</label>
-          <explanation>I managed to get the more basic things to work, but the rest just doesn't! Damn bugs!</explanation>
+          <explanation>I managed to get the more basic things to work, but the rest just don't! Damn bugs!</explanation>
         </option>
         <option points="11">
           <name>3</name>

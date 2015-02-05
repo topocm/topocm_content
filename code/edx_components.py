@@ -112,8 +112,8 @@ class MoocSelfAssessment(object):
 
         self.placeholder = ('<p><b> MoocSelfAssessment description</b></p>\n'
                             '<p><b>In the live version of the course, you would '
-                            'need to upload your solution and do a self assessment'
-                            'grading.</b></p>')
+                            'need to share your solution and grade yourself.'
+                            '</b></p>')
 
         kwargs['url_name'] = url_name
 
