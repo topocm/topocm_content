@@ -1,0 +1,49 @@
+<openassessment allow_file_upload="False" allow_latex="True" submission_due="2029-01-01T00:00:00+00:00" submission_start="2001-01-01T00:00:00+00:00">
+    <title>Simulation results</title>
+    <assessments>
+      <assessment name="self-assessment" start="2001-01-01T00:00:00+00:00" due="2029-01-01T00:00:00+00:00"/>
+    </assessments>
+    <rubric>
+      <prompt>This is a self-assessment problem, and you should estimate how much you have done.
+
+Please do not just give yourself points: the course grading policy does allow you to skip the simulations completely and still pass the course.
+
+Consider this grade also a way to providing information to us. Are we going too fast? Are the tasks too hard?
+
+If you didn't manage to get some part done, feel free to ask for advice in discussions.
+
+In the text entry field just leave a link to your notebooks. 
+
+But there's also a much better use for them: go to the discussion below and share the notebooks also with your colleagues.</prompt>
+      <criterion>
+        <name>0</name>
+        <label>Completeness</label>
+        <prompt>What is the fraction of the tasks that you were able to accomplish? </prompt>
+        <option points="2">
+          <name>0</name>
+          <label>I tried</label>
+          <explanation>...but didn't get anywhere</explanation>
+        </option>
+        <option points="5">
+          <name>1</name>
+          <label>A couple of easy things</label>
+          <explanation>I was able to run the code from the lectures and play around with the parameters, but I didn't understand how to modify it to solve the problems.</explanation>
+        </option>
+        <option points="8">
+          <name>2</name>
+          <label>Half-half</label>
+          <explanation>I managed to get the more basic things to work, but the rest just doesn't! Damn bugs!</explanation>
+        </option>
+        <option points="11">
+          <name>3</name>
+          <label>Complete</label>
+          <explanation>All the tasks are neatly done :-)</explanation>
+        </option>
+        <option points="14">
+          <name>4</name>
+          <label>Look what I found!</label>
+          <explanation>I just finished the tasks, but then i thought: I could implement something else. And hey, take a look!</explanation>
+        </option>
+      </criterion>
+    </rubric>
+ </openassessment>

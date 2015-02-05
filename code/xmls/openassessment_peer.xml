@@ -1,0 +1,93 @@
+<openassessment allow_file_upload="False" allow_latex="True" submission_due="2029-01-01T00:00:00+00:00" submission_start="2001-01-01T00:00:00+00:00">
+  <title>Paper Review Assessment</title>
+    <assessments>
+      <assessment name="peer-assessment" must_grade="5" must_be_graded_by="3" start="2015-02-05T12:00:00+00:00" due="2015-02-19T12:00:00+00:00"/>
+    </assessments>
+    <rubric>
+      <prompt>Please pick one of the papers above, or if you know of a good paper that fits into this week's topic, pick that one.
+
+Look through the paper you chose, and try to understand what is happening.
+
+OK, begin forming your report: start by copying the paper title and the URL.
+THIS IS IMPORTANT! (Your report will be read by your colleagues, and they will need this information.)
+
+First, try to tell: what is the main thing that happens in the paper. What do the authors do?
+
+Next, write in a single paragraph: which concepts that you learned this week appear in the paper?
+Where do they appear?
+
+Now in a new paragraph answer what new things you learned from the paper, compared to what you learned from our course?
+It's OK if you don't understand some (or even most) details, but try to find and formulate at least something new that you have learned.
+Point out to the places in text or to figures, which are the most valuable.
+
+Finally tell: What do you think are the strong sides of the paper?
+What are the weak sides? Do you see something that you think could be improved?
+Do you have some questions that the authors do not answer?
+Explain why you think that way.</prompt>
+      <criterion feedback="optional">
+        <name>Ideas</name>
+        <label>Helpfulness</label>
+        <prompt>Did reading the report help you to understand what the paper is about?
+(Here and later if you were reviewing the same paper, try to imagine that you didn't read it before)</prompt>
+        <option points="1">
+          <name>0</name>
+          <label>No</label>
+          <explanation>I couldn't relate the report and the paper.</explanation>
+        </option>
+        <option points="3">
+          <name>1</name>
+          <label>Partially</label>
+          <explanation>I could understand the overall direction of the paper, but not the main idea.</explanation>
+        </option>
+        <option points="5">
+          <name>2</name>
+          <label>Yes</label>
+          <explanation>After reading the report I fully knew what to expect from the paper.</explanation>
+        </option>
+      </criterion>
+      <criterion feedback="optional">
+        <name>0</name>
+        <label>Insight</label>
+        <prompt>Did you learn something from the report itself (before you read the paper)</prompt>
+        <option points="1">
+          <name>1</name>
+          <label>Low</label>
+          <explanation>The review has no additional information</explanation>
+        </option>
+        <option points="3">
+          <name>0</name>
+          <label>Average</label>
+          <explanation>The review nicely relates the paper to what we learned.</explanation>
+        </option>
+        <option points="5">
+          <name>2</name>
+          <label>High</label>
+          <explanation>I learned from the report something I didn't see neither in the paper nor in the course.</explanation>
+        </option>
+      </criterion>
+      <criterion feedback="optional">
+        <name>1</name>
+        <label>Evaluation</label>
+        <prompt>Do you find the evaluation of the paper shown in the report convincing?</prompt>
+        <option points="1">
+          <name>0</name>
+          <label>Weak</label>
+          <explanation>I don't understand why what is written in the report about the paper is correct</explanation>
+        </option>
+        <option points="3">
+          <name>1</name>
+          <label>Competent</label>
+          <explanation>I agree with the evaluation, but the argumentation was not completely clear.</explanation>
+        </option>
+        <option points="5">
+          <name>2</name>
+          <label>Excellent</label>
+          <explanation>I think the author of the report really understand the paper well, and knows its ins and outs.</explanation>
+        </option>
+      </criterion>
+      <feedbackprompt>(Optional) What aspects of this report stood out to you? What did it do well? How could it improve?
+</feedbackprompt>
+      <feedback_default_text>This report was...
+</feedback_default_text>
+    </rubric>
+  </openassessment>

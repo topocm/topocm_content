@@ -1,30 +1,35 @@
 %matplotlib inline
 
+import sys
+import os
+
+module_dir = os.path.dirname(__file__)
+sys.path.extend(module_dir)
+
+import re
+
+from IPython import display
+
 # In order to keep it clear in the notebooks which imports are provided,
-# add all the import statements to the following string.
+# add all the mooc-specific import statements to the following string.
 
 imports = """
 from __future__ import division, print_function
-import re
-import feedparser
-import sys
-import os
 import numpy as np
+import matplotlib
 import kwant
+
 import ipywidgets
 from IPython.html.widgets import interact
-from ipywidgets import StaticInteract, RangeWidget, RadioWidget
-from IPython import display
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import gridspec
+from ipywidgets import StaticInteract, RangeWidget, DropDownWidget
+from IPython.display import display_html
+from matplotlib import pyplot as plt
 
-sys.path.extend(os.path.dirname(__file__))
 import pfaffian as pf
-
-randn = np.random.randn
+from edx_components import *
 """
 
+# Explicitly mention the mooc-related imports.
 print("Performing the necessary imports.")
 print(imports)
 for line in imports.split('\n'):
@@ -33,7 +38,11 @@ for line in imports.split('\n'):
     except ImportError:
         print("Executing '{0}' failed.".format(line))
 
-matplotlib.rc_file(os.path.dirname(__file__) + "/matplotlibrc")
+# Set plot style.
+matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
+
+
+# Adjust printing of matrices, and numpy printing of numbers.
 
 def pprint_matrix(data, digits=3):
     """Print a numpy array as a latex matrix."""
@@ -66,80 +75,11 @@ def pretty_fmt_complex(num, digits=2):
 
 np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
 
-
-class MoocVideo(display.YouTubeVideo):
-    def __init__(self, id, display_name="", **kwargs):
-        """A video component of an EdX mooc embeddable in IPython notebook."""
-        kwargs['youtube_id_1_0'] = id
-        kwargs['youtube'] ="1.00:%s" % id
-        kwargs['display_name'] = display_name
-
-        self.xml_params = kwargs
-        super(MoocVideo, self).__init__(id)
-
-    def __repr__(self):
-        return 'MoocVideo(**' + self.xml_params.__repr__() + ')'
-
-class PreprintReference(object):
-    def __init__(self, index, description=""):
-        self.index = index
-        self.description = description
-
-    def _get_html_repr_of_paper(self, ind, descr):
-        data = feedparser.parse("http://export.arxiv.org/api/query?id_list=%s"%ind)
-        s = '<h3 class="title mathjax">'\
-              + data['entries'][0]['title'] + '</h3>'
-
-        s += '<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a></p>' % (ind, ind)
-
-        s += '<p><div class="authors">'
-        s += ", ".join(author.name for author in data['entries'][0]['authors'])
-        s += '</div></p>'
-
-        s += '<p><blockquote class="abstract mathjax">'
-        s += data['entries'][0]['summary']
-        s += '</blockquote></p>'
-
-        if descr:
-            s += '<p><b>Hint:</b> %s </p>' % descr
-
-        return s
-
-    def _repr_html_(self):
-        return self._get_html_repr_of_paper(self.index, self.description)
-
-
-with open(os.path.dirname(__file__)+'/xmls/openassessment.xml', 'r') as content_file:
-    openassessment_peer = content_file.read()
-
-
-class MoocPeerAssessment(object):
-    def __init__(self, must_grade="5", must_be_graded_by="3", url_name=None, **kwargs):
-
-        self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
-                            'related to the current topic.</b></p>\n'
-                            '<p><b>In the live version of the course, you would '
-                            'need to write a summary which is then assessed by '
-                            'your peers.</b></p>')
-
-        kwargs['must_grade'] = must_grade
-        kwargs['must_be_graded_by'] = must_be_graded_by
-        kwargs['url_name'] = url_name
-        kwargs['openassessment_peer'] = openassessment_peer
-
-        self.param = kwargs
-
-    def __repr__(self):
-        return 'MoocPeerAssessment(**' + self.param.__repr__() + ')'
-    
-    def _repr_html_(self):
-        return self.placeholder
-
-display.display_html(display.HTML("""
-<script type="text/javascript">
+nb_html_header = """
+<script type=text/javascript>
 /* Add a button for showing or hiding input */
 on = "Show input";
-off = "Hide input"
+off = "Hide input";
 function onoff(){
   currentvalue = document.getElementById('onoff').value;
   if(currentvalue == off){
@@ -150,11 +90,6 @@ function onoff(){
       $('div.input').show();
   }
 }
-
-/* Hide input if we are just viewing */
-$(document).ready(function (){
-if(!("IPython" in window)){
-  onoff();}})
 
 /* Launch first notebook cell on start */
 function launch_first_cell (evt) {
@@ -169,6 +104,20 @@ function launch_first_cell (evt) {
 $([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
 </script>
 
-Press this button to show/hide the code used in the notebook:
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" value="Hide input" id="onoff" onclick="onoff();">
-"""))
+<p>Press this button to show/hide the code used in the notebook:
+<input type="button" class="ui-button ui-widget ui-state-default \
+ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
+onclick="onoff();"></p>
+"""
+hide_outside_ipython = """<script type=text/javascript>
+$(document).ready(function (){if(!("IPython" in window)){onoff();}})
+</script>"""
+
+display_html(display.HTML(nb_html_header + hide_outside_ipython))
+
+# In order to make the notebooks readable through nbviewer we want to hide the
+# code by default. However the same code is executed by the students, and in
+# that case we don't want to hide the code. So we check if the code is executed
+# by one of the mooc developers. Here we do by simply checking for some files that
+# belong to the internal mooc repository, but are not published.
+# This is a temporary solution, and should be improved in the long run.
