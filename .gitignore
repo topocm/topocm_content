@@ -2,6 +2,7 @@
 .ipynb_checkpoints
 *~
 \#*\#
+.\#*
 
 # latex auxiliary files:
 *.aux
@@ -19,3 +20,6 @@ auto
 # Python auxiliary files
 *.pyc
 .ropeproject
+
+# Compressed files for upload
+generated
