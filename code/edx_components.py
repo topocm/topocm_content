@@ -13,16 +13,21 @@ __all__ = ['MoocVideo', 'PreprintReference', 'MoocDiscussion',
             'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
             'MoocPeerAssessment', 'MoocSelfAssessment']
 
-class MoocVideo(display.YouTubeVideo):
+class MoocComponent(object):
+    def __repr__(self):
+        return '{0}(**{1})'.format(self.__class__.__name__, repr(self.param))
+
+
+class MoocVideo(MoocComponent, display.YouTubeVideo):
     def __init__(self, id, src_location=None, display_name="", download_track='true',
                  download_video='true', show_captions='true', **kwargs):
         """A video component of an EdX mooc embeddable in IPython notebook."""
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        del tmp['id'], tmp['src_location']
+        kwargs.update(tmp)
         kwargs['youtube_id_1_0'] = id
         kwargs['youtube'] ="1.00:%s" % id
-        kwargs['display_name'] = display_name
-        kwargs['download_track'] = download_track
-        kwargs['download_video'] = download_video
-        kwargs['show_captions'] = show_captions
 
         # Add source if provided
         loc = ("http://delftxdownloads.tudelft.nl/"
@@ -40,11 +45,8 @@ class MoocVideo(display.YouTubeVideo):
             else:
                 raise(e)
 
-        self.xml_params = kwargs
+        self.param = kwargs
         super(MoocVideo, self).__init__(id)
-
-    def __repr__(self):
-        return 'MoocVideo(**' + self.xml_params.__repr__() + ')'
 
 
 class PreprintReference(object):
@@ -80,8 +82,9 @@ class PreprintReference(object):
         return s
 
 
-class MoocPeerAssessment(object):
-    def __init__(self, must_grade="5", must_be_graded_by="3", url_name=None, **kwargs):
+class MoocPeerAssessment(MoocComponent):
+    def __init__(self, must_grade=5, must_be_graded_by=3, due=7, review_due=14,
+                 url_name=None, **kwargs):
 
         self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
                             'related to the current topic.</b></p>\n'
@@ -89,9 +92,9 @@ class MoocPeerAssessment(object):
                             'need to write a summary which is then assessed by '
                             'your peers.</b></p>')
 
-        kwargs['must_grade'] = must_grade
-        kwargs['must_be_graded_by'] = must_be_graded_by
-        kwargs['url_name'] = url_name
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        kwargs.update(tmp)
 
         with open(module_dir + '/xmls/openassessment_peer.xml', 'r') as content_file:
             openassessment_peer = content_file.read()
@@ -100,22 +103,21 @@ class MoocPeerAssessment(object):
 
         self.param = kwargs
 
-    def __repr__(self):
-        return 'MoocPeerAssessment(**' + self.param.__repr__() + ')'
-
     def _repr_html_(self):
         return self.placeholder
 
 
-class MoocSelfAssessment(object):
-    def __init__(self, url_name=None, **kwargs):
+class MoocSelfAssessment(MoocComponent):
+    def __init__(self, due=7, review_due=14, url_name=None, **kwargs):
+
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        kwargs.update(tmp)
 
         self.placeholder = ('<p><b> MoocSelfAssessment description</b></p>\n'
                             '<p><b>In the live version of the course, you would '
                             'need to share your solution and grade yourself.'
                             '</b></p>')
-
-        kwargs['url_name'] = url_name
 
         with open(module_dir + '/xmls/openassessment_self.xml', 'r') as content_file:
             openassessment_self = content_file.read()
@@ -124,14 +126,11 @@ class MoocSelfAssessment(object):
 
         self.param = kwargs
 
-    def __repr__(self):
-        return 'MoocSelfAssessment(**' + self.param.__repr__() + ')'
-
     def _repr_html_(self):
         return self.placeholder
 
 
-class MoocCheckboxesAssessment(object):
+class MoocCheckboxesAssessment(MoocComponent):
     def __init__(self, question, answers, correct_answers, max_attempts=2,
                  display_name="Question", **kwargs):
         """
@@ -145,11 +144,9 @@ class MoocCheckboxesAssessment(object):
         correct_answers : list of int
 
         """
-        kwargs['question'] = question
-        kwargs['answers'] = answers
-        kwargs['correct_answers'] = correct_answers
-        kwargs['max_attempts'] = max_attempts
-        kwargs['display_name'] = display_name
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        kwargs.update(tmp)
 
         self.param = kwargs
 
@@ -188,17 +185,14 @@ class MoocCheckboxesAssessment(object):
     def _repr_html_(self):
         return self._get_html_repr()
 
-    def __repr__(self):
-        return 'MoocCheckboxesAssessment(**' + self.param.__repr__() + ')'
 
-
-class MoocMultipleChoiceAssessment(object):
+class MoocMultipleChoiceAssessment(MoocComponent):
     def __init__(self, question, answers, correct_answer, max_attempts=2,
                  display_name="Question", **kwargs):
         """
         MoocMultipleChoiceAssessment component
 
-        input types
+        Parameters:
         -----------
 
         question : string
@@ -206,11 +200,9 @@ class MoocMultipleChoiceAssessment(object):
         correct_answers : int
 
         """
-        kwargs['question'] = question
-        kwargs['answers'] = answers
-        kwargs['correct_answer'] = correct_answer
-        kwargs['max_attempts'] = max_attempts
-        kwargs['display_name'] = display_name
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        kwargs.update(tmp)
 
         self.param = kwargs
 
@@ -242,29 +234,22 @@ class MoocMultipleChoiceAssessment(object):
     def _repr_html_(self):
         return self._get_html_repr()
 
-    def __repr__(self):
-        return 'MoocMultipleChoiceAssessment(**' + self.param.__repr__() + ')'
 
+class MoocDiscussion(MoocComponent):
+    def __init__(self, discussion_category, discussion_subcategory, display_name=None,
+                 discussion_id=None, **kwargs):
 
+        tmp = locals()
+        del tmp['kwargs'], tmp['self']
+        kwargs.update(tmp)
 
-class MoocDiscussion(object):
-    def __init__(self, category, subcategory, display_name=None,
-                 id=None, **kwargs):
-        kwargs['discussion_category'] = category
-        kwargs['discussion_target'] = subcategory
+        if display_name is None:
+            kwargs['display_name'] = discussion_subcategory
 
-        if display_name == None:
-            kwargs['display_name'] = subcategory
-
-        if id == None:
-             kwargs['discussion_id'] = md5(category + subcategory).hexdigest()
+        if discussion_id is None:
+            kwargs['discussion_id'] = md5(discussion_category + discussion_subcategory).hexdigest()
 
         self.param = kwargs
 
     def _repr_html_(self):
         return "<p><b>Discussion</b> entitled '{0}' is available in the online version of the course.</p>".format(self.param['display_name'])
-
-    def __repr__(self):
-        return 'MoocDiscussion(**' + self.param.__repr__() + ')'
-
-
