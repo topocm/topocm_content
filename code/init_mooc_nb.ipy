@@ -46,8 +46,8 @@ matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
 
 def pprint_matrix(data, digits=3):
     """Print a numpy array as a latex matrix."""
-    header = (r"\begin{{equation}}\begin{{pmatrix}}"
-              r"{d}\end{{pmatrix}}\end{{equation}}")
+    header = (r"$$\begin{{pmatrix}}"
+              r"{d}\end{{pmatrix}}$$")
     d=data.__str__()[1:-1]
     d = d.replace(']', '')
     d = d.replace('\n', r'\\')

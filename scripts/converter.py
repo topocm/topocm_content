@@ -187,6 +187,10 @@ def save_xml(xml, path):
 
 def convert_normal_cells(normal_cells):
     """ Convert normal_cells into html. """
+    for cell in normal_cells:
+        if cell.cell_type == 'markdown':
+            cell.source = re.sub(r'\\begin\{ *equation *\}', '\[', cell.source)
+            cell.source = re.sub(r'\\end\{ *equation *\}', '\]', cell.source)
     worksheet = current.new_worksheet(cells=normal_cells)
     tmp = current.new_notebook(worksheets=[worksheet])
     html = export_unit_to_html(tmp)
