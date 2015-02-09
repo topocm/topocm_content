@@ -641,7 +641,7 @@ def main():
 
     if args.debug:
         msg = 'Debug mode : folder %s will contain uncompressed data.'
-        print(msg % (mooc_folder + 'generated/files'))
+        print(msg % (mooc_folder + '/generated/files'))
 
     print('Path to mooc folder:', mooc_folder)
     warn_about_status(mooc_folder)

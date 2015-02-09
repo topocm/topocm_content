@@ -236,7 +236,7 @@ class MoocMultipleChoiceAssessment(MoocComponent):
 
 
 class MoocDiscussion(MoocComponent):
-    def __init__(self, discussion_category, discussion_subcategory, display_name=None,
+    def __init__(self, discussion_category, discussion_target, display_name=None,
                  discussion_id=None, **kwargs):
 
         tmp = locals()
@@ -244,10 +244,10 @@ class MoocDiscussion(MoocComponent):
         kwargs.update(tmp)
 
         if display_name is None:
-            kwargs['display_name'] = discussion_subcategory
+            kwargs['display_name'] = discussion_target
 
         if discussion_id is None:
-            kwargs['discussion_id'] = md5(discussion_category + discussion_subcategory).hexdigest()
+            kwargs['discussion_id'] = md5(discussion_category + discussion_target).hexdigest()
 
         self.param = kwargs
 
