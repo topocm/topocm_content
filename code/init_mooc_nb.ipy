@@ -1,4 +1,8 @@
-%matplotlib inline
+# Enable inline plotting in the notebook
+try:
+    get_ipython().enable_matplotlib(gui='inline')
+except NameError:
+    pass
 
 import sys
 import os
