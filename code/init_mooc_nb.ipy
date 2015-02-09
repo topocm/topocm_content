@@ -113,11 +113,10 @@ $([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_
 ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
 onclick="onoff();"></p>
 """
+
 hide_outside_ipython = """<script type=text/javascript>
 $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 </script>"""
-
-display_html(display.HTML(nb_html_header + hide_outside_ipython))
 
 # In order to make the notebooks readable through nbviewer we want to hide the
 # code by default. However the same code is executed by the students, and in
@@ -125,3 +124,8 @@ display_html(display.HTML(nb_html_header + hide_outside_ipython))
 # by one of the mooc developers. Here we do by simply checking for some files that
 # belong to the internal mooc repository, but are not published.
 # This is a temporary solution, and should be improved in the long run.
+
+if os.path.exists(os.path.join(module_dir, os.path.pardir, 'scripts')):
+    nb_html_header += hide_outside_ipython
+
+display_html(display.HTML(nb_html_header))
