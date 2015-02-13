@@ -619,7 +619,7 @@ def converter(mooc_folder, args):
 def warn_about_status(mooc_folder):
     git = 'git --git-dir={0}/.git --work-tree={0}/ '.format(mooc_folder)
     status = subprocess.check_output(git + "status", shell=True).split("\n")[0]
-    if "On branch master" in status:
+    if "On branch master" not in status:
         print("Not on master branch, do not upload to edx.\n",
               "Press Enter to continue.")
         raw_input()
