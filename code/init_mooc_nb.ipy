@@ -132,5 +132,5 @@ display_html(display.HTML(nb_html_header))
 
 with open(os.path.join(module_dir, 'make_toc.js')) as f:
     js = f.read()
-js += 'table_of_contents()'
+js += "$([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', table_of_contents);"
 display.display_javascript(display.Javascript(js))
