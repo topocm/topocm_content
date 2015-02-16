@@ -45,6 +45,10 @@ for line in imports.split('\n'):
 # Set plot style.
 matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
 
+# SimpleNamespace
+class SimpleNamespace(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
 # Adjust printing of matrices, and numpy printing of numbers.
 
