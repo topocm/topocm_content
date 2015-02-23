@@ -19,21 +19,22 @@ class MoocComponent(object):
 
 
 class MoocVideo(MoocComponent, display.YouTubeVideo):
-    def __init__(self, id, src_location=None, display_name="", download_track='true',
-                 download_video='true', show_captions='true', **kwargs):
+    def __init__(self, id, src_location=None, res='720', display_name="",
+                 download_track='true', download_video='true',
+                 show_captions='true', **kwargs):
         """A video component of an EdX mooc embeddable in IPython notebook."""
         tmp = locals()
         del tmp['kwargs'], tmp['self']
-        del tmp['id'], tmp['src_location']
+        del tmp['id'], tmp['src_location'], tmp['res']
         kwargs.update(tmp)
         kwargs['youtube_id_1_0'] = id
-        kwargs['youtube'] ="1.00:%s" % id
+        kwargs['youtube'] ="1.00:" + id
 
         # Add source if provided
         loc = ("http://delftxdownloads.tudelft.nl/"
-               "TOPOCMx-QuantumKnots/TOPOCMx-{0}-video.720.mp4")
+               "TOPOCMx-QuantumKnots/TOPOCMx-{0}-video.{1}.mp4")
         if src_location is not None:
-            kwargs['source'] = loc.format(src_location)
+            kwargs['source'] = loc.format(src_location, res)
 
         # Try to grab subtitles from YouTube.
         try:
