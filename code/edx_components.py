@@ -84,7 +84,7 @@ class PreprintReference(object):
 
 
 class MoocPeerAssessment(MoocComponent):
-    def __init__(self, must_grade=5, must_be_graded_by=3, due=7, review_due=14,
+    def __init__(self, must_grade=5, must_be_graded_by=3, due=9, review_due=16,
                  url_name=None, **kwargs):
 
         self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
@@ -109,7 +109,7 @@ class MoocPeerAssessment(MoocComponent):
 
 
 class MoocSelfAssessment(MoocComponent):
-    def __init__(self, due=7, review_due=14, url_name=None, **kwargs):
+    def __init__(self, due=9, review_due=16, url_name=None, **kwargs):
 
         tmp = locals()
         del tmp['kwargs'], tmp['self']
