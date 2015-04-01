@@ -63,6 +63,11 @@ def pprint_matrix(data, digits=3):
     d = re.sub(r' +', ' & ', d)
     display.display_latex(display.Latex(header.format(d=d)))
 
+def scientific_number(x):
+    pot = int(np.log(abs(x)) / np.log(10.0)) - 1
+    fac = x*10**(-pot)
+    return '$%1.1f \cdot 10^{%1.0f}$' %(fac, pot)
+
 
 def pretty_fmt_complex(num, digits=2):
     """Return a string representation of a number designed to be human-readable."""
