@@ -65,7 +65,7 @@ def pprint_matrix(data, digits=3):
 
 def scientific_number(x):
     if not x:
-        return $0$
+        return '$0$'
     pot = int(np.log(abs(x)) / np.log(10.0)) - 1
     fac = x*10**(-pot)
     return '$%1.1f \cdot 10^{%1.0f}$' %(fac, pot)
