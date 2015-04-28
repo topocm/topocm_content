@@ -1,6 +1,14 @@
 """
 Copyright (c) 2015 and later, Jayson Paulose. All rights reserved.
 
+This script computes properties of the Kagome lattice model introduced
+in the paper
+
+"Topological boundary modes in isostatic lattices"
+C.L. Kane and T. Lubensky
+Nature Physics 10, 39 (2014)
+arXiv:1308.0554
+
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
