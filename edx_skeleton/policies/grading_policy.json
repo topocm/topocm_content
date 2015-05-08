@@ -2,7 +2,7 @@
     "GRADER": [
         {
             "drop_count": 0, 
-            "min_count": 33, 
+            "min_count": 25,
             "short_label": "", 
             "type": "Self-check", 
             "weight": 0.1
