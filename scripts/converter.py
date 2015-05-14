@@ -60,6 +60,7 @@ def parse_syllabus(syllabus_file, content_folder=''):
         except IndexError:
             date = standard_safe_date
             name = line
+            print('Date unset in section {}'.format(line))
         return name, date
 
     def subs_to_name_file(line):
