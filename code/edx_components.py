@@ -47,7 +47,7 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
                 raise(e)
 
         self.param = kwargs
-        super(MoocVideo, self).__init__(id)
+        super(MoocVideo, self).__init__(id, rel=0, cc_load_policy=1)
 
 
 class PreprintReference(object):
