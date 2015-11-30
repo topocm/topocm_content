@@ -1,4 +1,4 @@
-# The source materials for the EdX course on Topology in Condensed Matter
+# The source materials for the EdX course "Topology in Condensed Matter: Tying Quantum Knots"
 
-In order to not make the materials public before they go online, this
-repository is populated simultaneously with publishing the materials on EdX.
+The latest stable version of the course is located at http://topocondmat.org.  
+We are currently reorganizing and updating the course materials, so that the repository is not functional in its current state.
