@@ -1,1 +1,2 @@
 *.ipynb filter=nbfilter
+*.ipynb filter=cached-output
