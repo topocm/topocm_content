@@ -1,3 +1,4 @@
+#!/bin/bash
 temp_out=$(mktemp)
 mv $temp_out $temp_out.ipynb
 cat > $temp_out.ipynb
