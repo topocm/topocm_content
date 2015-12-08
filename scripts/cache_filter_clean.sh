@@ -1,7 +1,5 @@
-data=$(cat)
 temp_out=$(mktemp)
-echo "$data" > $temp_out.ipynb
-jupyter nbconvert --to notebook --config convert_config.py $temp_out.ipynb --output $temp_out.ipynb
-jupyter nbconvert --to notebook --ClearOutputPreprocessor.enabled=True $temp_out.ipynb --output $temp_out.ipynb
-data=$(<$temp_out.ipynb)
-echo "$data"
+cat > $temp_out.ipynb
+jupyter nbconvert --to notebook --config scripts/convert_config.py $temp_out.ipynb --output $temp_out.ipynb 1>&2
+jupyter nbconvert --to notebook --ClearOutputPreprocessor.enabled=True $temp_out.ipynb --output $temp_out.ipynb 1>&2
+cat $temp_out.ipynb

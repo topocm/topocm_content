@@ -71,8 +71,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
     Output is stored in a cache directory, and only recomputed if needed.
     """
     
-    #cache_directory = Unicode('/tmp/nb_output_cache', config=True)
-    cache_directory = Unicode(os.path.abspath("../.nb_output_cache"), config=True)
+    cache_directory = Unicode('/tmp/nb_output_cache', config=True)
     
     setup_cells = Integer(1, config=True,
         help="""The number of code cells at the beginning of the notebook to use as setup for other cells.
