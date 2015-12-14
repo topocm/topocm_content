@@ -1,0 +1,101 @@
+#Check the location on your IPython notebook profile:
+#    ipython locate profile default
+#
+#If you do not have any, create a new one:
+#    ipython profile create
+#
+#In your profile directory, you can find a file named ipython_notebook_config.py.
+#You can add extra functionalities to your IPython notebook there.
+#
+#We add the functionality of creating a .py file next to the .ipynb file each time
+#the notebook is saved. This is also called a post-hook method.
+#We based our solution on this snippet, which also converts the notebook to a
+#Python script file but with less metadata.
+#
+# Auto-convert ipython notebooks to a readable and version-controllable python script file
+# This was useful: https://gist.github.com/masnick/d89c03ba3f0ad48416a5
+#
+################################################################################
+
+#===============================================================================
+#This script is released under the MIT License
+#
+#Copyright (c) 2015 Balabit SA
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy of
+#this software and associated documentation files (the "Software"), to deal in
+#the Software without restriction, including without limitation the rights to use,
+#copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+#Software, and to permit persons to whom the Software is furnished to do so,
+#subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+#PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+#ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+#WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#===============================================================================
+#
+#In ipython_notebook_config.py, we insert the following Python code:
+
+import sys
+import json
+import os
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+def get_notebook_data(path_to_file):
+    with open(path_to_file, 'r') as notebook:
+        notebook_data = json.load(notebook)
+    return notebook_data
+
+def construct_output_py_file_path(input_file_path, skip_if_exists=True):
+    input_headless, ext = os.path.splitext(input_file_path)
+    assert ext=='.ipynb'
+    output_by_path = input_headless + '.py'
+    if os.path.exists(output_by_path) and skip_if_exists:
+        return
+    return output_by_path
+
+def write_notebook_data_to_py(notebook_data, out_file_path):
+    with open(out_file_path, 'w') as output:
+        output.write('# -*- coding: utf-8 -*-\n')
+        output.write('# <nbformat>' + str(notebook_data['nbformat']) + '</nbformat>\n')
+        try:
+            cells = notebook_data['cells']
+        except KeyError:
+            print "Nbformat is " + str(notebook_data['nbformat']) + ", try the old converter script."
+            return
+
+        for cell in cells:
+            if cell['cell_type'] in ['code', 'markdown']:
+                output.write('\n')
+                output.write('# <' + cell['cell_type'] + 'cell' + '>\n')
+                output.write('\n')
+                for item in cell['source']:
+                    if cell['cell_type']=='code':
+                        output.write(item)
+                    else:
+                        output.write('# ')
+                        output.write(item)
+                output.write('\n')
+
+def post_save(model, os_path, contents_manager):
+    """post-save hook for converting notebooks to .py scripts"""
+    if model['type'] != 'notebook':
+        return # only do this for notebooks
+    if 'Untitled' in os_path:
+        return # do not save untitled notebooks
+
+    output_file_path = construct_output_py_file_path(os_path, skip_if_exists=False)
+    notebook_data = get_notebook_data(os_path)
+    write_notebook_data_to_py(notebook_data, output_file_path)
+    print output_file_path, "was successfully saved"
+
+c = get_config()
+c.FileContentsManager.post_save_hook = post_save
