@@ -7,7 +7,7 @@ except NameError:
 import sys
 import os
 
-module_dir = os.path.dirname(__file__)
+module_dir = os.path.dirname("__file__")
 sys.path.extend(module_dir)
 
 import re
