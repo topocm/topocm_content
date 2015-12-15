@@ -1,6 +1,6 @@
 """A package for computing Pfaffians"""
 
-from __future__ import division
+
 import numpy as np
 import scipy.linalg as la
 import scipy.sparse as sp
@@ -105,7 +105,7 @@ def skew_tridiagonalize(A, overwrite_a=False, calc_q=True):
     if calc_q:
         Q = np.eye(A.shape[0], dtype=A.dtype)
 
-    for i in xrange(A.shape[0]-2):
+    for i in range(A.shape[0]-2):
         #Find a Householder vector to eliminate the i-th column
         v, tau, alpha = householder(A[i+1:,i])
         A[i+1, i] = alpha
@@ -159,7 +159,7 @@ def skew_LTL(A, overwrite_a=False, calc_L=True, calc_P=True):
     if calc_P:
         Pv = np.arange(n)
 
-    for k in xrange(n-2):
+    for k in range(n-2):
         #First, find the largest entry in A[k+1:,k] and
         #permute it to A[k+1,k]
         kp = k+1+np.abs(A[k+1:,k]).argmax()
@@ -265,7 +265,7 @@ def pfaffian_LTL(A, overwrite_a=False):
 
     pfaffian_val = 1.0
 
-    for k in xrange(0, n-1, 2):
+    for k in range(0, n-1, 2):
         #First, find the largest entry in A[k+1:,k] and
         #permute it to A[k+1,k]
         kp = k+1+np.abs(A[k+1:,k]).argmax()
@@ -343,7 +343,7 @@ def pfaffian_householder(A, overwrite_a=False):
 
     pfaffian_val = 1.
 
-    for i in xrange(A.shape[0]-2):
+    for i in range(A.shape[0]-2):
         #Find a Householder vector to eliminate the i-th column
         v, tau, alpha = householder(A[i+1:,i])
         A[i+1, i] = alpha
