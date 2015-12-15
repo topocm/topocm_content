@@ -10,6 +10,7 @@ do
 	for file in *.ipynb;
 		do
 		if [ "$file" != "*.ipynb" ]; then
+			echo "$STR$file"
 			python $script_path/notebook_v4_to_py.py -f "$file";
 			py_file_path="${file//.ipynb/.py}"
 			data=$(<"$py_file_path")
