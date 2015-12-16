@@ -81,7 +81,7 @@ class Mesh:
         if self.l is None:
             self.l = np.zeros(dim)
         if len(self.l) != dim:
-            print "error: box lengths must be of correct dimension"
+            print("error: box lengths must be of correct dimension")
     
     def points(self):
         return np.array(self.Points)
