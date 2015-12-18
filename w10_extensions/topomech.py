@@ -294,7 +294,7 @@ def makeLattice(a,basis,bondlist,n,rectangle=True,periodic=True,boundaryshift=No
                 whichborder = (secondptwrap != secondpt)
                 if np.any(whichborder) and boundaryshift is not None:
                     bsd = boundaryshift*np.sign(delta)[:,None]
-                    secondptwrap += np.sum(bsd[whichborder],axis=0)
+                    secondptwrap = secondptwrap + np.sum(bsd[whichborder],axis=0)
                 idx1 = idx(lpt,bond[0])
                 idx2 = idx(np.mod(secondptwrap,n),bond[1])
                 if periodic:
