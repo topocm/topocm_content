@@ -40,7 +40,7 @@ for line in imports.split('\n'):
     try:
         exec(line)
     except ImportError:
-        print("Executing '{0}' failed.".format(line))
+        print(("Executing '{0}' failed.".format(line)))
 
 # Set plot style.
 matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))

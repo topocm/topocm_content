@@ -13,7 +13,6 @@ import io
 import json
 import os
 import sys
-import codecs
 
 from traitlets import Unicode, Integer
 
@@ -42,7 +41,7 @@ class OutputCache(dict):
     def __getitem__(self, key):
         if key not in self:
             raise KeyError(key)
-        with codecs.open(self._path(key), encoding='utf8') as f:
+        with io.open(self._path(key), encoding='utf8') as f:
             try:
                 return json.load(f)
             except ValueError:
@@ -59,7 +58,7 @@ class OutputCache(dict):
                 # dir already exists
             else:
                 raise
-        with codecs.open(self._path(key), 'w', encoding='utf8') as f:
+        with io.open(self._path(key), 'w', encoding='utf8') as f:
             json.dump(value, f)
 
 from collections import namedtuple

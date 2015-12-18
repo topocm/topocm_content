@@ -181,7 +181,7 @@ class MoocCheckboxesAssessment(MoocComponent):
         <div id="{0}" style="display:none">
         {1} <br>
         </div>    """
-        return s.format(md5(repr(self)).hexdigest(), answer)
+        return s.format(md5(repr(self).encode('utf-8')).hexdigest(), answer)
 
     def _repr_html_(self):
         return self._get_html_repr()
@@ -230,7 +230,7 @@ class MoocMultipleChoiceAssessment(MoocComponent):
          .style.display='none'}}">Show answer</button>
 
         <div id="{0}" style="display:none">{1}</div>"""
-        return s.format(md5(repr(self)).hexdigest(), answer)
+        return s.format(md5(repr(self).encode('utf-8')).hexdigest(), answer)
 
     def _repr_html_(self):
         return self._get_html_repr()
@@ -248,7 +248,7 @@ class MoocDiscussion(MoocComponent):
             kwargs['display_name'] = discussion_target
 
         if discussion_id is None:
-            kwargs['discussion_id'] = md5(discussion_category + discussion_target).hexdigest()
+            kwargs['discussion_id'] = md5(discussion_category.encode('utf-8') + discussion_target.encode('utf-8')).hexdigest()
 
         self.param = kwargs
 

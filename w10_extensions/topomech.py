@@ -81,7 +81,7 @@ class Mesh:
         if self.l is None:
             self.l = np.zeros(dim)
         if len(self.l) != dim:
-            print "error: box lengths must be of correct dimension"
+            print("error: box lengths must be of correct dimension")
     
     def points(self):
         return np.array(self.Points)
@@ -294,7 +294,7 @@ def makeLattice(a,basis,bondlist,n,rectangle=True,periodic=True,boundaryshift=No
                 whichborder = (secondptwrap != secondpt)
                 if np.any(whichborder) and boundaryshift is not None:
                     bsd = boundaryshift*np.sign(delta)[:,None]
-                    secondptwrap += np.sum(bsd[whichborder],axis=0)
+                    secondptwrap = secondptwrap + np.sum(bsd[whichborder],axis=0)
                 idx1 = idx(lpt,bond[0])
                 idx2 = idx(np.mod(secondptwrap,n),bond[1])
                 if periodic:

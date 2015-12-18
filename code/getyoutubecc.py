@@ -1,6 +1,6 @@
 # This code is adapted from https://github.com/ihinojal/getyoutubecc
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from xml.etree import ElementTree as ET
 import json
 from codecs import open
@@ -10,7 +10,7 @@ def get_cc(video_id, lang="en", track="", tlang="" ):
     cc_url = ("http://youtube.com/api/timedtext?v=" + video_id + "&lang=" +
               lang + "&name=" + track + "&tlang=" + tlang)
 
-    xml_source = urllib2.urlopen(cc_url).read()
+    xml_source = urllib.request.urlopen(cc_url).read()
     if not len(xml_source):
         raise RuntimeError("No CC available")
 
