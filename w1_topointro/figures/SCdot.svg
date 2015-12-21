@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="379.73129"
+   height="220.81897"
+   id="svg3314"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="SCdot.svg">
+  <defs
+     id="defs3316" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.2215568"
+     inkscape:cx="180.88186"
+     inkscape:cy="163.11595"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3319">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(51.59766,-448.76646)">
+    <g
+       id="g3009">
+      <path
+         style="fill:#9c9c9c;fill-opacity:0.65;stroke:#000000;stroke-width:2"
+         inkscape:connector-curvature="0"
+         id="path19"
+         d="m 309.40234,487.58543 -142.998,0 0,181 142.998,0" />
+      <text
+         y="471.55942"
+         x="164.97934"
+         style="font-size:30px;font-family:American Typewriter"
+         id="text21"
+         xml:space="preserve"
+         font-size="30"><tspan
+           id="tspan23">supercond.</tspan></text>
+      <path
+         style="fill:#3c3c3c;stroke:#000000;stroke-width:2"
+         inkscape:connector-curvature="0"
+         id="path50"
+         d="m 59.40234,560.58543 40.5,0 0,36 -40.5,0 z" />
+      <path
+         style="fill:#ffffff;stroke:#000000;stroke-width:2"
+         inkscape:connector-curvature="0"
+         id="path52"
+         d="m -51.59766,560.58543 111,0 0,36 -111,0" />
+      <path
+         style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-linecap:round"
+         inkscape:connector-curvature="0"
+         id="path54"
+         d="m 140.23434,533.40943 c -15.4,8.4 -34.51,11.287 -44,24 -9.06,12.137 -15.974,34.94 -9,47 9.826,16.99 35.251,32.507 57,36 26.201,4.207 57.491,-1.447 80,-14 13.891,-7.747 22.594,-28 24,-44 1.394,-15.85 -5.281,-35.227 -16,-47 -10.631,-11.677 -29.071,-20 -45,-20 -18.021,0 -33.8,13 -52,20" />
+      <text
+         y="586.13043"
+         x="108.40234"
+         style="font-size:30px;font-family:American Typewriter"
+         id="text56"
+         xml:space="preserve"
+         font-size="30"><tspan
+           id="tspan58">dot</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:2"
+         inkscape:connector-curvature="0"
+         id="path60"
+         d="m 59.40234,629.58543 13.75,-30.25" />
+      <text
+         y="656.88043"
+         x="10.15234"
+         style="font-size:30px;font-family:American Typewriter"
+         id="text62"
+         xml:space="preserve"
+         font-size="30"><tspan
+           id="tspan64">barrier</tspan></text>
+      <text
+         y="586.13043"
+         x="-28.84766"
+         style="font-size:30px;font-family:American Typewriter"
+         id="text66"
+         xml:space="preserve"
+         font-size="30"><tspan
+           id="tspan68">lead</tspan></text>
+    </g>
+  </g>
+</svg>
