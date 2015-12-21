@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="635.38586"
+   height="169.36227"
+   id="svg4391"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 8">
+  <defs
+     id="defs4393">
+    <pattern
+       id="7fc875111510"
+       xlink:href="#7fc87505c800"
+       patternTransform="matrix(1,0,0,1,334.814,-10.0458)" />
+    <pattern
+       id="7fc87505c800"
+       width="64"
+       height="64"
+       patternUnits="userSpaceOnUse">
+      <g
+         id="g7">
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,72 L72,-8"
+           id="path9" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,64 L64,-8"
+           id="path11" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,56 L56,-8"
+           id="path13" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,48 L48,-8"
+           id="path15" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,40 L40,-8"
+           id="path17" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,32 L32,-8"
+           id="path19" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,24 L24,-8"
+           id="path21" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,16 L16,-8"
+           id="path23" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M0,72 L72,0"
+           id="path25" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M8,72 L72,8"
+           id="path27" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M16,72 L72,16"
+           id="path29" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M24,72 L72,24"
+           id="path31" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M32,72 L72,32"
+           id="path33" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M40,72 L72,40"
+           id="path35" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M48,72 L72,48"
+           id="path37" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M-8,8 L8,-8"
+           id="path39" />
+        <path
+           fill="none"
+           stroke="#000"
+           stroke-linecap="square"
+           d="M56,72 L72,56"
+           id="path41" />
+      </g>
+    </pattern>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.86377106"
+     inkscape:cx="729.10244"
+     inkscape:cy="102.62146"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4396">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(357.0552,-459.44027)">
+    <g
+       transform="translate(-834.16436,104.11505)"
+       id="g368">
+      <g
+         id="g370">
+        <pattern
+           id="pattern4356"
+           xlink:href="#7fc87505c800"
+           patternTransform="matrix(1,0,0,1,334.814,-10.0458)" />
+        <path
+           style="fill:url(#7fc875111510)"
+           inkscape:connector-curvature="0"
+           d="m 652.415,523.196 281.336,0 0,-146.208 -281.336,0 z"
+           id="path373" />
+        <path
+           style="fill:#bcbcbc;fill-opacity:0.43000004"
+           inkscape:connector-curvature="0"
+           d="m 541.341,376.988 501.999,0 0,146.208 -501.999,0 z"
+           id="path375" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 541.341,523.196 501.999,0"
+           id="path377" />
+      </g>
+      <g
+         id="g379">
+        <path
+           style="fill:none;stroke:#007efd;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 541.341,509.028 111.074,0"
+           id="path381" />
+        <path
+           style="fill:none;stroke:#007efd;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 553.341,515.028 -12,-6 12,-6"
+           id="path383" />
+      </g>
+      <g
+         id="g385">
+        <path
+           style="fill:none;stroke:#ff0004;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 652.415,494.443 -111.074,0"
+           id="path387" />
+        <path
+           style="fill:none;stroke:#ff0004;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 640.415,488.443 12,6 -12,6"
+           id="path389" />
+      </g>
+      <g
+         id="g391">
+        <path
+           style="fill:none;stroke:#007efd;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 933.751,510.86 109.589,0"
+           id="path393" />
+        <path
+           style="fill:none;stroke:#007efd;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 945.751,516.86 -12,-6 12,-6"
+           id="path395" />
+      </g>
+      <g
+         id="g397">
+        <path
+           style="fill:none;stroke:#ff0004;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 1043.34,494.274 -109.589,0"
+           id="path399" />
+        <path
+           style="fill:none;stroke:#ff0004;stroke-width:3"
+           inkscape:connector-curvature="0"
+           d="m 1031.34,488.274 12,6 -12,6"
+           id="path401" />
+      </g>
+      <text
+         style="font-size:30px;text-anchor:middle;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.6,0,0,0.6,792.732,369.001)"
+         xml:space="preserve"
+         id="text403"><tspan
+           id="tspan405">disordered region</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;fill:#ff0004;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.8,0,0,0.8,513.335,496.621)"
+         xml:space="preserve"
+         id="text407"><tspan
+           id="tspan409">in,L</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;fill:#007efd;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.8,0,0,0.8,505.949,519.356)"
+         xml:space="preserve"
+         id="text411"><tspan
+           id="tspan413">out,L</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;fill:#ff0004;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.8,0,0,0.8,1081.37,497.788)"
+         xml:space="preserve"
+         id="text415"><tspan
+           id="tspan417">out,R</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;fill:#007efd;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.8,0,0,0.8,1073.8,519.356)"
+         xml:space="preserve"
+         id="text419"><tspan
+           id="tspan421">in,R</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.6,0,0,0.6,589.741,376.988)"
+         xml:space="preserve"
+         id="text423"><tspan
+           x="0"
+           y="36"
+           id="tspan425">left</tspan><tspan
+           x="0"
+           y="72"
+           id="tspan427">clean</tspan><tspan
+           x="0"
+           y="108"
+           id="tspan429">region</tspan></text>
+      <text
+         style="font-size:30px;text-anchor:middle;font-family:American Typewriter"
+         font-size="30"
+         transform="matrix(0.6,0,0,0.6,989.668,376.988)"
+         xml:space="preserve"
+         id="text431"><tspan
+           x="0"
+           y="36"
+           id="tspan433">right</tspan><tspan
+           x="0"
+           y="72"
+           id="tspan435">clean</tspan><tspan
+           x="0"
+           y="108"
+           id="tspan437">region</tspan></text>
+    </g>
+  </g>
+</svg>
