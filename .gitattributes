@@ -1,2 +1,2 @@
-*.ipynb filter=cached-output
 *.ipynb filter=remove-version
+*.ipynb filter=cached-output
