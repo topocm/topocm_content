@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import nbformat
 from nbconvert.preprocessors import Preprocessor
 
