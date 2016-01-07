@@ -1,5 +1,7 @@
 import sys
 import os
+import json
+import jinja2
 from hashlib import md5
 
 module_dir = os.path.dirname(__file__)
@@ -13,27 +15,21 @@ __all__ = ['MoocVideo', 'PreprintReference', 'MoocDiscussion',
             'MoocPeerAssessment', 'MoocSelfAssessment']
 
 class MoocComponent:
-    def __repr__(self):
-        return '{0}(**{1})'.format(self.__class__.__name__, repr(self.param))
+    def _repr_json(self):
+        return json.dumps(self.param)
 
 
 class MoocVideo(MoocComponent, display.YouTubeVideo):
-    def __init__(self, id, src_location=None, res='720', display_name="",
-                 download_track='true', download_video='true',
-                 show_captions='true', **kwargs):
-        """A video component of an EdX mooc embeddable in IPython notebook."""
-        tmp = locals()
-        del tmp['kwargs'], tmp['self'], tmp['__class__']
-        del tmp['id'], tmp['src_location'], tmp['res']
-        kwargs.update(tmp)
-        kwargs['youtube_id_1_0'] = id
-        kwargs['youtube'] ="1.00:" + id
+    template = """<video youtube="1.00:{{ id }}" url_name="{{ url_name }}" display_name="" download_track="true" download_video="{{ 'true' if sourse else 'false' }}" show_captions="{{ 'true' if sub else 'false' " source="{{ source }}" sub="{{ id }}" youtube_id_1_0="{{ id }}"/>"""
 
+    def __init__(self, id, src_location=None, res='720'):
+        """A video component of an EdX mooc embeddable in IPython notebook."""
+        param = {'id': id, 'template': self.template}
         # Add source if provided
         loc = ("http://delftxdownloads.tudelft.nl/"
                "TOPOCMx-QuantumKnots/TOPOCMx-{0}-video.{1}.mp4")
         if src_location is not None:
-            kwargs['source'] = loc.format(src_location, res)
+            param['source'] = loc.format(src_location, res)
 
         self.param = kwargs
         super().__init__(id, width='100%', height=400, rel=0, cc_load_policy=1)
@@ -55,7 +51,8 @@ class PreprintReference:
         title = data['entries'][0]['title']
         s = '<h3 class="title mathjax">' + title + '</h3>'
 
-        s += '<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a><br>' % (ind, ind)
+        s += ('<p><a href=http://arxiv.org/abs/{}>'
+              'http://arxiv.org/abs/{}</a><br>').format(ind)
 
         s += '<div class="authors">'
         s += ", ".join(author.name for author in data['entries'][0]['authors'])
@@ -73,23 +70,23 @@ class PreprintReference:
 
 
 class MoocPeerAssessment(MoocComponent):
+    placeholder = ('<p><b> Read one of the above papers and see how it is\n'
+                   'related to the current topic.</b></p>\n'
+                   '<p><b>In the live version of the course, you would '
+                   'need to write a summary which is then assessed by '
+                   'your peers.</b></p>')
+
+    with open(module_dir +
+              '/xmls/openassessment_peer.xml', 'r') as content_file:
+        template = content_file.read()
+
     def __init__(self, must_grade=5, must_be_graded_by=3, due=9, review_due=16,
                  url_name=None, **kwargs):
-
-        self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
-                            'related to the current topic.</b></p>\n'
-                            '<p><b>In the live version of the course, you would '
-                            'need to write a summary which is then assessed by '
-                            'your peers.</b></p>')
-
         tmp = locals()
         del tmp['kwargs'], tmp['self']
         kwargs.update(tmp)
 
-        with open(module_dir + '/xmls/openassessment_peer.xml', 'r') as content_file:
-            openassessment_peer = content_file.read()
-
-        kwargs['openassessment_peer'] = openassessment_peer
+        kwargs['template'] = self.template
 
         self.param = kwargs
 
@@ -98,21 +95,22 @@ class MoocPeerAssessment(MoocComponent):
 
 
 class MoocSelfAssessment(MoocComponent):
-    def __init__(self, due=9, review_due=16, url_name=None, **kwargs):
+    placeholder = ('<p><b> MoocSelfAssessment description</b></p>\n'
+                   '<p><b>In the live version of the course, you would '
+                   'need to share your solution and grade yourself.'
+                   '</b></p>')
 
+    with open(module_dir +
+              '/xmls/openassessment_self.xml', 'r') as content_file:
+        template = content_file.read()
+
+    def __init__(self, due=9, review_due=16,
+                 url_name=None, **kwargs):
         tmp = locals()
         del tmp['kwargs'], tmp['self']
         kwargs.update(tmp)
 
-        self.placeholder = ('<p><b> MoocSelfAssessment description</b></p>\n'
-                            '<p><b>In the live version of the course, you would '
-                            'need to share your solution and grade yourself.'
-                            '</b></p>')
-
-        with open(module_dir + '/xmls/openassessment_self.xml', 'r') as content_file:
-            openassessment_self = content_file.read()
-
-        kwargs['openassessment_self'] = openassessment_self
+        kwargs['template'] = self.template
 
         self.param = kwargs
 
@@ -121,6 +119,21 @@ class MoocSelfAssessment(MoocComponent):
 
 
 class MoocCheckboxesAssessment(MoocComponent):
+    html_template = """<h4>{{ question }}</h4>
+           <form>
+           {% for answer in answers %}
+           <input type="checkbox"> {{ answer }}<br>
+           {% endfor %}
+           </form>
+           <button title="Click to show answer" type="button"
+           onclick="document.getElementById('{{ id }}').style.display=''">
+           Show answer
+           </button>
+           <div id="{{ id }}" style="display:none">
+           The correct answer is:<br>{{ answers[correct_answer] }}<br>
+           <i>{{ explanation }}</i>
+           </div>"""
+
     def __init__(self, question, answers, correct_answers, max_attempts=2,
                  display_name="Question", **kwargs):
         """
