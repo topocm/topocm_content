@@ -1,2 +1,2 @@
-c.Exporter.preprocessors = ['htmllinks.HtmlLinksPreprocessor']
+c.Exporter.preprocessors = ['scripts.htmllinks.HtmlLinksPreprocessor']
 c.HtmlLinksPreprocessor['enabled'] = True
