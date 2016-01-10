@@ -1,4 +1,5 @@
 #!/bin/bash
+export path_to_topocm_folder="$PWD"
 temp_out=$(mktemp)
 mv $temp_out $temp_out.ipynb
 cat > $temp_out.ipynb
