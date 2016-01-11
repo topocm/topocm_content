@@ -36,16 +36,6 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
         if src_location is not None:
             kwargs['source'] = loc.format(src_location, res)
 
-        # Try to grab subtitles from YouTube.
-        try:
-            save_youtube_cc(id, "../edx_skeleton/static/subs_" + id + ".srt.sjson")
-            kwargs['sub'] = id
-        except RuntimeError as e:
-            if e.message == 'No CC available':
-                pass
-            else:
-                raise(e)
-
         self.param = kwargs
         super(MoocVideo, self).__init__(id, rel=0, cc_load_policy=1)
 
