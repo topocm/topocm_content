@@ -26,9 +26,7 @@ import numpy as np
 import matplotlib
 import kwant
 
-import ipywidgets
 from IPython.html.widgets import interact
-from ipywidgets import StaticInteract, RangeWidget, DropDownWidget
 from IPython.display import display_html
 from matplotlib import pyplot as plt
 
