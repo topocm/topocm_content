@@ -6,9 +6,12 @@ except NameError:
 
 import sys
 import os
+from types import SimpleNamespace
 
 module_dir = os.path.dirname(__file__)
 sys.path.extend(module_dir)
+
+#__all__ = ['kwant', 'init_notebook', 'numpy', ]
 
 import re
 
@@ -44,11 +47,6 @@ for line in imports.split('\n'):
 
 # Set plot style.
 matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
-
-# SimpleNamespace
-class SimpleNamespace(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 # Adjust printing of matrices, and numpy printing of numbers.
 
