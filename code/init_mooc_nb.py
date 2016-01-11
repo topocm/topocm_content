@@ -9,9 +9,14 @@ import os
 from types import SimpleNamespace
 
 module_dir = os.path.dirname(__file__)
-sys.path.extend(module_dir)
+sys.path.append(module_dir)
 
-#__all__ = ['kwant', 'init_notebook', 'numpy', ]
+__all__ = ['division', 'print_function', 'np', 'matplotlib', 'init_notebook', \
+           'interact', 'display_html', 'plt','pf', 'MoocVideo', \
+           'PreprintReference', 'MoocPeerAssessment', 'MoocSelfAssessment', \
+           'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment', \
+           'MoocDiscussion', 'pprint_matrix', 'scientific_number', \
+           'pretty_fmt_complex']
 
 import re
 
@@ -36,7 +41,6 @@ from edx_components import *
 
 # Explicitly mention the mooc-related imports.
 print("Performing the necessary imports.")
-print(imports)
 for line in imports.split('\n'):
     try:
         exec(line)
@@ -86,56 +90,61 @@ def pretty_fmt_complex(num, digits=2):
 
 np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
 
-nb_html_header = """
-<script type=text/javascript>
-/* Add a button for showing or hiding input */
-on = "Show input";
-off = "Hide input";
-function onoff(){
-  currentvalue = document.getElementById('onoff').value;
-  if(currentvalue == off){
-    document.getElementById("onoff").value=on;
-      $('div.input').hide();
-  }else{
-    document.getElementById("onoff").value=off;
-      $('div.input').show();
-  }
-}
 
-/* Launch first notebook cell on start */
-function launch_first_cell (evt) {
-  if (!launch_first_cell.executed
-      && IPython.notebook.kernel
-  ) {
-    IPython.notebook.get_cells()[0].execute();
-    launch_first_cell.executed = true;
-  }
-}
+def init_notebook():
+    print('Imported: ')
+    for item in __all__:
+        print(item)
+    nb_html_header = """
+    <script type=text/javascript>
+    /* Add a button for showing or hiding input */
+    on = "Show input";
+    off = "Hide input";
+    function onoff(){
+      currentvalue = document.getElementById('onoff').value;
+      if(currentvalue == off){
+        document.getElementById("onoff").value=on;
+          $('div.input').hide();
+      }else{
+        document.getElementById("onoff").value=off;
+          $('div.input').show();
+      }
+    }
+    
+    /* Launch first notebook cell on start */
+    function launch_first_cell (evt) {
+      if (!launch_first_cell.executed
+          && IPython.notebook.kernel
+      ) {
+        IPython.notebook.get_cells()[0].execute();
+        launch_first_cell.executed = true;
+      }
+    }
 
-$([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
-</script>
+    $([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
+    </script>
 
-<p>Press this button to show/hide the code used in the notebook:
-<input type="button" class="ui-button ui-widget ui-state-default \
-ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
-onclick="onoff();"></p>
-"""
+    <p>Press this button to show/hide the code used in the notebook:
+    <input type="button" class="ui-button ui-widget ui-state-default \
+    ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
+    onclick="onoff();"></p>
+    """
 
-hide_outside_ipython = """<script type=text/javascript>
-$(document).ready(function (){if(!("IPython" in window)){onoff();}})
-</script>"""
+    hide_outside_ipython = """<script type=text/javascript>
+    $(document).ready(function (){if(!("IPython" in window)){onoff();}})
+    </script>"""
 
-# In order to make the notebooks readable through nbviewer we want to hide the
-# code by default. However the same code is executed by the students, and in
-# that case we don't want to hide the code. So we check if the code is executed
-# by one of the mooc developers. Here we do by simply checking for some files that
-# belong to the internal mooc repository, but are not published.
-# This is a temporary solution, and should be improved in the long run.
+    # In order to make the notebooks readable through nbviewer we want to hide the
+    # code by default. However the same code is executed by the students, and in
+    # that case we don't want to hide the code. So we check if the code is executed
+    # by one of the mooc developers. Here we do by simply checking for some files that
+    # belong to the internal mooc repository, but are not published.
+    # This is a temporary solution, and should be improved in the long run.
 
-if os.path.exists(os.path.join(module_dir, os.path.pardir, 'scripts')):
-    nb_html_header += hide_outside_ipython
+    if os.path.exists(os.path.join(module_dir, os.path.pardir, 'scripts')):
+        nb_html_header += hide_outside_ipython
 
-display_html(display.HTML(nb_html_header))
+    display_html(display.HTML(nb_html_header))
 
 with open(os.path.join(module_dir, 'make_toc.js')) as f:
     js = f.read()
