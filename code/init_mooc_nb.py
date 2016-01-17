@@ -11,7 +11,7 @@ from types import SimpleNamespace
 module_dir = os.path.dirname(__file__)
 sys.path.append(module_dir)
 
-__all__ = ['division', 'print_function', 'np', 'matplotlib', 'init_notebook', \
+__all__ = ['division', 'print_function', 'np', 'matplotlib', 'kwant', 'init_notebook', \
            'interact', 'display_html', 'plt','pf', 'MoocVideo', \
            'PreprintReference', 'MoocPeerAssessment', 'MoocSelfAssessment', \
            'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment', \
