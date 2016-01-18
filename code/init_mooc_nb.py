@@ -12,7 +12,7 @@ module_dir = os.path.dirname(__file__)
 sys.path.append(module_dir)
 
 __all__ = ['division', 'print_function', 'np', 'matplotlib', 'kwant', 'init_notebook', \
-           'interact', 'display_html', 'plt','pf', 'MoocVideo', \
+           'interact', 'display_html', 'plt','pf', 'SimpleNamespace', 'MoocVideo', \
            'PreprintReference', 'MoocPeerAssessment', 'MoocSelfAssessment', \
            'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment', \
            'MoocDiscussion', 'pprint_matrix', 'scientific_number', \
@@ -88,10 +88,8 @@ def pretty_fmt_complex(num, digits=2):
     return (pretty_fmt_complex(num.real) + ('+' * (num.imag > 0)) +
             pretty_fmt_complex(num.imag) + 'i')
 
-np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
-
-
 def init_notebook():
+    np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
     print('Imported: ')
     for item in __all__:
         print(item)
@@ -114,14 +112,14 @@ def init_notebook():
     /* Launch first notebook cell on start */
     function launch_first_cell (evt) {
       if (!launch_first_cell.executed
-          && IPython.notebook.kernel
+          && Jupyter.notebook.kernel
       ) {
-        IPython.notebook.get_cells()[0].execute();
+        Jupyter.notebook.get_cells()[0].execute();
         launch_first_cell.executed = true;
       }
     }
 
-    $([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
+    $([Jupyter.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
     </script>
 
     <p>Press this button to show/hide the code used in the notebook:
@@ -145,8 +143,3 @@ def init_notebook():
         nb_html_header += hide_outside_ipython
 
     display_html(display.HTML(nb_html_header))
-
-with open(os.path.join(module_dir, 'make_toc.js')) as f:
-    js = f.read()
-js += "$([IPython.events]).on('status_started.Kernel notebook_loaded.Notebook', table_of_contents);"
-display.display_javascript(display.Javascript(js))

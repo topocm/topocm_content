@@ -1,5 +1,5 @@
 #!/bin/bash
-export PYTHONPATH="${PWD}/code"
+export PYTHONPATH=$PYTHONPATH:${PWD}/code
 temp_out=$(mktemp)
 mv $temp_out $temp_out.ipynb
 cat > $temp_out.ipynb
