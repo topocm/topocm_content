@@ -1,57 +1,29 @@
-# Enable inline plotting in the notebook
-try:
-    get_ipython().enable_matplotlib(gui='inline')
-except NameError:
-    pass
-
 import sys
 import os
+import re
 from types import SimpleNamespace
 
-module_dir = os.path.dirname(__file__)
-sys.path.append(module_dir)
-
-__all__ = ['division', 'print_function', 'np', 'matplotlib', 'kwant', 'init_notebook', \
-           'interact', 'display_html', 'plt','pf', 'SimpleNamespace', 'MoocVideo', \
-           'PreprintReference', 'MoocPeerAssessment', 'MoocSelfAssessment', \
-           'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment', \
-           'MoocDiscussion', 'pprint_matrix', 'scientific_number', \
-           'pretty_fmt_complex']
-
-import re
-
-from IPython import display
-
-# In order to keep it clear in the notebooks which imports are provided,
-# add all the mooc-specific import statements to the following string.
-
-imports = """
-from __future__ import division, print_function
 import numpy as np
 import matplotlib
+from matplotlib import pyplot as plt
+from IPython import display
+from ipywidgets import interact
+from IPython.display import display_html
 import kwant
 
-from IPython.html.widgets import interact
-from IPython.display import display_html
-from matplotlib import pyplot as plt
-
 import pfaffian as pf
+# A bunch of edx components to pass on, we never use them here
+import edx_components
 from edx_components import *
-"""
 
-# Explicitly mention the mooc-related imports.
-print("Performing the necessary imports.")
-for line in imports.split('\n'):
-    try:
-        exec(line)
-    except ImportError:
-        print(("Executing '{0}' failed.".format(line)))
 
-# Set plot style.
-matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
+__all__ = ['np', 'matplotlib', 'kwant',
+           'init_notebook', 'interact', 'display_html', 'plt','pf',
+           'SimpleNamespace', 'pprint_matrix', 'scientific_number',
+           'pretty_fmt_complex'] + edx_components.__all__
+
 
 # Adjust printing of matrices, and numpy printing of numbers.
-
 def pprint_matrix(data, digits=3):
     """Print a numpy array as a latex matrix."""
     header = (r"\begin{{pmatrix}}"
@@ -63,6 +35,7 @@ def pprint_matrix(data, digits=3):
     d = re.sub(r' +', ' & ', d)
     display.display_latex(display.Latex(header.format(d=d)))
 
+
 def scientific_number(x):
     if not x:
         return '$0$'
@@ -72,7 +45,7 @@ def scientific_number(x):
 
 
 def pretty_fmt_complex(num, digits=2):
-    """Return a string representation of a number designed to be human-readable."""
+    """Return a human-readable string representation of a number."""
     def strip_trailing(num_str):
         return num_str.rstrip('0').rstrip('.')
 
@@ -88,58 +61,72 @@ def pretty_fmt_complex(num, digits=2):
     return (pretty_fmt_complex(num.real) + ('+' * (num.imag > 0)) +
             pretty_fmt_complex(num.imag) + 'i')
 
+
+nb_html_header = """
+<script type=text/javascript>
+/* Add a button for showing or hiding input */
+on = "Show input";
+off = "Hide input";
+function onoff(){
+  currentvalue = document.getElementById('onoff').value;
+  if(currentvalue == off){
+    document.getElementById("onoff").value=on;
+      $('div.input').hide();
+  }else{
+    document.getElementById("onoff").value=off;
+      $('div.input').show();
+  }
+}
+
+/* Launch first notebook cell on start */
+function launch_first_cell (evt) {
+  if (!launch_first_cell.executed
+      && Jupyter.notebook.kernel
+  ) {
+    Jupyter.notebook.get_cells()[0].execute();
+    launch_first_cell.executed = true;
+  }
+}
+
+$([Jupyter.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
+</script>
+
+<p>Press this button to show/hide the code used in the notebook:
+<input type="button" class="ui-button ui-widget ui-state-default \
+ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
+onclick="onoff();"></p>
+"""
+
+hide_outside_ipython = """<script type=text/javascript>
+$(document).ready(function (){if(!("IPython" in window)){onoff();}})
+</script>"""
+
+
 def init_notebook():
-    np.set_printoptions(precision=2, suppress=True, formatter={'complexfloat': pretty_fmt_complex})
-    print('Imported: ')
-    for item in __all__:
-        print(item)
-    nb_html_header = """
-    <script type=text/javascript>
-    /* Add a button for showing or hiding input */
-    on = "Show input";
-    off = "Hide input";
-    function onoff(){
-      currentvalue = document.getElementById('onoff').value;
-      if(currentvalue == off){
-        document.getElementById("onoff").value=on;
-          $('div.input').hide();
-      }else{
-        document.getElementById("onoff").value=off;
-          $('div.input').show();
-      }
-    }
-    
-    /* Launch first notebook cell on start */
-    function launch_first_cell (evt) {
-      if (!launch_first_cell.executed
-          && Jupyter.notebook.kernel
-      ) {
-        Jupyter.notebook.get_cells()[0].execute();
-        launch_first_cell.executed = true;
-      }
-    }
+    print('Populated the namespace with:\n' + ', '.join(__all__))
+    # Enable inline plotting in the notebook
+    try:
+        get_ipython().enable_matplotlib(gui='inline')
+    except NameError:
+        pass
 
-    $([Jupyter.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
-    </script>
+    # Set plot style.
+    module_dir = os.path.dirname(__file__)
+    matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
 
-    <p>Press this button to show/hide the code used in the notebook:
-    <input type="button" class="ui-button ui-widget ui-state-default \
-    ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
-    onclick="onoff();"></p>
-    """
+    np.set_printoptions(precision=2, suppress=True,
+                        formatter={'complexfloat': pretty_fmt_complex})
 
-    hide_outside_ipython = """<script type=text/javascript>
-    $(document).ready(function (){if(!("IPython" in window)){onoff();}})
-    </script>"""
+    # In order to make the notebooks readable through nbviewer we want to hide
+    # the code by default. However the same code is executed by the students,
+    # and in that case we don't want to hide the code. So we check if the code
+    # is executed by one of the mooc developers. Here we do by simply checking
+    # for some files that belong to the internal mooc repository, but are not
+    # published.  This is a temporary solution, and should be improved in the
+    # long run.
 
-    # In order to make the notebooks readable through nbviewer we want to hide the
-    # code by default. However the same code is executed by the students, and in
-    # that case we don't want to hide the code. So we check if the code is executed
-    # by one of the mooc developers. Here we do by simply checking for some files that
-    # belong to the internal mooc repository, but are not published.
-    # This is a temporary solution, and should be improved in the long run.
+    developer = os.path.exists(os.path.join(module_dir, os.path.pardir,
+                                            'scripts'))
 
-    if os.path.exists(os.path.join(module_dir, os.path.pardir, 'scripts')):
-        nb_html_header += hide_outside_ipython
-
-    display_html(display.HTML(nb_html_header))
+    display_html(display.HTML(nb_html_header +
+                              (hide_outside_ipython if developer else '')))
