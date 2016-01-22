@@ -3,6 +3,12 @@ import os
 import re
 from types import SimpleNamespace
 
+# Enable inline plotting in the notebook
+try:
+    get_ipython().enable_matplotlib(gui='inline')
+except NameError:
+    pass
+
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
@@ -104,11 +110,6 @@ $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 
 def init_notebook():
     print('Populated the namespace with:\n' + ', '.join(__all__))
-    # Enable inline plotting in the notebook
-    try:
-        get_ipython().enable_matplotlib(gui='inline')
-    except NameError:
-        pass
 
     # Set plot style.
     module_dir = os.path.dirname(__file__)
