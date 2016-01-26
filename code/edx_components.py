@@ -24,7 +24,7 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
                  show_captions='true', **kwargs):
         """A video component of an EdX mooc embeddable in IPython notebook."""
         tmp = locals()
-        del tmp['kwargs'], tmp['self']
+        del tmp['kwargs'], tmp['self'], tmp['__class__']
         del tmp['id'], tmp['src_location'], tmp['res']
         kwargs.update(tmp)
         kwargs['youtube_id_1_0'] = id

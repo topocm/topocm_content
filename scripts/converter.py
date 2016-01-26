@@ -1,18 +1,17 @@
-#!/usr/bin/python
-
-from __future__ import division, print_function
+#!/usr/bin/python3
 
 import io
 import os
+import sys
 import tempfile
 import shutil
 import re
 import argparse
-
 import subprocess
 import tarfile
-
+import jinja2
 from itertools import groupby
+from types import SimpleNamespace
 
 from xml.etree.ElementTree import Element, SubElement
 from xml.etree import ElementTree
@@ -21,20 +20,12 @@ from xml.dom import minidom
 import datetime
 from time import strptime
 
-from IPython.nbformat import current
-from IPython.config import Config
-from IPython.nbconvert import HTMLExporter
-from IPython.nbconvert.filters.markdown import markdown2html_pandoc
+import nbformat
+from nbformat import v4 as current
+from traitlets.config import Config
+from nbconvert import HTMLExporter
+from nbconvert.filters.markdown import markdown2html_pandoc
 
-
-class SimpleNamespace(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-
-def itersplit(predicate, seq):
-    return (tuple(g) for k,g in groupby(seq, key=lambda x: not predicate(x)) if
-            k)
 
 
 def date_to_edx(date, add_days=0):
@@ -50,7 +41,7 @@ def parse_syllabus(syllabus_file, content_folder=''):
     standard_safe_date = "28 Feb 2030"
     # loading raw syllabus
     syll = split_into_units(syllabus_file)[0]
-    cell = syll.worksheets[0].cells[1]
+    cell = syll.cells[1]
 
     def section_to_name_date(line):
         finddate = r' \(air date\: (.+?)\)'
@@ -79,7 +70,8 @@ def parse_syllabus(syllabus_file, content_folder=''):
 
     sections = [section_to_name_date(j) for j in sections]
     # Make a list of lines in each section.
-    subsections = itersplit(is_section, lines)
+    subsections = (tuple(g) for k,g in groupby(lines, key=lambda x: not
+                                               is_section(x)) if k)
     # Filter the actual subsections.
     subsections = [[subs_to_name_file(i) for i in j if subs_to_name_file(i) is
                     not None] for j in subsections]
@@ -112,35 +104,28 @@ def parse_syllabus(syllabus_file, content_folder=''):
 def split_into_units(nb_name):
     """Split notebook into units."""
     try:
-        with io.open(nb_name, 'r', encoding='utf-8') as f:
-            nb = current.read(f, 'json')
+        nb = nbformat.read(nb_name, as_version=4)
     except IOError as e:
         if e.errno == 2:
-            print('File not found: {0}'.format(nb_name))
+            print('File not found: {0}'.format(nb_name), sys.stderr)
             return []
         else:
             raise e
-    indexes = []
-    cells = nb.worksheets[0].cells
-    for (i, cell) in enumerate(cells):
-        if cell.cell_type == 'heading' and cell.level == 1:
-            indexes.append(i)
+    cells = nb.cells
+    indexes = [i for i, cell in enumerate(cells)
+               if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
-
-    worksheets = map(lambda cells: current.new_worksheet(name=cells[0].source,
-                                                         cells=cells),
-                     separated_cells)
-    units = map(lambda worksheet: current.new_notebook(name=worksheet.name,
-                                                       worksheets=[worksheet]),
-                worksheets)
+    units = [current.new_notebook(cells=cells,
+                                  metadata={'name': cells[0].source[2:]})
+             for cells in separated_cells]
     return units
 
 
 def export_unit_to_html(unit):
     """Export unit into html format."""
     path = os.path.dirname(os.path.realpath(__file__))
-    cfg = Config({'HTMLExporter':{'template_file':'basic_reduced',
+    cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                   'template_path':['.',path],
                                   'filters':{'markdown2html':
                                              markdown2html_pandoc}}})
@@ -155,11 +140,6 @@ def export_unit_to_html(unit):
 def make_filename_valid(string):
     cleaned_up_filename = re.sub(r'[/\\:$%*?,"<>| ]', '', string)
     return cleaned_up_filename
-
-
-def modify_text(text):
-    s = "".join([c for c in text if re.match(r'\w', c)])
-    return s
 
 
 def save_html(body, target_path):
@@ -192,8 +172,7 @@ def convert_normal_cells(normal_cells):
         if cell.cell_type == 'markdown':
             cell.source = re.sub(r'\\begin\{ *equation *\}', '\[', cell.source)
             cell.source = re.sub(r'\\end\{ *equation *\}', '\]', cell.source)
-    worksheet = current.new_worksheet(cells=normal_cells)
-    tmp = current.new_notebook(worksheets=[worksheet])
+    tmp = current.new_notebook(cells=normal_cells)
     html = export_unit_to_html(tmp)
     return html
 
@@ -201,7 +180,7 @@ def convert_normal_cells(normal_cells):
 def convert_MoocVideo_to_xml(par):
     """ Convert video_cell with MoocVideo into xml. """
     xml = Element('video')
-    for key in par.keys():
+    for key in par:
         xml.attrib[key] = str(par[key])
 
     return xml
@@ -323,7 +302,7 @@ def convert_MoocSelfAssessment_to_xml(par, date):
 
 def convert_MoocDiscussion_to_xml(par):
     xml = Element('discussion')
-    for key in par.keys():
+    for key in par:
         xml.attrib[key] = par[key]
 
     return xml, par['discussion_id']
@@ -331,7 +310,7 @@ def convert_MoocDiscussion_to_xml(par):
 
 def convert_unit(unit, date):
     """ Convert unit into html and special xml componenets. """
-    cells = unit.worksheets[0].cells
+    cells = unit.cells
 
     unit_output = []
     normal_cells = []
@@ -359,8 +338,8 @@ def convert_unit(unit, date):
 
         # Cells with mooc components, special processing required
         try:
-            cell_text = cell.outputs[0].text
-        except AttributeError:
+            cell_text = cell.outputs[0].data['text/plain']
+        except (AttributeError, KeyError):
             cell_text = ''
 
         special = False
@@ -427,7 +406,7 @@ def converter(mooc_folder, args):
 
     # saving syllabus
     syllabus = split_into_units(syllabus_nb)[0]
-    cell = syllabus.worksheets[0].cells[1]
+    cell = syllabus.cells[1]
     cell['source'] = re.sub(r"(?<!!)\[(.*?)\]\(.*?\)", r"\1", cell['source'])
     syllabus_html = export_unit_to_html(syllabus)
     save_html(syllabus_html, os.path.join(dirpath, 'tabs', 'syllabus.html'))
@@ -498,7 +477,7 @@ def converter(mooc_folder, args):
 
 
                 unit_output = convert_unit(unit, date=sequential.date)
-                for (j,out) in enumerate(unit_output):
+                for (j, out) in enumerate(unit_output):
                     out_url = vertical_url + "_out_{0}".format(str(j).zfill(2))
                     if out[0] == 'html':
                         # adding html subelement
@@ -548,13 +527,13 @@ def converter(mooc_folder, args):
 
                     elif out[0] == 'MoocPeerAssessment':
                         peer_sub = out[1]
-                        if 'url_name' not in peer_sub.attrib.keys():
+                        if 'url_name' not in peer_sub.attrib:
                             peer_sub.attrib['url_name'] = out_url+'_'+'peer'
                         vertical_xml.append(peer_sub)
 
                     elif out[0] == 'MoocSelfAssessment':
                         self_sub = out[1]
-                        if 'url_name' not in self_sub.attrib.keys():
+                        if 'url_name' not in self_sub.attrib:
                             self_sub.attrib['url_name'] = out_url+'_'+'self'
                         vertical_xml.append(self_sub)
 
@@ -619,16 +598,17 @@ def converter(mooc_folder, args):
 
 def warn_about_status(mooc_folder):
     git = 'git --git-dir={0}/.git --work-tree={0}/ '.format(mooc_folder)
-    status = subprocess.check_output(git + "status", shell=True).split("\n")[0]
+    status = subprocess.check_output(git + "status",
+                                     shell=True).decode('utf-8').split("\n")[0]
     if "On branch master" not in status:
         print("Not on master branch, do not upload to edx.\n",
               "Press Enter to continue.")
-        raw_input()
+        input()
         return
     if subprocess.check_output(git + "diff", shell=True):
         print("Some files are modified, do not upload to edx.\n",
               "Press Enter to continue.")
-        raw_input()
+        input()
 
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
@@ -650,4 +630,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
