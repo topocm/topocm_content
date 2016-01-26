@@ -125,7 +125,7 @@ def split_into_units(nb_name):
 def export_unit_to_html(unit):
     """Export unit into html format."""
     path = os.path.dirname(os.path.realpath(__file__))
-    cfg = Config({'HTMLExporter':{'template_file':'basic_reduced',
+    cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                   'template_path':['.',path],
                                   'filters':{'markdown2html':
                                              markdown2html_pandoc}}})
