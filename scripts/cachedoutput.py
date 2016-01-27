@@ -14,7 +14,7 @@ import json
 import os
 import sys
 
-from traitlets import Unicode, Integer
+from traitlets import Unicode, Integer, List
 
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -80,6 +80,15 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
         """
     )
     
+    req_files = List(config=True)   # prerequisite files - list of strings
+
+    def req_files_hash(self):
+        """Makes a hash of the prerequisite files. """
+        read_files = []
+        for req_file in self.req_files:
+            read_files.append(open(req_file,'r').read())
+        return sha1('\n'.join(read_files).encode('utf8')).hexdigest()
+
     def cache_key(self, source, cell_index):
         """Compute cache key for a cell
         
@@ -91,7 +100,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                 break
             sources.append(cell.source)
         sources.append(source)
-        return sha1('\n'.join(sources).encode('utf8')).hexdigest()
+        return sha1('\n'.join(sources).encode('utf8')).hexdigest() +  self.req_files_hash()
     
     def preprocess(self, nb, resources):
         self.cache = OutputCache(self.cache_directory)
