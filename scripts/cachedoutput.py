@@ -15,6 +15,7 @@ import os
 import sys
 
 from traitlets import Unicode, Integer, List
+from functools import lru_cache
 
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -64,6 +65,16 @@ class OutputCache(dict):
 from collections import namedtuple
 setup_cell = namedtuple('setup_cell', ('index', 'cell'))
 
+
+@lru_cache()
+def cached_hash(*filenames):
+    """Makes a hash of the prerequisite files. """
+    read_files = []
+    for filename in filenames:
+        read_files.append(open(filename,'r').read())
+    return sha1('\n'.join(read_files).encode('utf8')).hexdigest()
+
+
 class CachedOutputPreprocessor(ExecutePreprocessor):
     """NbConvert preprocessor that caches output
     
@@ -80,14 +91,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
         """
     )
     
-    req_files = List(config=True)   # prerequisite files - list of strings
-
-    def req_files_hash(self):
-        """Makes a hash of the prerequisite files. """
-        read_files = []
-        for req_file in self.req_files:
-            read_files.append(open(req_file,'r').read())
-        return sha1('\n'.join(read_files).encode('utf8')).hexdigest()
+    req_files = List(type=Unicode, config=True)   # prerequisite files - list of strings
 
     def cache_key(self, source, cell_index):
         """Compute cache key for a cell
@@ -100,7 +104,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                 break
             sources.append(cell.source)
         sources.append(source)
-        return sha1('\n'.join(sources).encode('utf8')).hexdigest() +  self.req_files_hash()
+        return sha1('\n'.join(sources).encode('utf8')).hexdigest() + cached_hash(*self.req_files)
     
     def preprocess(self, nb, resources):
         self.cache = OutputCache(self.cache_directory)
