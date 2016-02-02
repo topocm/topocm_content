@@ -11,6 +11,7 @@ except NameError:
 
 import numpy as np
 import matplotlib
+import holoviews as hv
 from matplotlib import pyplot as plt
 from IPython import display
 from ipywidgets import interact
@@ -21,12 +22,14 @@ import pfaffian as pf
 # A bunch of edx components to pass on, we never use them here
 import edx_components
 from edx_components import *
+import functions
+from functions import *
 
 
-__all__ = ['np', 'matplotlib', 'kwant',
-           'init_notebook', 'interact', 'display_html', 'plt','pf',
+__all__ = ['np', 'matplotlib', 'kwant', 'hv',
+           'init_notebook', 'interact', 'display_html', 'plt', 'pf',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
-           'pretty_fmt_complex'] + edx_components.__all__
+           'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
 
 
 # Adjust printing of matrices, and numpy printing of numbers.
@@ -34,7 +37,7 @@ def pprint_matrix(data, digits=3):
     """Print a numpy array as a latex matrix."""
     header = (r"\begin{{pmatrix}}"
               r"{d}\end{{pmatrix}}")
-    d=data.__str__()[1:-1]
+    d = data.__str__()[1:-1]
     d = d.replace(']', '')
     d = d.replace('\n', r'\\')
     d = re.sub(r' *\[ *', '', d)
@@ -47,7 +50,7 @@ def scientific_number(x):
         return '$0$'
     pot = int(np.log(abs(x)) / np.log(10.0)) - 1
     fac = x*10**(-pot)
-    return '$%1.1f \cdot 10^{%1.0f}$' %(fac, pot)
+    return '$%1.1f \cdot 10^{%1.0f}$' % (fac, pot)
 
 
 def pretty_fmt_complex(num, digits=2):
