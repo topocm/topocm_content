@@ -26,12 +26,12 @@ class PHModesLead(object):
         wf_size = prop_modes.wave_functions.shape[0]
         assert  wf_size % num_orbs == 0
 
-        num_modes = prop_modes.wave_functions.shape[1]/2
+        num_modes = prop_modes.wave_functions.shape[1] // 2
 
         # Double check if the lead actually allows for separation of
         # electrons and holes
-        eh_sigma_z = np.diag(([1., -1] * (num_orbs/2))
-                             * (wf_size/num_orbs) )
+        eh_sigma_z = np.diag(([1., -1] * (num_orbs // 2))
+                             * (wf_size // num_orbs))
 
         h_0 = self.cell_hamiltonian(args=args)
         h_hop = self.inter_cell_hopping(args=args)
@@ -50,11 +50,11 @@ class PHModesLead(object):
             mode = prop_modes.wave_functions[:, i]
 
             e_dens = 0
-            for j in xrange(0, num_orbs, 2):
+            for j in range(0, num_orbs, 2):
                 e_dens += np.sum(abs(mode[j::num_orbs])**2)
 
             h_dens = 0
-            for j in xrange(1, num_orbs, 2):
+            for j in range(1, num_orbs, 2):
                 h_dens += np.sum(abs(mode[j::num_orbs])**2)
 
             if e_dens > h_dens and abs(h_dens) < 1e-8:
@@ -70,11 +70,11 @@ class PHModesLead(object):
             mode = prop_modes.wave_functions[:, i]
 
             e_dens = 0
-            for j in xrange(0, num_orbs, 2):
+            for j in range(0, num_orbs, 2):
                 e_dens += np.sum(abs(mode[j::num_orbs])**2)
 
             h_dens = 0
-            for j in xrange(1, num_orbs, 2):
+            for j in range(1, num_orbs, 2):
                 h_dens += np.sum(abs(mode[j::num_orbs])**2)
 
             if e_dens > h_dens and abs(h_dens) < 1e-8:
@@ -109,7 +109,7 @@ class PHModesLead(object):
             # them to get holes!
 
             ph_matrix = np.zeros((wf_size, wf_size))
-            for i in xrange(0, wf_size, num_orbs):
+            for i in range(0, wf_size, num_orbs):
                 ph_matrix[i:i+num_orbs, i:i+num_orbs] = self.P_matrix
 
             wf = prop_modes.wave_functions
@@ -157,4 +157,3 @@ def conductance(smatrix, lead_num):
 
     return (N_e - np.dot(r_ee, r_ee.T.conj()).trace() +
             np.dot(r_he, r_he.T.conj()).trace() ).real
-
