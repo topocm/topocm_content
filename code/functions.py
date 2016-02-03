@@ -13,8 +13,7 @@ kron_prods = ['s0s0', 's0sx', 's0sy', 's0sz',
               'szs0', 'szsx', 'szsy', 'szsz']
 
 __all__ = ['sigma0', 'sigmax', 'sigmay', 'sigmaz', 'spectrum',
-           'plot_bands', 'h_k', 'plot_bands', 'find_pfaffian',
-           'kitaev_chain', 'spinful_kitaev_chain', 'nanowire_chain'] + kron_prods
+           'plot_bands', 'h_k'] + kron_prods
 
 options = Store.options(backend='matplotlib')
 options.Contours = Options('style', linewidth=2, color='k')
@@ -54,7 +53,7 @@ szsz = np.kron(sigmaz, sigmaz)
 
 def spectrum(sys, xticks, yticks, xdim, ydim, xlims=None, ylims=None, **kwargs):
     p = SimpleNamespace(**kwargs)
-    
+
     for key, value in kwargs.items():
         try:
             if len(value) > 0:
@@ -62,16 +61,17 @@ def spectrum(sys, xticks, yticks, xdim, ydim, xlims=None, ylims=None, **kwargs):
                 changing_values = value
         except:
             TypeError
-    
+
     def energy(x):
         p.__dict__[changing_variable] = x
         H = sys.hamiltonian_submatrix(args=[p])
         return np.linalg.eigvalsh(H)
-    
+
     spectrum = np.array([energy(x) for x in changing_values])
-    
+
     plot = hv.Path((changing_values, spectrum), kdims=[xdim, ydim])
-    
+
+    xticks, yticks = list(xticks), list(yticks)
     if xlims is None:
         xlims = slice(xticks[0], xticks[-1])
     else:
@@ -80,48 +80,21 @@ def spectrum(sys, xticks, yticks, xdim, ydim, xlims=None, ylims=None, **kwargs):
         ylims = slice(yticks[0], yticks[-1], None)
     else:
         ylims = slice(ylims[0], ylims[1])
-    
+
     return plot[xlims, ylims](plot={'xticks':xticks, 'yticks':yticks})
 
 def h_k(sys, p, phase_fac=1):
     h, t = sys.cell_hamiltonian(args=[p]), sys.inter_cell_hopping(args=[p])
     return h + t * phase_fac + t.T.conj() * np.conjugate(phase_fac)
 
-def find_pfaffian(H):
-    return np.sign(np.real(pf.pfaffian(1j*H)))
-
 def plot_bands(lead, p, momenta=np.linspace(-np.pi, np.pi)):
     bands = kwant.physics.Bands(lead, args=[p])
     evs = np.array([bands(k=k) for k in momenta])
     return hv.Path((momenta, evs), kdims=[r'$k$', r'$E$'])
 
-def kitaev_chain(L=None, periodic=False):
-    lat = kwant.lattice.chain()
-    
-    if L is None:
-        sys=kwant.Builder(kwant.TranslationalSymmetry((-1,)))
-        L = 1
-    else:
-        sys = kwant.Builder()
-
-    # transformation to antisymmetric basis
-    U = np.matrix([[1.0, 1.0], [1.j, -1.j]]) / np.sqrt(2)
-    
-    onsite = lambda onsite, p: - p.mu * U.dot(sigmaz.dot(U.H))
-    for x in range(L):
-        sys[lat(x)] = onsite
-         
-    hop = lambda site1, site2, p: U.dot((-p.t * sigmaz - 1j * p.delta * sigmay).dot(U.H))
-    sys[kwant.HoppingKind((1,), lat)] = hop
-    
-    if periodic:
-        last_hop = lambda site1, site2, p: hop(site1, site2, p) * (1 - 2 * p.lambda_)
-        sys[lat(0), lat(L-1)] = last_hop
-    return sys
-
 def spinful_kitaev_chain(L=None, periodic=False):
     lat = kwant.lattice.chain()
-    
+
     if L is None:
         sys=kwant.Builder(kwant.TranslationalSymmetry((-1,)))
         L = 1
@@ -132,10 +105,10 @@ def spinful_kitaev_chain(L=None, periodic=False):
     onsite = lambda onsite, p: (2*p.t - p.mu) * szs0 + p.B * szsz
     for x in range(L):
         sys[lat(x)] = onsite
-         
+
     hop = lambda site1, site2, p: -p.t * szs0 - 1j * p.delta * sys0
     sys[kwant.HoppingKind((1,), lat)] = hop
-    
+
     if periodic:
         last_hop = lambda site1, site2, p: hop(site1, site2, p) * (1 - 2 * p.lambda_)
         sys[lat(0), lat(L-1)] = last_hop
@@ -143,7 +116,7 @@ def spinful_kitaev_chain(L=None, periodic=False):
 
 def nanowire_chain(L=None, periodic=False):
     lat = kwant.lattice.chain()
-    
+
     if L is None:
         sys=kwant.Builder(kwant.TranslationalSymmetry((-1,)))
         L = 1
@@ -151,15 +124,15 @@ def nanowire_chain(L=None, periodic=False):
         sys = kwant.Builder()
 
     onsite = lambda onsite, p: (-2*p.t + p.mu) * szs0 + p.B * s0sz + p.Delta * sxs0
-    
+
     for x in range(L):
         sys[lat(x)] = onsite
-         
+
     hop = lambda site1, site2, p: -p.t * szs0 - .5j * p.alpha * szsx
     sys[kwant.HoppingKind((1,), lat)] = hop
-    
+
     if periodic:
-        phase_diff = lambda site1, site2, p: np.kron(np.array([[np.exp(1j*p.flux/2), 0], 
+        phase_diff = lambda site1, site2, p: np.kron(np.array([[np.exp(1j*p.flux/2), 0],
                                                                [0, np.exp(-1j*p.flux/2)]]), sigma0)
         sys[lat(0), lat(L-1)] = lambda s1, s2, p : 0.7 * phase_diff(s1, s2, p).dot(hop(s1, s2, p))
     return sys
