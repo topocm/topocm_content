@@ -1,8 +1,6 @@
 import numpy as np
 import holoviews as hv
-from holoviews import plotting
 from holoviews import Options, Store
-import pfaffian as pf
 import kwant
 from types import SimpleNamespace
 
