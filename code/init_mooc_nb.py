@@ -11,7 +11,8 @@ except NameError:
 
 import numpy as np
 import matplotlib
-import holoviews as hv
+import holoviews
+from holoviews import Options, Store
 from matplotlib import pyplot as plt
 from IPython import display
 from ipywidgets import interact
@@ -26,7 +27,7 @@ import functions
 from functions import *
 
 
-__all__ = ['np', 'matplotlib', 'kwant', 'hv',
+__all__ = ['np', 'matplotlib', 'kwant', 'holoviews',
            'init_notebook', 'interact', 'display_html', 'plt', 'pf',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
            'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
@@ -113,6 +114,21 @@ $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 
 def init_notebook():
     print('Populated the namespace with:\n' + ', '.join(__all__))
+    holoviews.notebook_extension('matplotlib')
+
+    options = Store.options(backend='matplotlib')
+    options.Contours = Options('style', linewidth=2, color='k')
+    options.Contours = Options('plot', aspect='square')
+    options.HLine = Options('style', linestyle='--', color='b', linewidth=2)
+    options.VLine = Options('style', linestyle='--', color='r', linewidth=2)
+    options.Image = Options('style', cmap='gist_heat_r')
+    options.Image = Options('plot', title_format='{label}')
+    options.Path = Options('style', linewidth=1.2, color='k')
+    options.Path = Options('plot', aspect='square', title_format='{label}')
+    options.Curve = Options('style', linewidth=2, color='k')
+    options.Curve = Options('plot', aspect='square', title_format='{label}')
+    options.Overlay = Options('plot', show_legend=False, title_format='{label}')
+    options.Layout = Options('plot', title_format='{label}')
 
     # Set plot style.
     module_dir = os.path.dirname(__file__)

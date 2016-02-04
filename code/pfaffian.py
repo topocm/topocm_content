@@ -228,11 +228,11 @@ def pfaffian(A, overwrite_a=False, method='P'):
     either the Parlett-Reid algorithm (method='P', default),
     or the Householder tridiagonalization (method='H')
     """
-    #Check if matrix is square
+    # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
-    #Check if it's skew-symmetric
-    assert abs((A+A.T).max())<1e-14
-    #Check that the method variable is appropriately set
+    # Check if it's skew-symmetric
+    assert abs((A+A.T).max()) < 1e-14, abs((A+A.T).max())
+    # Check that the method variable is appropriately set
     assert method == 'P' or method == 'H'
 
     if method == 'P':
