@@ -26,7 +26,8 @@ from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
 
-
+from holoviews.plotting import Renderer
+hvjs, hvcss = Renderer.html_assets(extras=False)
 
 def date_to_edx(date, add_days=0):
     tmp = strptime(date, '%d %b %Y')
@@ -124,6 +125,18 @@ def split_into_units(nb_name):
 
 def export_unit_to_html(unit):
     """Export unit into html format."""
+    slider_start = '// Slider JS Block START'
+    slider_end = '// Slider JS Block END'
+    replacement_start = '(function (requirejs, require, define) {'
+    replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
+                       'RequireJS.define));')
+    bootstrap_css = ('<link rel="stylesheet" href='
+                     '"https://maxcdn.bootstrapcdn.com/bootstrap'
+                     '/3.3.5/css/bootstrap.min.css">\n')
+    bootstrap_css = ('<link rel="stylesheet" '
+                     'href="https://d2lno7p4w2n6kz.cloudfront.net/bootstrap.edx.css">\n')
+    hvcss = ('<link rel="stylesheet" '
+             'href="https://d2lno7p4w2n6kz.cloudfront.net/holoviews.edx.css">\n')
     path = os.path.dirname(os.path.realpath(__file__))
     cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                   'template_path':['.',path],
@@ -133,6 +146,12 @@ def export_unit_to_html(unit):
     (body, resources) = exportHtml.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
+    if slider_start in body:
+        body = body.replace('class="hololayout',
+                            'class="bootstrap-wrapper hololayout')
+        body = body.replace(slider_start, replacement_start)
+        body = body.replace(slider_end, replacement_end)
+        body = hvjs + bootstrap_css + hvcss + body
 
     return body
 
