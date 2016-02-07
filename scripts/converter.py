@@ -130,13 +130,10 @@ def export_unit_to_html(unit):
     replacement_start = '(function (requirejs, require, define) {'
     replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
                        'RequireJS.define));')
-    bootstrap_css = ('<link rel="stylesheet" href='
-                     '"https://maxcdn.bootstrapcdn.com/bootstrap'
-                     '/3.3.5/css/bootstrap.min.css">\n')
     bootstrap_css = ('<link rel="stylesheet" '
-                     'href="https://d2lno7p4w2n6kz.cloudfront.net/bootstrap.edx.css">\n')
+                     'href="/static/bootstrap.edx.css">\n')
     hvcss = ('<link rel="stylesheet" '
-             'href="https://d2lno7p4w2n6kz.cloudfront.net/holoviews.edx.css">\n')
+             'href="/static/holoviews.edx.css">\n')
     path = os.path.dirname(os.path.realpath(__file__))
     cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                   'template_path':['.',path],
@@ -147,8 +144,10 @@ def export_unit_to_html(unit):
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
     if slider_start in body:
-        body = body.replace('class="hololayout',
-                            'class="bootstrap-wrapper hololayout')
+        body = body.replace('hololayout', 'bootstrap-wrapper')
+        body = body.replace('span9 col-xs-8 col-md-9', '')
+        body = body.replace('span3 col-xs-4 col-md-3',
+                            'col-md-6 col-md-offset-3 center-widget')
         body = body.replace(slider_start, replacement_start)
         body = body.replace(slider_end, replacement_end)
         body = hvjs + bootstrap_css + hvcss + body
