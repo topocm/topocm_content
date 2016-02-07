@@ -1,14 +1,18 @@
 {
-    "course/1T2015": {
+    "course/course": {
+        "advertised_start": null,
+        "cert_html_view_enabled": true,
         "discussion_topics": {
             "General": {
-                "id": "i4x-DelftX-TOPOCMx-course-1T2015"
+                "id": "i4x-DelftX-TOPOCMx-course-1T2016"
             }
         },
         "display_name": "Topology in Condensed Matter: Tying Quantum Knots",
-        "graceperiod": "2 days", 
-        "start": "2015-02-05T12:00:00Z",
-        "end": "2015-05-14T12:00:00Z", 
+        "end": null,
+        "graceperiod": "2 days",
+        "mobile_available": true,
+        "self_paced": false,
+        "start": "2016-02-08T10:00:00Z",
         "tabs": [
             {
                 "name": "Courseware",
@@ -29,17 +33,19 @@
             },
             {
                 "name": "Wiki",
-                "type": "wiki"
-            },
-            {
-                "name": "Map",
-                "type": "static_tab",
-                "url_slug": "map"
+                "type": "wiki",
+                "is_hidden": true
             },
             {
                 "name": "Progress",
                 "type": "progress"
             }
-        ]
+        ],
+        "xml_attributes": {
+            "filename": [
+                "course/course.xml",
+                "course/course.xml"
+            ]
+        }
     }
 }

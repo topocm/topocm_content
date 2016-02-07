@@ -415,7 +415,7 @@ def converter(mooc_folder, args):
     info_org='DelftX'
     info_course='TOPOCMx'
     info_display_name='Topology in Condensed Matter: Tying Quantum Knots'
-    info_run='1T2016'
+    info_run='course'
     info_start="2016-02-08T10:00:00Z"
 
     # Mooc content location
@@ -444,15 +444,6 @@ def converter(mooc_folder, args):
     cell['source'] = re.sub(r"(?<!!)\[(.*?)\]\(.*?\)", r"\1", cell['source'])
     syllabus_html = export_unit_to_html(syllabus)
     save_html(syllabus_html, os.path.join(dirpath, 'tabs', 'syllabus.html'))
-
-
-    # course.xml in main folder
-    xml_main_course = Element('course')
-    xml_main_course.attrib['course'] = info_course
-    xml_main_course.attrib['org'] = info_org
-    xml_main_course.attrib['url_name'] = info_run
-
-    save_xml(xml_main_course, os.path.join(dirpath,'course.xml'))
 
     # $run$.xml in 'course' folder
     xml_course = Element('course')
