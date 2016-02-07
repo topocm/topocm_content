@@ -192,6 +192,7 @@ def prettify(elem):
 def save_xml(xml, path):
     if os.path.exists(path):
         print("Not overwriting existing file,", path)
+        return
     with io.open(path, 'w', encoding='utf-8') as f:
         text = prettify(xml)
         text = re.sub(r"\$\$(.*?)\$\$", r"\[\1\]", text)
