@@ -30,30 +30,27 @@ import bs4
 from holoviews.plotting import Renderer
 hvjs, hvcss = Renderer.html_assets(extras=False)
 
+with open('scripts/release_dates') as f:
+    release_dates = eval(f.read())
+
+
 def date_to_edx(date, add_days=0):
     tmp = strptime(date, '%d %b %Y')
 
-    date = datetime.datetime(tmp.tm_year, tmp.tm_mon, tmp.tm_mday, 12)
+    date = datetime.datetime(tmp.tm_year, tmp.tm_mon, tmp.tm_mday, 10)
     date = date + datetime.timedelta(days=add_days)
     date = date.strftime('%Y-%m-%dT%H:%M:%SZ')
     return date
 
 
 def parse_syllabus(syllabus_file, content_folder=''):
-    standard_safe_date = "28 Feb 2030"
     # loading raw syllabus
     syll = split_into_units(syllabus_file)[0]
     cell = syll.cells[1]
 
     def section_to_name_date(line):
-        finddate = r' \(air date\: (.+?)\)'
-        try:
-            date = re.findall(finddate, line)[0]
-            name = re.sub(finddate, '', line)
-        except IndexError:
-            date = standard_safe_date
-            name = line
-            print('Date unset in section {}'.format(line))
+        name = re.findall('\*\*(.*)\*\*', line)[0]
+        date = release_dates.get(name)
         return name, date
 
     def subs_to_name_file(line):
@@ -67,10 +64,9 @@ def parse_syllabus(syllabus_file, content_folder=''):
     is_section = lambda line: line.startswith('*')
 
     lines = cell['source'].split('\n')
-    sections = [line.replace('*', '') for line
-                in lines if is_section(line)]
+    sections = [section_to_name_date(line) for line in lines
+                if is_section(line)]
 
-    sections = [section_to_name_date(j) for j in sections]
     # Make a list of lines in each section.
     subsections = (tuple(g) for k,g in groupby(lines, key=lambda x: not
                                                is_section(x)) if k)
@@ -80,6 +76,10 @@ def parse_syllabus(syllabus_file, content_folder=''):
 
     tmp = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(zip(sections, subsections)):
+        # Don't convert sections with no release date.
+        if section[0][1] is None:
+            continue
+
         #creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
@@ -412,8 +412,8 @@ def converter(mooc_folder, args):
     info_org='DelftX'
     info_course='TOPOCMx'
     info_display_name='Topology in Condensed Matter: Tying Quantum Knots'
-    info_run='1T2015'
-    info_start="2015-02-05T12:00:00Z"
+    info_run='1T2016'
+    info_start="2016-02-08T10:00:00Z"
 
     # Mooc content location
     content_folder = mooc_folder
