@@ -9,7 +9,6 @@ import re
 import argparse
 import subprocess
 import tarfile
-import jinja2
 from itertools import groupby
 from types import SimpleNamespace
 
@@ -26,7 +25,10 @@ from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
 
+import bs4
 
+from holoviews.plotting import Renderer
+hvjs, hvcss = Renderer.html_assets(extras=False)
 
 def date_to_edx(date, add_days=0):
     tmp = strptime(date, '%d %b %Y')
@@ -124,6 +126,15 @@ def split_into_units(nb_name):
 
 def export_unit_to_html(unit):
     """Export unit into html format."""
+    slider_start = '// Slider JS Block START'
+    slider_end = '// Slider JS Block END'
+    replacement_start = '(function (requirejs, require, define) {'
+    replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
+                       'RequireJS.define));')
+    bootstrap_css = ('<link rel="stylesheet" '
+                     'href="/static/bootstrap.edx.css">\n')
+    hvcss = ('<link rel="stylesheet" '
+             'href="/static/holoviews.edx.css">\n')
     path = os.path.dirname(os.path.realpath(__file__))
     cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                   'template_path':['.',path],
@@ -133,6 +144,26 @@ def export_unit_to_html(unit):
     (body, resources) = exportHtml.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
+    if slider_start in body:
+        soup = bs4.BeautifulSoup(body, 'lxml')
+
+        labels = [strong for form in soup.find_all('form',
+                                                   attrs={'class':'holoform'})
+                         for strong in form.find_all('strong')]
+
+        for label in labels:
+            new = label.contents[0].replace('$', '').replace('\\', '')
+            label.contents[0].replace_with(new)
+
+        body = soup.__str__()
+
+        body = body.replace('hololayout', 'bootstrap-wrapper')
+        body = body.replace('span9 col-xs-8 col-md-9', '')
+        body = body.replace('span3 col-xs-4 col-md-3',
+                            'col-md-6 col-md-offset-3 center-widget')
+        body = body.replace(slider_start, replacement_start)
+        body = body.replace(slider_end, replacement_end)
+        body = hvjs + bootstrap_css + hvcss + body
 
     return body
 

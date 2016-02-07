@@ -1,0 +1,61 @@
+div.hololayout {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+form.holoform {
+    background-color: #fafafa;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 0.4em !important;
+}
+
+div.holowidgets {
+    padding-right: 0;
+}
+
+div.holoslider {
+    min-height: 0 !important;
+    height: 0.8em;
+}
+
+div.holoformgroup {
+    padding-right: 0.5em;
+    padding-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+div.hologroup {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.holoselect {
+    width: 92%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.holotext {
+    width: 100%;
+    padding-left:  0.5em;
+    padding-right: 0;
+}
+
+div.bk-hbox {
+    display: flex;
+    justify-content: center;
+}
+
+div.bk-hbox div.bk-plot {
+    padding: 8px;
+}
+
+div.bk-hbox div.bk-data-table {
+    padding: 20px;
+}
+
+div.center-widget {
+	margin-right: 100%;
+}
