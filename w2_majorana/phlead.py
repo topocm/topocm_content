@@ -110,7 +110,7 @@ class PHModesLead(object):
 
             ph_matrix = np.zeros((wf_size, wf_size))
             for i in range(0, wf_size, num_orbs):
-                ph_matrix[i:i+num_orbs, i:i+num_orbs] = self.P_matrix
+                ph_matrix[i:i+num_orbs, i:i+num_orbs] = self.P_matrix.real
 
             wf = prop_modes.wave_functions
             wf[:, num_modes/2:num_modes] = np.dot(ph_matrix,
