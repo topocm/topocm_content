@@ -307,11 +307,11 @@ def convert_MoocPeerAssessment_to_xml(par, date):
     for name in ['must_be_graded_by', 'must_grade']:
         assessment.attrib[name] = str(par[name])
 
-    xml.attrib['submission_start'] = date_to_edx(date, 0)
-    xml.attrib['submission_due'] = date_to_edx(date, par['due'])
+    xml.attrib['submission_start'] = date_to_edx(date)
+    xml.attrib['submission_due'] = date_to_edx('31 Dec 2100')
 
-    assessment.attrib['start'] = date_to_edx(date, 0)
-    assessment.attrib['due'] = date_to_edx(date, par['review_due'])
+    assessment.attrib['start'] = date_to_edx(date)
+    assessment.attrib['due'] = date_to_edx('31 Dec 2100')
 
     return xml
 
@@ -324,11 +324,11 @@ def convert_MoocSelfAssessment_to_xml(par, date):
 
     assessment = xml.find('assessments').find('assessment')
 
-    xml.attrib['submission_start'] = date_to_edx(date, 0)
-    xml.attrib['submission_due'] = date_to_edx(date, par['due'])
+    xml.attrib['submission_start'] = date_to_edx(date)
+    xml.attrib['submission_due'] = date_to_edx('31 Dec 2100')
 
-    assessment.attrib['start'] = date_to_edx(date, 0)
-    assessment.attrib['due'] = date_to_edx(date, par['review_due'])
+    assessment.attrib['start'] = date_to_edx(date)
+    assessment.attrib['due'] = date_to_edx('31 Dec 2100')
 
     return xml
 
