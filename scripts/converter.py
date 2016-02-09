@@ -28,7 +28,7 @@ from nbconvert.filters.markdown import markdown2html_pandoc
 import bs4
 
 from holoviews.plotting import Renderer
-hvjs, hvcss = Renderer.html_assets(extras=False)
+hvjs = Renderer.html_assets(extras=False)[0]
 
 with open('scripts/release_dates') as f:
     release_dates = eval(f.read())

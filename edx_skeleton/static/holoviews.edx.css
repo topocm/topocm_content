@@ -59,3 +59,19 @@ div.bk-hbox div.bk-data-table {
 div.center-widget {
 	margin-right: 100%;
 }
+
+.holowell.row.row-fluid {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5em;
+    margin-right: 0.2em;
+}
+
+.holoselect {
+    margin-left: 0.5em !important;
+    width: 98% !important;
+}
+
+.holoformgroup label {
+    margin-left: 0.5em;
+}
