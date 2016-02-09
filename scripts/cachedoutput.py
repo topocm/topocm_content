@@ -95,8 +95,6 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
     
     req_files = List(type=Unicode, config=True)   # prerequisite files - list of strings
 
-    # self.allow_errors accessible from within methods (from ExecutePreprocessor)
-
     def cache_key(self, source, cell_index):
         """Compute cache key for a cell
         
@@ -141,18 +139,30 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
             if not self.allow_errors:
                 for out in cell.outputs:
                     if out.output_type == 'error':
-                        pattern = """\
-                            An error occurred while executing the following cell:
-                            ------------------
-                            {cell.source}
-                            ------------------
-                            {out.ename}: {out.evalue}
-                            """
-                        msg = dedent(pattern).format(out=out, cell=cell)
-                        # Raise exception if error encountered in cell execution
-                        raise CellExecutionError(msg)
-            # If no error, or we don't check for errors, add output of cell to cache
-            self.cache[key] = cell.outputs
+                        # If the current cell is not a setup cell, inform of error
+                        # and continue to the next cell without storing output
+                        if cell_index >= self.setup_cells:
+                            pattern = """\
+                                An error occurred while executing the following cell:
+                                ------------------
+                                {cell.source}
+                                ------------------
+                                {out.ename}: {out.evalue}
+                                """
+                            print(dedent(pattern).format(out=out, cell=cell))
+                        else: # If current cell is a setup cell, do not run more cells
+                            pattern = """\
+                                An error occurred while executing setup cell number {cell_index}.
+                                No further cells will be run.
+                                ------------------
+                                {out.ename}: {out.evalue}
+                                """
+                            msg = dedent(pattern).format(out=out, cell_index=cell_index)
+                            raise CellExecutionError(msg)
+                    else: # If no error, store output of cell
+                        self.cache[key] = cell.outputs
+            else: # If we don't check for errors, store output of cell
+                self.cache[key] = cell.outputs
         return cell, resources
     
     def run_cell(self, cell, cell_index):
