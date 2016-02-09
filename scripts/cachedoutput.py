@@ -13,12 +13,14 @@ import io
 import json
 import os
 import sys
+from textwrap import dedent
 
 from traitlets import Unicode, Integer, List
 from functools import lru_cache
 
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
+from nbconvert.preprocessors.execute import CellExecutionError
 
 
 class OutputCache(dict):
@@ -93,6 +95,8 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
     
     req_files = List(type=Unicode, config=True)   # prerequisite files - list of strings
 
+    # self.allow_errors accessible from within methods (from ExecutePreprocessor)
+
     def cache_key(self, source, cell_index):
         """Compute cache key for a cell
         
@@ -133,6 +137,21 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
             cell.outputs = [ nbformat.NotebookNode(output) for output in self.cache[key] ]
         else:
             cell.outputs = self.run_cell(cell, cell_index)
+            # allow_errors inherited from ExecutePreprocessor: by default, is False.
+            if not self.allow_errors:
+                for out in cell.outputs:
+                    if out.output_type == 'error':
+                        pattern = """\
+                            An error occurred while executing the following cell:
+                            ------------------
+                            {cell.source}
+                            ------------------
+                            {out.ename}: {out.evalue}
+                            """
+                        msg = dedent(pattern).format(out=out, cell=cell)
+                        # Raise exception if error encountered in cell execution
+                        raise CellExecutionError(msg)
+            # If no error, or we don't check for errors, add output of cell to cache
             self.cache[key] = cell.outputs
         return cell, resources
     
@@ -147,6 +166,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                 # The current cell is part of setup
                 return run_cell(cell)
         return run_cell(cell)
+
 
 def main():
     import logging
