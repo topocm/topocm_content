@@ -134,10 +134,10 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
             self.log.debug("Cache hit[%i]: %s", cell_index, key)
             cell.outputs = [ nbformat.NotebookNode(output) for output in self.cache[key] ]
         else:
-            cell.outputs = self.run_cell(cell, cell_index)
+            outputs = self.run_cell(cell, cell_index)
             # allow_errors inherited from ExecutePreprocessor: by default, is False.
             if not self.allow_errors:
-                for out in cell.outputs:
+                for out in outputs:
                     if out.output_type == 'error':
                         # If the current cell is not a setup cell, inform of error
                         # and continue to the next cell without storing output
@@ -149,7 +149,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                                 ------------------
                                 {out.ename}: {out.evalue}
                                 """
-                            print(dedent(pattern).format(out=out, cell=cell))
+                            print(dedent(pattern).format(out=out, cell=cell), file=sys.stderr)
                         else: # If current cell is a setup cell, do not run more cells
                             pattern = """\
                                 An error occurred while executing setup cell number {cell_index}.
@@ -160,8 +160,10 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                             msg = dedent(pattern).format(out=out, cell_index=cell_index)
                             raise CellExecutionError(msg)
                     else: # If no error, store output of cell
+                        cell.outputs = outputs
                         self.cache[key] = cell.outputs
             else: # If we don't check for errors, store output of cell
+                self.outputs = outputs
                 self.cache[key] = cell.outputs
         return cell, resources
     
