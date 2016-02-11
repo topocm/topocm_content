@@ -150,6 +150,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                                 {out.ename}: {out.evalue}
                                 """
                             print(dedent(pattern).format(out=out, cell=cell), file=sys.stderr)
+                            return cell, resources
                         else: # If current cell is a setup cell, do not run more cells
                             pattern = """\
                                 An error occurred while executing setup cell number {cell_index}.
@@ -159,9 +160,9 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                                 """
                             msg = dedent(pattern).format(out=out, cell_index=cell_index)
                             raise CellExecutionError(msg)
-                    else: # If no error, store output of cell
-                        cell.outputs = outputs
-                        self.cache[key] = cell.outputs
+                # If no error, store output of cell
+                cell.outputs = outputs
+                self.cache[key] = cell.outputs
             else: # If we don't check for errors, store output of cell
                 self.outputs = outputs
                 self.cache[key] = cell.outputs
