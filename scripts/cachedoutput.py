@@ -13,12 +13,14 @@ import io
 import json
 import os
 import sys
+from textwrap import dedent
 
 from traitlets import Unicode, Integer, List
 from functools import lru_cache
 
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
+from nbconvert.preprocessors.execute import CellExecutionError
 
 
 class OutputCache(dict):
@@ -132,8 +134,38 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
             self.log.debug("Cache hit[%i]: %s", cell_index, key)
             cell.outputs = [ nbformat.NotebookNode(output) for output in self.cache[key] ]
         else:
-            cell.outputs = self.run_cell(cell, cell_index)
-            self.cache[key] = cell.outputs
+            outputs = self.run_cell(cell, cell_index)
+            # allow_errors inherited from ExecutePreprocessor: by default, is False.
+            if not self.allow_errors:
+                for out in outputs:
+                    if out.output_type == 'error':
+                        # If the current cell is not a setup cell, inform of error
+                        # and continue to the next cell without storing output
+                        if cell_index >= self.setup_cells:
+                            pattern = """\
+                                An error occurred while executing the following cell:
+                                ------------------
+                                {cell.source}
+                                ------------------
+                                {out.ename}: {out.evalue}
+                                """
+                            print(dedent(pattern).format(out=out, cell=cell), file=sys.stderr)
+                            return cell, resources
+                        else: # If current cell is a setup cell, do not run more cells
+                            pattern = """\
+                                An error occurred while executing setup cell number {cell_index}.
+                                No further cells will be run.
+                                ------------------
+                                {out.ename}: {out.evalue}
+                                """
+                            msg = dedent(pattern).format(out=out, cell_index=cell_index)
+                            raise CellExecutionError(msg)
+                # If no error, store output of cell
+                cell.outputs = outputs
+                self.cache[key] = cell.outputs
+            else: # If we don't check for errors, store output of cell
+                self.outputs = outputs
+                self.cache[key] = cell.outputs
         return cell, resources
     
     def run_cell(self, cell, cell_index):
@@ -147,6 +179,7 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
                 # The current cell is part of setup
                 return run_cell(cell)
         return run_cell(cell)
+
 
 def main():
     import logging
