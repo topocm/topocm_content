@@ -92,7 +92,10 @@ def spectrum(sys, p, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
                 changing_variable = key
                 changing_values = value
         except TypeError:
-            pass
+            if k_x is None:
+                print('No changing variable')
+            else:
+                pass
 
     def energy(x):
         pars.__dict__[changing_variable] = x

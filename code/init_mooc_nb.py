@@ -121,7 +121,7 @@ def init_notebook():
     options.Contours = Options('plot', aspect='square')
     options.HLine = Options('style', linestyle='--', color='b', linewidth=2)
     options.VLine = Options('style', linestyle='--', color='r', linewidth=2)
-    options.Image = Options('style', cmap='gist_heat_r')
+    options.Image = Options('style', cmap='RdBu_r')
     options.Image = Options('plot', title_format='{label}')
     options.Path = Options('style', linewidth=1.2, color='k')
     options.Path = Options('plot', aspect='square', title_format='{label}')
@@ -129,6 +129,8 @@ def init_notebook():
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
+    options.Surface = Options('style', cmap='RdBu_r', rstride=2, cstride=2)
+    options.Surface = Options('plot', azimuth=20, elevation=8)
 
     # Set plot style.
     module_dir = os.path.dirname(__file__)
