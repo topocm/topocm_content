@@ -20,7 +20,6 @@ from IPython.display import display_html
 import kwant
 
 import pfaffian as pf
-import cons_leads
 # A bunch of edx components to pass on, we never use them here
 import edx_components
 from edx_components import *
@@ -29,7 +28,7 @@ from functions import *
 
 
 __all__ = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
-           'interact', 'display_html', 'plt', 'pf', 'cons_leads',
+           'interact', 'display_html', 'plt', 'pf',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
            'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
 
