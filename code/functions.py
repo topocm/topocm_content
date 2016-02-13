@@ -42,7 +42,7 @@ def update(p, **kwargs):
     return p
 
 
-def spectrum(sys, p, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
+def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
              xticks=None, yticks=None, xlims=None, ylims=None):
     """Function that plots a spectrum for a varying parameter.
 
@@ -50,6 +50,10 @@ def spectrum(sys, p, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
     -----------
     sys : kwant.Builder object
         The un-finalized (in)finite system.
+    p : SimpleNamespace object
+        A simple container that is used to store Hamiltonian parameters.
+    title : function
+        Function that takes p as argument and generates a string.
     xdim : holoviews.Dimension or string
         The label of the x-axis.
     ydim : holoviews.Dimension or string
@@ -123,6 +127,9 @@ def spectrum(sys, p, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
     xlims = slice(*xlims) if xlims is not None else slice(None)
     ylims = slice(*ylims) if ylims is not None else slice(None)
 
+    if callable(title):
+        plot = plot.relabel(title(p))
+
     return plot[xlims, ylims](plot=ticks)
 
 
@@ -152,7 +159,7 @@ def h_k(sys, p, momentum):
     return h + t + t.T.conj()
 
 
-def plot_bands_2d(sys, p, k_x=None, k_y=None, xlims=None, ylims=None,
+def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None,
                   xticks=None, yticks=None, zticks=None):
     """Plot the bands of a system with two wrapped-around symmetries."""
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
@@ -196,4 +203,7 @@ def plot_bands_2d(sys, p, k_x=None, k_y=None, xlims=None, ylims=None,
     plot = (hv.Surface(energies[:, :, 0], **kwargs)(plot=style) *
             hv.Surface(energies[:, :, 1], **kwargs)(plot=style))
 
-    return plot(plot={'Overlay': {'fig_size': 200}})
+    if callable(title):
+        plot = plot.relabel(title(p))
+
+    return plot
