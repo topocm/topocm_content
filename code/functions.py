@@ -1,9 +1,15 @@
+import itertools
+import collections
+import cmath
+import tinyarray as ta
 import numpy as np
 import holoviews as hv
-import kwant
 from types import SimpleNamespace
+import kwant
+from copy import copy
+from wraparound import wraparound
 
-__all__ = ['spectrum', 'plot_bands', 'h_k', 'pauli']
+__all__ = ['spectrum', 'plot_bands_2d', 'h_k', 'pauli', 'update']
 
 
 pauli = SimpleNamespace(s0=np.array([[1., 0.], [0., 1.]]),
@@ -29,22 +35,33 @@ pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 
-def spectrum(sys, xticks, yticks, xdim, ydim,
-             xlims=None, ylims=None, **kwargs):
+def update(p, **kwargs):
+    "Simple function that updates a SimpleNamespace"
+    for key, val in kwargs.items():
+        p.__dict__[key] = val
+    return p
+
+
+def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
+             xticks=None, yticks=None, xlims=None, ylims=None):
     """Function that plots a spectrum for a varying parameter.
 
     Parameters:
     -----------
-    sys : kwant.builder.(In)finiteSystem object
-        The finalized (in)finite system.
-    xticks : list
-        List of xticks.
-    yticks : list
-        List of yticks.
+    sys : kwant.Builder object
+        The un-finalized (in)finite system.
+    p : SimpleNamespace object
+        A simple container that is used to store Hamiltonian parameters.
+    title : function
+        Function that takes p as argument and generates a string.
     xdim : holoviews.Dimension or string
         The label of the x-axis.
     ydim : holoviews.Dimension or string
         The label of the y-axis.
+    xticks : list
+        List of xticks.
+    yticks : list
+        List of yticks.
     xlims : tupple
         Upper and lower plot limit of the x-axis. If None the upper and lower
         limit of the xticks are used.
@@ -61,36 +78,59 @@ def spectrum(sys, xticks, yticks, xdim, ydim,
     plot : holoviews.Path object
         Plot of varying parameter vs. spectrum.
     """
-    p = SimpleNamespace(**kwargs)
+    pars = copy(p)
+    dimensionality = sys.symmetry.num_directions
+    if dimensionality > 0:
+        sys = wraparound(sys).finalized()
+    else:
+        sys = sys.finalized()
 
-    for key, value in kwargs.items():
+    k_x = 0 if k_x is None and dimensionality > 0 else k_x
+    k_y = 0 if k_y is None and dimensionality > 0 else k_y
+    k_z = 0 if k_z is None and dimensionality > 0 else k_z
+
+    momenta = {'k_x': k_x, 'k_y': k_y, 'k_z': k_z}.items()
+
+    for key, value in itertools.chain(pars.__dict__.items(), momenta):
         try:
             if len(value) > 0:
                 changing_variable = key
                 changing_values = value
-        except:
-            TypeError
+        except TypeError:
+            if k_x is None:
+                print('No changing variable')
+            else:
+                pass
 
     def energy(x):
-        p.__dict__[changing_variable] = x
-        H = sys.hamiltonian_submatrix(args=[p])
+        pars.__dict__[changing_variable] = x
+        H = sys.hamiltonian_submatrix([pars, x][:dimensionality + 1])
         return np.linalg.eigvalsh(H)
 
     spectrum = np.array([energy(x) for x in changing_values])
 
     plot = hv.Path((changing_values, spectrum), kdims=[xdim, ydim])
 
-    xticks, yticks = list(xticks), list(yticks)
-    if xlims is None:
-        xlims = slice(xticks[0], xticks[-1])
+    ticks = {}
+    if isinstance(xticks, collections.Iterable):
+        ticks['xticks'] = list(xticks)
+    elif xticks is None:
+        pass
     else:
-        xlims = slice(xlims[0], xlims[1])
-    if ylims is None:
-        ylims = slice(yticks[0], yticks[-1], None)
-    else:
-        ylims = slice(ylims[0], ylims[1])
+        ticks['xticks'] = xticks
 
-    return plot[xlims, ylims](plot={'xticks': xticks, 'yticks': yticks})
+    if isinstance(yticks, collections.Iterable):
+        ticks['yticks'] = list(yticks)
+    elif isinstance(yticks, int):
+        ticks['yticks'] = yticks
+
+    xlims = slice(*xlims) if xlims is not None else slice(None)
+    ylims = slice(*ylims) if ylims is not None else slice(None)
+
+    if callable(title):
+        plot = plot.relabel(title(p))
+
+    return plot[xlims, ylims](plot=ticks)
 
 
 def h_k(sys, p, momentum):
@@ -98,8 +138,8 @@ def h_k(sys, p, momentum):
 
     Parameters:
     -----------
-    sys : kwant.builder.InfiniteSystem object
-        The finalized infinite kwant system.
+    sys : kwant.Builder object
+        The un-finalized infinite kwant system.
     p : SimpleNamespace object
         A simple container that is used to store Hamiltonian parameters.
     momentum : float
@@ -109,6 +149,7 @@ def h_k(sys, p, momentum):
     plot : holoviews.Path object
         Plot of varying parameter vs. spectrum.
     """
+    sys = sys.finalized()
     h = sys.cell_hamiltonian(args=[p])
     t_rect = sys.inter_cell_hopping(args=[p])
     t = np.empty(h.shape, dtype=complex)
@@ -118,34 +159,51 @@ def h_k(sys, p, momentum):
     return h + t + t.T.conj()
 
 
-def plot_bands(lead, p, momenta=None):
-    """Function that plots a spectrum for a varying parameter.
+def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None,
+                  xticks=None, yticks=None, zticks=None):
+    """Plot the bands of a system with two wrapped-around symmetries."""
+    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
 
-    Parameters:
-    -----------
-    lead : kwant.builder.(In)finiteSystem object
-        The finalized (in)finite system.
-    p : SimpleNamespace object
-        A simple container that is used to store Hamiltonian parameters.
-    momentum : numpy array
-        Range of momenta.
+    B = np.array(sys.symmetry.periods).T
+    A = B.dot(np.linalg.inv(B.T.dot(B)))
 
-    Returns:
-    --------
-    plot : holoviews.Path object
-        Plot of momentum vs. spectrum.
-    """
-    if momenta is None:
-        pi_ticks = True
-        momenta = np.linspace(-np.pi, np.pi)
-        xticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
-    else:
-        pi_ticks = False
-    bands = kwant.physics.Bands(lead, args=[p])
-    evs = np.array([bands(k=k) for k in momenta])
-    plot = hv.Path((momenta, evs), kdims=[r'$k$', r'$E$'])
+    sys = wraparound(sys).finalized()
 
-    if pi_ticks:
-        return plot(plot={'xticks': xticks})
-    else:
-        return plot
+    def energy(kx, ky):
+        k = np.array([kx, ky])
+        kx, ky = np.linalg.solve(A, k)
+        H = sys.hamiltonian_submatrix([p, kx, ky], sparse=False)
+        return np.sort(np.linalg.eigvalsh(H).real)
+
+    if k_x is None:
+        k_x = np.linspace(-np.pi, np.pi, 101)
+    if k_y is None:
+        k_y = np.linspace(-np.pi, np.pi, 101)
+
+    energies = [[energy(x, y) for y in k_y] for x in k_x]
+    energies = np.array(energies)
+
+    style = {}
+    if xticks is None:
+        style['xticks'] = pi_ticks
+    if yticks is None:
+        style['yticks'] = pi_ticks
+    if zticks is not None:
+        style['zticks'] = zticks
+
+    if xlims is None:
+        xlims = np.round([k_x.min(), k_x.max()], 2)
+    if ylims is None:
+        ylims = np.round([k_y.min(), k_y.max()], 2)
+
+    kwargs = {'extents': (xlims[0], ylims[0], None, xlims[1], ylims[1], None),
+              'kdims': [r'$k_x$', r'$k_y$'],
+              'vdims': [r'$E$']}
+
+    plot = (hv.Surface(energies[:, :, 0], **kwargs)(plot=style) *
+            hv.Surface(energies[:, :, 1], **kwargs)(plot=style))
+
+    if callable(title):
+        plot = plot.relabel(title(p))
+
+    return plot
