@@ -9,8 +9,7 @@ import kwant
 from copy import copy
 from wraparound import wraparound
 
-__all__ = ['spectrum', 'plot_bands_2d', 'h_k', 'pauli', 'update']
-
+__all__ = ['spectrum', 'plot_bands_2d', 'h_k', 'pauli']
 
 pauli = SimpleNamespace(s0=np.array([[1., 0.], [0., 1.]]),
                         sx=np.array([[0., 1.], [1., 0.]]),
@@ -33,13 +32,6 @@ pauli.szs0 = np.kron(pauli.sz, pauli.s0)
 pauli.szsx = np.kron(pauli.sz, pauli.sx)
 pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
-
-
-def update(p, **kwargs):
-    "Simple function that updates a SimpleNamespace"
-    for key, val in kwargs.items():
-        p.__dict__[key] = val
-    return p
 
 
 def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',

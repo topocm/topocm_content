@@ -1,8 +1,7 @@
 import sys
 import os
 import re
-from types import SimpleNamespace
-
+import types
 # Enable inline plotting in the notebook
 try:
     get_ipython().enable_matplotlib(gui='inline')
@@ -32,8 +31,7 @@ __all__ = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
            'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
 
-
-class SimpleNamespace(SimpleNamespace):
+class SimpleNamespace(types.SimpleNamespace):
     def update(self, **kwargs):
         self.__dict__.update(kwargs)
         return self
