@@ -89,9 +89,6 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y
                 changing_variable = key
                 changing_values = value
         except TypeError:
-            if k_x is None:
-                print('No changing variable')
-            else:
                 pass
 
     def energy(x):
@@ -122,7 +119,7 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y
     if callable(title):
         plot = plot.relabel(title(p))
 
-    return plot[xlims, ylims](plot=ticks)
+    return plot[xlims, ylims](plot={'Path': ticks})
 
 
 def h_k(sys, p, momentum):
@@ -198,4 +195,4 @@ def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None
     if callable(title):
         plot = plot.relabel(title(p))
 
-    return plot
+    return plot(plot={'Overlay': {'fig_size': 200}})
