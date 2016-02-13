@@ -9,8 +9,7 @@ import kwant
 from copy import copy
 from wraparound import wraparound
 
-__all__ = ['spectrum', 'plot_bands_2d', 'h_k', 'pauli', 'update']
-
+__all__ = ['spectrum', 'plot_bands_2d', 'h_k', 'pauli']
 
 pauli = SimpleNamespace(s0=np.array([[1., 0.], [0., 1.]]),
                         sx=np.array([[0., 1.], [1., 0.]]),
@@ -33,13 +32,6 @@ pauli.szs0 = np.kron(pauli.sz, pauli.s0)
 pauli.szsx = np.kron(pauli.sz, pauli.sx)
 pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
-
-
-def update(p, **kwargs):
-    "Simple function that updates a SimpleNamespace"
-    for key, val in kwargs.items():
-        p.__dict__[key] = val
-    return p
 
 
 def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
@@ -97,9 +89,6 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y
                 changing_variable = key
                 changing_values = value
         except TypeError:
-            if k_x is None:
-                print('No changing variable')
-            else:
                 pass
 
     def energy(x):
@@ -130,7 +119,7 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y
     if callable(title):
         plot = plot.relabel(title(p))
 
-    return plot[xlims, ylims](plot=ticks)
+    return plot[xlims, ylims](plot={'Path': ticks})
 
 
 def h_k(sys, p, momentum):
@@ -206,4 +195,4 @@ def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None
     if callable(title):
         plot = plot.relabel(title(p))
 
-    return plot
+    return plot(plot={'Overlay': {'fig_size': 200}})

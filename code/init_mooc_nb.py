@@ -1,8 +1,7 @@
 import sys
 import os
 import re
-from types import SimpleNamespace
-
+import types
 # Enable inline plotting in the notebook
 try:
     get_ipython().enable_matplotlib(gui='inline')
@@ -27,13 +26,12 @@ import functions
 from functions import *
 
 
-__all__ = ['np', 'matplotlib', 'kwant', 'holoviews',
-           'init_notebook', 'interact', 'display_html', 'plt', 'pf',
+__all__ = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
+           'interact', 'display_html', 'plt', 'pf',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
            'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
 
-
-class SimpleNamespace(SimpleNamespace):
+class SimpleNamespace(types.SimpleNamespace):
     def update(self, **kwargs):
         self.__dict__.update(kwargs)
         return self
@@ -132,7 +130,7 @@ def init_notebook():
     options.Path = Options('plot', aspect='square', title_format='{label}')
     options.Curve = Options('style', linewidth=2, color='k')
     options.Curve = Options('plot', aspect='square', title_format='{label}')
-    options.Overlay = Options('plot', show_legend=False, title_format='{label}', fig_size=200)
+    options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
     options.Surface = Options('style', cmap='RdBu_r', rstride=2, cstride=2, lw=0.5)
     options.Surface = Options('plot', azimuth=20, elevation=8)
