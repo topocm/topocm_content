@@ -1,11 +1,8 @@
 import itertools
 import collections
-import cmath
-import tinyarray as ta
 import numpy as np
 import holoviews as hv
 from types import SimpleNamespace
-import kwant
 from copy import copy
 from wraparound import wraparound
 
@@ -71,13 +68,13 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim=None, ydim=N
         Plot of varying parameter vs. spectrum.
     """
     pars = copy(p)
-    
-    if sys.symmetry.num_directions > 1: 
+
+    if sys.symmetry.num_directions > 1:
         return plot_bands_2d()
 
     changing_vals, hamiltonians = hamiltonian_array(sys, pars, k_x, k_y, k_z)
     spectrum = np.linalg.eigvalsh(hamiltonians).real
-    
+
     if xdim is None:
         xdim = 'x'
     if ydim is None:
@@ -153,12 +150,12 @@ def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None
                   xticks=None, yticks=None, zticks=None):
     """Plot the bands of a system with two wrapped-around symmetries."""
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
-    
+
     if k_x is None:
         k_x = np.linspace(-np.pi, np.pi, 101)
     if k_y is None:
         k_y = np.linspace(-np.pi, np.pi, 101)
-        
+
     hamiltonians = hamiltonian_array(sys, p, k_x, k_y)
     energies = np.linalg.eigvalsh(hamiltonians).real
 
@@ -188,33 +185,87 @@ def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None
     return plot(plot={'Overlay': {'fig_size': 200}})
 
 
-def hamiltonian_array(sys, p, k_x=None, k_y=None, k_z=None):
+def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
+    """Evaluate the Hamiltonian of a system over a grid of parameters.
+
+    Parameters:
+    -----------
+    sys : kwant.Builder object
+        The un-finalized kwant system whose Hamiltonian is calculated.
+    p : SimpleNamespace object
+        A container of Hamiltonian parameters. The parameters that are
+        sequences are used to loop over.
+    k_x, k_y, k_z : floats or sequences of floats
+        Real space momenta at which the Hamiltonian has to be evaluated.
+        If the system dimensionality is low, extra momenta are ignored.
+    return_grid : bool
+        Whether to also return the names of the variables used for expansion,
+        and their values.
+
+    Returns:
+    --------
+    hamiltonians : numpy.ndarray
+        An array with the Hamiltonians. The first n-2 dimensions correspond to
+        the expanded variables.
+    parameters : list of tuples
+        Names and ranges of values that were used in evaluation of the
+        Hamiltonians.
+
+    Examples:
+    ---------
+    >>> hamiltonian_array(sys, SimpleNamespace(t=1, mu=np.linspace(-2, 2)),
+    ...                   k_x=np.linspace(-np.pi, np.pi))
+    >>> hamiltonian_array(sys_2d, p, np.linspace(-np.pi, np.pi),
+    ...                   np.linspace(-np.pi, np.pi))
+    """
+    if p is None:
+        p = SimpleNamespace()
     dimensionality = sys.symmetry.num_directions
+    pars = copy(p)
     if dimensionality == 0:
         sys = sys.finalized()
+        def momentum_to_lattice(k):
+            return []
     else:
         B = np.array(sys.symmetry.periods).T
         A = B.dot(np.linalg.inv(B.T.dot(B)))
+        def momentum_to_lattice(k):
+            return list(np.linalg.solve(A, k[:dimensionality]))
         sys = wraparound(sys).finalized()
 
-    changing_var, changing_vals, num_changing_vals = find_changing_par(p.__dict__)
+    changing = dict()
+    for key, value in p.items():
+        if isinstance(value, collections.Iterable):
+            changing[key] = value
 
-    if (dimensionality == 0) and (num_changing_vals == 0) or num_changing_vals > 1:
-        raise ValueError("Make sure to have only one changing value in your SimpleNamespace or vary a momentum parameter")
-    if num_changing_vals == 1:
-        def hamiltonian(x):
-            p.__dict__[changing_var] = x
-            return sys.hamiltonian_submatrix([p])
-        hamiltonians = [hamiltonian(x) for x in changing_vals]
-        return changing_vals, np.array(hamiltonians)
+    for key, value in [('k_x', k_x), ('k_y', k_y), ('k_z', k_z)]:
+        if key in changing:
+            raise RuntimeError('One of the system parameters is {}, '
+                               'which is reserved for momentum. '
+                               'Please rename it.'.format(key))
+        if isinstance(value, collections.Iterable):
+            changing[key] = value
+
+    if not changing:
+        return sys.hamiltonian_submatrix([p] +
+                                         momentum_to_lattice([k_x, k_y, k_z]),
+                                         sparse=False)[None, ...]
+
+    def hamiltonian(**values):
+        pars.__dict__.update(values)
+        k = [values.get('k_x', k_x), values.get('k_y', k_y),
+             values.get('k_z', k_z)][:dimensionality]
+        k = momentum_to_lattice(k)
+        return sys.hamiltonian_submatrix(args=([pars] + k), sparse=False)
+
+    names, values = zip(*sorted(changing.items()))
+    hamiltonians = [hamiltonian(dict(zip(names, value)))
+                    for value in itertools.product(*values)]
+
+    hamiltonians = np.array(hamiltonians).reshape([len(value)
+                                                   for value in values])
+
+    if return_grid:
+        return hamiltonians, list(zip(names, values))
     else:
-        def hamiltonian(p, k):
-            if dimensionality > 1:
-                k = np.linalg.solve(A, k)
-            return sys.hamiltonian_submatrix([p] + list(k))
-        momenta = [k_x, k_y, k_z][:dimensionality]
-        hamiltonians = [hamiltonian(p, k) for k in itertools.product(*momenta)]
-        if dimensionality == 1:
-            return k_x, np.array(hamiltonians)
-        if dimensionality == 2:
-            return np.reshape(hamiltonians, ((len(k_x),)*dimensionality) + (2, 2))
+        return hamiltonians
