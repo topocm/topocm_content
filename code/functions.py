@@ -71,6 +71,7 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim=None, ydim=N
         Plot of varying parameter vs. spectrum.
     """
     pars = copy(p)
+    
     if sys.symmetry.num_directions > 1: 
         return plot_bands_2d()
 
@@ -148,39 +149,6 @@ def find_changing_par(x):
         return (0, 0, 0)
 
 
-def hamiltonian_array(sys, p, k_x=None, k_y=None, k_z=None):
-    B = np.array(sys.symmetry.periods).T
-    A = B.dot(np.linalg.inv(B.T.dot(B)))
-    dimensionality = sys.symmetry.num_directions
-
-    if dimensionality == 0:
-        sys = sys.finalized()
-    else:
-        sys = wraparound(sys).finalized()
-
-    changing_var, changing_vals, num_changing_vals = find_changing_par(p.__dict__)
-
-    if (dimensionality == 0) and (num_changing_vals == 0) or num_changing_vals > 1:
-        raise ValueError("Make sure to have only one changing value in your SimpleNamespace or vary a momentum parameter")
-    if num_changing_vals == 1:
-        def hamiltonian(x):
-            p.__dict__[changing_var] = x
-            return sys.hamiltonian_submatrix([p])
-        hamiltonians = [hamiltonian(x) for x in changing_vals]
-        return np.reshape(hamiltonians, (len(changing_vals)), -1)
-    else:
-        def hamiltonian(p, k):
-            if dimensionality > 1:
-                k = np.linalg.solve(A, k)
-            return sys.hamiltonian_submatrix([p, *k])
-        momenta = [k_x, k_y, k_z][:dimensionality]
-        hamiltonians = [hamiltonian(p, k) for k in itertools.product(*momenta)]
-        if dimensionality == 1:
-            return k_x, np.array(hamiltonians)
-        if dimensionality == 2:
-            return np.reshape(hamiltonians, (len(k_x)*dimensionality) + (2, 2))
-
-
 def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None,
                   xticks=None, yticks=None, zticks=None):
     """Plot the bands of a system with two wrapped-around symmetries."""
@@ -218,3 +186,35 @@ def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None
         plot = plot.relabel(title(p))
 
     return plot(plot={'Overlay': {'fig_size': 200}})
+
+
+def hamiltonian_array(sys, p, k_x=None, k_y=None, k_z=None):
+    dimensionality = sys.symmetry.num_directions
+    if dimensionality == 0:
+        sys = sys.finalized()
+    else:
+        B = np.array(sys.symmetry.periods).T
+        A = B.dot(np.linalg.inv(B.T.dot(B)))
+        sys = wraparound(sys).finalized()
+
+    changing_var, changing_vals, num_changing_vals = find_changing_par(p.__dict__)
+
+    if (dimensionality == 0) and (num_changing_vals == 0) or num_changing_vals > 1:
+        raise ValueError("Make sure to have only one changing value in your SimpleNamespace or vary a momentum parameter")
+    if num_changing_vals == 1:
+        def hamiltonian(x):
+            p.__dict__[changing_var] = x
+            return sys.hamiltonian_submatrix([p])
+        hamiltonians = [hamiltonian(x) for x in changing_vals]
+        return changing_vals, np.array(hamiltonians)
+    else:
+        def hamiltonian(p, k):
+            if dimensionality > 1:
+                k = np.linalg.solve(A, k)
+            return sys.hamiltonian_submatrix([p, *k])
+        momenta = [k_x, k_y, k_z][:dimensionality]
+        hamiltonians = [hamiltonian(p, k) for k in itertools.product(*momenta)]
+        if dimensionality == 1:
+            return k_x, np.array(hamiltonians)
+        if dimensionality == 2:
+            return np.reshape(hamiltonians, (len(k_x)*dimensionality) + (2, 2))
