@@ -10,7 +10,7 @@ import holoviews as hv
 
 from wraparound import wraparound
 
-if np.__version__ <= (1, 8, 0):
+if tuple(int(i) for i in np.__version__.split('.')[:3]) <= (1, 8, 0):
     raise RuntimeError("numpy >= (1, 8, 0) is required")
 
 __all__ = ['spectrum', 'hamiltonian_array', 'h_k', 'pauli']
@@ -84,7 +84,7 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     k = [k_x, k_y, k_z]
     k = [(np.linspace(-np.pi, np.pi, 101) if i is None else i)
          for i in k]
-    k = [(i if j <= dimensionality else 0) for (j, i) in enumerate(k)]
+    k = [(i if j < dimensionality else 0) for (j, i) in enumerate(k)]
     k_x, k_y, k_z = k
 
     hamiltonians, variables = hamiltonian_array(sys, p, k_x, k_y, k_z, True)
@@ -130,17 +130,17 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         # 2D plot.
 
         style = {}
-        if xticks is None and variables[0] in 'k_x k_y k_z'.split():
+        if xticks is None and variables[0][0] in 'k_x k_y k_z'.split():
             style['xticks'] = pi_ticks
-        if yticks is None and variables[1] in 'k_x k_y k_z'.split():
+        if yticks is None and variables[1][0] in 'k_x k_y k_z'.split():
             style['yticks'] = pi_ticks
         if zticks is not None:
             style['zticks'] = zticks
 
         if xlims is None:
-            xlims = np.round([min(variables[0]), max(variables[0])], 2)
+            xlims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
         if ylims is None:
-            ylims = np.round([min(variables[0]), max(variables[0])], 2)
+            ylims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
 
             kwargs = {'extents': (xlims[0], ylims[0], None,
                                   xlims[1], ylims[1], None),
@@ -164,45 +164,6 @@ def h_k(sys, p, momentum):
     """Function that returns the Hamiltonian of a kwant 1D system as a momentum.
     """
     return hamiltonian_array(sys, p, momentum)[0]
-
-
-def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None,
-                  ylims=None, xticks=None, yticks=None, zticks=None):
-    """Plot the bands of a system with two wrapped-around symmetries."""
-    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
-
-    if k_x is None:
-        k_x = np.linspace(-np.pi, np.pi, 101)
-    if k_y is None:
-        k_y = np.linspace(-np.pi, np.pi, 101)
-
-    hamiltonians = hamiltonian_array(sys, p, k_x, k_y)
-    energies = np.linalg.eigvalsh(hamiltonians).real
-
-    style = {}
-    if xticks is None:
-        style['xticks'] = pi_ticks
-    if yticks is None:
-        style['yticks'] = pi_ticks
-    if zticks is not None:
-        style['zticks'] = zticks
-
-    if xlims is None:
-        xlims = np.round([k_x.min(), k_x.max()], 2)
-    if ylims is None:
-        ylims = np.round([k_y.min(), k_y.max()], 2)
-
-    kwargs = {'extents': (xlims[0], ylims[0], None, xlims[1], ylims[1], None),
-              'kdims': [r'$k_x$', r'$k_y$'],
-              'vdims': [r'$E$']}
-
-    plot = (hv.Surface(energies[:, :, 0], **kwargs)(plot=style) *
-            hv.Surface(energies[:, :, 1], **kwargs)(plot=style))
-
-    if callable(title):
-        plot = plot.relabel(title(p))
-
-    return plot(plot={'Overlay': {'fig_size': 200}})
 
 
 def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
@@ -240,6 +201,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     """
     if p is None:
         p = SimpleNamespace()
+    space_dimensionality = sys.symmetry.periods.shape[-1]
     dimensionality = sys.symmetry.num_directions
     pars = copy(p)
     if dimensionality == 0:
@@ -250,11 +212,15 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         B = np.array(sys.symmetry.periods).T
         A = B.dot(np.linalg.inv(B.T.dot(B)))
         def momentum_to_lattice(k):
-            return list(np.linalg.solve(A, k[:dimensionality]))
+            k, residuals, *_ = np.linalg.lstsq(A, k[:space_dimensionality])
+            if np.any(abs(residuals) > 1e-7):
+                raise RuntimeError("Requested momentum doesn't correspond"
+                                   " to any lattice momentum.")
+            return list(k)
         sys = wraparound(sys).finalized()
 
     changing = dict()
-    for key, value in p.items():
+    for key, value in pars.__dict__.items():
         if isinstance(value, collections.Iterable):
             changing[key] = value
 
@@ -267,21 +233,21 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             changing[key] = value
 
     if not changing:
-        return sys.hamiltonian_submatrix([p] +
+        return sys.hamiltonian_submatrix([pars] +
                                          momentum_to_lattice([k_x, k_y, k_z]),
                                          sparse=False)[None, ...]
 
     def hamiltonian(**values):
         pars.__dict__.update(values)
         k = [values.get('k_x', k_x), values.get('k_y', k_y),
-             values.get('k_z', k_z)][:dimensionality]
+             values.get('k_z', k_z)]
         k = momentum_to_lattice(k)
         return sys.hamiltonian_submatrix(args=([pars] + k), sparse=False)
 
     names, values = zip(*sorted(changing.items()))
-    hamiltonians = [hamiltonian(dict(zip(names, value)))
+    hamiltonians = [hamiltonian(**dict(zip(names, value)))
                     for value in itertools.product(*values)]
-    size = list(hamiltonians.shape[-2:])
+    size = list(hamiltonians[0].shape)
 
     hamiltonians = np.array(hamiltonians).reshape([len(value)
                                                    for value in values] + size)
