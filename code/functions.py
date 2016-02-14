@@ -34,7 +34,7 @@ pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 
-def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y',
+def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim=None, ydim=None,
              xticks=None, yticks=None, xlims=None, ylims=None):
     """Function that plots a spectrum for a varying parameter.
 
@@ -71,34 +71,18 @@ def spectrum(sys, p, title=None, k_x=None, k_y=None, k_z=None, xdim='x', ydim='y
         Plot of varying parameter vs. spectrum.
     """
     pars = copy(p)
-    dimensionality = sys.symmetry.num_directions
-    if dimensionality > 0:
-        sys = wraparound(sys).finalized()
-    else:
-        sys = sys.finalized()
+    if sys.symmetry.num_directions > 1: 
+        return plot_bands_2d()
 
-    k_x = 0 if k_x is None and dimensionality > 0 else k_x
-    k_y = 0 if k_y is None and dimensionality > 0 else k_y
-    k_z = 0 if k_z is None and dimensionality > 0 else k_z
+    changing_vals, hamiltonians = hamiltonian_array(sys, pars, k_x, k_y, k_z)
+    spectrum = np.linalg.eigvalsh(hamiltonians).real
+    
+    if xdim is None:
+        xdim = 'x'
+    if ydim is None:
+        ydim = 'y'
 
-    momenta = {'k_x': k_x, 'k_y': k_y, 'k_z': k_z}.items()
-
-    for key, value in itertools.chain(pars.__dict__.items(), momenta):
-        try:
-            if len(value) > 0:
-                changing_variable = key
-                changing_values = value
-        except TypeError:
-                pass
-
-    def energy(x):
-        pars.__dict__[changing_variable] = x
-        H = sys.hamiltonian_submatrix([pars, x][:dimensionality + 1])
-        return np.linalg.eigvalsh(H)
-
-    spectrum = np.array([energy(x) for x in changing_values])
-
-    plot = hv.Path((changing_values, spectrum), kdims=[xdim, ydim])
+    plot = hv.Path((changing_vals, spectrum), kdims=[xdim, ydim])
 
     ticks = {}
     if isinstance(xticks, collections.Iterable):
@@ -148,29 +132,67 @@ def h_k(sys, p, momentum):
     return h + t + t.T.conj()
 
 
+def find_changing_par(x):
+    num_changing_vals = 0
+    for key, value in itertools.chain(x.items()):
+        try:
+            if len(value) > 0:
+                changing_var = key
+                changing_vals = value
+                num_changing_vals += 1
+        except TypeError:
+            pass
+    if num_changing_vals == 1:
+        return changing_var, changing_vals, num_changing_vals
+    else:
+        return (0, 0, 0)
+
+
+def hamiltonian_array(sys, p, k_x=None, k_y=None, k_z=None):
+    B = np.array(sys.symmetry.periods).T
+    A = B.dot(np.linalg.inv(B.T.dot(B)))
+    dimensionality = sys.symmetry.num_directions
+
+    if dimensionality == 0:
+        sys = sys.finalized()
+    else:
+        sys = wraparound(sys).finalized()
+
+    changing_var, changing_vals, num_changing_vals = find_changing_par(p.__dict__)
+
+    if (dimensionality == 0) and (num_changing_vals == 0) or num_changing_vals > 1:
+        raise ValueError("Make sure to have only one changing value in your SimpleNamespace or vary a momentum parameter")
+    if num_changing_vals == 1:
+        def hamiltonian(x):
+            p.__dict__[changing_var] = x
+            return sys.hamiltonian_submatrix([p])
+        hamiltonians = [hamiltonian(x) for x in changing_vals]
+        return np.reshape(hamiltonians, (len(changing_vals)), -1)
+    else:
+        def hamiltonian(p, k):
+            if dimensionality > 1:
+                k = np.linalg.solve(A, k)
+            return sys.hamiltonian_submatrix([p, *k])
+        momenta = [k_x, k_y, k_z][:dimensionality]
+        hamiltonians = [hamiltonian(p, k) for k in itertools.product(*momenta)]
+        if dimensionality == 1:
+            return k_x, np.array(hamiltonians)
+        if dimensionality == 2:
+            return np.reshape(hamiltonians, (len(k_x)*dimensionality) + (2, 2))
+
+
 def plot_bands_2d(sys, p, title=None, k_x=None, k_y=None, xlims=None, ylims=None,
                   xticks=None, yticks=None, zticks=None):
     """Plot the bands of a system with two wrapped-around symmetries."""
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
-
-    B = np.array(sys.symmetry.periods).T
-    A = B.dot(np.linalg.inv(B.T.dot(B)))
-
-    sys = wraparound(sys).finalized()
-
-    def energy(kx, ky):
-        k = np.array([kx, ky])
-        kx, ky = np.linalg.solve(A, k)
-        H = sys.hamiltonian_submatrix([p, kx, ky], sparse=False)
-        return np.sort(np.linalg.eigvalsh(H).real)
-
+    
     if k_x is None:
         k_x = np.linspace(-np.pi, np.pi, 101)
     if k_y is None:
         k_y = np.linspace(-np.pi, np.pi, 101)
-
-    energies = [[energy(x, y) for y in k_y] for x in k_x]
-    energies = np.array(energies)
+        
+    hamiltonians = hamiltonian_array(sys, p, k_x, k_y)
+    energies = np.linalg.eigvalsh(hamiltonians).real
 
     style = {}
     if xticks is None:
