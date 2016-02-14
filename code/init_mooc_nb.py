@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import types
+import warnings
 # Enable inline plotting in the notebook
 try:
     get_ipython().enable_matplotlib(gui='inline')
@@ -119,6 +120,7 @@ def init_notebook():
     print('Populated the namespace with:\n' + ', '.join(__all__))
     holoviews.notebook_extension('matplotlib')
 
+    # Set plot style.
     options = Store.options(backend='matplotlib')
     options.Contours = Options('style', linewidth=2, color='k')
     options.Contours = Options('plot', aspect='square')
@@ -135,7 +137,10 @@ def init_notebook():
     options.Surface = Options('style', cmap='RdBu_r', rstride=2, cstride=2, lw=0.5)
     options.Surface = Options('plot', azimuth=20, elevation=8)
 
-    # Set plot style.
+    # Turn off a bogus holoviews warning.
+    # Temporary solution to ignore the warnings
+    warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+
     module_dir = os.path.dirname(__file__)
     matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
 
