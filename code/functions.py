@@ -201,7 +201,10 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     """
     if p is None:
         p = SimpleNamespace()
-    space_dimensionality = sys.symmetry.periods.shape[-1]
+    try:
+        space_dimensionality = sys.symmetry.periods.shape[-1]
+    except AttributeError:
+        space_dimensionality = 0
     dimensionality = sys.symmetry.num_directions
     pars = copy(p)
     if dimensionality == 0:
