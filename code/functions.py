@@ -211,10 +211,10 @@ def hamiltonian_array(sys, p, k_x=None, k_y=None, k_z=None):
         def hamiltonian(p, k):
             if dimensionality > 1:
                 k = np.linalg.solve(A, k)
-            return sys.hamiltonian_submatrix([p, *k])
+            return sys.hamiltonian_submatrix([p] + list(k))
         momenta = [k_x, k_y, k_z][:dimensionality]
         hamiltonians = [hamiltonian(p, k) for k in itertools.product(*momenta)]
         if dimensionality == 1:
             return k_x, np.array(hamiltonians)
         if dimensionality == 2:
-            return np.reshape(hamiltonians, (len(k_x)*dimensionality) + (2, 2))
+            return np.reshape(hamiltonians, ((len(k_x),)*dimensionality) + (2, 2))
