@@ -161,3 +161,7 @@ def init_notebook():
 
     display_html(display.HTML(nb_html_header +
                               (hide_outside_ipython if developer else '')))
+
+    # Patch a bug in holoviews
+    from patch_holoviews import patch_all
+    patch_all()
