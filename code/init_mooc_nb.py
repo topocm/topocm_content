@@ -1,13 +1,8 @@
 import sys
 import os
 import re
-from types import SimpleNamespace
-
-# Enable inline plotting in the notebook
-try:
-    get_ipython().enable_matplotlib(gui='inline')
-except NameError:
-    pass
+import types
+import warnings
 
 import numpy as np
 import matplotlib
@@ -27,11 +22,15 @@ import functions
 from functions import *
 
 
-__all__ = ['np', 'matplotlib', 'kwant', 'holoviews',
-           'init_notebook', 'interact', 'display_html', 'plt', 'pf',
+__all__ = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
+           'interact', 'display_html', 'plt', 'pf',
            'SimpleNamespace', 'pprint_matrix', 'scientific_number',
            'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
 
+class SimpleNamespace(types.SimpleNamespace):
+    def update(self, **kwargs):
+        self.__dict__.update(kwargs)
+        return self
 
 # Adjust printing of matrices, and numpy printing of numbers.
 def pprint_matrix(data, digits=3):
@@ -113,15 +112,22 @@ $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 
 
 def init_notebook():
+    # Enable inline plotting in the notebook
+    try:
+        get_ipython().enable_matplotlib(gui='inline')
+    except NameError:
+        pass
+
     print('Populated the namespace with:\n' + ', '.join(__all__))
     holoviews.notebook_extension('matplotlib')
 
+    # Set plot style.
     options = Store.options(backend='matplotlib')
     options.Contours = Options('style', linewidth=2, color='k')
     options.Contours = Options('plot', aspect='square')
     options.HLine = Options('style', linestyle='--', color='b', linewidth=2)
     options.VLine = Options('style', linestyle='--', color='r', linewidth=2)
-    options.Image = Options('style', cmap='gist_heat_r')
+    options.Image = Options('style', cmap='RdBu_r')
     options.Image = Options('plot', title_format='{label}')
     options.Path = Options('style', linewidth=1.2, color='k')
     options.Path = Options('plot', aspect='square', title_format='{label}')
@@ -129,8 +135,13 @@ def init_notebook():
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
+    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
+    options.Surface = Options('plot', azimuth=20, elevation=8)
 
-    # Set plot style.
+    # Turn off a bogus holoviews warning.
+    # Temporary solution to ignore the warnings
+    warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+
     module_dir = os.path.dirname(__file__)
     matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
 
@@ -150,3 +161,7 @@ def init_notebook():
 
     display_html(display.HTML(nb_html_header +
                               (hide_outside_ipython if developer else '')))
+
+    # Patch a bug in holoviews
+    from patch_holoviews import patch_all
+    patch_all()
