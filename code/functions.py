@@ -54,9 +54,11 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     title : function
         Function that takes p as argument and generates a string.
     xdim : holoviews.Dimension or string
-        The label of the x-axis.
+        The label of the x-axis. Ignored if plotting a 2D dispersion and
+        defaults to $k_x$.
     ydim : holoviews.Dimension or string
-        The label of the y-axis. Ignored if only one parameter is changing.
+        The label of the y-axis. Ignored if only one parameter is changing or
+        if plotting a 2D dispersion and defaults to $k_y$.
     xticks : list
         List of xticks.
     yticks : list
@@ -214,12 +216,16 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         sys = sys.finalized()
         def momentum_to_lattice(k):
             return []
+    elif dimensionality == 1:
+        def momentum_to_lattice(k):
+            return list(k[:dimensionality])
+        sys = wraparound(sys).finalized()
     else:
         B = np.array(sys.symmetry.periods).T
         A = B.dot(np.linalg.inv(B.T.dot(B)))
         def momentum_to_lattice(k):
             k, residuals, *_ = np.linalg.lstsq(A, k[:space_dimensionality])
-            if np.any(abs(residuals) > 1e-7):
+            if np.any(abs(residuals) > 1e-7) and not np.isclose(k, 0):
                 raise RuntimeError("Requested momentum doesn't correspond"
                                    " to any lattice momentum.")
             return list(k)
