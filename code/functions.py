@@ -1,7 +1,5 @@
 import itertools
 import collections
-from functools import reduce
-from operator import mul
 from copy import copy
 from types import SimpleNamespace
 
@@ -40,7 +38,7 @@ pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
              ydim=None, xticks=None, yticks=None, zticks=None, xlims=None,
-             ylims=None):
+             ylims=None, zlims=None):
     """Function that plots system spectrum for varying parameters or momenta.
 
     Parameters:
@@ -70,7 +68,10 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         limit of the xticks are used.
     ylims : tupple
         Upper and lower plot limit of the y-axis. If None the upper and lower
-        limit of the xticks are used. Ignored if only one parameter is changing.
+        limit of the yticks are used. Ignored if only one parameter is changing.
+    zlims : tupple
+        Upper and lower plot limit of the z-axis. If None the upper and lower
+        limit of the zticks are used. Ignored if only one parameter is changing.
 
     Returns:
     --------
@@ -141,14 +142,16 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
             xlims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
         if ylims is None:
             ylims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
+        if zlims is None:
+            zlims = (None, None)
 
-            kwargs = {'extents': (xlims[0], ylims[0], None,
-                                  xlims[1], ylims[1], None),
-                      'kdims': [r'$k_x$', r'$k_y$'],
-                      'vdims': [r'$E$']}
+        kwargs = {'extents': (xlims[0], ylims[0], zlims[0],
+                              xlims[1], ylims[1], zlims[1]),
+                  'kdims': [r'$k_x$', r'$k_y$'],
+                  'vdims': [r'$E$']}
 
-        plot = reduce(mul, (hv.Surface(energies[:, :, i], **kwargs)(plot=style)
-                            for i in range(energies.shape[-1])))
+        plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style)
+                            for i in range(energies.shape[-1])])
 
         if callable(title):
             plot = plot.relabel(title(p))
