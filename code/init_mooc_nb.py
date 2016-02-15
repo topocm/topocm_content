@@ -135,7 +135,7 @@ def init_notebook():
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
-    options.Surface = Options('style', cmap='RdBu_r', rstride=2, cstride=2, lw=0.5)
+    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
     options.Surface = Options('plot', azimuth=20, elevation=8)
 
     # Turn off a bogus holoviews warning.
