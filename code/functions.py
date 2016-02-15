@@ -37,8 +37,8 @@ pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 
 def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
-             ydim=None, xticks=None, yticks=None, zticks=None, xlims=None,
-             ylims=None, zlims=None):
+             ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
+             xlims=None, ylims=None, zlims=None):
     """Function that plots system spectrum for varying parameters or momenta.
 
     Parameters:
@@ -53,27 +53,14 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         If the system dimensionality is low, extra momenta are ignored.
     title : function
         Function that takes p as argument and generates a string.
-    xdim : holoviews.Dimension or string
-        The label of the x-axis. Ignored if plotting a 2D dispersion and
-        defaults to $k_x$.
-    ydim : holoviews.Dimension or string
-        The label of the y-axis. Ignored if only one parameter is changing or
-        if plotting a 2D dispersion and defaults to $k_y$.
-    xticks : list
-        List of xticks.
-    yticks : list
-        List of yticks.
-    zticks : list
-        List of zticks. Ignored if only one parameter is changing.
-    xlims : tupple
-        Upper and lower plot limit of the x-axis. If None the upper and lower
-        limit of the xticks are used.
-    ylims : tupple
-        Upper and lower plot limit of the y-axis. If None the upper and lower
-        limit of the yticks are used. Ignored if only one parameter is changing.
-    zlims : tupple
-        Upper and lower plot limit of the z-axis. If None the upper and lower
-        limit of the zticks are used. Ignored if only one parameter is changing.
+    xdim, ydim, zdim : holoviews.Dimension or string
+        The labels of the axes. Default to best guess, and extra ones
+        are ignored.
+    xticks, yticks zticks : list
+        Lists of axes xticks, extra ones are ignored.
+    xlims, ylims, zlims : tuple
+        Upper and lower plot limit of the axes. If None the upper and lower
+        limits of the ticks are used. Extra ones are ignored.
 
     Returns:
     --------
@@ -102,9 +89,12 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     elif len(variables) == 1:
         # 1D plot.
         if xdim is None:
-            xdim = 'x'
+            if variables[0][0] in 'k_x k_y k_z'.split():
+                xdim = r'${}$'.format(variables[0][0])
+            else:
+                xdim = variables[0][0]
         if ydim is None:
-            ydim = 'y'
+            ydim = r'$E$'
 
         plot = hv.Path((variables[0][1], energies), kdims=[xdim, ydim])
 
@@ -137,6 +127,19 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
             style['xticks'] = pi_ticks
         if yticks is None and variables[1][0] in 'k_x k_y k_z'.split():
             style['yticks'] = pi_ticks
+        if xdim is None:
+            if variables[0][0] in 'k_x k_y k_z'.split():
+                xdim = r'${}$'.format(variables[0][0])
+            else:
+                xdim = variables[0][0]
+        if ydim is None:
+            if variables[1][0] in 'k_x k_y k_z'.split():
+                ydim = r'${}$'.format(variables[1][0])
+            else:
+                ydim = variables[1][0]
+        if zdim is None:
+            zdim = r'$E$'
+
         if zticks is not None:
             style['zticks'] = zticks
 
@@ -149,8 +152,8 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
         kwargs = {'extents': (xlims[0], ylims[0], zlims[0],
                               xlims[1], ylims[1], zlims[1]),
-                  'kdims': [r'$k_x$', r'$k_y$'],
-                  'vdims': [r'$E$']}
+                  'kdims': [xdim, ydim],
+                  'vdims': [zdim]}
 
         plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style)
                             for i in range(energies.shape[-1])])
