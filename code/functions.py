@@ -185,8 +185,9 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         A container of Hamiltonian parameters. The parameters that are
         sequences are used to loop over.
     k_x, k_y, k_z : floats or sequences of floats
-        Real space momenta at which the Hamiltonian has to be evaluated.
-        If the system dimensionality is low, extra momenta are ignored.
+        Momenta at which the Hamiltonian has to be evaluated.  If the system
+        only has 1 translation symmetry, only `k_x` is used, and interpreted as
+        lattice momentum. Otherwise the momenta are in reciprocal space.
     return_grid : bool
         Whether to also return the names of the variables used for expansion,
         and their values.
@@ -206,6 +207,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     ...                   k_x=np.linspace(-np.pi, np.pi))
     >>> hamiltonian_array(sys_2d, p, np.linspace(-np.pi, np.pi),
     ...                   np.linspace(-np.pi, np.pi))
+
     """
     if p is None:
         p = SimpleNamespace()
@@ -219,19 +221,21 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         sys = sys.finalized()
         def momentum_to_lattice(k):
             return []
-    elif dimensionality == 1:
-        def momentum_to_lattice(k):
-            return list(k[:dimensionality])
-        sys = wraparound(sys).finalized()
     else:
-        B = np.array(sys.symmetry.periods).T
-        A = B.dot(np.linalg.inv(B.T.dot(B)))
-        def momentum_to_lattice(k):
-            k, residuals, *_ = np.linalg.lstsq(A, k[:space_dimensionality])
-            if np.any(abs(residuals) > 1e-7) and not np.isclose(k, 0):
-                raise RuntimeError("Requested momentum doesn't correspond"
-                                   " to any lattice momentum.")
-            return list(k)
+        if len(sys.symmetry.periods) == 1:
+            def momentum_to_lattice(k):
+                if any(k[dimensionality:]):
+                    raise ValueError("Dispersion is 1D, but more momenta are provided.")
+                return [k[0]]
+        else:
+            B = np.array(sys.symmetry.periods).T
+            A = B.dot(np.linalg.inv(B.T.dot(B)))
+            def momentum_to_lattice(k):
+                k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
+                if np.any(abs(residuals) > 1e-7):
+                    raise RuntimeError("Requested momentum doesn't correspond"
+                                       " to any lattice momentum.")
+                return list(k)
         sys = wraparound(sys).finalized()
 
     changing = dict()
@@ -248,9 +252,14 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             changing[key] = value
 
     if not changing:
-        return sys.hamiltonian_submatrix([pars] +
-                                         momentum_to_lattice([k_x, k_y, k_z]),
-                                         sparse=False)[None, ...]
+        hamiltonians = sys.hamiltonian_submatrix([pars] +
+                                                 momentum_to_lattice([k_x, k_y, k_z]),
+                                                 sparse=False)[None, ...]
+        if return_grid:
+            return hamiltonians, []
+        else:
+            return hamiltonians
+
 
     def hamiltonian(**values):
         pars.__dict__.update(values)
