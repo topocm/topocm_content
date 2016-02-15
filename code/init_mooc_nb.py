@@ -3,11 +3,6 @@ import os
 import re
 import types
 import warnings
-# Enable inline plotting in the notebook
-try:
-    get_ipython().enable_matplotlib(gui='inline')
-except NameError:
-    pass
 
 import numpy as np
 import matplotlib
@@ -117,6 +112,12 @@ $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 
 
 def init_notebook():
+    # Enable inline plotting in the notebook
+    try:
+        get_ipython().enable_matplotlib(gui='inline')
+    except NameError:
+        pass
+
     print('Populated the namespace with:\n' + ', '.join(__all__))
     holoviews.notebook_extension('matplotlib')
 
