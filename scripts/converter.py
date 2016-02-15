@@ -152,7 +152,7 @@ def export_unit_to_html(unit):
                          for strong in form.find_all('strong')]
 
         for label in labels:
-            new = label.contents[0].replace('$', '').replace('\\', '')
+            new = re.sub(r'[$\\{}]', '', label.contents[0])
             label.contents[0].replace_with(new)
 
         body = soup.__str__()
