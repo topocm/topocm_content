@@ -1,0 +1,10 @@
+name: topocm
+
+channels:
+- basnijholt
+
+dependencies:
+  - python=3.4
+  - kwant
+  - holoviews
+  - feedparser
