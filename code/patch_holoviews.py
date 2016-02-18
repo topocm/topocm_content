@@ -47,9 +47,28 @@ def patch_core_util():
 
 
 def patch_plotting_util():
-    import holoviews.plotting.bokeh.util
+    import numpy as np
+    def map_colors(arr, crange, cmap, hex=True):
+        """
+        Maps an array of values to RGB hex strings, given
+        a color range and colormap.
+        """
+        if crange:
+            cmin, cmax = crange
+        else:
+            cmin, cmax = np.nanmin(arr), np.nanmax(arr)
+        arr = (arr - cmin) / (cmax-cmin)
+        arr = np.ma.array(arr, mask=np.logical_not(np.isfinite(arr)))
+        arr = cmap(arr)
+        if hex:
+            arr *= 255
+            return ["#{0:02x}{1:02x}{2:02x}".format(*(int(v) for v in c[:-1]))
+                    for c in arr]
+        else:
+            return arr
+    
     import holoviews.plotting.util
-    holoviews.plotting.util.map_colors = holoviews.plotting.bokeh.util.map_colors
+    holoviews.plotting.util.map_colors = map_colors
 
 
 def patch_mpl_chart3d():
