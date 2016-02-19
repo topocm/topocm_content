@@ -3,7 +3,7 @@
 The latest stable version of the course is located at http://topocondmat.org.  
 We are currently reorganizing and updating the course materials, so that the repository is not functional in its current state.
 
-Open these notebooks in [Binder](http://mybinder.org/): [![Binder](http://mybinder.org/badge.svg)](mybinder.org/repo/topocm/topocm_content) such that you can experiment with the code.
+Open these notebooks in [Binder](http://mybinder.org/): [![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/topocm/topocm_content) such that you can experiment with the code.
 
 ## Development tip: shallow clone
 
