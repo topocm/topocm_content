@@ -7,7 +7,6 @@ sys.path.extend(module_dir)
 
 from IPython import display
 import feedparser
-from getyoutubecc import save_youtube_cc
 
 __all__ = ['MoocVideo', 'PreprintReference', 'MoocDiscussion',
             'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
