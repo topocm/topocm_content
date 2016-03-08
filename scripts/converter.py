@@ -22,13 +22,32 @@ from time import strptime
 import nbformat
 from nbformat import v4 as current
 from traitlets.config import Config
-from nbconvert import HTMLExporter
+from nbconvert import HTMLExporter, NotebookExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
 
 import bs4
 
 from holoviews.plotting import Renderer
 hvjs = Renderer.html_assets(extras=False)[0]
+
+path = os.path.dirname(os.path.realpath(__file__))
+cfg = Config({'HTMLExporter':{'template_file':'no_code',
+                              'template_path':['.',path],
+                              'filters':{'markdown2html':
+                                         markdown2html_pandoc}}})
+exportHtml = HTMLExporter(config=cfg)
+
+cfg = Config({'NotebookExporter': {'preprocessors':
+                                   ['cachedoutput.CachedOutputPreprocessor']},
+              'CachedOutputPreprocessor': {'enabled': True,
+                                           'cache_directory':
+                                           '.nb_output_cache',
+                                           'req_files': ['code/init_mooc_nb.py',
+                                                         'code/edx_components.py',
+                                                         'code/pfaffian.py',
+                                                         'code/functions.py'],
+                                           'timeout': 300}})
+cachedoutput = NotebookExporter(cfg)
 
 with open('scripts/release_dates') as f:
     release_dates = eval(f.read())
@@ -113,6 +132,8 @@ def split_into_units(nb_name):
             return []
         else:
             raise e
+    with_output = cachedoutput.from_notebook_node(nb)[0]
+    nb = nbformat.reads(with_output, as_version=4)
     cells = nb.cells
     indexes = [i for i, cell in enumerate(cells)
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
@@ -135,12 +156,6 @@ def export_unit_to_html(unit):
                      'href="/static/bootstrap.edx.css">\n')
     hvcss = ('<link rel="stylesheet" '
              'href="/static/holoviews.edx.css">\n')
-    path = os.path.dirname(os.path.realpath(__file__))
-    cfg = Config({'HTMLExporter':{'template_file':'no_code',
-                                  'template_path':['.',path],
-                                  'filters':{'markdown2html':
-                                             markdown2html_pandoc}}})
-    exportHtml = HTMLExporter(config=cfg)
     (body, resources) = exportHtml.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
