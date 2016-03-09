@@ -120,6 +120,7 @@ def init_notebook():
 
     print('Populated the namespace with:\n' + ', '.join(__all__))
     holoviews.notebook_extension('matplotlib')
+    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
 
     # Set plot style.
     options = Store.options(backend='matplotlib')
