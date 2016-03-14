@@ -38,7 +38,7 @@ pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
              ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
-             xlims=None, ylims=None, zlims=None):
+             xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False):
     """Function that plots system spectrum for varying parameters or momenta.
 
     Parameters:
@@ -61,6 +61,11 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     xlims, ylims, zlims : tuple
         Upper and lower plot limit of the axes. If None the upper and lower
         limits of the ticks are used. Extra ones are ignored.
+    num_bands : int
+        Number of bands that should be plotted, only works for 2D plots. If
+        None all bands are plotted.
+    return_energies : bool
+        If True the function only returns the energies in an array.
 
     Returns:
     --------
@@ -85,6 +90,9 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
     if len(variables) == 0:
         raise ValueError("A 0D plot requested")
+
+    if return_energies:
+        return energies
 
     elif len(variables) == 1:
         # 1D plot.
@@ -155,8 +163,14 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
                   'kdims': [xdim, ydim],
                   'vdims': [zdim]}
 
-        plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style)
-                            for i in range(energies.shape[-1])])
+        if num_bands is None:
+            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
+                               for i in range(energies.shape[-1])])
+        else:
+            mid = energies.shape[-1] // 2
+            num_bands //= 2
+            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
+                               for i in range(mid - num_bands, mid + num_bands)])
 
         if callable(title):
             plot = plot.relabel(title(p))
