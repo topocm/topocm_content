@@ -128,6 +128,12 @@ def init_notebook():
 
     holoviews.notebook_extension('matplotlib')
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
+    
+    latex_packs = [r'\usepackage{amsmath}',
+                   r'\usepackage{amssymb}'
+                   r'\usepackage{bm}']
+
+    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = latex_packs
 
     # Set plot style.
     options = Store.options(backend='matplotlib')
