@@ -21,11 +21,12 @@ from edx_components import *
 import functions
 from functions import *
 
+init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
+                'interact', 'display_html', 'plt', 'pf',
+                'SimpleNamespace', 'pprint_matrix', 'scientific_number',
+                'pretty_fmt_complex']
 
-__all__ = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
-           'interact', 'display_html', 'plt', 'pf',
-           'SimpleNamespace', 'pprint_matrix', 'scientific_number',
-           'pretty_fmt_complex'] + edx_components.__all__ + functions.__all__
+__all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
 class SimpleNamespace(types.SimpleNamespace):
     def update(self, **kwargs):
@@ -118,7 +119,13 @@ def init_notebook():
     except NameError:
         pass
 
-    print('Populated the namespace with:\n' + ', '.join(__all__))
+    print('Populated the namespace with:\n' +
+        ', '.join(init_mooc_nb) +
+        '\nfrom code/edx_components:\n' +
+        ', '.join(edx_components.__all__) +
+        '\nfrom code/functions:\n' +
+        ', '.join(functions.__all__))
+
     holoviews.notebook_extension('matplotlib')
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
 
