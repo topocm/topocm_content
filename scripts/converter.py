@@ -27,6 +27,11 @@ from nbconvert.filters.markdown import markdown2html_pandoc
 
 import bs4
 
+try:
+    os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':./code'
+except KeyError:
+    os.environ['PYTHONPATH'] = './code'
+
 from holoviews.plotting import Renderer
 hvjs = Renderer.html_assets(extras=False)[0]
 
