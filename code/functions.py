@@ -51,8 +51,9 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     k_x, k_y, k_z : floats or sequences of floats
         Real space momenta at which the Hamiltonian has to be evaluated.
         If the system dimensionality is low, extra momenta are ignored.
-    title : function
-        Function that takes p as argument and generates a string.
+    title : function or str
+        Function that takes p as argument and generates a string. If a string
+        it's used as static title.
     xdim, ydim, zdim : holoviews.Dimension or string
         The labels of the axes. Default to best guess, and extra ones
         are ignored.
@@ -124,6 +125,8 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
         if callable(title):
             plot = plot.relabel(title(p))
+        elif isinstance(title, str):
+            plot = plot.relabel(title)
 
         return plot[xlims, ylims](plot={'Path': ticks})
 
