@@ -7,7 +7,6 @@
 system."""
 
 import sys
-import itertools
 import collections
 import cmath
 import numpy as np
@@ -90,12 +89,15 @@ def wraparound(builder, keep=None):
         ret = kwant.Builder(kwant.TranslationalSymmetry(periods.pop(keep)))
         sym = kwant.TranslationalSymmetry(*periods)
 
+    sites = {}
+    hops = collections.defaultdict(list)
+
     mnp = -len(sym.periods)      # Used by the bound functions above.
 
     # Store lists of values, so that multiple values can be assigned to the
     # same site or hopping.
     for site, val in builder.site_value_pairs():
-        ret[site] = [bind_site(val) if callable(val) else val]
+        sites[site] = [bind_site(val) if callable(val) else val]
 
     for hop, val in builder.hopping_value_pairs():
         a, b = hop
@@ -105,23 +107,34 @@ def wraparound(builder, keep=None):
         if a == b_wa:
             # The hopping gets wrapped-around into an onsite Hamiltonian.
             # Since site `a` already exists in the system, we can simply append.
-            ret[a].append(bind_hopping_as_site(b_dom, val))
+            sites[a].append(bind_hopping_as_site(b_dom, val))
         else:
             # The hopping remains a hopping.
             if b != b_wa or callable(val):
                 # The hopping got wrapped-around or is a function.
                 val = bind_hopping(b_dom, val)
 
-            if (a, b_wa) in ret:
-                ret[a, b_wa].append(val)
-            else:
-                ret[a, b_wa] = [val]
+            # Make sure that there is only one entry for each hopping
+            # (pointing in one direction).
+            if (b_wa, a) in hops:
+                assert (a, b_wa) not in hops
+                if callable(val):
+                    assert not isinstance(val, kwant.builder.HermConjOfFunc)
+                    val = kwant.builder.HermConjOfFunc(val)
+                else:
+                    val = kwant.builder.herm_conj(val)
 
-    # Convert lists of more than one element into summing functions.
-    summed_vals = {}
-    for site_or_hop, vals in itertools.chain(ret.site_value_pairs(),
-                                     ret.hopping_value_pairs()):
-        ret[site_or_hop] = vals[0] if len(vals) == 1 else bind_sum(*vals)
+                hops[b_wa, a].append(val)
+            else:
+                hops[a, b_wa].append(val)
+
+    # Copy stuff into result builder, converting lists of more than one element
+    # into summing functions.
+    for site, vals in sites.items():
+        ret[site] = vals[0] if len(vals) == 1 else bind_sum(*vals)
+
+    for hop, vals in hops.items():
+        ret[hop] = vals[0] if len(vals) == 1 else bind_sum(*vals)
 
     return ret
 
@@ -153,7 +166,7 @@ def plot_bands_2d(syst, args=(), momenta=(31, 31)):
     pyplot.show()
 
 
-def _simple_syst(lat, E=0, t=1):
+def _simple_syst(lat, E=0, t=1+1j):
     """Create a builder for a simple infinite system."""
     sym = kwant.TranslationalSymmetry(lat.vec((1, 0)), lat.vec((0, 1)))
     # Build system with 2d periodic BCs. This system cannot be finalized in
@@ -184,6 +197,19 @@ def test_consistence_with_bands(kx=1.9, nkys=31):
         np.testing.assert_almost_equal(energies_a, energies_b)
 
 
+def test_opposite_hoppings():
+    lat = kwant.lattice.square()
+
+    for val in [1j, lambda a, b: 1j]:
+        syst = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
+        syst[ (lat(x, 0) for x in [-1, 0]) ] = 0
+        syst[lat(0, 0), lat(-1, 0)] = val
+        syst[lat(-1, 0), lat(-1, -1)] = val
+
+        fsyst = wraparound(syst).finalized()
+        np.testing.assert_almost_equal(fsyst.hamiltonian_submatrix([0]), 0)
+
+
 def test_value_types(k=(-1.1, 0.5), E=0, t=1):
     for lat in [kwant.lattice.honeycomb(), kwant.lattice.square()]:
         syst = wraparound(_simple_syst(lat, E, t)).finalized()
@@ -200,6 +226,7 @@ def test_value_types(k=(-1.1, 0.5), E=0, t=1):
 
 def test():
     test_consistence_with_bands()
+    test_opposite_hoppings()
     test_value_types()
 
 

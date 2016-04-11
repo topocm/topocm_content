@@ -112,12 +112,13 @@ $(document).ready(function (){if(!("IPython" in window)){onoff();}})
 </script>"""
 
 
-def init_notebook():
+def init_notebook(mpl=True):
     # Enable inline plotting in the notebook
-    try:
-        get_ipython().enable_matplotlib(gui='inline')
-    except NameError:
-        pass
+    if mpl:
+        try:
+            get_ipython().enable_matplotlib(gui='inline')
+        except NameError:
+            pass
 
     print('Populated the namespace with:\n' +
         ', '.join(init_mooc_nb) +
