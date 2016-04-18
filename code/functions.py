@@ -136,8 +136,13 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         style = {}
         if xticks is None and variables[0][0] in 'k_x k_y k_z'.split():
             style['xticks'] = pi_ticks
+        elif xticks is not None:
+            style['xticks'] = list(xticks)
         if yticks is None and variables[1][0] in 'k_x k_y k_z'.split():
             style['yticks'] = pi_ticks
+        elif yticks is not None:
+            style['yticks'] = list(yticks)
+
         if xdim is None:
             if variables[0][0] in 'k_x k_y k_z'.split():
                 xdim = r'${}$'.format(variables[0][0])
@@ -157,7 +162,7 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         if xlims is None:
             xlims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
         if ylims is None:
-            ylims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
+            ylims = np.round([min(variables[1][1]), max(variables[1][1])], 2)
         if zlims is None:
             zlims = (None, None)
 
@@ -177,6 +182,8 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
         if callable(title):
             plot = plot.relabel(title(p))
+        elif isinstance(title, str):
+            plot = plot.relabel(title)
 
         return plot(plot={'Overlay': {'fig_size': 200}})
 
