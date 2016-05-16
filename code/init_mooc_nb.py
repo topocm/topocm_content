@@ -178,5 +178,6 @@ def init_notebook(mpl=True):
                               (hide_outside_ipython if developer else '')))
 
     # Patch a bug in holoviews
-    from patch_holoviews import patch_all
-    patch_all()
+    if holoviews.__version__.release <= (1, 4, 2):
+        from patch_holoviews import patch_all
+        patch_all()
