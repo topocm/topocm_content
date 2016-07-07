@@ -51,8 +51,10 @@ cfg = Config({'NotebookExporter': {'preprocessors':
                                                          'code/edx_components.py',
                                                          'code/pfaffian.py',
                                                          'code/functions.py'],
+                                           'warnings_to_errors': True,
                                            'timeout': 300}})
 cachedoutput = NotebookExporter(cfg)
+
 
 with open('scripts/release_dates') as f:
     release_dates = eval(f.read())

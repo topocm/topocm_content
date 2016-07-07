@@ -15,7 +15,7 @@ import os
 import sys
 from textwrap import dedent
 
-from traitlets import Unicode, Integer, List
+from traitlets import Unicode, Integer, List, Bool
 from functools import lru_cache
 
 import nbformat
@@ -94,6 +94,11 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
     )
     
     req_files = List(type=Unicode, config=True)   # prerequisite files - list of strings
+    
+    # Set to True to treat warnings in code cells as errors. We do this to make the
+    # edx converter terminate if warnings are raised in code cells, as they
+    # spoil the output.
+    warnings_to_errors = Bool(False, config=True)
 
     def cache_key(self, source, cell_index):
         """Compute cache key for a cell
@@ -134,6 +139,9 @@ class CachedOutputPreprocessor(ExecutePreprocessor):
             self.log.debug("Cache hit[%i]: %s", cell_index, key)
             cell.outputs = [ nbformat.NotebookNode(output) for output in self.cache[key] ]
         else:
+            # Treat warnings as errors. Fix for the edx converter.
+            if self.warnings_to_errors:
+                self.kc.execute("import warnings; warnings.simplefilter('error')\n")
             outputs = self.run_cell(cell, cell_index)
             # allow_errors inherited from ExecutePreprocessor: by default, is False.
             if not self.allow_errors:
