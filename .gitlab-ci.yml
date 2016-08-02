@@ -1,0 +1,11 @@
+image: topocourse
+
+edx_archive:
+  script: ./scripts/converter.py --silent
+  cache:
+    paths:
+      - .nb_output_cache
+  artifacts:
+    paths:
+      - generated/
+    expire_in: 7d

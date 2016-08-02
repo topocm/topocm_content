@@ -643,19 +643,21 @@ def converter(mooc_folder, args):
     shutil.rmtree(dirpath)
 
 
-def warn_about_status(mooc_folder):
+def warn_about_status(mooc_folder, silent=False):
     git = 'git --git-dir={0}/.git --work-tree={0}/ '.format(mooc_folder)
     status = subprocess.check_output(git + "status",
                                      shell=True).decode('utf-8').split("\n")[0]
     if "On branch master" not in status:
         print("Not on master branch, do not upload to edx.\n",
               "Press Enter to continue.")
-        input()
+        if not silent:
+            input()
         return
     if subprocess.check_output(git + "diff", shell=True):
         print("Some files are modified, do not upload to edx.\n",
               "Press Enter to continue.")
-        input()
+        if not silent:
+            input()
 
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
@@ -663,6 +665,8 @@ def main():
     parser.add_argument('-d','--debug', action='store_true',
                         help='debugging flag')
     parser.add_argument('-o', '--open', action='store_true',
+                        help='opening uncompressed folder with files')
+    parser.add_argument('-s', '--silent', action='store_true',
                         help='opening uncompressed folder with files')
 
     args = parser.parse_args()
@@ -672,7 +676,7 @@ def main():
         print(msg % (mooc_folder + '/generated/files'))
 
     print('Path to mooc folder:', mooc_folder)
-    warn_about_status(mooc_folder)
+    warn_about_status(mooc_folder, args.silent)
     converter(mooc_folder, args)
 
 if __name__ == "__main__":
