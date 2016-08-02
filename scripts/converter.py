@@ -51,7 +51,7 @@ cfg = Config({'NotebookExporter': {'preprocessors':
                                                          'code/edx_components.py',
                                                          'code/pfaffian.py',
                                                          'code/functions.py'],
-                                           'warnings_to_errors': True,
+                                           'warnings': 'ignore',
                                            'timeout': 300}})
 cachedoutput = NotebookExporter(cfg)
 
