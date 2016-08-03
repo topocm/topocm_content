@@ -15,7 +15,7 @@ import os
 import sys
 from textwrap import dedent
 
-from traitlets import Unicode, Integer, List, Bool
+from traitlets import Unicode, Integer, List
 from functools import lru_cache
 
 import nbformat
