@@ -6,7 +6,9 @@ cache:
 github mirror:
   stage: deploy
   script:
-    - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/topocm/topocm.git
+    - mkdir -p ~/.ssh && ssh-keyscan topocondmat.org >> ~/.ssh/known_hosts
+    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    - git push --mirror git@github.com:topocm/topocm_content.git
 
 upload_website:
   stage: deploy
