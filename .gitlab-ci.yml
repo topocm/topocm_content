@@ -7,7 +7,7 @@ github mirror:
   script:
     - mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - git push --mirror git@github.com:topocm/topocm_content.git
+    - git push --all --mirror git@github.com:topocm/topocm_content.git
     - rm -rf ~/.ssh
 
 edx_archive:
