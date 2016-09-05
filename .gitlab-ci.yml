@@ -3,6 +3,11 @@ cache:
   paths:
     - .nb_output_cache
 
+github mirror:
+  stage: deploy
+  script:
+    - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/topocm/topocm.git
+
 upload_website:
   stage: deploy
   only:
