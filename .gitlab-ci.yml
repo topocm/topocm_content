@@ -8,7 +8,7 @@ upload_website:
   only:
     - master@qt/topocm
   script:
-    - mkdir -p ~/.ssh && ssh-keyscan kwant-project.org >> ~/.ssh/known_hosts
+    - mkdir -p ~/.ssh && ssh-keyscan topocondmat.org >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - ./scripts/ipynb_to_html.sh
     - rm -rf ~/.ssh
