@@ -24,7 +24,7 @@ upload_website:
   script:
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - cd scripts && bash ipynb_to_html.sh && cd ..
+    - python scripts/ipynb_to_html.py
     - "rsync -ravz generated/html/* topocm@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
     
