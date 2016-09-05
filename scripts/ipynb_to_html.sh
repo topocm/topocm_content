@@ -1,7 +1,7 @@
 cd ..
 p="$PWD"
 mkdir -p generated; mkdir -p generated/html;
-jupyter nbconvert --to html --config scripts/links_config.py *.ipynb 1>&2 && mv *.html "$p/generated/html/";
+jupyter nbconvert --to html --config scripts/links_config.py *.ipynb --template=template.tpl 1>&2 && mv *.html "$p/generated/html/";
 
 find ./* -type d | while read -r line;
 do
