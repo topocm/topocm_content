@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     wget \
+    rsync \
     bzip2 \
     ca-certificates \
     sudo \
