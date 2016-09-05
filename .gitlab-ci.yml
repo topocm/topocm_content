@@ -1,4 +1,7 @@
 image: topocourse
+cache:
+  paths:
+    - .nb_output_cache
 
 upload_website:
   stage: deploy
@@ -12,9 +15,6 @@ upload_website:
 
 edx_archive:
   script: ./scripts/converter.py --silent
-  cache:
-    paths:
-      - .nb_output_cache
   artifacts:
     paths:
       - generated/
