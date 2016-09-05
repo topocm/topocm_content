@@ -15,6 +15,7 @@ git init
 git remote add origin https://github.com/topocm/topocm_content.git # (Or the location of your fork)
 git fetch --depth 1 origin +refs/tags/cleaned # Here we get the first commit that doesn't contain cruft
 git fetch origin
+git checkout master
 ```
 
 The `cleaned` tag corresponds to the beginning of development that stores no output.
