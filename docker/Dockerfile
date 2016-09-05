@@ -10,7 +10,7 @@ USER root
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     dvipng \
-    ssh-keyscan \
+    openssh-client \
     git \
     build-essential \
     python-dev \
