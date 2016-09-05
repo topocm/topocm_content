@@ -8,6 +8,7 @@ github mirror:
     - mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - git push --mirror git@github.com:topocm/topocm_content.git
+    - rm -rf ~/.ssh
 
 edx_archive:
   script: ./scripts/converter.py --silent
@@ -23,6 +24,7 @@ upload_website:
   script:
     - mkdir -p ~/.ssh && ssh-keyscan topocondmat.org >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - cd scripts && bash ipynb_to_html.sh
+    - cd scripts && python ipynb_to_html.py
+    - rsync -ravz generated/html/* topocm@tnw-tn1.tudelft.nl:
     - rm -rf ~/.ssh
     
