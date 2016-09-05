@@ -1,16 +1,5 @@
 image: topocourse
 
-edx_archive:
-  script: ./scripts/converter.py --silent
-  cache:
-    paths:
-      - .nb_output_cache
-  artifacts:
-    paths:
-      - generated/
-    expire_in: 7d
-
-
 upload_website:
   stage: deploy
   only:
@@ -20,3 +9,14 @@ upload_website:
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - ./scripts/ipynb_to_html.sh
     - rm -rf ~/.ssh
+
+edx_archive:
+  script: ./scripts/converter.py --silent
+  cache:
+    paths:
+      - .nb_output_cache
+  artifacts:
+    paths:
+      - generated/
+    expire_in: 7d
+    
