@@ -4,11 +4,17 @@ cache:
     - .nb_output_cache
 
 github mirror:
-  stage: deploy
   script:
     - mkdir -p ~/.ssh && ssh-keyscan topocondmat.org >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - git push --mirror git@github.com:topocm/topocm_content.git
+
+edx_archive:
+  script: ./scripts/converter.py --silent
+  artifacts:
+    paths:
+      - generated/
+    expire_in: 7d
 
 upload_website:
   stage: deploy
@@ -19,11 +25,4 @@ upload_website:
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - cd scripts && bash ipynb_to_html.sh
     - rm -rf ~/.ssh
-
-edx_archive:
-  script: ./scripts/converter.py --silent
-  artifacts:
-    paths:
-      - generated/
-    expire_in: 7d
     
