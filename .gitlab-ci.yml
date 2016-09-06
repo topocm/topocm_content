@@ -3,14 +3,6 @@ cache:
   paths:
     - .nb_output_cache
 
-github mirror:
-  script:
-    - mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - git remote add github git@github.com:topocm/topocm_content.git
-    - git push github HEAD
-    - rm -rf ~/.ssh
-
 edx_archive:
   script: ./scripts/converter.py --silent
   artifacts:
@@ -26,6 +18,5 @@ upload_website:
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - python scripts/ipynb_to_html.py
-    - "rsync -ravz generated/html/* topocm@tnw-tn1.tudelft.net:"
+    - "rsync -ravz --delete generated/html/* topocm@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
-    
