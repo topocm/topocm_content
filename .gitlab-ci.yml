@@ -7,8 +7,8 @@ github mirror:
   script:
     - mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    -  git remote add github ssh://git@github.com:topocm/topocm_content.git
-    - git push --all github
+    - git remote add github git@github.com:topocm/topocm_content.git
+    - git push github HEAD
     - rm -rf ~/.ssh
 
 edx_archive:
