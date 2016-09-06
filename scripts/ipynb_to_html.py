@@ -5,7 +5,7 @@ html_dir = 'generated/html/'
 ipynbs = glob.glob("**/*.ipynb", recursive=True)
 figures = glob.glob("**/figures/*", recursive=True)
 
-cmd = "jupyter nbconvert --to html --config scripts/links_config.py --template=scripts/template.tpl {}"
+cmd = "jupyter nbconvert --to html --config scripts/website_config.py --template=scripts/website_template.tpl {}"
 
 for ipynb in ipynbs:
     path, fname = os.path.split(ipynb.replace(".ipynb", ".html"))
