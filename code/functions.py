@@ -132,7 +132,6 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
     elif len(variables) == 2:
         # 2D plot.
-
         style = {}
         if xticks is None and variables[0][0] in 'k_x k_y k_z'.split():
             style['xticks'] = pi_ticks
