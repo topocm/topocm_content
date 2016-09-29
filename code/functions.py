@@ -36,14 +36,14 @@ pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 
-def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
+def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
              ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
              xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False):
     """Function that plots system spectrum for varying parameters or momenta.
 
     Parameters:
     -----------
-    sys : kwant.Builder object
+    syst : kwant.Builder object
         The un-finalized (in)finite system.
     p : SimpleNamespace object
         A container used to store Hamiltonian parameters. The parameters that
@@ -76,14 +76,14 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
     if p is None:
         p = SimpleNamespace()
-    dimensionality = sys.symmetry.num_directions
+    dimensionality = syst.symmetry.num_directions
     k = [k_x, k_y, k_z]
     k = [(np.linspace(-np.pi, np.pi, 101) if i is None else i)
          for i in k]
     k = [(i if j < dimensionality else 0) for (j, i) in enumerate(k)]
     k_x, k_y, k_z = k
 
-    hamiltonians, variables = hamiltonian_array(sys, p, k_x, k_y, k_z, True)
+    hamiltonians, variables = hamiltonian_array(syst, p, k_x, k_y, k_z, True)
     # Don't waste effort calculating eigenvalues if we aren't going to plot
     # anything.
     if len(variables) in (1, 2):
@@ -132,7 +132,6 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
     elif len(variables) == 2:
         # 2D plot.
-
         style = {}
         if xticks is None and variables[0][0] in 'k_x k_y k_z'.split():
             style['xticks'] = pi_ticks
@@ -192,18 +191,18 @@ def spectrum(sys, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
 
 
 
-def h_k(sys, p, momentum):
+def h_k(syst, p, momentum):
     """Function that returns the Hamiltonian of a kwant 1D system as a momentum.
     """
-    return hamiltonian_array(sys, p, momentum)[0]
+    return hamiltonian_array(syst, p, momentum)[0]
 
 
-def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
+def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     """Evaluate the Hamiltonian of a system over a grid of parameters.
 
     Parameters:
     -----------
-    sys : kwant.Builder object
+    syst : kwant.Builder object
         The un-finalized kwant system whose Hamiltonian is calculated.
     p : SimpleNamespace object
         A container of Hamiltonian parameters. The parameters that are
@@ -227,7 +226,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
 
     Examples:
     ---------
-    >>> hamiltonian_array(sys, SimpleNamespace(t=1, mu=np.linspace(-2, 2)),
+    >>> hamiltonian_array(syst, SimpleNamespace(t=1, mu=np.linspace(-2, 2)),
     ...                   k_x=np.linspace(-np.pi, np.pi))
     >>> hamiltonian_array(sys_2d, p, np.linspace(-np.pi, np.pi),
     ...                   np.linspace(-np.pi, np.pi))
@@ -236,23 +235,23 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     if p is None:
         p = SimpleNamespace()
     try:
-        space_dimensionality = sys.symmetry.periods.shape[-1]
+        space_dimensionality = syst.symmetry.periods.shape[-1]
     except AttributeError:
         space_dimensionality = 0
-    dimensionality = sys.symmetry.num_directions
+    dimensionality = syst.symmetry.num_directions
     pars = copy(p)
     if dimensionality == 0:
-        sys = sys.finalized()
+        syst = syst.finalized()
         def momentum_to_lattice(k):
             return []
     else:
-        if len(sys.symmetry.periods) == 1:
+        if len(syst.symmetry.periods) == 1:
             def momentum_to_lattice(k):
                 if any(k[dimensionality:]):
                     raise ValueError("Dispersion is 1D, but more momenta are provided.")
                 return [k[0]]
         else:
-            B = np.array(sys.symmetry.periods).T
+            B = np.array(syst.symmetry.periods).T
             A = B.dot(np.linalg.inv(B.T.dot(B)))
             def momentum_to_lattice(k):
                 k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
@@ -260,7 +259,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
                     raise RuntimeError("Requested momentum doesn't correspond"
                                        " to any lattice momentum.")
                 return list(k)
-        sys = wraparound(sys).finalized()
+        syst = wraparound(syst).finalized()
 
     changing = dict()
     for key, value in pars.__dict__.items():
@@ -276,7 +275,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             changing[key] = value
 
     if not changing:
-        hamiltonians = sys.hamiltonian_submatrix([pars] +
+        hamiltonians = syst.hamiltonian_submatrix([pars] +
                                                  momentum_to_lattice([k_x, k_y, k_z]),
                                                  sparse=False)[None, ...]
         if return_grid:
@@ -290,7 +289,7 @@ def hamiltonian_array(sys, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         k = [values.get('k_x', k_x), values.get('k_y', k_y),
              values.get('k_z', k_z)]
         k = momentum_to_lattice(k)
-        return sys.hamiltonian_submatrix(args=([pars] + k), sparse=False)
+        return syst.hamiltonian_submatrix(args=([pars] + k), sparse=False)
 
     names, values = zip(*sorted(changing.items()))
     hamiltonians = [hamiltonian(**dict(zip(names, value)))
