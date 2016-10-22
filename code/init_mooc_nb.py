@@ -128,6 +128,9 @@ def init_notebook(mpl=True):
         ', '.join(functions.__all__))
 
     holoviews.notebook_extension('matplotlib')
+
+    Store.renderers['matplotlib'].fig = 'svg'
+
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
     
     latex_packs = [r'\usepackage{amsmath}',
