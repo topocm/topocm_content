@@ -10,7 +10,6 @@ import holoviews
 from holoviews import Options, Store
 from matplotlib import pyplot as plt
 from IPython import display
-from ipywidgets import interact
 from IPython.display import display_html
 import kwant
 
@@ -22,7 +21,7 @@ import functions
 from functions import *
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
-                'interact', 'display_html', 'plt', 'pf',
+                'display_html', 'plt', 'pf',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
                 'pretty_fmt_complex']
 
