@@ -21,11 +21,12 @@ auto
 *.pyc
 .ropeproject
 
-# Compressed files for upload
-generated
 
 # Cached output
 .nb_output_cache
 
 # Misc
 .DS_Store
+
+# Output files
+generated
