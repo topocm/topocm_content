@@ -15,7 +15,7 @@ execute_ipynbs:
     - cp syllabus.ipynb $DEST
     - cp -r data $DEST
     - cp -r w*_* $DEST
-    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/**/*ipynb
+    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/**/*ipynb $DEST/syllabus.ipynb
     - rm -rf $DEST/data
   artifacts:
     paths:
@@ -37,10 +37,13 @@ upload_test_website:
   except:
     - master@qt/topocm
   script:
+    - export DEST=generated/html
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - python scripts/ipynb_to_html.py
-    - "rsync -ravz --delete generated/html/* topocm-test@tnw-tn1.tudelft.net:"
+    - cp -r generated/with_output $DEST
+    - jupyter nbconvert --to html --Exporter.preprocessors=[\"scripts.htmllinks.HtmlLinksPreprocessor\"] --template scripts/website_template.tpl $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - rm $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - "rsync -ravz --delete $DEST/* topocm-test@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
 
 
@@ -49,8 +52,11 @@ upload_website:
   only:
     - master@qt/topocm
   script:
+    - export DEST=generated/html
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - python scripts/ipynb_to_html.py
-    - "rsync -ravz --delete generated/html/* topocm@tnw-tn1.tudelft.net:"
+    - cp -r generated/with_output generated/html
+    - jupyter nbconvert --to html --Exporter.preprocessors=[\"scripts.htmllinks.HtmlLinksPreprocessor\"] --template scripts/website_template.tpl $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - rm $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - "rsync -ravz --delete $DEST/* topocm@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
