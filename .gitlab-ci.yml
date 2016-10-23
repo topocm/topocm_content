@@ -2,9 +2,12 @@ image: topocourse
 cache:
   paths:
     - .nb_output_cache
+stages:
+  - execute
+  - deploy
 
 execute_ipynbs:
-  stage: build
+  stage: execute
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export DEST=generated/with_output
@@ -20,7 +23,8 @@ execute_ipynbs:
     expire_in: 7d
 
 edx_archive:
-  script: ./scripts/converter.py --silent
+  stage: deploy
+  script: ./scripts/converter.py --silent ./generated/with_output
   artifacts:
     paths:
       - generated/import_to_edx.tar.gz
