@@ -69,4 +69,5 @@ nb['cells'][1]['source'] = nb['cells'][1][
 with open('generated/pelican_content/syllabus.ipynb', 'w') as f:
     json.dump(nb, f)
 with open('generated/pelican_content/syllabus.ipynb-meta', 'w', encoding='utf-8') as f:
-    f.write(meta_file.format(slug='syllabus', title='Syllabus', date=date))
+    meta = meta_file.format(slug='syllabus', title='Syllabus', date=date)
+    f.write(meta + '\nsave_as: index.html')
