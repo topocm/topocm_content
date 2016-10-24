@@ -20,7 +20,7 @@ def remove_first_cell(nb_name):
     return nbformat.v4.new_notebook(cells=cells, metadata={'name': cells[0].source[2:]})
 
 
-meta_file = """Title: Topocondmat.org: {title}
+meta_file = """Title: {title}
 Slug: {slug}
 Date: {date}
 Category: """
