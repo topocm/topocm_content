@@ -30,3 +30,7 @@ auto
 
 # Output files
 generated
+
+# pelican
+topocondmat/output
+topocondmat/content
