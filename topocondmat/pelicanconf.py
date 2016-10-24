@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'Bas Nijholt'
+AUTHOR = 'MOOC Team'
 SITENAME = 'Topology in Condensed Matter'
 SITEURL = ''
 
@@ -21,8 +21,7 @@ AUTHOR_FEED_RSS = None
 
 # Blogroll
 LINKS = (('Quantum tinkerer', 'http://quantumtinkerer.tudelft.nl/'),
-         ('EdX: Topology in Condensed Matter', 'http://tiny.cc/topocm'),
-         ('GitHub', 'https://github.com/topocm/topocm_content/'),)
+         ('EdX: Topology in Condensed Matter', 'http://tiny.cc/topocm'),)
 
 # Social widget
 SOCIAL = (('github', 'https://github.com/topocm/topocm_content'),)
