@@ -68,7 +68,7 @@ def pretty_fmt_complex(num, digits=2):
     if np.round(num.real, digits) == 0:
         return strip_trailing(str(round(num.imag, digits))) + 'i'
 
-    return (pretty_fmt_complex(num.real) + ('+' * (num.imag > 0)) +
+    return (pretty_fmt_complex(num.real) + (('+' if num.imag > 0 else '')) +
             pretty_fmt_complex(num.imag) + 'i')
 
 
