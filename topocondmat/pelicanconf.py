@@ -41,6 +41,6 @@ THEME = "themes/pelican-bootstrap3"
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 
-PIWIK_URL = '//piwik.kwant-project.org/'
+PIWIK_URL = 'piwik.kwant-project.org'
 # PIWIK_SSL_URL
 PIWIK_SITE_ID = 4
