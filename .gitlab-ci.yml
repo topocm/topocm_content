@@ -6,6 +6,7 @@ stages:
   - execute
   - deploy
 
+
 execute_ipynbs:
   stage: execute
   script:
@@ -22,6 +23,7 @@ execute_ipynbs:
       - generated/with_output
     expire_in: 7d
 
+
 edx_archive:
   stage: deploy
   script: ./scripts/converter.py --silent ./generated/with_output
@@ -29,6 +31,7 @@ edx_archive:
     paths:
       - generated/import_to_edx.tar.gz
     expire_in: 7d
+
 
 upload_test_website:
   stage: deploy
@@ -40,9 +43,9 @@ upload_test_website:
     - export DEST=generated/html
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - cp -r generated/with_output $DEST
-    - jupyter nbconvert --to html --Exporter.preprocessors=[\"scripts.htmllinks.HtmlLinksPreprocessor\"] --template scripts/website_template.tpl $DEST/**/*.ipynb $DEST/syllabus.ipynb
-    - rm $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - python scripts/pelican_converter.py
+    - pip install pelican markdown
+    - pelican -o $DEST/ -s topocondmat/pelicanconf.py topocondmat/content/
     - "rsync -ravz --delete $DEST/* topocm-test@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
 
@@ -55,7 +58,7 @@ upload_website:
     - export DEST=generated/html
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - cp -r generated/with_output generated/html
+    - cp -r generated/with_output $DEST
     - jupyter nbconvert --to html --Exporter.preprocessors=[\"scripts.htmllinks.HtmlLinksPreprocessor\"] --template scripts/website_template.tpl $DEST/**/*.ipynb $DEST/syllabus.ipynb
     - rm $DEST/**/*.ipynb $DEST/syllabus.ipynb
     - "rsync -ravz --delete $DEST/* topocm@tnw-tn1.tudelft.net:"
