@@ -22,7 +22,7 @@ from time import strptime
 import nbformat
 from nbformat import v4 as current
 from traitlets.config import Config
-from nbconvert import HTMLExporter, NotebookExporter
+from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
 
 import bs4
@@ -41,20 +41,6 @@ cfg = Config({'HTMLExporter':{'template_file':'no_code',
                               'filters':{'markdown2html':
                                          markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
-
-cfg = Config({'NotebookExporter': {'preprocessors':
-                                   ['cachedoutput.CachedOutputPreprocessor']},
-              'CachedOutputPreprocessor': {'enabled': True,
-                                           'cache_directory':
-                                           '.nb_output_cache',
-                                           'req_files': ['code/init_mooc_nb.py',
-                                                         'code/edx_components.py',
-                                                         'code/pfaffian.py',
-                                                         'code/functions.py'],
-                                           'warnings': 'ignore',
-                                           'timeout': 300}})
-cachedoutput = NotebookExporter(cfg)
-
 
 with open('scripts/release_dates') as f:
     release_dates = eval(f.read())
@@ -139,8 +125,6 @@ def split_into_units(nb_name):
             return []
         else:
             raise e
-    with_output = cachedoutput.from_notebook_node(nb)[0]
-    nb = nbformat.reads(with_output, as_version=4)
     cells = nb.cells
     indexes = [i for i, cell in enumerate(cells)
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
@@ -431,7 +415,7 @@ def convert_unit(unit, date):
     return unit_output
 
 
-def converter(mooc_folder, args):
+def converter(mooc_folder, args, content_folder=None):
     """ Do converting job. """
     # Basic info
     info_org='DelftX'
@@ -441,7 +425,8 @@ def converter(mooc_folder, args):
     info_start="2016-02-08T10:00:00Z"
 
     # Mooc content location
-    content_folder = mooc_folder
+    if content_folder is None:
+        content_folder = mooc_folder
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/' + info_run
@@ -449,12 +434,11 @@ def converter(mooc_folder, args):
         print('Temporary path: ', dirpath)
 
     # Copying edx_skeleton
-    skeleton = content_folder + '/edx_skeleton'
+    skeleton = mooc_folder + '/edx_skeleton'
     if os.path.exists(skeleton):
         shutil.copytree(skeleton, dirpath)
     else:
-        'No edx skeleton!'
-        return
+        raise RuntimeError('No edx skeleton!')
 
     # Loading data from syllabus
     syllabus_nb = os.path.join(content_folder, 'syllabus.ipynb')
@@ -621,11 +605,9 @@ def converter(mooc_folder, args):
             shutil.copy(f, destination)
 
     # Creating tar
-    target = mooc_folder + '/generated'
-    if os.path.exists(target):
-        shutil.rmtree(target)
-    os.mkdir(target)
-    tar_filepath = target + '/import_to_edx.tar.gz'
+    target = os.path.join(mooc_folder, 'generated')
+    os.makedirs(target, exist_ok=True)
+    tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
     tar = tarfile.open(name=tar_filepath, mode='w:gz')
     tar.add(dirpath, arcname='')
     tar.close()
@@ -662,6 +644,7 @@ def warn_about_status(mooc_folder, silent=False):
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
     parser = argparse.ArgumentParser()
+    parser.add_argument('source', nargs='?', help='folder to convert')
     parser.add_argument('-d','--debug', action='store_true',
                         help='debugging flag')
     parser.add_argument('-o', '--open', action='store_true',
@@ -676,8 +659,9 @@ def main():
         print(msg % (mooc_folder + '/generated/files'))
 
     print('Path to mooc folder:', mooc_folder)
+    print('Path to notebooks:', args.source)
     warn_about_status(mooc_folder, args.silent)
-    converter(mooc_folder, args)
+    converter(mooc_folder, args, content_folder=args.source)
 
 if __name__ == "__main__":
     main()
