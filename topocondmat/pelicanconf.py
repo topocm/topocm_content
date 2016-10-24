@@ -21,7 +21,8 @@ AUTHOR_FEED_RSS = None
 
 # Blogroll
 LINKS = (('Quantum tinkerer', 'http://quantumtinkerer.tudelft.nl/'),
-         ('EdX: Topology in Condensed Matter', 'http://tiny.cc/topocm'),)
+         ('EdX: Topology in Condensed Matter', 'http://tiny.cc/topocm'),
+         ('topocondmat chat', 'https://meso.tnw.tudelft.nl/topocondmat'))
 
 # Social widget
 SOCIAL = (('github', 'https://github.com/topocm/topocm_content'),)
