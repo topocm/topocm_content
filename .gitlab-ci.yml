@@ -45,7 +45,7 @@ upload_test_website:
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
     - python scripts/pelican_converter.py
     - pip install pelican markdown
-    - pelican -o $DEST/ -s topocondmat/pelicanconf.py topocondmat/content/
+    - pelican -o $DEST/ -s topocondmat/pelicanconf.py generated/pelican_content
     - "rsync -ravz --delete $DEST/* topocm-test@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
 

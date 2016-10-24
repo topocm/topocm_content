@@ -31,8 +31,8 @@ ipynbs = glob.glob('generated/with_output/w*/*.ipynb')
 figures = glob.glob('generated/with_output/w*/figures/*')
 
 try:
-    shutil.rmtree('topocondmat/content')
-    os.makedirs('topocondmat/content', exist_ok=True)
+    shutil.rmtree('generated/pelican_content')
+    os.makedirs('generated/pelican_content', exist_ok=True)
 except:
     pass
 
@@ -45,7 +45,7 @@ except:
 for ipynb in ipynbs:
     nb = remove_first_cell(ipynb)
     title = nb.cells[0].source[2:]
-    new_fname = ipynb.replace('generated/with_output/', 'topocondmat/content/')
+    new_fname = ipynb.replace('generated/with_output/', 'generated/pelican_content/')
     os.makedirs(os.path.dirname(new_fname), exist_ok=True)
     with open(new_fname, 'w') as f:
         json.dump(nb, f)
@@ -66,7 +66,7 @@ for figure in figures:
 nb = remove_first_cell('syllabus.ipynb')
 nb['cells'][1]['source'] = nb['cells'][1][
     'source'].replace('/', '-').replace('.ipynb', '.html')
-with open('topocondmat/content/syllabus.ipynb', 'w') as f:
+with open('generated/pelican_content/syllabus.ipynb', 'w') as f:
     json.dump(nb, f)
-with open('topocondmat/content/syllabus.ipynb-meta', 'w', encoding='utf-8') as f:
+with open('generated/pelican_content/syllabus.ipynb-meta', 'w', encoding='utf-8') as f:
     f.write(meta_file.format(slug='syllabus', title='Syllabus', date=date))
