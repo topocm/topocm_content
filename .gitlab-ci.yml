@@ -48,6 +48,10 @@ upload_test_website:
     - pelican -o $DEST/ -s topocondmat/pelicanconf.py generated/pelican_content
     - "rsync -ravz --delete $DEST/* topocm-test@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
+  artifacts:
+    paths:
+      - generated/html
+    expire_in: 1d
 
 
 upload_website:
