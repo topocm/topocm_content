@@ -70,6 +70,7 @@
 {% block content %}
     <section id="content">
         <article>
+            {% if SHOW_TITLE_HEADER %}
             <header class="page-header">
                 <h1>
                     <a href="{{ SITEURL }}/{{ article.url }}"
@@ -79,12 +80,16 @@
                     </a>
                 </h1>
             </header>
+            {% endif %}
             <div class="entry-content">
+                {% if SHOW_ARTICLE_INFO %}
                 <div class="panel">
                     <div class="panel-body">
                         {% include "includes/article_info.html" %}
                     </div>
                 </div>
+                {% endif %}
+                
                 {{ article.content }}
             </div>
             <!-- /.entry-content -->
