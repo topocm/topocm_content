@@ -30,17 +30,6 @@ date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 ipynbs = glob.glob('generated/with_output/w*/*.ipynb')
 figures = glob.glob('generated/with_output/w*/figures/*')
 
-try:
-    shutil.rmtree('generated/pelican_content')
-    os.makedirs('generated/pelican_content', exist_ok=True)
-except:
-    pass
-
-try:
-    shutil.rmtree('generated/html/')
-except:
-    pass
-
 
 # Copy ipynbs and create meta data files
 for ipynb in ipynbs:
@@ -65,8 +54,6 @@ for figure in figures:
 
 # Copy syllabus
 nb = remove_first_cell('syllabus.ipynb')
-nb['cells'][1]['source'] = nb['cells'][1][
-    'source'].replace('/', '-').replace('.ipynb', '.html')
 with open('generated/pelican_content/syllabus.ipynb', 'w') as f:
     json.dump(nb, f)
 with open('generated/pelican_content/syllabus.ipynb-meta', 'w', encoding='utf-8') as f:
