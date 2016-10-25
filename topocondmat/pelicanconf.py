@@ -38,6 +38,7 @@ THEME = "themes/pelican-bootstrap3"
 # THEME = "themes/notmyidea"
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
+BOOTSTRAP_FLUID = True
 
 PIWIK_URL = 'piwik.kwant-project.org'
 # PIWIK_SSL_URL
