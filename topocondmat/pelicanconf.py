@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'MOOC Team'
+AUTHOR = 'TU Delft and course contributors'
 SITENAME = 'Topology in Condensed Matter'
 SITEURL = ''
 
@@ -39,6 +39,9 @@ THEME = "themes/pelican-bootstrap3"
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 BOOTSTRAP_FLUID = True
+SHOW_DATE_MODIFIED = False
+SHOW_ARTICLE_INFO = False
+SHOW_TITLE_HEADER = False
 
 PIWIK_URL = 'piwik.kwant-project.org'
 # PIWIK_SSL_URL
