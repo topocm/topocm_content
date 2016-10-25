@@ -41,23 +41,24 @@ try:
 except:
     pass
 
+
 # Copy ipynbs and create meta data files
 for ipynb in ipynbs:
     nb = remove_first_cell(ipynb)
     title = nb.cells[0].source[2:]
-    new_fname = ipynb.replace('generated/with_output/', 'generated/pelican_content/')
+    new_fname = ipynb.replace('generated/with_output', 'generated/pelican_content')
     os.makedirs(os.path.dirname(new_fname), exist_ok=True)
     with open(new_fname, 'w') as f:
         json.dump(nb, f)
     with open(new_fname + '-meta', 'w', encoding='utf-8') as f:
         slug = ipynb.replace(
-            'generated/with_output/', '').replace('.ipynb', '').replace('/', '-')
+            'generated/with_output/', '').replace('.ipynb', '')
         f.write(meta_file.format(slug=slug, title=title, date=date))
 
 
 # Copy figures
 for figure in figures:
-    new_fname = 'generated/html/figures/' + os.path.basename(figure)
+    new_fname = figure.replace('with_output', 'html')
     os.makedirs(os.path.dirname(new_fname), exist_ok=True)
     shutil.copyfile(figure, new_fname)
 
