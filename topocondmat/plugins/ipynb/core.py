@@ -43,20 +43,20 @@ LATEX_CUSTOM_SCRIPT = """
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-CHTML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
         "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: 'center'," +
         "    displayIndent: '0em'," +
         "    showMathMenu: true," +
         "    tex2jax: { " +
-        "        inlineMath: [ ['$','$'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
+        "        inlineMath: [ ['$','$'], ['\\\\\\\\(','\\\\\\\\)']  ], " +
+        "        displayMath: [ ['$$','$$'], ['\\\\\\\\[','\\\\\\\\]']  ]," +
         "        processEscapes: true," +
+        "        processEnvironments: true," +
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
