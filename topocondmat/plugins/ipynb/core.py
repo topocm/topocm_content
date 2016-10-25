@@ -85,8 +85,8 @@ def get_html_from_filepath(filepath):
     config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
                                                   'highlight_class': '.highlight-ipynb'}})
 
-    # config.Exporter.preprocessors = ['HtmlLinksPreprocessor']
-    # config.HtmlLinksPreprocessor['enabled'] = True
+    config.HTMLExporter.preprocessors = [HtmlLinksPreprocessor]
+    config.HtmlLinksPreprocessor['enabled'] = True
 
     path = os.path.dirname(os.path.realpath(__file__))
     exporter = HTMLExporter(config=config, template_file='no_code',
