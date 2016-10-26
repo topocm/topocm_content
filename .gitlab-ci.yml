@@ -61,8 +61,11 @@ upload_website:
     - export DEST=generated/html
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - cp -r generated/with_output $DEST
-    - jupyter nbconvert --to html --Exporter.preprocessors=[\"scripts.htmllinks.HtmlLinksPreprocessor\"] --template scripts/website_template.tpl $DEST/**/*.ipynb $DEST/syllabus.ipynb
-    - rm $DEST/**/*.ipynb $DEST/syllabus.ipynb
+    - python scripts/pelican_converter.py
+    - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
     - "rsync -ravz --delete $DEST/* topocm@tnw-tn1.tudelft.net:"
     - rm -rf ~/.ssh
+  artifacts:
+    paths:
+      - generated/html
+    expire_in: 1d
