@@ -70,6 +70,8 @@ RUN cd /tmp && \
     'lxml=3.6*' \
     'sqlalchemy=1.0*'\
     'holoviews=1.4.3' \
+    'pelican=3.6.3' \
+    'markdown=2.6.7' \
     'beautifulsoup4=4.4*' \
     'feedparser=5.2*' &&\
     conda install --quiet --yes \
