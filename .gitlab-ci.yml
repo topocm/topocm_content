@@ -1,7 +1,4 @@
 image: topocourse
-cache:
-  paths:
-    - .nb_output_cache
 stages:
   - execute
   - deploy
@@ -18,6 +15,10 @@ execute_ipynbs:
     - cp -r w*_* $DEST
     - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/**/*ipynb $DEST/syllabus.ipynb
     - rm -rf $DEST/data
+  cache:
+    key: "$CI_BUILD_NAME"
+    paths:
+      - .nb_output_cache
   artifacts:
     paths:
       - generated/with_output
