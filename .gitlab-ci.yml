@@ -52,6 +52,7 @@ edx_archive:
 
 upload_test_website:
   stage: deploy
+  environment: test
   only:
     - branches@qt/topocm
   except:
@@ -72,6 +73,7 @@ upload_test_website:
 
 upload_website:
   stage: deploy
+  environment: published
   only:
     - master@qt/topocm
   script:
