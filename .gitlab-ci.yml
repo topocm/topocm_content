@@ -24,6 +24,22 @@ execute_ipynbs:
     expire_in: 7d
 
 
+mirror to github:
+  stage: execute
+  only:
+    - branches@qt/topocm
+  script: |
+    REPOS=( git@github.com:topocm/topocm_content.git )
+    trap "rm -rf ~/.ssh" EXIT
+    HOSTS=$(for REPO in "${REPOS[@]}"; do echo ${REPO%:*}|cut -d'@' -f2; done)
+    ORIGIN_URL=$(git config --get remote.origin.url)
+    mkdir ~/.ssh
+    for HOST in "${HOSTS[@]}"; do ssh-keyscan $HOST >> ~/.ssh/known_hosts; done
+    echo "$PUSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    cd $(mktemp -d); git clone --mirror $ORIGIN_URL .
+    for REPO in "${REPOS[@]}"; do git remote add mirror $REPO; git push mirror --mirror; git remote rm mirror; done
+
+
 edx_archive:
   stage: deploy
   script: ./scripts/converter.py --silent ./generated/with_output
