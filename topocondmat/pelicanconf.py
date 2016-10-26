@@ -12,7 +12,6 @@ TIMEZONE = 'Europe/Amsterdam'
 
 DEFAULT_LANG = 'en'
 
-# Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
@@ -27,15 +26,18 @@ LINKS = (('This course on edX', 'http://tiny.cc/topocm'),
 
 DEFAULT_PAGINATION = 10
 
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
-
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
 THEME = "themes/pelican-bootstrap3"
-# THEME = "themes/notmyidea"
+
+ARCHIVES_SAVE_AS = ''
+CATEGORIES_SAVE_AS = ''
+AUTHORS_SAVE_AS = ''
+TAGS_SAVE_AS = ''
+INDEX_SAVE_AS = ''
+
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 BOOTSTRAP_FLUID = True
