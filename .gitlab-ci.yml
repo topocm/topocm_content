@@ -36,7 +36,7 @@ mirror to github:
     mkdir ~/.ssh
     for HOST in "${HOSTS[@]}"; do ssh-keyscan $HOST >> ~/.ssh/known_hosts; done
     echo "$PUSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    cd $(mktemp -d); git clone --mirror $ORIGIN_URL .
+    cd $(mktemp -d); git clone --bare $ORIGIN_URL .
     for REPO in "${REPOS[@]}"; do git remote add mirror $REPO; git push mirror --mirror; git remote rm mirror; done
 
 
