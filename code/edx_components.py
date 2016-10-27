@@ -12,7 +12,7 @@ __all__ = ['MoocVideo', 'PreprintReference', 'MoocDiscussion',
             'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
             'MoocPeerAssessment', 'MoocSelfAssessment']
 
-class MoocComponent(object):
+class MoocComponent:
     def __repr__(self):
         return '{0}(**{1})'.format(self.__class__.__name__, repr(self.param))
 
@@ -36,10 +36,10 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
             kwargs['source'] = loc.format(src_location, res)
 
         self.param = kwargs
-        super(MoocVideo, self).__init__(id, rel=0, cc_load_policy=1)
+        super().__init__(id, width='100%', height=400, rel=0, cc_load_policy=1)
 
 
-class PreprintReference(object):
+class PreprintReference:
     def __init__(self, index, description="", show_abstract=True):
         """Formatted basic information from arxiv preprint."""
 
