@@ -28,11 +28,6 @@ except ImportError:
     # IPython < 2.0
     from nbconvert.filters.highlight import _pygments_highlight
 
-try:
-    from bs4 import BeautifulSoup
-except:
-    BeautifulSoup = None
-
 from pygments.formatters import HtmlFormatter
 
 import nbformat
@@ -93,12 +88,6 @@ def get_html_from_filepath(filepath):
                             template_path=['.', path + '/../../../scripts/'],
                             filters={'highlight2html': custom_highlighter})
     content, info = exporter.from_filename(filepath)
-    if BeautifulSoup:
-        soup = BeautifulSoup(content, 'html.parser')
-        for i in soup.findAll('div', {'class': 'input'}):
-            if i.findChildren()[1].find(text='#ignore') is not None:
-                i.extract()
-        content = soup.decode(formatter=None)
 
     return content, info
 
