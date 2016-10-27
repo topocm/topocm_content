@@ -21,9 +21,8 @@ import functions
 from functions import *
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
-                'display_html', 'plt', 'pf',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
-                'pretty_fmt_complex']
+                'pretty_fmt_complex', 'plt', 'pf', 'display_html']
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
@@ -69,46 +68,6 @@ def pretty_fmt_complex(num, digits=2):
 
     return (pretty_fmt_complex(num.real) + (('+' if num.imag > 0 else '')) +
             pretty_fmt_complex(num.imag) + 'i')
-
-
-nb_html_header = """
-<script type=text/javascript>
-/* Add a button for showing or hiding input */
-on = "Show input";
-off = "Hide input";
-function onoff(){
-  currentvalue = document.getElementById('onoff').value;
-  if(currentvalue == off){
-    document.getElementById("onoff").value=on;
-      $('div.input').hide();
-  }else{
-    document.getElementById("onoff").value=off;
-      $('div.input').show();
-  }
-}
-
-/* Launch first notebook cell on start */
-function launch_first_cell (evt) {
-  if (!launch_first_cell.executed
-      && Jupyter.notebook.kernel
-  ) {
-    Jupyter.notebook.get_cells()[0].execute();
-    launch_first_cell.executed = true;
-  }
-}
-
-$([Jupyter.events]).on('status_started.Kernel notebook_loaded.Notebook', launch_first_cell);
-</script>
-
-<p>Press this button to show/hide the code used in the notebook:
-<input type="button" class="ui-button ui-widget ui-state-default \
-ui-corner-all ui-button-text-only" value="Hide input" id="onoff" \
-onclick="onoff();"></p>
-"""
-
-hide_outside_ipython = """<script type=text/javascript>
-$(document).ready(function (){if(!("IPython" in window)){onoff();}})
-</script>"""
 
 
 def init_notebook(mpl=True):
@@ -164,20 +123,6 @@ def init_notebook(mpl=True):
 
     np.set_printoptions(precision=2, suppress=True,
                         formatter={'complexfloat': pretty_fmt_complex})
-
-    # In order to make the notebooks readable through nbviewer we want to hide
-    # the code by default. However the same code is executed by the students,
-    # and in that case we don't want to hide the code. So we check if the code
-    # is executed by one of the mooc developers. Here we do by simply checking
-    # for some files that belong to the internal mooc repository, but are not
-    # published.  This is a temporary solution, and should be improved in the
-    # long run.
-
-    developer = os.path.exists(os.path.join(module_dir, os.path.pardir,
-                                            'scripts'))
-
-    display_html(display.HTML(nb_html_header +
-                              (hide_outside_ipython if developer else '')))
 
     # Patch a bug in holoviews
     if holoviews.__version__.release <= (1, 4, 3):
