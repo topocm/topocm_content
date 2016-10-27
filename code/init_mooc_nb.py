@@ -10,6 +10,7 @@ import holoviews
 from holoviews import Options, Store
 from matplotlib import pyplot as plt
 from IPython import display
+from IPython.display import display_html
 import kwant
 
 import pfaffian as pf
@@ -21,7 +22,7 @@ from functions import *
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
-                'pretty_fmt_complex', 'plt', 'pf']
+                'pretty_fmt_complex', 'plt', 'pf', 'display_html']
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
