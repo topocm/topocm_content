@@ -20,9 +20,8 @@ import functions
 from functions import *
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
-                'display_html', 'plt', 'pf',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
-                'pretty_fmt_complex']
+                'pretty_fmt_complex', 'plt', 'pf']
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
