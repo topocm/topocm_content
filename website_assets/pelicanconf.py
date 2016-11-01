@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'TU Delft and course contributors'
 SITENAME = 'Topology in Condensed Matter'
-SITEURL = ''
+SITEURL = 'topocondmat.org'
 
 PATH = 'content'
 
