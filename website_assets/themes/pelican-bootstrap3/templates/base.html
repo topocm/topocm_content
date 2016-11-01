@@ -126,6 +126,7 @@
                 {% for title, link in MENUITEMS %}
                     <li><a href="{{ link }}">{{ title }}</a></li>
                 {% endfor %}
+                    <li><a href="View as notebook">https://nbviewer.jupyter.org/url/{{ SITEURL }}/notebooks/{{ article.url | replace(".html", ".ipynb") }}</a></li>
                 {% if not PAGES_SORT_ATTRIBUTE -%}
                     {% set PAGES_SORT_ATTRIBUTE = 'title' %}
                 {%- endif %}
