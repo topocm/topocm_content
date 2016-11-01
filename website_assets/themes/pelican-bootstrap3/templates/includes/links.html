@@ -8,6 +8,11 @@
             </a>
         </li>
         {% endfor %}
+        <li class="list-group-item">
+            <a href="https://nbviewer.jupyter.org/url/{{ SITEURL }}/notebooks/{{ article.url | replace(".html", ".ipynb") }}">
+                View as notebook
+            </a>
+        </li>
       </ul>
     </li>
 {% endif %}
