@@ -90,12 +90,13 @@ def init_notebook(mpl=True):
     Store.renderers['matplotlib'].fig = 'svg'
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
-    
+
     latex_packs = [r'\usepackage{amsmath}',
                    r'\usepackage{amssymb}'
                    r'\usepackage{bm}']
 
-    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = latex_packs
+    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = \
+                                                                    latex_packs
 
     # Set plot style.
     options = Store.options(backend='matplotlib')
@@ -111,8 +112,13 @@ def init_notebook(mpl=True):
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
-    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
+    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1,
+                              lw=0.2)
     options.Surface = Options('plot', azimuth=20, elevation=8)
+
+    # Set slider label formatting
+    for dimension_type in [float, np.float64, np.float32]:
+        holoviews.Dimension.type_formatters[dimension_type] = pretty_fmt_complex
 
     # Turn off a bogus holoviews warning.
     # Temporary solution to ignore the warnings
