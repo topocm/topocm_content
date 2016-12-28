@@ -20,3 +20,7 @@ git checkout master
 
 The `cleaned` tag corresponds to the beginning of development that stores no output.
 Then you get a repository that does not contain any cruft data, and has a size of ~15MB.
+
+# [Topocondmat.org](http://topocondmat.org/)
+The notebooks in this repo are executed and converted to html and available on [topocondmat.org](http://topocondmat.org/).
+For building the website we use the [pelican](https://github.com/getpelican/pelican) static site generator, available under AGPL license.
