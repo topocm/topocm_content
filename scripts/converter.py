@@ -42,6 +42,18 @@ cfg = Config({'HTMLExporter':{'template_file':'no_code',
                                          markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
 
+IFRAME_TEMPLATE = r"""
+<script src="/static/iframeResizer.min.js"></script>
+<script>
+$('iframe').iFrameResize({{log:true, checkOrigin:["https://topocondmat.org", "https://test.topocondmat.org"]}})
+</script>
+
+<iframe id="{0}" scrolling="no" width="100%" height=1000 frameborder=0>
+Your browser does not support IFrames.
+</iframe>
+<script>document.getElementById('{0}').src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());</script>
+"""
+
 with open('scripts/release_dates') as f:
     release_dates = eval(f.read())
 
@@ -417,16 +429,26 @@ def convert_unit(unit, date):
 
 def converter(mooc_folder, args, content_folder=None):
     """ Do converting job. """
+    # Mooc content location
+    if content_folder is None:
+        content_folder = mooc_folder
+
+    # copying figures
+    target = os.path.join(mooc_folder, 'generated')
+    os.makedirs(os.path.join(target, 'html/edx/figures'), exist_ok=True)
+    for entry, *_ in os.walk(content_folder):
+        if re.match(content_folder + r'/w\d+_.+/figures', entry):
+            for filename in os.listdir(entry):
+                shutil.copy(os.path.join(entry, filename),
+                            os.path.join(target, 'html/edx/figures'))
+    html_folder = os.path.join(target, 'html/edx')
+
     # Basic info
     info_org='DelftX'
     info_course='TOPOCMx'
     info_display_name='Topology in Condensed Matter: Tying Quantum Knots'
     info_run='course'
     info_start="2016-02-08T10:00:00Z"
-
-    # Mooc content location
-    if content_folder is None:
-        content_folder = mooc_folder
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/' + info_run
@@ -524,12 +546,12 @@ def converter(mooc_folder, args, content_folder=None):
                                                         out_url+'.xml'))
 
                         body = out[1]
-                        body = body.replace('src="figures/',
-                                            'src="/static/'+chapter.url+'_')
-
-                        html_path = os.path.join(dirpath,'html',
+                        html_path = os.path.join(html_folder,
                                                  out_url+'.html')
                         save_html(body, html_path)
+                        html_path = os.path.join(dirpath,'html',
+                                                 out_url+'.html')
+                        save_html(IFRAME_TEMPLATE.format(out_url), html_path)
 
                     elif out[0] == 'MoocVideo':
                         # adding video subelement
@@ -586,27 +608,7 @@ def converter(mooc_folder, args, content_folder=None):
             save_xml(sequential_xml, os.path.join(dirpath, 'sequential',
                                                   sequential.url+'.xml'))
 
-    # copying figures
-    for chapter in data.chapters:
-        figures_list = []
-        for sequential in chapter.sequentials:
-            fig_path = os.path.join(content_folder,
-                                    os.path.dirname(sequential.source_notebook),
-                                    'figures')
-            if os.path.exists(fig_path):
-                files = os.listdir(fig_path)
-                for f in files:
-                    if f not in figures_list:
-                        figures_list.append(fig_path + '/' + f)
-
-        for f in figures_list:
-            destination = os.path.join(dirpath, 'static', chapter.url + '_' +
-                                       f.split('/')[-1])
-            shutil.copy(f, destination)
-
     # Creating tar
-    target = os.path.join(mooc_folder, 'generated')
-    os.makedirs(target, exist_ok=True)
     tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
     tar = tarfile.open(name=tar_filepath, mode='w:gz')
     tar.add(dirpath, arcname='')

@@ -1,5 +1,9 @@
 {%- extends 'display_priority.tpl' -%}
 
+{% block header %}
+{{ super() }}
+<script src="/static/js/iframeResizer.contentWindow.min.js"></script>
+{%- endblock header %}
 
 {% block codecell %}
 <div class="cell border-box-sizing code_cell rendered">
