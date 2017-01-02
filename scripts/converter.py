@@ -437,7 +437,7 @@ def converter(mooc_folder, args, content_folder=None):
     target = os.path.join(mooc_folder, 'generated')
     os.makedirs(os.path.join(target, 'html/edx/figures'), exist_ok=True)
     for entry, *_ in os.walk(content_folder):
-        if re.findall(content_folder + r'w\d+_.+/figures', entry):
+        if re.match(content_folder + r'/w\d+_.+/figures', entry):
             for filename in os.listdir(entry):
                 shutil.copy(os.path.join(entry, filename),
                             os.path.join(target, 'html/edx/figures'))

@@ -53,7 +53,6 @@ edx archive:
     paths:
       - generated/import_to_edx.tar.gz
       - generated/html/edx
-      - generated/html/edx/figures
     expire_in: 7d
 
 
