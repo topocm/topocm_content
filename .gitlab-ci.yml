@@ -1,4 +1,4 @@
-image: akhmerov/topocourse
+image: topocourse/topocourse
 stages:
   - execute
   - build
@@ -14,7 +14,7 @@ execute_ipynbs:
     - cp syllabus.ipynb $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
-    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/**/*ipynb $DEST/syllabus.ipynb
+    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/*/*ipynb $DEST/syllabus.ipynb
     - rm -rf $DEST/data
   cache:
     key: "$CI_BUILD_NAME"
@@ -70,6 +70,18 @@ pelican website:
     expire_in: 1d
 
 
+ocw website:
+  stage: build
+  variables:
+    DEST: "generated/html"
+  script:
+    - python scripts/submodules_html.py
+  artifacts:
+    paths:
+      - generated/html/ocw
+    expire_in: 1d
+
+
 .upload_website: &upload_website
   stage: deploy
   before_script:
@@ -77,6 +89,7 @@ pelican website:
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
   script:
     - "rsync -ravz --delete generated/html/* $USER@tnw-tn1.tudelft.net:"
+    - "rsync -ravz --delete website_assets/static $USER@tnw-tn1.tudelft.net:"
   after_script:
     - rm -rf ~/.ssh
 

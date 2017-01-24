@@ -85,6 +85,10 @@ def init_notebook(mpl=True):
         '\nfrom code/functions:\n' +
         ', '.join(functions.__all__))
 
+    code_dir = os.path.dirname(os.path.realpath(__file__))
+    hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
+    holoviews.plotting.widgets.SelectionWidget.css = hv_css
+
     holoviews.notebook_extension('matplotlib')
 
     Store.renderers['matplotlib'].fig = 'svg'
@@ -118,13 +122,7 @@ def init_notebook(mpl=True):
     # Temporary solution to ignore the warnings
     warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
 
-    module_dir = os.path.dirname(__file__)
-    matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
+    matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
     np.set_printoptions(precision=2, suppress=True,
                         formatter={'complexfloat': pretty_fmt_complex})
-
-    # Patch a bug in holoviews
-    if holoviews.__version__.release <= (1, 4, 3):
-        from patch_holoviews import patch_all
-        patch_all()

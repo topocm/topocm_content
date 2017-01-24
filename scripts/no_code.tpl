@@ -2,7 +2,15 @@
 
 {% block header %}
 {{ super() }}
-<script src="/static/js/iframeResizer.contentWindow.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/static/hv_widgets_settings.css">
+<link rel="stylesheet" href="/static/notebook.css">
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+<script src="/static/widgets.js" type="text/javascript"></script>
+<script src="/static/mplwidgets.js" type="text/javascript"></script>
 {%- endblock header %}
 
 {% block codecell %}
@@ -177,7 +185,7 @@ class="unconfined"
 {% set div_id = uuid4() %}
 <div id="{{ div_id }}"></div>
 <div class="output_subarea output_javascript {{extra_class}}">
-<script type="text/javascript">
+<script async type="text/javascript">
 var element = $('#{{ div_id }}');
 {{ output.data['application/javascript'] }}
 </script>

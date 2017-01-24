@@ -4,8 +4,6 @@
 
 FROM debian@sha256:32a225e412babcd54c0ea777846183c61003d125278882873fb2bc97f9057c51
 
-MAINTAINER Anton Akhmerov <anton.akhmerov@gmail.com>
-
 USER root
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
@@ -49,31 +47,20 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-3.19.0-Linux-x86_64.sh && \
-    echo "9ea57c0fdf481acf89d816184f969b04bc44dea27b258c4e86b1e3a25ff26aa0 *Miniconda3-3.19.0-Linux-x86_64.sh" | sha256sum -c - && \
-    /bin/bash Miniconda3-3.19.0-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-3.19.0-Linux-x86_64.sh && \
-    $CONDA_DIR/bin/conda install --quiet --yes conda==3.19.1 && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.11-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-4.3.11-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-4.3.11-Linux-x86_64.sh && \
     $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
     conda install --quiet --yes \
-    'ipywidgets=5.1*' \
-    'pandas=0.18*' \
-    'numexpr=2.5*' \
-    'matplotlib=1.5*' \
-    'scipy=0.17*' \
-    'seaborn=0.7*' \
+    'python=3.5*' \
+    'matplotlib=2.0.*' \
+    'scipy=0.18*' \
     'sympy=1.0*' \
-    'cython=0.24*' \
-    'patsy=0.4*' \
-    'cloudpickle=0.1*' \
-    'dill=0.2*' \
-    'lxml=3.6*' \
-    'sqlalchemy=1.0*'\
-    'holoviews=1.4.3' \
-    'pelican=3.6.3' \
-    'markdown=2.6.7' \
-    'beautifulsoup4=4.4*' \
-    'feedparser=5.2*' &&\
-    conda install --quiet --yes \
-    -c basnijholt 'kwant=1.2.2' &&\
+    'pelican=3.7*' \
+    'markdown=2.6*' \
+    'beautifulsoup4=4.5*' \
+    'feedparser=5.2*' \
+    'kwant=1.2.2' &&\
     conda clean -tipsy
+
+RUN pip install https://github.com/ioam/holoviews/archive/master.zip

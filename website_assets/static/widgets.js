@@ -5,11 +5,11 @@ HoloViewsWidget.comms = {};
 HoloViewsWidget.comm_state = {};
 
 HoloViewsWidget.prototype.init_slider = function(init_val){
-    if(this.load_json) {
-        this.from_json()
-    } else {
-        this.update_cache();
-    }
+	if(this.load_json) {
+		this.from_json()
+	} else {
+		this.update_cache();
+	}
 }
 
 HoloViewsWidget.prototype.populate_cache = function(idx){
@@ -24,51 +24,51 @@ HoloViewsWidget.prototype.process_error = function(msg){
 }
 
 HoloViewsWidget.prototype.from_json = function() {
-    var data_url = this.json_path + this.id + '.json';
-    $.getJSON(data_url, $.proxy(function(json_data) {
-        this.frames = json_data;
-        this.update_cache();
-        this.update(0);
-    }, this));
+	var data_url = this.json_path + this.id + '.json';
+	$.getJSON(data_url, $.proxy(function(json_data) {
+		this.frames = json_data;
+		this.update_cache();
+		this.update(0);
+	}, this));
 }
 
 HoloViewsWidget.prototype.dynamic_update = function(current){
-    if (current === undefined) {
-        return
-    }
-    if(this.dynamic) {
-        current = JSON.stringify(current);
-    }
-    function callback(initialized, msg){
-        /* This callback receives data from Python as a string
-           in order to parse it correctly quotes are sliced off*/
-        if (msg.content.ename != undefined) {
-            this.process_error(msg);
-        }
-        if (msg.msg_type != "execute_result") {
-            console.log("Warning: HoloViews callback returned unexpected data for key: (", current, ") with the following content:", msg.content)
-            this.time = undefined;
-            this.wait = false;
-            return
-        }
-        this.timed = (Date.now() - this.time) * 1.1;
-        if (msg.msg_type == "execute_result") {
-            if (msg.content.data['text/plain'].includes('Complete')) {
-                this.wait = false;
-                if (this.queue.length > 0) {
-                    this.time = Date.now();
-                    this.dynamic_update(this.queue[this.queue.length-1]);
-                    this.queue = [];
-                }
-                return
-            }
-        }
-    }
-    this.current = current;
-    var kernel = IPython.notebook.kernel;
-    callbacks = {iopub: {output: $.proxy(callback, this, this.initialized)}};
-    var cmd = "holoviews.plotting.widgets.NdWidget.widgets['" + this.id + "'].update(" + current + ")";
-    kernel.execute("import holoviews;" + cmd, callbacks, {silent : false});
+	if (current === undefined) {
+		return
+	}
+	if(this.dynamic) {
+		current = JSON.stringify(current);
+	}
+	function callback(initialized, msg){
+		/* This callback receives data from Python as a string
+		   in order to parse it correctly quotes are sliced off*/
+		if (msg.content.ename != undefined) {
+			this.process_error(msg);
+		}
+		if (msg.msg_type != "execute_result") {
+			console.log("Warning: HoloViews callback returned unexpected data for key: (", current, ") with the following content:", msg.content)
+			this.time = undefined;
+			this.wait = false;
+			return
+		}
+		this.timed = (Date.now() - this.time) * 1.1;
+		if (msg.msg_type == "execute_result") {
+			if (msg.content.data['text/plain'].includes('Complete')) {
+				this.wait = false;
+				if (this.queue.length > 0) {
+					this.time = Date.now();
+					this.dynamic_update(this.queue[this.queue.length-1]);
+					this.queue = [];
+				}
+				return
+			}
+		}
+	}
+	this.current = current;
+	var kernel = IPython.notebook.kernel;
+	callbacks = {iopub: {output: $.proxy(callback, this, this.initialized)}};
+	var cmd = "holoviews.plotting.widgets.NdWidget.widgets['" + this.id + "'].update(" + current + ")";
+	kernel.execute("import holoviews;" + cmd, callbacks, {silent : false});
 }
 
 HoloViewsWidget.prototype.update_cache = function(force){
@@ -80,11 +80,11 @@ HoloViewsWidget.prototype.update_cache = function(force){
             frame = i;
         }
         if(!(frame in this.cache) || force) {
-            if ((frame in this.cache) && force) { this.cache[frame].remove() }
-            this.cache[frame] = $('<div />').appendTo("#"+"_anim_img"+this.id).hide();
-            var cache_id = "_anim_img"+this.id+"_"+frame;
-            this.cache[frame].attr("id", cache_id);
-            this.populate_cache(frame);
+			if ((frame in this.cache) && force) { this.cache[frame].remove() }
+			this.cache[frame] = $('<div />').appendTo("#"+"_anim_img"+this.id).hide();
+			var cache_id = "_anim_img"+this.id+"_"+frame;
+			this.cache[frame].attr("id", cache_id);
+			this.populate_cache(frame);
         }
     }
 }
@@ -95,18 +95,18 @@ HoloViewsWidget.prototype.update = function(current){
             value.hide();
         });
         this.cache[current].show();
-        this.wait = false;
+		this.wait = false;
     }
 }
 
 HoloViewsWidget.prototype.init_comms = function() {
-    if ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel !== undefined)) {
-        var widget = this;
-        comm_manager = Jupyter.notebook.kernel.comm_manager;
+	if ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel !== undefined)) {
+		var widget = this;
+		comm_manager = Jupyter.notebook.kernel.comm_manager;
         comm_manager.register_target(this.id, function (comm) {
-            comm.on_msg(function (msg) { widget.process_msg(msg) });
-        });
-    }
+			comm.on_msg(function (msg) { widget.process_msg(msg) });
+		});
+	}
 }
 
 HoloViewsWidget.prototype.process_msg = function(msg) {
@@ -125,57 +125,56 @@ function SelectionWidget(frames, id, slider_ids, keyMap, dim_vals, notFound, loa
     this.cached = cached;
     this.dynamic = dynamic;
     this.cache = {};
-    this.json_path = json_path;
+	this.json_path = json_path;
     this.init_slider(this.current_vals[0]);
-    this.queue = [];
-    this.wait = false;
-    if (!this.cached || this.dynamic) {
-        this.init_comms()
-    }
+	this.queue = [];
+	this.wait = false;
+	if (!this.cached || this.dynamic) {
+		this.init_comms()
+	}
 }
 
 SelectionWidget.prototype = new HoloViewsWidget;
 
 
 SelectionWidget.prototype.get_key = function(current_vals) {
-    var key = "(";
+	var key = "(";
     for (var i=0; i<this.slider_ids.length; i++)
     {
         val = this.current_vals[i];
         if (!(typeof val === 'string')) {
-            if (val % 1 === 0) { var fixed = 1;}
-            else { var fixed = 10;}
-            val = val.toFixed(fixed)
+            if (val % 1 === 0) { val = val.toFixed(1); }
+            else { val = val.toFixed(10); val = val.slice(0, val.length-1);}
         }
         key += "'" + val + "'";
         if(i != this.slider_ids.length-1) { key += ', ';}
         else if(this.slider_ids.length == 1) { key += ',';}
     }
     key += ")";
-    return this.keyMap[key];
+	return this.keyMap[key];
 }
 
 SelectionWidget.prototype.set_frame = function(dim_val, dim_idx){
-    this.current_vals[dim_idx] = dim_val;
+	this.current_vals[dim_idx] = dim_val;
     var current = this.get_key(this.current_vals);
     if(current === undefined && !this.dynamic) {
         return
     }
-    if (this.dynamic || !this.cached) {
-        if (this.time === undefined) {
-            // Do nothing the first time
-        } else if ((this.timed === undefined) || ((this.time + this.timed) > Date.now())) {
-            var key = this.current_vals;
-            if (!this.dynamic) {
-                key = this.get_key(key);
-            }
-            this.queue.push(key);
-            return
-        }
-    }
-    this.queue = [];
-    this.time = Date.now();
-    this.current_frame = current;
+	if (this.dynamic || !this.cached) {
+		if (this.time === undefined) {
+			// Do nothing the first time
+		} else if ((this.timed === undefined) || ((this.time + this.timed) > Date.now())) {
+			var key = this.current_vals;
+			if (!this.dynamic) {
+				key = this.get_key(key);
+			}
+			this.queue.push(key);
+			return
+		}
+	}
+	this.queue = [];
+	this.time = Date.now();
+	this.current_frame = current;
     if(this.dynamic) {
         this.dynamic_update(this.current_vals)
     } else if(this.cached) {
@@ -202,21 +201,21 @@ function ScrubberWidget(frames, num_frames, id, interval, load_json, mode, cache
     this.frames = frames;
     this.cache = {};
     this.length = num_frames;
-    this.json_path = json_path;
+	this.json_path = json_path;
     document.getElementById(this.slider_id).max = this.length - 1;
     this.init_slider(0);
-    this.wait = false;
-    this.queue = [];
-    if (!this.cached || this.dynamic) {
-        this.init_comms()
-    }
+	this.wait = false;
+	this.queue = [];
+	if (!this.cached || this.dynamic) {
+		this.init_comms()
+	}
 }
 
 ScrubberWidget.prototype = new HoloViewsWidget;
 
 ScrubberWidget.prototype.set_frame = function(frame){
-    this.current_frame = frame;
-    widget = document.getElementById(this.slider_id);
+	this.current_frame = frame;
+	widget = document.getElementById(this.slider_id);
     if (widget === null) {
         this.pause_animation();
         return
@@ -231,15 +230,15 @@ ScrubberWidget.prototype.set_frame = function(frame){
 
 
 ScrubberWidget.prototype.process_error = function(msg){
-    if (msg.content.ename === 'StopIteration') {
-        this.pause_animation();
-        this.stopped = true;
-        var keys = Object.keys(this.frames)
-        this.length = keys.length;
-        document.getElementById(this.slider_id).max = this.length-1;
-        document.getElementById(this.slider_id).value = this.length-1;
-        this.current_frame = this.length-1;
-    }
+	if (msg.content.ename === 'StopIteration') {
+		this.pause_animation();
+		this.stopped = true;
+		var keys = Object.keys(this.frames)
+		this.length = keys.length;
+		document.getElementById(this.slider_id).max = this.length-1;
+		document.getElementById(this.slider_id).value = this.length-1;
+		this.current_frame = this.length-1;
+	}
 }
 
 
@@ -256,16 +255,16 @@ ScrubberWidget.prototype.get_loop_state = function(){
 
 
 ScrubberWidget.prototype.next_frame = function() {
-    if (this.dynamic || !this.cached) {
-        if (this.wait) {
-            return
-        }
-        this.wait = true;
-    }
-    if (this.dynamic && this.current_frame + 1 >= this.length) {
-        this.length += 1;
+	if (this.dynamic || !this.cached) {
+		if (this.wait) {
+			return
+		}
+		this.wait = true;
+	}
+	if (this.dynamic && this.current_frame + 1 >= this.length) {
+		this.length += 1;
         document.getElementById(this.slider_id).max = this.length-1;
-    }
+	}
     this.set_frame(Math.min(this.length - 1, this.current_frame + 1));
 }
 
@@ -360,71 +359,21 @@ function extend(destination, source) {
 }
 
 function update_widget(widget, values) {
-    if (widget.hasClass("ui-slider")) {
-        widget.slider('option',
-                      {'min': 0, 'max': values.length-1,
-                       'dim_vals': values, 'value': 0,
-                       'dim_labels': values})
-        widget.slider('option', 'slide').call(widget, event, {'value': 0})
-    } else {
-        widget.empty();
-        for (var i=0; i<values.length; i++){
-            widget.append($("<option>", {
-                value: i,
-                text: values[i]
-            }))};
-        widget.data('values', values);
-        widget.data('value', 0);
-        widget.trigger("change");
-    };
+	if (widget.hasClass("ui-slider")) {
+		widget.slider('option',
+					  {'min': 0, 'max': values.length-1,
+					   'dim_vals': values, 'value': 0,
+					   'dim_labels': values})
+		widget.slider('option', 'slide').call(widget, event, {'value': 0})
+	} else {
+		widget.empty();
+		for (var i=0; i<values.length; i++){
+			widget.append($("<option>", {
+				value: i,
+				text: values[i]
+			}))};
+		widget.data('values', values);
+		widget.data('value', 0);
+		widget.trigger("change");
+	};
 }
-
-// Define MPL specific subclasses
-function MPLSelectionWidget() {
-    SelectionWidget.apply(this, arguments);
-}
-
-function MPLScrubberWidget() {
-    ScrubberWidget.apply(this, arguments);
-}
-
-// Let them inherit from the baseclasses
-MPLSelectionWidget.prototype = Object.create(SelectionWidget.prototype);
-MPLScrubberWidget.prototype = Object.create(ScrubberWidget.prototype);
-
-// Define methods to override on widgets
-var MPLMethods = {
-    init_slider : function(init_val){
-        if(this.load_json) {
-            this.from_json()
-        } else {
-            this.update_cache();
-        }
-        this.update(0);
-        if(this.mode == 'nbagg') {
-            this.set_frame(init_val, 0);
-        }
-    },
-    populate_cache : function(idx){
-        var cache_id = "_anim_img"+this.id+"_"+idx;
-        if(this.mode == 'mpld3') {
-            mpld3.draw_figure(cache_id, this.frames[idx]);
-        } else {
-            this.cache[idx].html(this.frames[idx]);
-        }
-        if (this.embed) {
-            delete this.frames[idx];
-        }
-    },
-    process_msg : function(msg) {
-        if (!(this.mode == 'nbagg')) {
-            var data = msg.content.data;
-            this.frames[this.current] = data;
-            this.update_cache(true);
-            this.update(this.current);
-        }
-    }
-}
-// Extend MPL widgets with backend specific methods
-extend(MPLSelectionWidget.prototype, MPLMethods);
-extend(MPLScrubberWidget.prototype, MPLMethods);
