@@ -1,12 +1,11 @@
 name: topocm
 
 channels:
-- basnijholt
 - conda-forge
 
 dependencies:
   - python=3.4
   - kwant
-  - holoviews=1.4.3
+  - holoviews
   - feedparser
   - texlive-core
