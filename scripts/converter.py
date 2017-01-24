@@ -36,10 +36,10 @@ from holoviews.plotting import Renderer
 hvjs = Renderer.html_assets(extras=False)[0]
 
 path = os.path.dirname(os.path.realpath(__file__))
-cfg = Config({'HTMLExporter':{'template_file':'no_code',
-                              'template_path':['.',path],
-                              'filters':{'markdown2html':
-                                         markdown2html_pandoc}}})
+cfg = Config({'HTMLExporter': {'template_file': 'no_code',
+                               'template_path': ['.', path],
+                               'filters': {'markdown2html':
+                                           markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
 
 IFRAME_TEMPLATE = r"""
@@ -92,24 +92,24 @@ def parse_syllabus(syllabus_file, content_folder=''):
                 if is_section(line)]
 
     # Make a list of lines in each section.
-    subsections = (tuple(g) for k,g in groupby(lines, key=lambda x: not
-                                               is_section(x)) if k)
+    subsections = (tuple(g) for k, g in groupby(lines, key=lambda x: not
+                                                is_section(x)) if k)
     # Filter the actual subsections.
     subsections = [[subs_to_name_file(i) for i in j if subs_to_name_file(i) is
                     not None] for j in subsections]
 
-    tmp = SimpleNamespace(category='main', chapters=[])
+    data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(zip(sections, subsections)):
         # Don't convert sections with no release date.
         if section[0][1] is None:
             continue
 
-        #creating chapter
+        # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
         chapter.name = section[0][0]
         chapter.date = section[0][1]
-        chapter.url  = "sec_{0}".format(str(i).zfill(2))
+        chapter.url = "sec_{0}".format(str(i).zfill(2))
 
         for j, subsection in enumerate(section[1]):
             # creating sequential
@@ -123,8 +123,8 @@ def parse_syllabus(syllabus_file, content_folder=''):
 
             chapter.sequentials.append(sequential)
 
-        tmp.chapters.append(chapter)
-    return tmp
+        data.chapters.append(chapter)
+    return data
 
 
 def split_into_units(nb_name):
@@ -166,8 +166,8 @@ def export_unit_to_html(unit):
         soup = bs4.BeautifulSoup(body, 'lxml')
 
         labels = [strong for form in soup.find_all('form',
-                                                   attrs={'class':'holoform'})
-                         for strong in form.find_all('strong')]
+                                                   attrs={'class': 'holoform'})
+                  for strong in form.find_all('strong')]
 
         for label in labels:
             new = re.sub(r'[$\\{}]', '', label.contents[0])
@@ -314,9 +314,9 @@ def convert_MoocMultipleChoiceAssessment_to_xml(par):
 
 
 def convert_MoocPeerAssessment_to_xml(par, date):
-    #tree = ElementTree.parse('./templates/openassessment.xml')
+    # tree = ElementTree.parse('./templates/openassessment.xml')
     xml = ElementTree.fromstring(par['openassessment_peer'])
-    #xml = tree.getroot()
+    # xml = tree.getroot()
 
     if par['url_name'] is not None:
         xml.attrib['url_name'] = par['url_name']
@@ -443,12 +443,18 @@ def converter(mooc_folder, args, content_folder=None):
                             os.path.join(target, 'html/edx/figures'))
     html_folder = os.path.join(target, 'html/edx')
 
+    # Copy iframeResizer.contentWindow.min.js
+    html_static_dir = os.path.join(target, 'html/edx/static/')
+    os.makedirs(html_static_dir, exist_ok=True)
+    shutil.copy('website_assets/iframeResizer.contentWindow.min.js',
+                html_static_dir)
+
     # Basic info
-    info_org='DelftX'
-    info_course='TOPOCMx'
-    info_display_name='Topology in Condensed Matter: Tying Quantum Knots'
-    info_run='course'
-    info_start="2016-02-08T10:00:00Z"
+    info_org = 'DelftX'
+    info_course = 'TOPOCMx'
+    info_display_name = 'Topology in Condensed Matter: Tying Quantum Knots'
+    info_run = 'course'
+    info_start = "2016-02-08T10:00:00Z"
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/' + info_run
@@ -485,7 +491,7 @@ def converter(mooc_folder, args, content_folder=None):
     wiki = SubElement(xml_course, 'wiki')
     wiki.attrib['slug'] = ".".join([info_org, info_course, info_run])
 
-    save_xml(xml_course, os.path.join(dirpath,'course',info_run+'.xml'))
+    save_xml(xml_course, os.path.join(dirpath, 'course', info_run+'.xml'))
 
     # saving chapters xmls inside 'chapter' folder
     for chapter in data.chapters:
@@ -498,7 +504,7 @@ def converter(mooc_folder, args, content_folder=None):
             sequential_sub.attrib['url_name'] = sequential.url
 
         save_xml(chapter_xml,
-                 os.path.join(dirpath,'chapter',chapter.url+'.xml'))
+                 os.path.join(dirpath, 'chapter', chapter.url+'.xml'))
 
     # saving sequentials xmls inside 'sequential' folder
     # saving vertical xmls inside 'vertical' folder
@@ -515,7 +521,7 @@ def converter(mooc_folder, args, content_folder=None):
 
                 sequential_xml.attrib['graded'] = "true"
 
-            #getting units
+            # getting units
             units = split_into_units(sequential.source_notebook)
 
             for i, unit in enumerate(units):
@@ -527,7 +533,6 @@ def converter(mooc_folder, args, content_folder=None):
                 # creating vertical.xml
                 vertical_xml = Element('vertical')
                 vertical_xml.attrib['display_name'] = unit.metadata.name
-
 
                 unit_output = convert_unit(unit, date=sequential.date)
                 for (j, out) in enumerate(unit_output):
@@ -542,15 +547,19 @@ def converter(mooc_folder, args, content_folder=None):
                         html_xml.attrib['display_name'] = unit.metadata.name
                         html_xml.attrib['filename'] = out_url
 
-                        save_xml(html_xml, os.path.join(dirpath,'html',
-                                                        out_url+'.xml'))
+                        save_xml(html_xml, os.path.join(dirpath, 'html',
+                                                        out_url + '.xml'))
 
                         body = out[1]
                         html_path = os.path.join(html_folder,
-                                                 out_url+'.html')
+                                                 out_url + '.html')
+                        if out_url.endswith("00"):
+                            # Need to remove the header
+                            pass
+
                         save_html(body, html_path)
-                        html_path = os.path.join(dirpath,'html',
-                                                 out_url+'.html')
+                        html_path = os.path.join(dirpath, 'html',
+                                                 out_url + '.html')
                         save_html(IFRAME_TEMPLATE.format(out_url), html_path)
 
                     elif out[0] == 'MoocVideo':
@@ -571,7 +580,7 @@ def converter(mooc_folder, args, content_folder=None):
                         discussion_subelement = SubElement(vertical_xml,
                                                            'discussion')
                         discussion_subelement.attrib['url_name'] = \
-                                discussion_xml.attrib['discussion_id']
+                            discussion_xml.attrib['discussion_id']
 
                         # creating video xml
                         discussion_path = os.path.join(dirpath, 'discussion',
@@ -599,14 +608,14 @@ def converter(mooc_folder, args, content_folder=None):
                         # creating problem xml
                         problem_xml = out[1]
                         problem_path = os.path.join(dirpath, 'problem',
-                                                    out_url+'.xml')
+                                                    out_url + '.xml')
 
                         save_xml(problem_xml, problem_path)
 
                 save_xml(vertical_xml, os.path.join(dirpath, 'vertical',
-                                                    vertical_url+'.xml'))
+                                                    vertical_url + '.xml'))
             save_xml(sequential_xml, os.path.join(dirpath, 'sequential',
-                                                  sequential.url+'.xml'))
+                                                  sequential.url + '.xml'))
 
     # Creating tar
     tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
@@ -647,7 +656,7 @@ def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
     parser = argparse.ArgumentParser()
     parser.add_argument('source', nargs='?', help='folder to convert')
-    parser.add_argument('-d','--debug', action='store_true',
+    parser.add_argument('-d', '--debug', action='store_true',
                         help='debugging flag')
     parser.add_argument('-o', '--open', action='store_true',
                         help='opening uncompressed folder with files')

@@ -2,7 +2,9 @@
 
 {% block header %}
 {{ super() }}
-<script src="/static/js/iframeResizer.contentWindow.min.js"></script>
+<script src="/edx/static/iframeResizer.contentWindow.min.js"></script>
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
 {%- endblock header %}
 
 {% block codecell %}
