@@ -144,38 +144,39 @@ def split_into_units(nb_name):
 
 def export_unit_to_html(unit):
     """Export unit into html format."""
-    slider_start = '// Slider JS Block START'
-    slider_end = '// Slider JS Block END'
-    replacement_start = '(function (requirejs, require, define) {'
-    replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
-                       'RequireJS.define));')
-    bootstrap_css = ('<link rel="stylesheet" '
-                     'href="/static/bootstrap.edx.css">\n')
-    hvcss = ('<link rel="stylesheet" '
-             'href="/static/holoviews.edx.css">\n')
+    # slider_start = '// Slider JS Block START'
+    # slider_end = '// Slider JS Block END'
+    # replacement_start = '(function (requirejs, require, define) {'
+    # replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
+    #                    'RequireJS.define));')
+    # bootstrap_css = ('<link rel="stylesheet" '
+    #                  'href="/static/bootstrap.edx.css">\n')
+    # hvcss = ('<link rel="stylesheet" '
+    #          'href="/static/holoviews.edx.css">\n')
     (body, resources) = exportHtml.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
-    if slider_start in body:
-        soup = bs4.BeautifulSoup(body, 'lxml')
 
-        labels = [strong for form in soup.find_all('form',
-                                                   attrs={'class': 'holoform'})
-                  for strong in form.find_all('strong')]
+    # if slider_start in body:
+    #     soup = bs4.BeautifulSoup(body, 'lxml')
 
-        for label in labels:
-            new = re.sub(r'[$\\{}]', '', label.contents[0])
-            label.contents[0].replace_with(new)
+    #     labels = [strong for form in soup.find_all('form',
+    #                                                attrs={'class': 'holoform'})
+    #               for strong in form.find_all('strong')]
 
-        body = soup.__str__()
+    #     for label in labels:
+    #         new = re.sub(r'[$\\{}]', '', label.contents[0])
+    #         label.contents[0].replace_with(new)
 
-        body = body.replace('hololayout', 'bootstrap-wrapper')
-        body = body.replace('span9 col-xs-8 col-md-9', '')
-        body = body.replace('span3 col-xs-4 col-md-3',
-                            'col-md-6 col-md-offset-3 center-widget')
-        body = body.replace(slider_start, replacement_start)
-        body = body.replace(slider_end, replacement_end)
-        body = hvjs + bootstrap_css + hvcss + body
+    #     body = soup.__str__()
+
+    #     body = body.replace('hololayout', 'bootstrap-wrapper')
+    #     body = body.replace('span9 col-xs-8 col-md-9', '')
+    #     body = body.replace('span3 col-xs-4 col-md-3',
+    #                         'col-md-6 col-md-offset-3 center-widget')
+    #     body = body.replace(slider_start, replacement_start)
+    #     body = body.replace(slider_end, replacement_end)
+    #     body = hvjs + bootstrap_css + hvcss + body
 
     return body
 
