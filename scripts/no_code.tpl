@@ -2,8 +2,12 @@
 
 {% block header %}
 {{ super() }}
-<script src="/edx/static/iframeResizer.contentWindow.min.js"></script>
+<script src="https://cdn.rawgit.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js"></script>
 <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/ioam/holoviews/v1.4.3/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/requirejs/requirejs/2.1.22/require.js" type="text/javascript"></script>
 
 {%- endblock header %}
 

@@ -43,16 +43,9 @@ cfg = Config({'HTMLExporter': {'template_file': 'no_code',
 exportHtml = HTMLExporter(config=cfg)
 
 IFRAME_TEMPLATE = r"""
-<script src="/static/iframeResizer.min.js"></script>
-
-<iframe id="{0}" scrolling="no" width="100%" frameborder=0>
-Your browser does not support IFrames.
-</iframe>
-<script>document.getElementById('{0}').src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());</script>
-
-<script>
-$('iframe').iFrameResize({{log:true, checkOrigin:["https://topocondmat.org", "https://test.topocondmat.org"]}})
-</script>
+<script src="https://cdn.rawgit.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.min.js"></script>
+<iframe scrolling="no" width="100%" frameborder=0 src="https://test.topocondmat.org/edx/{0}.html"></iframe>
+<script type="text/javascript">iFrameResize()</script>
 """
 # <script type="text/javascript">iFrameResize({log:true})</script>
 with open('scripts/release_dates') as f:
