@@ -4,8 +4,6 @@
 
 FROM debian@sha256:32a225e412babcd54c0ea777846183c61003d125278882873fb2bc97f9057c51
 
-MAINTAINER Anton Akhmerov <anton.akhmerov@gmail.com>
-
 USER root
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
