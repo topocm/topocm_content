@@ -84,7 +84,7 @@ def get_html_from_filepath(filepath):
     config.HtmlLinksPreprocessor['enabled'] = True
 
     path = os.path.dirname(os.path.realpath(__file__))
-    exporter = HTMLExporter(config=config, template_file='no_code',
+    exporter = HTMLExporter(config=config, template_file='website_template',
                             template_path=['.', path + '/../../../scripts/'],
                             filters={'highlight2html': custom_highlighter})
     content, info = exporter.from_filename(filepath)

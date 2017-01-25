@@ -1,6 +1,7 @@
 {%- extends 'display_priority.tpl' -%}
 
 {% block header %}
+{{ super() }}
 <script async src="https://cdn.rawgit.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
@@ -12,9 +13,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.rawgit.com/topocm/topocm_content/edx_iframe/code/hv.css">
-
-{{ super() }}
 {%- endblock header %}
+
 {% block codecell %}
 <div class="cell border-box-sizing code_cell rendered">
 {{ super() }}
