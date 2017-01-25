@@ -131,7 +131,10 @@ def split_into_units(nb_name, remove_header=True):
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
 
     if remove_header:
-        indexes.remove(1)
+        try:
+            indexes.remove(1)
+        except ValueError:
+            pass
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
     units = [current.new_notebook(cells=cells,
