@@ -1,7 +1,6 @@
 {%- extends 'display_priority.tpl' -%}
 
 {% block header %}
-{{ super() }}
 <script async src="https://cdn.rawgit.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
@@ -9,10 +8,12 @@
 <script async src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' type="text/javascript"></script>
 <script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
 <script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/mpl/mplwidgets.js" type="text/javascript"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.rawgit.com/topocm/topocm_content/edx_iframe/code/hv.css">
+
+{{ super() }}
 {%- endblock header %}
 {% block codecell %}
 <div class="cell border-box-sizing code_cell rendered">
