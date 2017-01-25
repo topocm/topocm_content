@@ -31,7 +31,7 @@ except KeyError:
     os.environ['PYTHONPATH'] = './code'
 
 path = os.path.dirname(os.path.realpath(__file__))
-cfg = Config({'HTMLExporter': {'template_file': 'no_code',
+cfg = Config({'HTMLExporter': {'template_file': 'edx',
                                'template_path': ['.', path],
                                'filters': {'markdown2html':
                                            markdown2html_pandoc}}})
