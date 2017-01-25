@@ -2,14 +2,14 @@
 
 {% block header %}
 {{ super() }}
-<script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
-<script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/mpl/mplwidgets.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
 <script async src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.rawgit.com/topocm/topocm_content/edx_iframe/code/hv.css">
+<script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
+<script async src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/mpl/mplwidgets.js" type="text/javascript"></script>
 {%- endblock header %}
 
 {% block codecell %}
