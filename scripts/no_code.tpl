@@ -8,10 +8,9 @@
 <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
 <script src="https://cdn.rawgit.com/requirejs/requirejs/2.1.22/require.js" type="text/javascript" ></script>
 <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' type="text/javascript"></script>
-<script src="https://cdn.rawgit.com/ioam/holoviews/v1.4.3/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
-<script src="https://cdn.rawgit.com/ioam/holoviews/v1.4.3/holoviews/plotting/mpl/mplwidgets.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/widgets/widgets.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/ioam/holoviews/aeb487b3d93618eeff11935a1df88340646207af/holoviews/plotting/mpl/mplwidgets.js" type="text/javascript"></script>
 {%- endblock header %}
-
 {% block codecell %}
 <div class="cell border-box-sizing code_cell rendered">
 {{ super() }}
