@@ -38,7 +38,7 @@ cfg = Config({'HTMLExporter': {'template_file': 'edx',
 exportHtml = HTMLExporter(config=cfg)
 
 IFRAME_TEMPLATE = r"""
-<script src="https://cdn.rawgit.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.js"></script>
 <iframe scrolling="no" width="100%" frameborder=0 src="https://test.topocondmat.org/edx/{0}.html"></iframe>
 <script type="text/javascript">iFrameResize({{heightCalculationMethod:'max'}})</script>
 """
