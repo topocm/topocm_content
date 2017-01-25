@@ -58,7 +58,7 @@ def date_to_edx(date, add_days=0):
 
 def parse_syllabus(syllabus_file, content_folder=''):
     # loading raw syllabus
-    syll = split_into_units(syllabus_file)[0]
+    syll = split_into_units(syllabus_file, remove_header=False)[0]
     cell = syll.cells[1]
 
     def section_to_name_date(line):
@@ -116,7 +116,7 @@ def parse_syllabus(syllabus_file, content_folder=''):
     return data
 
 
-def split_into_units(nb_name):
+def split_into_units(nb_name, remove_header=True):
     """Split notebook into units."""
     try:
         nb = nbformat.read(nb_name, as_version=4)
@@ -129,6 +129,9 @@ def split_into_units(nb_name):
     cells = nb.cells
     indexes = [i for i, cell in enumerate(cells)
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
+
+    if remove_header:
+        indexes.remove(1)
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
     units = [current.new_notebook(cells=cells,
@@ -426,7 +429,7 @@ def converter(mooc_folder, args, content_folder=None):
     data = parse_syllabus(syllabus_nb, content_folder)
 
     # saving syllabus
-    syllabus = split_into_units(syllabus_nb)[0]
+    syllabus = split_into_units(syllabus_nb, remove_header=False)[0]
     cell = syllabus.cells[1]
     cell['source'] = re.sub(r"(?<!!)\[(.*?)\]\(.*?\)", r"\1", cell['source'])
     syllabus_html = export_unit_to_html(syllabus)
