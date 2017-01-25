@@ -8,6 +8,7 @@
 <script async src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js" type="text/javascript" ></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript" ></script>
 <link rel="stylesheet" href="https://cdn.rawgit.com/topocm/topocm_content/edx_iframe/code/hv.css">
 {%- endblock header %}
 
