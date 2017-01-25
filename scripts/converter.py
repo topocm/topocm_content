@@ -402,12 +402,6 @@ def converter(mooc_folder, args, content_folder=None):
                             os.path.join(target, 'html/edx/figures'))
     html_folder = os.path.join(target, 'html/edx')
 
-    # Copy iframeResizer.contentWindow.min.js
-    html_static_dir = os.path.join(target, 'html/edx/static/')
-    os.makedirs(html_static_dir, exist_ok=True)
-    shutil.copy('website_assets/iframeResizer.contentWindow.min.js',
-                html_static_dir)
-
     # Basic info
     info_org = 'DelftX'
     info_course = 'TOPOCMx'
