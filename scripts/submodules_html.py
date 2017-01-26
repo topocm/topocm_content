@@ -20,10 +20,11 @@ exportHtml = HTMLExporter(config=cfg)
 
 # Mooc content location
 output_dir = os.path.join(mooc_folder, 'generated/html/ocw')
+generated_ipynbs = os.path.join(mooc_folder, 'generated/with_output')
 
 # Loading data from syllabus
-syllabus_nb = os.path.join(mooc_folder, 'generated/with_output/syllabus.ipynb')
-data = parse_syllabus(syllabus_nb, mooc_folder, parse_all=False)
+syllabus_nb = os.path.join(generated_ipynbs, 'syllabus.ipynb')
+data = parse_syllabus(syllabus_nb, generated_ipynbs, parse_all=True)
 
 # saving syllabus
 syllabus = split_into_units(syllabus_nb)[0]
@@ -33,8 +34,10 @@ for chapter in data.chapters:
     for sequential in chapter.sequentials:
         units = split_into_units(sequential.source_notebook)
         folder, fname = sequential.source_notebook.split('/')[-2:]
+        print(fname)
         for i, unit in enumerate(units):
-            new_fname = fname.replace('.ipynb', '{}_{}.html'.format(fname, i))
+            fname = fname.replace('.ipynb', '')
+            new_fname = '{}_{}.html'.format(fname, i)
             new_path = os.path.join(mooc_folder, output_dir, folder, new_fname)
             os.makedirs(os.path.dirname(new_path), exist_ok=True)
             html = export_unit_to_html(unit, exportHtml)
