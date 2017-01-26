@@ -48,7 +48,7 @@ mirror to github:
 
 edx archive:
   stage: build
-  script: ./scripts/converter.py --silent --debug ./generated/with_output
+  script: ./scripts/converter.py --silent ./generated/with_output
   artifacts:
     paths:
       - generated/import_to_edx.tar.gz
@@ -67,6 +67,18 @@ pelican website:
   artifacts:
     paths:
       - generated/html
+    expire_in: 1d
+
+
+ocw website:
+  stage: build
+  variables:
+    DEST: "generated/html"
+  script:
+    - python scripts/submodules_html.py
+  artifacts:
+    paths:
+      - generated/html/ocw
     expire_in: 1d
 
 
