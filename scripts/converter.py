@@ -119,7 +119,7 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
     return data
 
 
-def split_into_units(nb_name):
+def split_into_units(nb_name, include_header=True):
     """Split notebook into units."""
     try:
         nb = nbformat.read(nb_name, as_version=4)
@@ -134,7 +134,8 @@ def split_into_units(nb_name):
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
-    units = [current.new_notebook(cells=cells,
+    start_index = 0 if include_header else 1
+    units = [current.new_notebook(cells=cells[start_index:],
                                   metadata={'name': cells[0].source[2:]})
              for cells in separated_cells]
     return units
