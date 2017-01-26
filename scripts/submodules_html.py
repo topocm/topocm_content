@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+import glob
+import shutil
 from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
@@ -34,7 +36,6 @@ for chapter in data.chapters:
     for sequential in chapter.sequentials:
         units = split_into_units(sequential.source_notebook)
         folder, fname = sequential.source_notebook.split('/')[-2:]
-        print(fname)
         for i, unit in enumerate(units):
             fname = fname.replace('.ipynb', '')
             new_fname = '{}_{}.html'.format(fname, i)
@@ -42,3 +43,10 @@ for chapter in data.chapters:
             os.makedirs(os.path.dirname(new_path), exist_ok=True)
             html = export_unit_to_html(unit, exportHtml)
             save_html(html, new_path)
+
+# Copy figures
+figures = glob.glob(os.path.join(generated_ipynbs, 'w*/figures/*'))
+for figure in figures:
+    new_fname = figure.replace('with_output', 'html/ocw')
+    os.makedirs(os.path.dirname(new_fname), exist_ok=True)
+    shutil.copyfile(figure, new_fname)
