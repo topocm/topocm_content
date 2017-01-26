@@ -30,9 +30,11 @@ try:
 except KeyError:
     os.environ['PYTHONPATH'] = './code'
 
-path = os.path.dirname(os.path.realpath(__file__))
+scripts_path = os.path.dirname(os.path.realpath(__file__))
+mooc_folder = os.path.join(scripts_path, os.pardir)
+
 cfg = Config({'HTMLExporter': {'template_file': 'edx',
-                               'template_path': ['.', path],
+                               'template_path': ['.', scripts_path],
                                'filters': {'markdown2html':
                                            markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
@@ -42,8 +44,8 @@ IFRAME_TEMPLATE = r"""
 <iframe scrolling="no" width="100%" frameborder=0 src="https://test.topocondmat.org/edx/{0}.html"></iframe>
 <script type="text/javascript">iFrameResize({{heightCalculationMethod:'max'}})</script>
 """
-# <script type="text/javascript">iFrameResize({log:true})</script>
-with open('scripts/release_dates') as f:
+
+with open(os.path.join(scripts_path, 'release_dates')) as f:
     release_dates = eval(f.read())
 
 
@@ -56,7 +58,7 @@ def date_to_edx(date, add_days=0):
     return date
 
 
-def parse_syllabus(syllabus_file, content_folder=''):
+def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
     # loading raw syllabus
     syll = split_into_units(syllabus_file)[0]
     cell = syll.cells[1]
@@ -89,9 +91,10 @@ def parse_syllabus(syllabus_file, content_folder=''):
 
     data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(zip(sections, subsections)):
-        # Don't convert sections with no release date.
-        if section[0][1] is None:
-            continue
+        if not parse_all:
+            # Don't convert sections with no release date.
+            if section[0][1] is None:
+                continue
 
         # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
@@ -137,9 +140,9 @@ def split_into_units(nb_name):
     return units
 
 
-def export_unit_to_html(unit):
+def export_unit_to_html(unit, export_html=exportHtml):
     """Export unit into html format."""
-    (body, resources) = exportHtml.from_notebook_node(unit)
+    (body, resources) = export_html.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
     return body
