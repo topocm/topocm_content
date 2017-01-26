@@ -13,7 +13,7 @@ from converter import (parse_syllabus,
                        save_html,
                        mooc_folder)
 
-cfg = Config({'HTMLExporter': {'template_file': 'edx',
+cfg = Config({'HTMLExporter': {'template_file': 'ocw',
                                'template_path': ['.', scripts_path],
                                'filters': {'markdown2html':
                                            markdown2html_pandoc}}})
