@@ -22,7 +22,7 @@ exportHtml = HTMLExporter(config=cfg)
 output_dir = os.path.join(mooc_folder, 'generated/html/ocw')
 
 # Loading data from syllabus
-syllabus_nb = os.path.join(mooc_folder, 'syllabus.ipynb')
+syllabus_nb = os.path.join(mooc_folder, 'generated/with_output/syllabus.ipynb')
 data = parse_syllabus(syllabus_nb, mooc_folder, parse_all=False)
 
 # saving syllabus
