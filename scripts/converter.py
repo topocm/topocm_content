@@ -54,10 +54,10 @@ iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") +
 <script>
 var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
 
-iFrameResize({
+iFrameResize({{
     heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
     minSize:100
-});
+}});
 </script>
 """
 
