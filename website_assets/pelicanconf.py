@@ -30,7 +30,6 @@ MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
-IPYNB_IGNORE_CSS=True
 THEME = "themes/pelican-bootstrap3"
 
 ARCHIVES_SAVE_AS = ''
