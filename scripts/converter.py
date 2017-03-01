@@ -43,6 +43,12 @@ IFRAME_TEMPLATE = r"""
 <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.8/iframeResizer.js"></script>
 <iframe scrolling="no" width="100%" frameborder=0 src="https://test.topocondmat.org/edx/{0}.html"></iframe>
 <script type="text/javascript">iFrameResize({{heightCalculationMethod:'max'}})</script>
+
+<iframe id="{0}" scrolling="no" width="100%" height=1000 frameborder=0>
+Your browser does not support IFrames.
+</iframe>
+
+<script>document.getElementById('{0}').src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());</script>
 """
 
 with open(os.path.join(scripts_path, 'release_dates')) as f:

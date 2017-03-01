@@ -7,9 +7,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<link rel="stylesheet" href="https://test.topocondmat.org/static/hv_widgets_settings.css">
-<script src="https://test.topocondmat.org/static/widgets.js" type="text/javascript"></script>
-<script src="https://test.topocondmat.org/static/mplwidgets.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/static/hv_widgets_settings.css">
+<script src="/static/widgets.js" type="text/javascript"></script>
+<script src="/static/mplwidgets.js" type="text/javascript"></script>
 {%- endblock header %}
 
 {% block codecell %}
