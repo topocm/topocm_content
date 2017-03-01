@@ -86,7 +86,7 @@ def init_notebook(mpl=True):
         ', '.join(functions.__all__))
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
-    hv_css = os.path.join(code_dir, 'hv.css')
+    hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
     holoviews.plotting.widgets.SelectionWidget.css = hv_css
 
     holoviews.notebook_extension('matplotlib')
@@ -126,8 +126,3 @@ def init_notebook(mpl=True):
 
     np.set_printoptions(precision=2, suppress=True,
                         formatter={'complexfloat': pretty_fmt_complex})
-
-    # Patch a bug in holoviews
-    if holoviews.__version__.release <= (1, 4, 3):
-        from patch_holoviews import patch_all
-        patch_all()
