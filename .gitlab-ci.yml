@@ -89,6 +89,7 @@ ocw website:
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
   script:
     - "rsync -ravz --delete generated/html/* $USER@tnw-tn1.tudelft.net:"
+    - "rsync -ravz --delete website_assets/static $USER@tnw-tn1.tudelft.net:"
   after_script:
     - rm -rf ~/.ssh
 
