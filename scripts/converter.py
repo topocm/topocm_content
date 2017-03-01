@@ -51,7 +51,14 @@ var iframe = document.getElementById('{0}');
 iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
 </script>
 
-<script type="text/javascript">iFrameResize({heightCalculationMethod: isOldIE ? 'max' : 'lowestElement', minSize:100})</script>
+<script>
+var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
+
+iFrameResize({
+    heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
+    minSize:100
+});
+</script>
 """
 
 with open(os.path.join(scripts_path, 'release_dates')) as f:
