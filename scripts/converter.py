@@ -46,10 +46,12 @@ IFRAME_TEMPLATE = r"""
 Your browser does not support IFrames.
 </iframe>
 
+<script>
+var iframe = document.getElementById('{0}');
+iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
+</script>
 
 <script type="text/javascript">iFrameResize({{heightCalculationMethod:'max'}})</script>
-
-<script>document.getElementById('{0}').src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());</script>
 """
 
 with open(os.path.join(scripts_path, 'release_dates')) as f:
