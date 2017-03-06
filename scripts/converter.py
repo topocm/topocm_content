@@ -40,7 +40,6 @@ cfg = Config({'HTMLExporter': {'template_file': 'edx',
 exportHtml = HTMLExporter(config=cfg)
 
 IFRAME_TEMPLATE = r"""
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.10/iframeResizer.js"></script>
 
 <iframe id="{0}" scrolling="no" width="100%" frameborder=0>
 Your browser does not support IFrames.
@@ -50,6 +49,8 @@ Your browser does not support IFrames.
 var iframe = document.getElementById('{0}');
 iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.10/iframeResizer.js"></script>
 
 <script>
 var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
