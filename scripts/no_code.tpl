@@ -1,6 +1,6 @@
 {%- extends 'display_priority.tpl' -%}
 
-{% block header %}
+{% block body %}
 {{ super() }}
 <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
 <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/static/notebook.css">
 <script src="/static/widgets.js" type="text/javascript"></script>
 <script src="/static/mplwidgets.js" type="text/javascript"></script>
-{%- endblock header %}
+{%- endblock body %}
 
 {% block codecell %}
 <div class="cell border-box-sizing code_cell rendered">
