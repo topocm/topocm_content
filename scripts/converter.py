@@ -57,7 +57,8 @@ var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and b
 
 iFrameResize({{
     heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
-    minSize:100
+    minSize:100,
+    log:true
 }});
 </script>
 """
