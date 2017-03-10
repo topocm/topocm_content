@@ -13,6 +13,7 @@
         "mobile_available": true,
         "self_paced": false,
         "start": "2016-02-08T10:00:00Z",
+        "end": "2017-08-08T10:00:00Z",
         "tabs": [
             {
                 "name": "Courseware",
