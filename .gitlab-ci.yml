@@ -9,6 +9,7 @@ execute_ipynbs:
   stage: execute
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
+    - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
     - export DEST=generated/with_output
     - mkdir -p $DEST
     - cp syllabus.ipynb $DEST
