@@ -1,4 +1,4 @@
-image: akhmerov/topocourse
+image: topocourse/topocourse
 stages:
   - execute
   - build
