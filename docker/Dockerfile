@@ -52,11 +52,12 @@ RUN cd /tmp && \
     rm Miniconda3-4.3.11-Linux-x86_64.sh && \
     $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
     conda install --quiet --yes \
+    'python=3.5*' \
     'matplotlib=2.0.*' \
     'scipy=0.18*' \
     'sympy=1.0*' \
-    'pelican=3.7.0' \
-    'markdown=2.6.7' \
+    'pelican=3.7*' \
+    'markdown=2.6*' \
     'beautifulsoup4=4.5*' \
     'feedparser=5.2*' \
     'kwant=1.2.2' &&\
