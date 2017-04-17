@@ -47,14 +47,11 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh && \
-    echo "c59b3dd3cad550ac7596e0d599b91e75d88826db132e4146030ef471bb434e9a *Miniconda3-4.2.12-Linux-x86_64.sh" | sha256sum -c - && \
-    /bin/bash Miniconda3-4.2.12-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-4.2.12-Linux-x86_64.sh && \
-    $CONDA_DIR/bin/conda install --quiet --yes conda==4.2.13 && \
+    wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.11-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-4.3.11-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-4.3.11-Linux-x86_64.sh && \
     $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
     conda install --quiet --yes \
-    'ipywidgets=5.2.*' \
     'matplotlib=2.0.*' \
     'scipy=0.18*' \
     'sympy=1.0*' \
