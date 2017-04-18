@@ -84,6 +84,7 @@ def init_notebook(mpl=True):
         ', '.join(edx_components.__all__) +
         '\nfrom code/functions:\n' +
         ', '.join(functions.__all__))
+
     print('Using kwant {} and holoviews {}'.format(
           kwant.__version__, holoviews.__version__))
 
