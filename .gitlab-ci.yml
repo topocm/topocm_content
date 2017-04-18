@@ -16,7 +16,7 @@ execute_ipynbs:
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
     - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/syllabus.ipynb
-    - find $DEST/w* -name '*.ipynb' | MPLCONFIGDIR=$(mktemp -d) parallel --delay 3 --jobs 32 jupyter nbconvert --HistoryManager.hist_file=$(mktemp) --to notebook --inplace --config scripts/config_filter_smudge.py
+    - find $DEST/w* -name '*.ipynb' | parallel --delay 3 --jobs 32 scripts/nbconvert.sh
     - rm -rf $DEST/data
   cache:
     key: "$CI_BUILD_NAME"
