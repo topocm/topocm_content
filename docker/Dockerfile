@@ -52,8 +52,8 @@ RUN cd /tmp && \
     rm Miniconda3-4.3.11-Linux-x86_64.sh
 
 # Add environment file
-COPY python3.yml .
+COPY python3.yaml .
 
-RUN conda env update -n root -f python3.yml && conda clean -tipsy
+RUN conda env update -n root -f python3.yaml && conda clean -tipsy
 
 RUN pip install https://github.com/ioam/holoviews/archive/master.zip
