@@ -26,10 +26,12 @@ init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
+
 class SimpleNamespace(types.SimpleNamespace):
     def update(self, **kwargs):
         self.__dict__.update(kwargs)
         return self
+
 
 # Adjust printing of matrices, and numpy printing of numbers.
 def pprint_matrix(data, digits=3):
@@ -95,6 +97,7 @@ def init_notebook(mpl=True):
     holoviews.notebook_extension('matplotlib')
 
     Store.renderers['matplotlib'].fig = 'svg'
+    Store.renderers['matplotlib'].dpi = 150
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
     
