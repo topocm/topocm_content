@@ -50,7 +50,7 @@ var iframe = document.getElementById('{0}');
 iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.10/iframeResizer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"></script>
 
 <script>
 var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
