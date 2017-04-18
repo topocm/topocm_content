@@ -1,0 +1,15 @@
+name: python3
+channels:
+  - kwant
+  - ioam/label/dev
+  - conda-forge
+dependencies:
+  - python=3.6
+  - matplotlib=2.0.0
+  - kwant=dev # Untill v1.3 is out
+  - scipy=0.18*
+  # - holoviews # Install master now in the Dockerfile
+  - param
+  - feedparser=5.2*
+  - sympy=1.0*
+  - pelican=3.7*

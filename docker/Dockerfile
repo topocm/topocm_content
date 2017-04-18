@@ -49,18 +49,11 @@ RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.11-Linux-x86_64.sh && \
     /bin/bash Miniconda3-4.3.11-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-4.3.11-Linux-x86_64.sh && \
-    $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
-    conda install --quiet --yes \
-    'python=3.5*' \
-    'matplotlib=2.0.*' \
-    'scipy=0.18*' \
-    'sympy=1.0*' \
-    'pelican=3.7*' \
-    'markdown=2.6*' \
-    'beautifulsoup4=4.5*' \
-    'feedparser=5.2*' \
-    'kwant=1.2.2' &&\
-    conda clean -tipsy
+    rm Miniconda3-4.3.11-Linux-x86_64.sh
+
+# Add environment file
+COPY python3.yml .
+
+RUN conda env update -n root -f python3.yml && conda clean -tipsy
 
 RUN pip install https://github.com/ioam/holoviews/archive/master.zip
