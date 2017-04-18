@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     texlive-fonts-extra \
     texlive-fonts-recommended \
     texlive-generic-recommended \
-    libxrender1 \    
+    libxrender1 \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     ca-certificates \
     sudo \
     locales \
+    parallel \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
