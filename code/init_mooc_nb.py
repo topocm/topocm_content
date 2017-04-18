@@ -84,6 +84,8 @@ def init_notebook(mpl=True):
         ', '.join(edx_components.__all__) +
         '\nfrom code/functions:\n' +
         ', '.join(functions.__all__))
+    print('Using kwant {} and holoviews {}'.format(
+          kwant.__version__, holoviews.__version__))
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
     hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
