@@ -97,7 +97,7 @@ def init_notebook(mpl=True):
     holoviews.notebook_extension('matplotlib')
 
     Store.renderers['matplotlib'].fig = 'svg'
-    Store.renderers['matplotlib'].dpi = 150
+    Store.renderers['matplotlib'].dpi = 100
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
     
