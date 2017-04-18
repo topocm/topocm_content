@@ -14,7 +14,7 @@ execute_ipynbs:
     - cp syllabus.ipynb $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
-    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/*/*ipynb $DEST/syllabus.ipynb
+    - find . -name '*.ipynb' | parallel jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py
     - rm -rf $DEST/data
   cache:
     key: "$CI_BUILD_NAME"
