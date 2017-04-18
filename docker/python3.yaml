@@ -13,3 +13,4 @@ dependencies:
   - feedparser=5.2*
   - sympy=1.0*
   - pelican=3.7*
+  - notebook
