@@ -14,3 +14,4 @@ dependencies:
   - sympy=1.0*
   - pelican=3.7*
   - notebook
+  - markdown
