@@ -72,7 +72,9 @@ def pretty_fmt_complex(num, digits=2):
             pretty_fmt_complex(num.imag) + 'i')
 
 
-def init_notebook(mpl=True):
+def init_notebook():
+    # Enable inline plotting in the notebook
+    get_ipython().enable_matplotlib(gui='inline')
 
     print('Populated the namespace with:\n' +
         ', '.join(init_mooc_nb) +
@@ -126,10 +128,3 @@ def init_notebook(mpl=True):
 
     np.set_printoptions(precision=2, suppress=True,
                         formatter={'complexfloat': pretty_fmt_complex})
-
-    # Enable inline plotting in the notebook
-    if mpl:
-        try:
-            get_ipython().enable_matplotlib(gui='inline')
-        except NameError:
-            pass
