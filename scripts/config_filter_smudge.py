@@ -6,4 +6,3 @@ c.CachedOutputPreprocessor.req_files = ['code/init_mooc_nb.py',
                                         'code/pfaffian.py', 'code/functions.py']
 c.CachedOutputPreprocessor.timeout = 3000
 c.TrustPreprocessor['enabled'] = True
-c.HistoryManager.enabled = False
