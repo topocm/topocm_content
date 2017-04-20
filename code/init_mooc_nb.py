@@ -73,9 +73,6 @@ def pretty_fmt_complex(num, digits=2):
 
 
 def init_notebook():
-    # Enable inline plotting in the notebook
-    get_ipython().enable_matplotlib(gui='inline')
-
     print('Populated the namespace with:\n' +
         ', '.join(init_mooc_nb) +
         '\nfrom code/edx_components:\n' +
@@ -91,12 +88,14 @@ def init_notebook():
     holoviews.plotting.widgets.SelectionWidget.css = hv_css
 
     holoviews.notebook_extension('matplotlib')
+    # Enable inline plotting in the notebook
+    get_ipython().enable_matplotlib(gui='inline')
 
     Store.renderers['matplotlib'].fig = 'svg'
     Store.renderers['matplotlib'].dpi = 100
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
-    
+
     latex_packs = [r'\usepackage{amsmath}',
                    r'\usepackage{amssymb}'
                    r'\usepackage{bm}']
