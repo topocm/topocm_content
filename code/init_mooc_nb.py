@@ -88,6 +88,7 @@ def init_notebook():
     holoviews.plotting.widgets.SelectionWidget.css = hv_css
 
     holoviews.notebook_extension('matplotlib')
+
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui='inline')
 
