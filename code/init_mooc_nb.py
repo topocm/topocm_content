@@ -74,11 +74,11 @@ def pretty_fmt_complex(num, digits=2):
 
 def init_notebook():
     print('Populated the namespace with:\n' +
-        ', '.join(init_mooc_nb) +
-        '\nfrom code/edx_components:\n' +
-        ', '.join(edx_components.__all__) +
-        '\nfrom code/functions:\n' +
-        ', '.join(functions.__all__))
+          ', '.join(init_mooc_nb) +
+          '\nfrom code/edx_components:\n' +
+          ', '.join(edx_components.__all__) +
+          '\nfrom code/functions:\n' +
+          ', '.join(functions.__all__))
 
     print('Using kwant {} and holoviews {}'.format(
           kwant.__version__, holoviews.__version__))
@@ -88,6 +88,7 @@ def init_notebook():
     holoviews.plotting.widgets.SelectionWidget.css = hv_css
 
     holoviews.notebook_extension('matplotlib')
+
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui='inline')
 
@@ -100,7 +101,8 @@ def init_notebook():
                    r'\usepackage{amssymb}'
                    r'\usepackage{bm}']
 
-    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = latex_packs
+    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = \
+        latex_packs
 
     # Set plot style.
     options = Store.options(backend='matplotlib')
@@ -118,10 +120,6 @@ def init_notebook():
     options.Layout = Options('plot', title_format='{label}')
     options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
     options.Surface = Options('plot', azimuth=20, elevation=8)
-
-    # Turn off a bogus holoviews warning.
-    # Temporary solution to ignore the warnings
-    warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
 
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
