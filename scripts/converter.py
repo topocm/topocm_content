@@ -50,18 +50,19 @@ var iframe = document.getElementById('{0}');
 iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"></script>
-
 <script>
-var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
+const iFrameResizerPath = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js'
 
-iFrameResize({{
-    heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
-    minSize:100,
-    log:true,
-    checkOrigin:false
-}});
+if (require) {
+  require([iFrameResizerPath], (iFrameResize) => iFrameResize())
+} else {
+  const script = document.createElement('script')
+  script.onload = () => iFrameResize()
+  script.src = iFrameResizerPath
+}
 </script>
+
+
 """
 
 with open(os.path.join(scripts_path, 'release_dates')) as f:
