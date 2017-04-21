@@ -18,10 +18,6 @@ execute_ipynbs:
     - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/syllabus.ipynb
     - find $DEST/w* -name '*.ipynb' | parallel --delay 3 --jobs 32 scripts/nbconvert.sh
     - rm -rf $DEST/data
-  cache:
-    key: "$CI_BUILD_NAME"
-    paths:
-      - .nb_output_cache
   artifacts:
     paths:
       - generated/with_output
