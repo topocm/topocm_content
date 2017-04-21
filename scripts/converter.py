@@ -53,16 +53,14 @@ iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") +
 <script>
 const iFrameResizerPath = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js'
 
-if (require) {
+if (require) {{
   require([iFrameResizerPath], (iFrameResize) => iFrameResize())
-} else {
+}} else {{
   const script = document.createElement('script')
   script.onload = () => iFrameResize()
   script.src = iFrameResizerPath
-}
+}}
 </script>
-
-
 """
 
 with open(os.path.join(scripts_path, 'release_dates')) as f:
