@@ -53,14 +53,17 @@ iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") +
 <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"></script>
 
 <script>
+if (require === undefined) {{
 var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
-
 iFrameResize({{
     heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
     minSize:100,
     log:true,
     checkOrigin:false
-}});
+    }}, "#{0}");
+}} else {{
+  require(["https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"], (iFrameResize) => iFrameResize())
+}}
 </script>
 """
 
