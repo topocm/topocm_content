@@ -1,24 +1,25 @@
-import sys
+# 1. Standard library imports
+import datetime
 import os
 import re
 import types
-import warnings
 
-import numpy as np
-import matplotlib
+# 2. External package imports
 import holoviews
 from holoviews import Options, Store
-from matplotlib import pyplot as plt
 from IPython import display
-from IPython.display import display_html
 import kwant
+import matplotlib
+import numpy as np
 
-import pfaffian as pf
-# A bunch of edx components to pass on, we never use them here
+# A bunch of functions and modules to pass on, we never use them here
+from IPython.display import display_html
+from matplotlib import pyplot as plt
 import edx_components
 from edx_components import *
 import functions
 from functions import *
+import pfaffian as pf
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
@@ -72,7 +73,7 @@ def pretty_fmt_complex(num, digits=2):
             pretty_fmt_complex(num.imag) + 'i')
 
 
-def init_notebook():
+def print_information():
     print('Populated the namespace with:\n' +
           ', '.join(init_mooc_nb) +
           '\nfrom code/edx_components:\n' +
@@ -82,6 +83,13 @@ def init_notebook():
 
     print('Using kwant {} and holoviews {}'.format(
           kwant.__version__, holoviews.__version__))
+
+    now = datetime.datetime.now()
+    print('Executed on {} at {}.'.format(now.date(), now.time()))
+
+
+def init_notebook():
+    print_information()
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
     hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
@@ -118,7 +126,8 @@ def init_notebook():
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
-    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
+    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1,
+                              lw=0.2, edgecolors='k')
     options.Surface = Options('plot', azimuth=20, elevation=8)
 
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
