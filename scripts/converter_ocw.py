@@ -22,7 +22,7 @@ Your browser does not support IFrames.
 
 <script>
 var iframe = document.getElementById('{id}');
-iframe.src =  "//"+ "topocondmat.org/ocw/{folder}/{id}.html?date=" + (+ new Date());
+iframe.src =  "//"+ "topocondmat.org/ocw/{folder}/{name}.html?date=" + (+ new Date());
 </script>
 
 <script src="{url}"></script>
@@ -77,7 +77,7 @@ for chapter in data.chapters:
             with open('website_assets/iframes.txt', 'a') as f:
                 ID = '{}_{}'.format(folder, new_fname)
                 print(IFRAME_TEMPLATE.format(
-                    id=ID, url=url, folder=folder), file=f)
+                    id=ID, url=url, folder=folder, name=new_fname), file=f)
                 print(4 * '\n', file=f)  # print some new lines
 
 # Copy figures
