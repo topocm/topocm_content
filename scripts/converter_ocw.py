@@ -75,9 +75,10 @@ for chapter in data.chapters:
             save_html(html, new_path)
 
             with open('website_assets/iframes.txt', 'a') as f:
+                ID = '{}_{}'.format(folder, new_fname)
                 print(IFRAME_TEMPLATE.format(
-                  id=new_fname, url=url, folder=folder), file=f)
-                print(4 * '\n', file=f) # print some new lines
+                    id=ID, url=url, folder=folder), file=f)
+                print(4 * '\n', file=f)  # print some new lines
 
 # Copy figures
 figures = glob.glob(os.path.join(generated_ipynbs, 'w*/figures/*'))
