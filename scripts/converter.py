@@ -44,7 +44,7 @@ js = response.read().decode('utf-8')
 
 IFRAME_TEMPLATE = r"""
 
-<iframe id="{id}" scrolling="no" width="100%" height="600px", frameborder=0>
+<iframe id="{id}" scrolling="no" width="100%" frameborder=0>
 Your browser does not support IFrames.
 </iframe>
 
@@ -636,6 +636,7 @@ def warn_about_status(mooc_folder, silent=False):
               "Press Enter to continue.")
         if not silent:
             input()
+
 
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
