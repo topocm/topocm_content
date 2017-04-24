@@ -59,7 +59,7 @@ pelican website:
   variables:
     DEST: "generated/html"
   script:
-    - python scripts/pelican_converter.py
+    - python scripts/converter_pelican.py
     - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
     - cp -r generated/with_output ${DEST}/notebooks
   artifacts:
@@ -70,10 +70,9 @@ pelican website:
 
 ocw website:
   stage: build
-  variables:
-    DEST: "generated/html"
   script:
-    - python scripts/submodules_html.py
+    - python scripts/converter_ocw.py
+    - mv website_assets/iframes.txt generated/html/ocw
   artifacts:
     paths:
       - generated/html/ocw

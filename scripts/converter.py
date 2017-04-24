@@ -637,6 +637,7 @@ def warn_about_status(mooc_folder, silent=False):
         if not silent:
             input()
 
+
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
     parser = argparse.ArgumentParser()
