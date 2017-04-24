@@ -252,7 +252,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
                 return [k[0]]
         else:
             B = np.array(syst.symmetry.periods).T
-            A = B.dot(np.linalg.inv(B.T.dot(B)))
+            A = B @ np.linalg.inv(B.T @ B)
             def momentum_to_lattice(k):
                 k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
                 if np.any(abs(residuals) > 1e-7):
