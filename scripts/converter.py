@@ -39,18 +39,25 @@ cfg = Config({'HTMLExporter': {'template_file': 'edx',
                                            markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
 
+import urllib.request
+url = "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.min.js"
+response = urllib.request.urlopen(url)
+js = response.read().decode('utf-8')
+
 IFRAME_TEMPLATE = r"""
 
-<iframe id="{0}" scrolling="no" width="100%" frameborder=0>
+<iframe id="{id}" scrolling="no" width="100%" frameborder=0>
 Your browser does not support IFrames.
 </iframe>
 
 <script>
-var iframe = document.getElementById('{0}');
-iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{0}.html?date=" + (+ new Date());
+var iframe = document.getElementById('{id}');
+iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{id}.html?date=" + (+ new Date());
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"></script>
+<script>
+{js}
+</script>
 
 <script>
 if (require === undefined) {{
@@ -60,9 +67,9 @@ iFrameResize({{
     minSize:100,
     log:true,
     checkOrigin:false
-    }}, "#{0}");
+    }}, "#{id}");
 }} else {{
-  require(["https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.js"], (iFrameResize) => iFrameResize())
+  require(["{url}"], (iFrameResize) => iFrameResize())
 }}
 </script>
 """
@@ -539,7 +546,8 @@ def converter(mooc_folder, args, content_folder=None):
                         save_html(body, html_path)
                         html_path = os.path.join(dirpath, 'html',
                                                  out_url + '.html')
-                        save_html(IFRAME_TEMPLATE.format(out_url), html_path)
+                        save_html(IFRAME_TEMPLATE.format(id=out_url, url=url, js=js),
+                                  html_path)
 
                     elif out[0] == 'MoocVideo':
                         # adding video subelement
