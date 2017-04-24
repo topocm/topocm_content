@@ -1,29 +1,28 @@
 #!/usr/bin/env python3
 
-import io
-import os
-import sys
-import tempfile
-import shutil
-import re
 import argparse
-import subprocess
-import tarfile
+import datetime
+import io
 from itertools import groupby
+import os
+import re
+import tarfile
+import tempfile
+from time import strptime
 from types import SimpleNamespace
-
+import shutil
+import subprocess
+import sys
+import urllib.request
 from xml.etree.ElementTree import Element, SubElement
 from xml.etree import ElementTree
 from xml.dom import minidom
 
-import datetime
-from time import strptime
-
 import nbformat
 from nbformat import v4 as current
-from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
+from traitlets.config import Config
 
 try:
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':./code'
@@ -39,14 +38,13 @@ cfg = Config({'HTMLExporter': {'template_file': 'edx',
                                            markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
 
-import urllib.request
 url = "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.min.js"
 response = urllib.request.urlopen(url)
 js = response.read().decode('utf-8')
 
 IFRAME_TEMPLATE = r"""
 
-<iframe id="{id}" scrolling="no" width="100%" frameborder=0>
+<iframe id="{id}" scrolling="no" width="100%" height="600px", frameborder=0>
 Your browser does not support IFrames.
 </iframe>
 
