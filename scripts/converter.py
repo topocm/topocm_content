@@ -161,10 +161,16 @@ def split_into_units(nb_name, include_header=True):
                if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
-    start_index = 0 if include_header else 1
-    units = [current.new_notebook(cells=cells[start_index:],
-                                  metadata={'name': cells[0].source[2:]})
+    units = [current.new_notebook(cells=cells,
+                                  metadata={'name': cells[0]
+                                                    .source
+                                                    .split('\n')[0][2:]})
              for cells in separated_cells]
+    if not include_header:
+        for unit in units:
+            # The first line is the header.
+            unit.cells[0].source = '\n'.join(unit.cells[0].source
+                                             .split('\n')[1:])
     return units
 
 
@@ -506,7 +512,8 @@ def converter(mooc_folder, args, content_folder=None):
                 sequential_xml.attrib['graded'] = "true"
 
             # getting units
-            units = split_into_units(sequential.source_notebook)
+            units = split_into_units(sequential.source_notebook,
+                                     include_header=False)
 
             for i, unit in enumerate(units):
                 vertical_url = sequential.url + '_{0}'.format(str(i).zfill(2))
@@ -537,9 +544,6 @@ def converter(mooc_folder, args, content_folder=None):
                         body = out[1]
                         html_path = os.path.join(html_folder,
                                                  out_url + '.html')
-                        if out_url.endswith("00"):
-                            # Need to remove the header
-                            pass
 
                         save_html(body, html_path)
                         html_path = os.path.join(dirpath, 'html',
