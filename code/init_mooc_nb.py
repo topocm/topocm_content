@@ -130,6 +130,10 @@ def init_notebook():
                               lw=0.2, edgecolors='k')
     options.Surface = Options('plot', azimuth=20, elevation=8)
 
+    # Set slider label formatting
+    for dimension_type in [float, np.float64, np.float32]:
+        holoviews.Dimension.type_formatters[dimension_type] = pretty_fmt_complex
+
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
     np.set_printoptions(precision=2, suppress=True,
