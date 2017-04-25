@@ -1,6 +1,7 @@
-image: topocourse
+image: topocourse/topocourse
 stages:
   - execute
+  - build
   - deploy
 
 
@@ -8,17 +9,15 @@ execute_ipynbs:
   stage: execute
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
+    - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
     - export DEST=generated/with_output
     - mkdir -p $DEST
     - cp syllabus.ipynb $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
-    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/**/*ipynb $DEST/syllabus.ipynb
+    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/syllabus.ipynb
+    - find $DEST/w* -name '*.ipynb' | parallel --delay 3 --jobs 32 scripts/nbconvert.sh
     - rm -rf $DEST/data
-  cache:
-    key: "$CI_BUILD_NAME"
-    paths:
-      - .nb_output_cache
   artifacts:
     paths:
       - generated/with_output
@@ -27,66 +26,86 @@ execute_ipynbs:
 
 mirror to github:
   stage: execute
+  allow_failure: true
   only:
     - branches@qt/topocm
-  script: |
-    REPOS=( git@github.com:topocm/topocm_content.git )
-    trap "rm -rf ~/.ssh" EXIT
-    HOSTS=$(for REPO in "${REPOS[@]}"; do echo ${REPO%:*}|cut -d'@' -f2; done)
-    ORIGIN_URL=$(git config --get remote.origin.url)
-    mkdir ~/.ssh
-    for HOST in "${HOSTS[@]}"; do ssh-keyscan $HOST >> ~/.ssh/known_hosts; done
-    echo "$PUSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    cd $(mktemp -d); git clone --bare $ORIGIN_URL .
-    for REPO in "${REPOS[@]}"; do git remote add mirror $REPO; git push mirror --mirror; git remote rm mirror; done
+  variables:
+    REPOS: "git@github.com:topocm/topocm_content.git"
+  before_script:
+    - HOSTS=$(for REPO in $REPOS; do echo ${REPO%:*} | cut -d'@' -f2; done)
+    - mkdir ~/.ssh && chmod 700 ~/.ssh
+    - for HOST in $HOSTS; do ssh-keyscan $HOST >> ~/.ssh/known_hosts; done
+    - echo "$PUSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+  after_script:
+    - rm -rf ~/.ssh
+  script:
+    - ORIGIN_URL=$(git config --get remote.origin.url)
+    - cd $(mktemp -d); git clone --bare $ORIGIN_URL .
+    - for REPO in $REPOS; do git push --mirror $REPO; done
 
 
-edx_archive:
-  stage: deploy
+edx archive:
+  stage: build
   script: ./scripts/converter.py --silent ./generated/with_output
   artifacts:
     paths:
       - generated/import_to_edx.tar.gz
+      - generated/html/edx
     expire_in: 7d
 
 
-upload_test_website:
+pelican website:
+  stage: build
+  variables:
+    DEST: "generated/html"
+  script:
+    - python scripts/converter_pelican.py
+    - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
+    - cp -r generated/with_output ${DEST}/notebooks
+  artifacts:
+    paths:
+      - generated/html
+    expire_in: 1d
+
+
+ocw website:
+  stage: build
+  script:
+    - python scripts/converter_ocw.py
+    - mv website_assets/iframes.txt generated/html/ocw
+  artifacts:
+    paths:
+      - generated/html/ocw
+    expire_in: 1d
+
+
+.upload_website: &upload_website
   stage: deploy
+  before_script:
+    - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
+    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+  script:
+    - "rsync -ravz --delete generated/html/* $USER@tnw-tn1.tudelft.net:"
+    - "rsync -ravz --delete website_assets/static $USER@tnw-tn1.tudelft.net:"
+  after_script:
+    - rm -rf ~/.ssh
+
+
+upload test website:
+  <<: *upload_website
   environment: test
   only:
     - branches@qt/topocm
   except:
     - master@qt/topocm
-  script:
-    - export DEST=generated/html
-    - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
-    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - python scripts/pelican_converter.py
-    - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
-    - cp -r generated/with_output ${DEST}/notebooks
-    - "rsync -ravz --delete $DEST/* topocm-test@tnw-tn1.tudelft.net:"
-    - rm -rf ~/.ssh
-  artifacts:
-    paths:
-      - generated/html
-    expire_in: 1d
+  variables:
+    USER: topocm-test
 
 
-upload_website:
-  stage: deploy
+upload main website:
+  <<: *upload_website
   environment: published
   only:
     - master@qt/topocm
-  script:
-    - export DEST=generated/html
-    - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
-    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-    - python scripts/pelican_converter.py
-    - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
-    - cp -r generated/with_output ${DEST}/notebooks
-    - "rsync -ravz --delete $DEST/* topocm@tnw-tn1.tudelft.net:"
-    - rm -rf ~/.ssh
-  artifacts:
-    paths:
-      - generated/html
-    expire_in: 1d
+  variables:
+    USER: topocm

@@ -1,11 +1,9 @@
 div.hololayout {
-    display: flex;
     align-items: center;
-    margin: 0;
 }
 
 div.holoframe {
-    width: 75%;
+	width: 75%;
 }
 
 div.holowell {
@@ -18,7 +16,7 @@ form.holoform {
     background-color: #fafafa;
     border-radius: 5px;
     overflow: hidden;
-    padding-left: 0.8em;
+	padding-left: 0.8em;
     padding-right: 0.8em;
     padding-top: 0.4em;
     padding-bottom: 0.4em;
@@ -26,7 +24,9 @@ form.holoform {
 
 div.holowidgets {
     padding-right: 0;
-    width: 25%;
+	width: 50%;
+	margin: auto;
+	margin-top: 50px;
 }
 
 div.holoslider {
@@ -59,13 +59,13 @@ div.hologroup {
 }
 
 .holowidgets .ui-resizable-se {
-    visibility: hidden
+	visibility: hidden
 }
 
 .holoframe > .ui-resizable-se {
-    visibility: hidden
+	visibility: hidden
 }
 
 .holowidgets .ui-resizable-s {
-    visibility: hidden
+	visibility: hidden
 }

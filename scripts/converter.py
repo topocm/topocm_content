@@ -1,48 +1,78 @@
 #!/usr/bin/env python3
 
-import io
-import os
-import sys
-import tempfile
-import shutil
-import re
 import argparse
-import subprocess
-import tarfile
+import datetime
+import io
 from itertools import groupby
+import os
+import re
+import tarfile
+import tempfile
+from time import strptime
 from types import SimpleNamespace
-
+import shutil
+import subprocess
+import sys
+import urllib.request
 from xml.etree.ElementTree import Element, SubElement
 from xml.etree import ElementTree
 from xml.dom import minidom
 
-import datetime
-from time import strptime
-
 import nbformat
 from nbformat import v4 as current
-from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
-
-import bs4
+from traitlets.config import Config
 
 try:
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':./code'
 except KeyError:
     os.environ['PYTHONPATH'] = './code'
 
-from holoviews.plotting import Renderer
-hvjs = Renderer.html_assets(extras=False)[0]
+scripts_path = os.path.dirname(os.path.realpath(__file__))
+mooc_folder = os.path.join(scripts_path, os.pardir)
 
-path = os.path.dirname(os.path.realpath(__file__))
-cfg = Config({'HTMLExporter':{'template_file':'no_code',
-                              'template_path':['.',path],
-                              'filters':{'markdown2html':
-                                         markdown2html_pandoc}}})
+cfg = Config({'HTMLExporter': {'template_file': 'edx',
+                               'template_path': ['.', scripts_path],
+                               'filters': {'markdown2html':
+                                           markdown2html_pandoc}}})
 exportHtml = HTMLExporter(config=cfg)
 
-with open('scripts/release_dates') as f:
+url = "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.min.js"
+response = urllib.request.urlopen(url)
+js = response.read().decode('utf-8')
+
+IFRAME_TEMPLATE = r"""
+
+<iframe id="{id}" scrolling="no" width="100%" frameborder=0>
+Your browser does not support IFrames.
+</iframe>
+
+<script>
+var iframe = document.getElementById('{id}');
+iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{id}.html?date=" + (+ new Date());
+</script>
+
+<script>
+{js}
+</script>
+
+<script>
+if (require === undefined) {{
+var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
+iFrameResize({{
+    heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
+    minSize:100,
+    log:true,
+    checkOrigin:false
+    }}, "#{id}");
+}} else {{
+  require(["{url}"], (iFrameResize) => iFrameResize())
+}}
+</script>
+"""
+
+with open(os.path.join(scripts_path, 'release_dates')) as f:
     release_dates = eval(f.read())
 
 
@@ -55,7 +85,7 @@ def date_to_edx(date, add_days=0):
     return date
 
 
-def parse_syllabus(syllabus_file, content_folder=''):
+def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
     # loading raw syllabus
     syll = split_into_units(syllabus_file)[0]
     cell = syll.cells[1]
@@ -80,24 +110,25 @@ def parse_syllabus(syllabus_file, content_folder=''):
                 if is_section(line)]
 
     # Make a list of lines in each section.
-    subsections = (tuple(g) for k,g in groupby(lines, key=lambda x: not
-                                               is_section(x)) if k)
+    subsections = (tuple(g) for k, g in groupby(lines, key=lambda x: not
+                                                is_section(x)) if k)
     # Filter the actual subsections.
     subsections = [[subs_to_name_file(i) for i in j if subs_to_name_file(i) is
                     not None] for j in subsections]
 
-    tmp = SimpleNamespace(category='main', chapters=[])
+    data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(zip(sections, subsections)):
-        # Don't convert sections with no release date.
-        if section[0][1] is None:
-            continue
+        if not parse_all:
+            # Don't convert sections with no release date.
+            if section[0][1] is None:
+                continue
 
-        #creating chapter
+        # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
         chapter.name = section[0][0]
         chapter.date = section[0][1]
-        chapter.url  = "sec_{0}".format(str(i).zfill(2))
+        chapter.url = "sec_{0}".format(str(i).zfill(2))
 
         for j, subsection in enumerate(section[1]):
             # creating sequential
@@ -111,11 +142,11 @@ def parse_syllabus(syllabus_file, content_folder=''):
 
             chapter.sequentials.append(sequential)
 
-        tmp.chapters.append(chapter)
-    return tmp
+        data.chapters.append(chapter)
+    return data
 
 
-def split_into_units(nb_name):
+def split_into_units(nb_name, include_header=True):
     """Split notebook into units."""
     try:
         nb = nbformat.read(nb_name, as_version=4)
@@ -131,46 +162,23 @@ def split_into_units(nb_name):
 
     separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
     units = [current.new_notebook(cells=cells,
-                                  metadata={'name': cells[0].source[2:]})
+                                  metadata={'name': cells[0]
+                                                    .source
+                                                    .split('\n')[0][2:]})
              for cells in separated_cells]
+    if not include_header:
+        for unit in units:
+            # The first line is the header.
+            unit.cells[0].source = '\n'.join(unit.cells[0].source
+                                             .split('\n')[1:])
     return units
 
 
-def export_unit_to_html(unit):
+def export_unit_to_html(unit, export_html=exportHtml):
     """Export unit into html format."""
-    slider_start = '// Slider JS Block START'
-    slider_end = '// Slider JS Block END'
-    replacement_start = '(function (requirejs, require, define) {'
-    replacement_end = ('}(RequireJS.requirejs, RequireJS.require, '
-                       'RequireJS.define));')
-    bootstrap_css = ('<link rel="stylesheet" '
-                     'href="/static/bootstrap.edx.css">\n')
-    hvcss = ('<link rel="stylesheet" '
-             'href="/static/holoviews.edx.css">\n')
-    (body, resources) = exportHtml.from_notebook_node(unit)
+    (body, resources) = export_html.from_notebook_node(unit)
     body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
     body = re.sub(r'\\end\{ *equation *\}', '\]', body)
-    if slider_start in body:
-        soup = bs4.BeautifulSoup(body, 'lxml')
-
-        labels = [strong for form in soup.find_all('form',
-                                                   attrs={'class':'holoform'})
-                         for strong in form.find_all('strong')]
-
-        for label in labels:
-            new = re.sub(r'[$\\{}]', '', label.contents[0])
-            label.contents[0].replace_with(new)
-
-        body = soup.__str__()
-
-        body = body.replace('hololayout', 'bootstrap-wrapper')
-        body = body.replace('span9 col-xs-8 col-md-9', '')
-        body = body.replace('span3 col-xs-4 col-md-3',
-                            'col-md-6 col-md-offset-3 center-widget')
-        body = body.replace(slider_start, replacement_start)
-        body = body.replace(slider_end, replacement_end)
-        body = hvjs + bootstrap_css + hvcss + body
-
     return body
 
 
@@ -302,9 +310,9 @@ def convert_MoocMultipleChoiceAssessment_to_xml(par):
 
 
 def convert_MoocPeerAssessment_to_xml(par, date):
-    #tree = ElementTree.parse('./templates/openassessment.xml')
+    # tree = ElementTree.parse('./templates/openassessment.xml')
     xml = ElementTree.fromstring(par['openassessment_peer'])
-    #xml = tree.getroot()
+    # xml = tree.getroot()
 
     if par['url_name'] is not None:
         xml.attrib['url_name'] = par['url_name']
@@ -417,16 +425,26 @@ def convert_unit(unit, date):
 
 def converter(mooc_folder, args, content_folder=None):
     """ Do converting job. """
-    # Basic info
-    info_org='DelftX'
-    info_course='TOPOCMx'
-    info_display_name='Topology in Condensed Matter: Tying Quantum Knots'
-    info_run='course'
-    info_start="2016-02-08T10:00:00Z"
-
     # Mooc content location
     if content_folder is None:
         content_folder = mooc_folder
+
+    # copying figures
+    target = os.path.join(mooc_folder, 'generated')
+    os.makedirs(os.path.join(target, 'html/edx/figures'), exist_ok=True)
+    for entry, *_ in os.walk(content_folder):
+        if re.match(content_folder + r'/w\d+_.+/figures', entry):
+            for filename in os.listdir(entry):
+                shutil.copy(os.path.join(entry, filename),
+                            os.path.join(target, 'html/edx/figures'))
+    html_folder = os.path.join(target, 'html/edx')
+
+    # Basic info
+    info_org = 'DelftX'
+    info_course = 'TOPOCMx'
+    info_display_name = 'Topology in Condensed Matter: Tying Quantum Knots'
+    info_run = 'course'
+    info_start = "2016-02-08T10:00:00Z"
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/' + info_run
@@ -463,7 +481,7 @@ def converter(mooc_folder, args, content_folder=None):
     wiki = SubElement(xml_course, 'wiki')
     wiki.attrib['slug'] = ".".join([info_org, info_course, info_run])
 
-    save_xml(xml_course, os.path.join(dirpath,'course',info_run+'.xml'))
+    save_xml(xml_course, os.path.join(dirpath, 'course', info_run+'.xml'))
 
     # saving chapters xmls inside 'chapter' folder
     for chapter in data.chapters:
@@ -476,7 +494,7 @@ def converter(mooc_folder, args, content_folder=None):
             sequential_sub.attrib['url_name'] = sequential.url
 
         save_xml(chapter_xml,
-                 os.path.join(dirpath,'chapter',chapter.url+'.xml'))
+                 os.path.join(dirpath, 'chapter', chapter.url+'.xml'))
 
     # saving sequentials xmls inside 'sequential' folder
     # saving vertical xmls inside 'vertical' folder
@@ -493,8 +511,9 @@ def converter(mooc_folder, args, content_folder=None):
 
                 sequential_xml.attrib['graded'] = "true"
 
-            #getting units
-            units = split_into_units(sequential.source_notebook)
+            # getting units
+            units = split_into_units(sequential.source_notebook,
+                                     include_header=False)
 
             for i, unit in enumerate(units):
                 vertical_url = sequential.url + '_{0}'.format(str(i).zfill(2))
@@ -505,7 +524,6 @@ def converter(mooc_folder, args, content_folder=None):
                 # creating vertical.xml
                 vertical_xml = Element('vertical')
                 vertical_xml.attrib['display_name'] = unit.metadata.name
-
 
                 unit_output = convert_unit(unit, date=sequential.date)
                 for (j, out) in enumerate(unit_output):
@@ -520,16 +538,18 @@ def converter(mooc_folder, args, content_folder=None):
                         html_xml.attrib['display_name'] = unit.metadata.name
                         html_xml.attrib['filename'] = out_url
 
-                        save_xml(html_xml, os.path.join(dirpath,'html',
-                                                        out_url+'.xml'))
+                        save_xml(html_xml, os.path.join(dirpath, 'html',
+                                                        out_url + '.xml'))
 
                         body = out[1]
-                        body = body.replace('src="figures/',
-                                            'src="/static/'+chapter.url+'_')
+                        html_path = os.path.join(html_folder,
+                                                 out_url + '.html')
 
-                        html_path = os.path.join(dirpath,'html',
-                                                 out_url+'.html')
                         save_html(body, html_path)
+                        html_path = os.path.join(dirpath, 'html',
+                                                 out_url + '.html')
+                        save_html(IFRAME_TEMPLATE.format(id=out_url, url=url, js=js),
+                                  html_path)
 
                     elif out[0] == 'MoocVideo':
                         # adding video subelement
@@ -549,7 +569,7 @@ def converter(mooc_folder, args, content_folder=None):
                         discussion_subelement = SubElement(vertical_xml,
                                                            'discussion')
                         discussion_subelement.attrib['url_name'] = \
-                                discussion_xml.attrib['discussion_id']
+                            discussion_xml.attrib['discussion_id']
 
                         # creating video xml
                         discussion_path = os.path.join(dirpath, 'discussion',
@@ -577,36 +597,16 @@ def converter(mooc_folder, args, content_folder=None):
                         # creating problem xml
                         problem_xml = out[1]
                         problem_path = os.path.join(dirpath, 'problem',
-                                                    out_url+'.xml')
+                                                    out_url + '.xml')
 
                         save_xml(problem_xml, problem_path)
 
                 save_xml(vertical_xml, os.path.join(dirpath, 'vertical',
-                                                    vertical_url+'.xml'))
+                                                    vertical_url + '.xml'))
             save_xml(sequential_xml, os.path.join(dirpath, 'sequential',
-                                                  sequential.url+'.xml'))
-
-    # copying figures
-    for chapter in data.chapters:
-        figures_list = []
-        for sequential in chapter.sequentials:
-            fig_path = os.path.join(content_folder,
-                                    os.path.dirname(sequential.source_notebook),
-                                    'figures')
-            if os.path.exists(fig_path):
-                files = os.listdir(fig_path)
-                for f in files:
-                    if f not in figures_list:
-                        figures_list.append(fig_path + '/' + f)
-
-        for f in figures_list:
-            destination = os.path.join(dirpath, 'static', chapter.url + '_' +
-                                       f.split('/')[-1])
-            shutil.copy(f, destination)
+                                                  sequential.url + '.xml'))
 
     # Creating tar
-    target = os.path.join(mooc_folder, 'generated')
-    os.makedirs(target, exist_ok=True)
     tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
     tar = tarfile.open(name=tar_filepath, mode='w:gz')
     tar.add(dirpath, arcname='')
@@ -641,11 +641,12 @@ def warn_about_status(mooc_folder, silent=False):
         if not silent:
             input()
 
+
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
     parser = argparse.ArgumentParser()
     parser.add_argument('source', nargs='?', help='folder to convert')
-    parser.add_argument('-d','--debug', action='store_true',
+    parser.add_argument('-d', '--debug', action='store_true',
                         help='debugging flag')
     parser.add_argument('-o', '--open', action='store_true',
                         help='opening uncompressed folder with files')

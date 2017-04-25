@@ -27,7 +27,7 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
         del tmp['id'], tmp['src_location'], tmp['res']
         kwargs.update(tmp)
         kwargs['youtube_id_1_0'] = id
-        kwargs['youtube'] ="1.00:" + id
+        kwargs['youtube'] = "1.00:" + id
 
         # Add source if provided
         loc = ("http://delftxdownloads.tudelft.nl/"

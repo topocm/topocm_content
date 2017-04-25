@@ -1,24 +1,25 @@
-import sys
+# 1. Standard library imports
+import datetime
 import os
 import re
 import types
-import warnings
 
-import numpy as np
-import matplotlib
+# 2. External package imports
 import holoviews
 from holoviews import Options, Store
-from matplotlib import pyplot as plt
 from IPython import display
-from IPython.display import display_html
 import kwant
+import matplotlib
+import numpy as np
 
-import pfaffian as pf
-# A bunch of edx components to pass on, we never use them here
+# A bunch of functions and modules to pass on, we never use them here
+from IPython.display import display_html
+from matplotlib import pyplot as plt
 import edx_components
 from edx_components import *
 import functions
 from functions import *
+import pfaffian as pf
 
 init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
                 'SimpleNamespace', 'pprint_matrix', 'scientific_number',
@@ -26,10 +27,12 @@ init_mooc_nb = ['np', 'matplotlib', 'kwant', 'holoviews', 'init_notebook',
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
 
+
 class SimpleNamespace(types.SimpleNamespace):
     def update(self, **kwargs):
         self.__dict__.update(kwargs)
         return self
+
 
 # Adjust printing of matrices, and numpy printing of numbers.
 def pprint_matrix(data, digits=3):
@@ -70,32 +73,44 @@ def pretty_fmt_complex(num, digits=2):
             pretty_fmt_complex(num.imag) + 'i')
 
 
-def init_notebook(mpl=True):
-    # Enable inline plotting in the notebook
-    if mpl:
-        try:
-            get_ipython().enable_matplotlib(gui='inline')
-        except NameError:
-            pass
-
+def print_information():
     print('Populated the namespace with:\n' +
-        ', '.join(init_mooc_nb) +
-        '\nfrom code/edx_components:\n' +
-        ', '.join(edx_components.__all__) +
-        '\nfrom code/functions:\n' +
-        ', '.join(functions.__all__))
+          ', '.join(init_mooc_nb) +
+          '\nfrom code/edx_components:\n' +
+          ', '.join(edx_components.__all__) +
+          '\nfrom code/functions:\n' +
+          ', '.join(functions.__all__))
+
+    print('Using kwant {} and holoviews {}'.format(
+          kwant.__version__, holoviews.__version__))
+
+    now = datetime.datetime.now()
+    print('Executed on {} at {}.'.format(now.date(), now.time()))
+
+
+def init_notebook():
+    print_information()
+
+    code_dir = os.path.dirname(os.path.realpath(__file__))
+    hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
+    holoviews.plotting.widgets.SelectionWidget.css = hv_css
 
     holoviews.notebook_extension('matplotlib')
 
+    # Enable inline plotting in the notebook
+    get_ipython().enable_matplotlib(gui='inline')
+
     Store.renderers['matplotlib'].fig = 'svg'
+    Store.renderers['matplotlib'].dpi = 100
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.usetex'] = True
-    
+
     latex_packs = [r'\usepackage{amsmath}',
                    r'\usepackage{amssymb}'
                    r'\usepackage{bm}']
 
-    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = latex_packs
+    holoviews.plotting.mpl.MPLPlot.fig_rcparams['text.latex.preamble'] = \
+        latex_packs
 
     # Set plot style.
     options = Store.options(backend='matplotlib')
@@ -111,20 +126,11 @@ def init_notebook(mpl=True):
     options.Curve = Options('plot', aspect='square', title_format='{label}')
     options.Overlay = Options('plot', show_legend=False, title_format='{label}')
     options.Layout = Options('plot', title_format='{label}')
-    options.Surface = Options('style', cmap='RdBu_r', rstride=1, cstride=1, lw=0.2)
+    options.Surface = Options('style', cmap='RdBu_r', rstride=2, cstride=2,
+                              lw=0.2, edgecolors='k')
     options.Surface = Options('plot', azimuth=20, elevation=8)
 
-    # Turn off a bogus holoviews warning.
-    # Temporary solution to ignore the warnings
-    warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
-
-    module_dir = os.path.dirname(__file__)
-    matplotlib.rc_file(os.path.join(module_dir, "matplotlibrc"))
+    matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
     np.set_printoptions(precision=2, suppress=True,
                         formatter={'complexfloat': pretty_fmt_complex})
-
-    # Patch a bug in holoviews
-    if holoviews.__version__.release <= (1, 4, 3):
-        from patch_holoviews import patch_all
-        patch_all()

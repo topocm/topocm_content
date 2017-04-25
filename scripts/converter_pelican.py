@@ -4,7 +4,6 @@ import os
 import glob
 import json
 import shutil
-import subprocess
 import nbformat
 import datetime
 
@@ -17,7 +16,8 @@ def remove_first_cell(nb_name):
         if cell['source'].startswith('# '):
             break
     cells = cells[i:]
-    return nbformat.v4.new_notebook(cells=cells, metadata={'name': cells[0].source[2:]})
+    return nbformat.v4.new_notebook(cells=cells,
+                                    metadata={'name': cells[0].source[2:]})
 
 
 meta_file = """Title: {title}
@@ -35,7 +35,8 @@ figures = glob.glob('generated/with_output/w*/figures/*')
 for ipynb in ipynbs:
     nb = remove_first_cell(ipynb)
     title = nb.cells[0].source[2:]
-    new_fname = ipynb.replace('generated/with_output', 'generated/pelican_content')
+    new_fname = ipynb.replace('generated/with_output',
+                              'generated/pelican_content')
     os.makedirs(os.path.dirname(new_fname), exist_ok=True)
     with open(new_fname, 'w') as f:
         json.dump(nb, f)
@@ -56,6 +57,7 @@ for figure in figures:
 nb = remove_first_cell('syllabus.ipynb')
 with open('generated/pelican_content/syllabus.ipynb', 'w') as f:
     json.dump(nb, f)
-with open('generated/pelican_content/syllabus.ipynb-meta', 'w', encoding='utf-8') as f:
+with open('generated/pelican_content/syllabus.ipynb-meta', 'w',
+          encoding='utf-8') as f:
     meta = meta_file.format(slug='syllabus', title='Syllabus', date=date)
     f.write(meta + '\nsave_as: index.html')
