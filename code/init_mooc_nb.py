@@ -2,6 +2,7 @@
 import datetime
 import os
 import re
+import sys
 import types
 
 # 2. External package imports
@@ -88,8 +89,22 @@ def print_information():
     print('Executed on {} at {}.'.format(now.date(), now.time()))
 
 
+def check_versions():
+    from distutils.version import LooseVersion
+
+    if sys.version_info < (3, 5):
+        raise Exception('Install Python 3.5 or higher, we recommend using conda.')
+
+    if tuple(LooseVersion(str(holoviews.__version__)).version) < (1, 7):
+        raise Exception('Install holoviews 1.7 or higher. If you are using conda, do: `conda install -c conda-forge holoviews`')
+
+    if tuple(LooseVersion(str(kwant.__version__)).version) < (1, 3):
+        raise Exception('Install kwant 1.3 or higher. If you are using conda, do: `conda install -c conda-forge kwant`')
+
+
 def init_notebook():
     print_information()
+    check_versions()
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
     hv_css = os.path.join(code_dir, 'hv_widgets_settings.css')
