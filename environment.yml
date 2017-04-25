@@ -1,11 +1,11 @@
-name: topocm
-
+name: python3
 channels:
-- conda-forge
-
-dependencies:
-  - python=3.4
   - kwant
+  - ioam/label/dev
+  - conda-forge
+dependencies:
+  - python=3.6
+  - kwant=dev # Untill v1.3 is out
   - holoviews
-  - feedparser
+  - sympy=1.0*
   - texlive-core
