@@ -56,5 +56,3 @@ RUN cd /tmp && \
 COPY python3.yaml .
 
 RUN conda env update -n root -f python3.yaml && conda clean -tipsy
-
-RUN pip install https://github.com/ioam/holoviews/archive/master.zip
