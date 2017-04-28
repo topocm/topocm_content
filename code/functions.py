@@ -3,6 +3,7 @@ import collections
 from copy import copy
 from types import SimpleNamespace
 
+import kwant
 import numpy as np
 import holoviews as hv
 
