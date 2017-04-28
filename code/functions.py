@@ -3,10 +3,9 @@ import collections
 from copy import copy
 from types import SimpleNamespace
 
+import kwant
 import numpy as np
 import holoviews as hv
-
-from wraparound import wraparound
 
 if tuple(int(i) for i in np.__version__.split('.')[:3]) <= (1, 8, 0):
     raise RuntimeError("numpy >= (1, 8, 0) is required")
@@ -253,13 +252,14 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         else:
             B = np.array(syst.symmetry.periods).T
             A = B @ np.linalg.inv(B.T @ B)
+
             def momentum_to_lattice(k):
                 k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
                 if np.any(abs(residuals) > 1e-7):
                     raise RuntimeError("Requested momentum doesn't correspond"
                                        " to any lattice momentum.")
                 return list(k)
-        syst = wraparound(syst).finalized()
+        syst = kwant.wraparound.wraparound(syst).finalized()
 
     changing = dict()
     for key, value in pars.__dict__.items():
@@ -276,13 +276,12 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
 
     if not changing:
         hamiltonians = syst.hamiltonian_submatrix([pars] +
-                                                 momentum_to_lattice([k_x, k_y, k_z]),
-                                                 sparse=False)[None, ...]
+                                                  momentum_to_lattice([k_x, k_y, k_z]),
+                                                  sparse=False)[None, ...]
         if return_grid:
             return hamiltonians, []
         else:
             return hamiltonians
-
 
     def hamiltonian(**values):
         pars.__dict__.update(values)
