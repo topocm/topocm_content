@@ -36,7 +36,13 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
             kwargs['source'] = loc.format(src_location, res)
 
         self.param = kwargs
-        super().__init__(id, width='100%', height=400, rel=0, cc_load_policy=1)
+        super().__init__(id, rel=0, cc_load_policy=1)
+
+    def _repr_html_(self):
+        orig = super()._repr_html_()
+        return ('<div class="embed-responsive embed-responsive-16by9">{}</div>'
+                .format(orig.replace('<iframe',
+                                     '<iframe class="embed-responsive-item" ')))
 
 
 class PreprintReference:
