@@ -1,4 +1,4 @@
-{%- extends 'no_code.tpl' -%}
+{%- extends 'basic.tpl' -%}
 {% from 'mathjax.tpl' import mathjax %}
 
 {% block header %}

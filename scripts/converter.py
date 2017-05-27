@@ -33,6 +33,8 @@ scripts_path = os.path.dirname(os.path.realpath(__file__))
 mooc_folder = os.path.join(scripts_path, os.pardir)
 
 cfg = Config({'HTMLExporter': {'template_file': 'edx',
+                               'exclude_input': True,
+                               'exclude_output_prompt': True,
                                'template_path': ['.', scripts_path],
                                'filters': {'markdown2html':
                                            markdown2html_pandoc}}})

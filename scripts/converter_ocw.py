@@ -43,6 +43,8 @@ with open('website_assets/iframes.txt', 'w') as f:
     print('Executed on {} at {}.'.format(now.date(), now.time()), file=f)
 
 cfg = Config({'HTMLExporter': {'template_file': 'ocw',
+                               'exclude_input': True,
+                               'exclude_output_prompt': True,
                                'template_path': ['.', scripts_path],
                                'filters': {'markdown2html':
                                            markdown2html_pandoc}}})
