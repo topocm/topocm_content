@@ -9,6 +9,11 @@
 {{ mathjax() }}
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<style type="text/css">
+   body { background: #F2F2F2 !important; }
+</style>
+
 </head>
 
 <body>
