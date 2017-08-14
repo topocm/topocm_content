@@ -64,7 +64,7 @@ for chapter in data.chapters:
     chap_num = int(chapter.url[-2:])
     for sequential in chapter.sequentials:
         units = split_into_units(sequential.source_notebook,
-                                 include_header=True)
+                                 include_header=False)
         folder, fname = sequential.source_notebook.split('/')[-2:]
         for i, unit in enumerate(units):
             fname = fname.replace('.ipynb', '')
