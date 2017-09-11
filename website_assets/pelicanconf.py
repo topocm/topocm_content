@@ -23,6 +23,9 @@ LINKS = (('This course on edX', 'http://tiny.cc/topocm'),
          ('Course chat', 'https://meso.tnw.tudelft.nl/topocondmat'),
          ('Source code', 'https://github.com/topocm/topocm_content'),)
 
+ANNOUNCEMENTS = (('Hi there, this is an announcement.'),
+                 ('And this too!'),)
+
 
 DEFAULT_PAGINATION = 10
 
