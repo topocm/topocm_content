@@ -23,6 +23,13 @@ LINKS = (('This course on edX', 'http://tiny.cc/topocm'),
          ('Course chat', 'https://meso.tnw.tudelft.nl/topocondmat'),
          ('Source code', 'https://github.com/topocm/topocm_content'),)
 
+ANNOUNCEMENTS = (
+    ('<a href="https://quantumtinkerer.tudelft.nl/open_positions/">'
+     'We have a PhD position open</a>'),
+)
+
+
+
 
 DEFAULT_PAGINATION = 10
 
