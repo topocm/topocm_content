@@ -20,7 +20,7 @@ AUTHOR_FEED_RSS = None
 
 # Blogroll
 LINKS = (('This course on edX', 'http://tiny.cc/topocm'),
-         ('Course chat', 'https://meso.tnw.tudelft.nl/topocondmat'),
+         ('Course chat', 'https://chat.topocondmat.org'),
          ('Source code', 'https://github.com/topocm/topocm_content'),)
 
 ANNOUNCEMENTS = (
