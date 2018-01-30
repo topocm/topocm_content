@@ -58,20 +58,14 @@ def scientific_number(x):
 
 def pretty_fmt_complex(num, digits=2):
     """Return a human-readable string representation of a number."""
-    def strip_trailing(num_str):
-        return num_str.rstrip('0').rstrip('.')
+    num = np.round(num, digits)
 
-    if np.round(num, digits) == 0:
+    if num == 0:
         return '0'
 
-    if np.round(num.imag, digits) == 0:
-        return strip_trailing(str(round(num.real, digits)))
-
-    if np.round(num.real, digits) == 0:
-        return strip_trailing(str(round(num.imag, digits))) + 'i'
-
-    return (pretty_fmt_complex(num.real) + (('+' if num.imag > 0 else '')) +
-            pretty_fmt_complex(num.imag) + 'i')
+    parts = (str(part).rstrip('0').rstrip('.')
+             for part in (num.real, num.imag) if part)
+    return '+'.join(parts) + ('i' if num.imag else '')
 
 
 def print_information():
