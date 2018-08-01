@@ -77,16 +77,25 @@ def get_html_from_filepath(filepath):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
-    config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
-                                                  'highlight_class': '.highlight-ipynb'}})
+    config = Config({
+        'CSSHTMLHeaderTransformer': {
+            'enabled': True,
+            'highlight_class': '.highlight-ipynb',
+        },
+    })
 
     config.HTMLExporter.preprocessors = [HtmlLinksPreprocessor]
+    config.HTMLExporter.exclude_input = True
+    config.HTMLExporter.exclude_output_prompt = True
     config.HtmlLinksPreprocessor['enabled'] = True
 
     path = os.path.dirname(os.path.realpath(__file__))
-    exporter = HTMLExporter(config=config, template_file='no_code',
-                            template_path=['.', path + '/../../../scripts/'],
-                            filters={'highlight2html': custom_highlighter})
+    exporter = HTMLExporter(
+        config=config,
+        template_file='no_code',
+        template_path=['.', path + '/../../../scripts/'],
+        filters={'highlight2html': custom_highlighter}
+    )
     content, info = exporter.from_filename(filepath)
 
     return content, info

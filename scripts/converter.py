@@ -3,7 +3,7 @@
 import argparse
 import datetime
 import io
-from itertools import groupby, dropwhile
+from itertools import dropwhile
 import os
 import re
 import tarfile
@@ -39,7 +39,10 @@ cfg = Config({
 })
 exportHtml = HTMLExporter(config=cfg)
 
-url = "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.min.js"
+url = (
+    "https://cdnjs.cloudflare.com/ajax/libs"
+    "/iframe-resizer/3.5.14/iframeResizer.min.js"
+)
 response = urllib.request.urlopen(url)
 js = response.read().decode('utf-8')
 
@@ -50,7 +53,9 @@ Your browser does not support IFrames.
 
 <script>
 var iframe = document.getElementById('{id}');
-iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") + "topocondmat.org/edx/{id}.html?date=" + (+ new Date());
+iframe.src =  "//" +
+              (document.domain.endsWith("edge.edx.org") ? "test." : "") +
+              "topocondmat.org/edx/{id}.html?date=" + (+ new Date());
 </script>
 
 <script>
@@ -59,7 +64,8 @@ iframe.src =  "//" + (document.domain.endsWith("edge.edx.org") ? "test." : "") +
 
 <script>
 if (require === undefined) {{
-var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1); // Detect IE10 and below
+// Detect IE10 and below
+var isOldIE = (navigator.userAgent.indexOf("MSIE") !== -1);
 iFrameResize({{
     heightCalculationMethod: isOldIE ? 'max' : 'lowestElement',
     minSize:100,
@@ -90,55 +96,45 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
     syll = split_into_units(syllabus_file)[0]
     cell = syll.cells[1]
 
-    def section_to_name_date(line):
-        name = re.findall('\*\*(.*)\*\*', line)[0]
-        date = release_dates.get(name)
-        return name, date
+    section = '^\* \*\*(?P<section>.*)\*\*$'
+    subsection = '^  \* \[(?P<title>.*)\]\((?P<filename>.*)\)$'
+    syllabus_line = section + '|' + subsection
 
-    def subs_to_name_file(line):
-        try:
-            file_name = re.findall(r'\((.+?\.ipynb)\)', line)[0]
-        except IndexError:
-            return
-        subsection_name = re.findall(r'\[(.+?)\]', line)[0]
-        return subsection_name, file_name
+    syllabus = []
+    for line in cell.source.split('\n'):
+        match = re.match(syllabus_line, line)
+        if match is None:
+            continue
+        name = match.group('section')
+        if name is not None:
+            syllabus.append([name, release_dates.get(name), []])
+            continue
+        name, filename = match.group('title'), match.group('filename')
+        syllabus[-1][-1].append((name, filename))
 
-    def is_section(line):
-        return line.startswith('*')
-
-    lines = cell['source'].split('\n')
-    sections = [section_to_name_date(line) for line in lines
-                if is_section(line)]
-
-    # Make a list of lines in each section.
-    subsections = (tuple(g) for k, g in groupby(lines, key=lambda x: not
-                                                is_section(x)) if k)
-    # Filter the actual subsections.
-    subsections = [[subs_to_name_file(i) for i in j if subs_to_name_file(i) is
-                    not None] for j in subsections]
+    print(syllabus)
 
     data = SimpleNamespace(category='main', chapters=[])
-    for i, section in enumerate(zip(sections, subsections)):
+    for i, section in enumerate(syllabus):
         if not parse_all:
             # Don't convert sections with no release date.
-            if section[0][1] is None:
+            if section[1] is None:
                 continue
 
         # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
-        chapter.name = section[0][0]
-        chapter.date = section[0][1]
-        chapter.url = "sec_{0}".format(str(i).zfill(2))
+        chapter.name = section[0]
+        chapter.date = section[1]
+        chapter.url = f"sec_{i:02}"
 
-        for j, subsection in enumerate(section[1]):
+        for j, subsection in enumerate(section[2]):
             # creating sequential
             sequential = SimpleNamespace(category='sequential', verticals=[])
 
             sequential.name = subsection[0]
             sequential.date = chapter.date
-            sequential.url = "subsec_{0}_{1}".format(str(i).zfill(2),
-                                                     str(j).zfill(2))
+            sequential.url = f"subsec_{i:02}_{j:02}"
             sequential.source_notebook = content_folder + '/' + subsection[1]
 
             chapter.sequentials.append(sequential)
@@ -162,22 +158,27 @@ def split_into_units(nb_name, include_header=True):
                 yield cell
             else:
                 split_sources = re.split(
-                    '(^# .*$)', cell.source, flags=re.MULTLINE
+                    '(^# .*$)', cell.source, flags=re.MULTILINE
                 )
                 for src in split_sources:
                     yield nbformat.NotebookNode(
                         source=src,
-                        cell_type='markdown'
+                        cell_type='markdown',
+                        metadata={},
                     )
 
     units = []
     for cell in split_cells():
         if cell.cell_type == 'markdown' and cell.source.startswith('# '):
-            units.append(current.new_notebook())
-            units[-1].name = re.match('^# (.*)#', cell.source).group(1)
+            nb_name = re.match('^# (.*)$', cell.source).group(1)
+            units.append(current.new_notebook(metadata={
+                'name': nb_name
+            }))
             if include_header:
                 units[-1].cells.append(cell)
         else:
+            if not units:  # We did not encounter a title yet.
+                continue
             units[-1].cells.append(cell)
 
     return units
@@ -672,6 +673,7 @@ def main():
     print('Path to notebooks:', args.source)
     warn_about_status(mooc_folder, args.silent)
     converter(mooc_folder, args, content_folder=args.source)
+
 
 if __name__ == "__main__":
     main()

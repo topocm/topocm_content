@@ -38,7 +38,9 @@ for ipynb in ipynbs:
     nb.metadata['name'] = title = notebook_title(nb)
 
     # Remove initialization cells
-    nb.cells = list(dropwhile((lambda cell: cell.type == 'code'), nb.cells))
+    nb.cells = list(dropwhile(
+        (lambda cell: cell.cell_type == 'code'), nb.cells
+    ))
 
     new_fname = ipynb.replace('generated/with_output',
                               'generated/pelican_content')
