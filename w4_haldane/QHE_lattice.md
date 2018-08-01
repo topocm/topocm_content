@@ -42,11 +42,6 @@ def title(p):
     return title
 ```
 
-## Quantum Hall effect on a lattice and the Dirac Hamiltonian
-* Pairs of chiral edges in a 1D wire
-* Coupling wires and QHE without field
-* Dirac equation at the phase transition
-
 # Introduction: stacking wires
 
 Looking back at the material from the past weeks, you might have the impression that the quantum Hall effect and one dimensional topological superconductors are really different topics, and not connected at all.

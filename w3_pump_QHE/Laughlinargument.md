@@ -253,11 +253,6 @@ def plot_pumping(syst, p):
 
 ```
 
-## We present an argument for the robustness of the quantum hall effect for electrons: Laughlin argument
-* Observation of Quantum Hall
-* Quantized Hall conductance from pumping: Laughlin argument
-* Landau levels: microscopic model for the quantum hall effect
-
 # Introduction
 
 Ady Stern from the Weizmann Institute of Science will introduce the quantum Hall effect.

@@ -149,18 +149,10 @@ def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
     return plot(plot={'Overlay': {'fig_size': 350}})
 
 # Custom colormap for the hexagonal warping plot
-cmap_list = [((value + 1)/4.0, colour) for value, colour in 
+cmap_list = [((value + 1)/4.0, colour) for value, colour in
              zip([-1.0, 0.0, 3.0], ["Blue", "White", "Red"])]
 hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
 ```
-
-### Plan
-
-* Spectroscopy of 3D TI
-* Landau levels
-* QPI
-* The issue of bulk conductivity
-* Hexagonal warping
 
 # Introduction: searching the periodic table for topological materials
 

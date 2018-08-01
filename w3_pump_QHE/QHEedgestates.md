@@ -211,16 +211,9 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     return syst
 ```
 
-## Quantum Hall effect: edge states and quantized Hall conductance
-
-* Landau levels in a slowly varying potential: chiral edge states
-* Chiral anomaly: Bulk-edge correspondence of the quantum Hall effect
-* Hall conductance from edge states
-* Topological quantum phase transitions and robustness to disorder 
-
 # Where do the pumped electrons come from and go to?
 
-You have just seen that Laughlin's argument explains the quantization of the Hall conductance in terms of a pump which moves electrons through the bulk of a Hall cylinder, from one edge to the other of the cylinder. 
+You have just seen that Laughlin's argument explains the quantization of the Hall conductance in terms of a pump which moves electrons through the bulk of a Hall cylinder, from one edge to the other of the cylinder.
 
 Compare the situation with the simple electron pump which you studied earlier in the lecture. There, the pump moved electrons from one metallic lead to the other. Clearly the pump worked thanks to the availability of electronic states at the Fermi level in the two metallic leads. Otherwise, it would have no electrons to take and no place to drop them. Without the metallic leads, the pump would be like an empty carousel.
 
