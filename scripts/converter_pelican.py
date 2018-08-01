@@ -4,20 +4,21 @@ import os
 import glob
 import json
 import shutil
-import nbformat
 import datetime
+from itertools import dropwhile
+import re
+
+import nbformat
 
 
-def remove_first_cell(nb_name):
-    """Remove the cells until a cell starts with `# `."""
-    nb = nbformat.read(nb_name, as_version=4)
-    cells = nb.cells[1:]  # Always skip the first cell
-    for i, cell in enumerate(cells):
-        if cell['source'].startswith('# '):
-            break
-    cells = cells[i:]
-    return nbformat.v4.new_notebook(cells=cells,
-                                    metadata={'name': cells[0].source[2:]})
+def notebook_title(nb: nbformat.NotebookNode):
+    first_text_cell = next(
+        cell for cell in nb.cells if cell.cell_type == 'markdown'
+    )
+    try:
+        return re.search('# (.*)', first_text_cell.source).group(1)
+    except AttributeError as e:
+        raise RuntimeError('Notebook has no title') from e
 
 
 meta_file = """Title: {title}
@@ -33,8 +34,12 @@ figures = glob.glob('generated/with_output/w*/figures/*')
 
 # Copy ipynbs and create meta data files
 for ipynb in ipynbs:
-    nb = remove_first_cell(ipynb)
-    title = nb.cells[0].source[2:]
+    nb = nbformat.read(ipynb, as_version=4)
+    nb.metadata['name'] = title = notebook_title(nb)
+
+    # Remove initialization cells
+    nb.cells = list(dropwhile((lambda cell: cell.type == 'code'), nb.cells))
+
     new_fname = ipynb.replace('generated/with_output',
                               'generated/pelican_content')
     os.makedirs(os.path.dirname(new_fname), exist_ok=True)
@@ -54,7 +59,7 @@ for figure in figures:
 
 
 # Copy syllabus
-nb = remove_first_cell('syllabus.ipynb')
+nb = nbformat.read('generated/with_output/syllabus.ipynb', as_version=4)
 with open('generated/pelican_content/syllabus.ipynb', 'w') as f:
     json.dump(nb, f)
 with open('generated/pelican_content/syllabus.ipynb-meta', 'w',

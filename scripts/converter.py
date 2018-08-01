@@ -43,7 +43,6 @@ response = urllib.request.urlopen(url)
 js = response.read().decode('utf-8')
 
 IFRAME_TEMPLATE = r"""
-
 <iframe id="{id}" scrolling="no" width="100%" frameborder=0>
 Your browser does not support IFrames.
 </iframe>
