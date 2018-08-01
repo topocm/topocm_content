@@ -3,7 +3,7 @@
 import argparse
 import datetime
 import io
-from itertools import groupby
+from itertools import groupby, dropwhile
 import os
 import re
 import tarfile
@@ -12,7 +12,6 @@ from time import strptime
 from types import SimpleNamespace
 import shutil
 import subprocess
-import sys
 import urllib.request
 from xml.etree.ElementTree import Element, SubElement
 from xml.etree import ElementTree
@@ -21,7 +20,6 @@ from xml.dom import minidom
 import nbformat
 from nbformat import v4 as current
 from nbconvert import HTMLExporter
-from nbconvert.filters.markdown import markdown2html_pandoc
 from traitlets.config import Config
 
 try:
@@ -32,10 +30,13 @@ except KeyError:
 scripts_path = os.path.dirname(os.path.realpath(__file__))
 mooc_folder = os.path.join(scripts_path, os.pardir)
 
-cfg = Config({'HTMLExporter': {'template_file': 'edx',
-                               'template_path': ['.', scripts_path],
-                               'filters': {'markdown2html':
-                                           markdown2html_pandoc}}})
+cfg = Config({
+    'HTMLExporter': {
+        'template_file': 'edx',
+        'template_path': ['.', scripts_path],
+        'exclude_input': True,
+    }
+})
 exportHtml = HTMLExporter(config=cfg)
 
 url = "https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.14/iframeResizer.min.js"
@@ -102,7 +103,8 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
         subsection_name = re.findall(r'\[(.+?)\]', line)[0]
         return subsection_name, file_name
 
-    is_section = lambda line: line.startswith('*')
+    def is_section(line):
+        return line.startswith('*')
 
     lines = cell['source'].split('\n')
     sections = [section_to_name_date(line) for line in lines
@@ -146,30 +148,38 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
 
 
 def split_into_units(nb_name, include_header=True):
-    """Split notebook into units."""
-    try:
-        nb = nbformat.read(nb_name, as_version=4)
-    except IOError as e:
-        if e.errno == 2:
-            print('File not found: {0}'.format(nb_name), sys.stderr)
-            return []
-        else:
-            raise e
-    cells = nb.cells
-    indexes = [i for i, cell in enumerate(cells)
-               if cell.cell_type == 'markdown' and cell.source.startswith('# ')]
+    """Split notebook into units where top level headings occur."""
+    nb = nbformat.read(nb_name, as_version=4)
 
-    separated_cells = [cells[i:j] for i, j in zip(indexes, indexes[1:]+[None])]
-    units = [current.new_notebook(cells=cells,
-                                  metadata={'name': cells[0]
-                                                    .source
-                                                    .split('\n')[0][2:]})
-             for cells in separated_cells]
-    if not include_header:
-        for unit in units:
-            # The first line is the header.
-            unit.cells[0].source = '\n'.join(unit.cells[0].source
-                                             .split('\n')[1:])
+    # Split markdown cells on titles.
+    def split_cells():
+        cells = dropwhile(
+            (lambda cell: cell.cell_type != 'markdown'),
+            nb.cells
+        )
+        for cell in cells:
+            if cell.cell_type != 'markdown':
+                yield cell
+            else:
+                split_sources = re.split(
+                    '(^# .*$)', cell.source, flags=re.MULTLINE
+                )
+                for src in split_sources:
+                    yield nbformat.NotebookNode(
+                        source=src,
+                        cell_type='markdown'
+                    )
+
+    units = []
+    for cell in split_cells():
+        if cell.cell_type == 'markdown' and cell.source.startswith('# '):
+            units.append(current.new_notebook())
+            units[-1].name = re.match('^# (.*)#', cell.source).group(1)
+            if include_header:
+                units[-1].cells.append(cell)
+        else:
+            units[-1].cells.append(cell)
+
     return units
 
 
