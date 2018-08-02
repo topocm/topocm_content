@@ -7,16 +7,17 @@ stages:
 
 execute_ipynbs:
   stage: execute
+  before_script:
+    - pip install notedown
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
     - export DEST=generated/with_output
     - mkdir -p $DEST
-    - cp syllabus.ipynb $DEST
+    - cp syllabus.md $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
-    - jupyter nbconvert --to notebook --inplace --config scripts/config_filter_smudge.py $DEST/syllabus.ipynb
-    - find $DEST/w* -name '*.ipynb' | parallel --delay 3 --jobs 32 scripts/nbconvert.sh
+    - find $DEST -name '*.md' | parallel --delay 3 --jobs 32 notedown -o --run --timeout -1 --match fenced
     - rm -rf $DEST/data
   artifacts:
     paths:
