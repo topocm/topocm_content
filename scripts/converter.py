@@ -43,8 +43,7 @@ url = (
     "https://cdnjs.cloudflare.com/ajax/libs"
     "/iframe-resizer/3.5.14/iframeResizer.min.js"
 )
-response = urllib.request.urlopen(url)
-js = response.read().decode('utf-8')
+js = urllib.request.urlopen(url).read().decode('utf-8')
 
 IFRAME_TEMPLATE = r"""
 <iframe id="{id}" scrolling="no" width="100%" frameborder=0>
@@ -58,9 +57,7 @@ iframe.src =  "//" +
               "topocondmat.org/edx/{id}.html?date=" + (+ new Date());
 </script>
 
-<script>
-{js}
-</script>
+<script>{js}</script>
 
 <script>
 if (require === undefined) {{
@@ -111,8 +108,6 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
             continue
         name, filename = match.group('title'), match.group('filename')
         syllabus[-1][-1].append((name, filename))
-
-    print(syllabus)
 
     data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(syllabus):
@@ -235,137 +230,6 @@ def convert_normal_cells(normal_cells):
     return html
 
 
-def convert_MoocVideo_to_xml(par):
-    """ Convert video_cell with MoocVideo into xml. """
-    xml = Element('video')
-    for key in par:
-        xml.attrib[key] = str(par[key])
-
-    return xml
-
-
-def add_solution(el, text):
-    """Add a solution xml to a problem."""
-    sol = SubElement(el, 'solution')
-    div = SubElement(sol, 'div')
-    div.attrib['class'] = 'detailed-solution'
-    title = SubElement(div, 'p')
-    title.text = 'Explanation'
-    content = SubElement(div, 'p')
-    content.text = text
-
-
-def convert_MoocCheckboxesAssessment_to_xml(par):
-    """Convert checkbox assignment into xml. """
-    xml = Element('problem')
-
-    for key in ['display_name', 'max_attempts']:
-        xml.attrib[key] = str(par[key])
-
-    p = SubElement(xml, 'p')
-    p.text = par['question']
-
-    p = SubElement(xml, 'p')
-    p.text = 'Select the answers that match'
-
-    sub = SubElement(xml, 'choiceresponse')
-    sub = SubElement(sub, 'checkboxgroup')
-    sub.attrib['label'] = "Select the answers that match"
-    sub.attrib['direction'] = "vertical"
-
-    for i, ans in enumerate(par['answers']):
-        choice = SubElement(sub, 'choice')
-        if i in par['correct_answers']:
-            choice.attrib['correct'] = 'true'
-        else:
-            choice.attrib['correct'] = 'false'
-        choice.text = ans
-
-    if 'explanation' in par:
-        add_solution(xml, par['explanation'])
-
-    return xml
-
-
-def convert_MoocMultipleChoiceAssessment_to_xml(par):
-    """ Convert multiple choice question into xml. """
-    xml = Element('problem')
-
-    for key in ['display_name', 'max_attempts']:
-        xml.attrib[key] = str(par[key])
-
-    p = SubElement(xml, 'p')
-    p.text = par['question']
-
-    p = SubElement(xml, 'p')
-    p.text = 'Please select correct answer'
-
-    sub = SubElement(xml, 'multiplechoiceresponse')
-    sub = SubElement(sub, 'choicegroup')
-    sub.attrib['label'] = "Please select correct answer"
-    sub.attrib['type'] = "MultipleChoice"
-
-    for i, ans in enumerate(par['answers']):
-        choice = SubElement(sub, 'choice')
-        if i == par['correct_answer']:
-            choice.attrib['correct'] = 'true'
-        else:
-            choice.attrib['correct'] = 'false'
-        choice.text = ans
-
-    if 'explanation' in par:
-        add_solution(xml, par['explanation'])
-
-    return xml
-
-
-def convert_MoocPeerAssessment_to_xml(par, date):
-    # tree = ElementTree.parse('./templates/openassessment.xml')
-    xml = ElementTree.fromstring(par['openassessment_peer'])
-    # xml = tree.getroot()
-
-    if par['url_name'] is not None:
-        xml.attrib['url_name'] = par['url_name']
-
-    assessment = xml.find('assessments').find('assessment')
-
-    for name in ['must_be_graded_by', 'must_grade']:
-        assessment.attrib[name] = str(par[name])
-
-    xml.attrib['submission_start'] = date_to_edx(date)
-    xml.attrib['submission_due'] = date_to_edx('31 Dec 2100')
-
-    assessment.attrib['start'] = date_to_edx(date)
-    assessment.attrib['due'] = date_to_edx('31 Dec 2100')
-
-    return xml
-
-
-def convert_MoocSelfAssessment_to_xml(par, date):
-    xml = ElementTree.fromstring(par['openassessment_self'])
-
-    if par['url_name'] is not None:
-        xml.attrib['url_name'] = par['url_name']
-
-    assessment = xml.find('assessments').find('assessment')
-
-    xml.attrib['submission_start'] = date_to_edx(date)
-    xml.attrib['submission_due'] = date_to_edx('31 Dec 2100')
-
-    assessment.attrib['start'] = date_to_edx(date)
-    assessment.attrib['due'] = date_to_edx('31 Dec 2100')
-
-    return xml
-
-
-def convert_MoocDiscussion_to_xml(par):
-    xml = Element('discussion')
-    for key in par:
-        xml.attrib[key] = par[key]
-
-    return xml, par['discussion_id']
-
-
 def convert_unit(unit, date):
     """ Convert unit into html and special xml componenets. """
     cells = unit.cells
@@ -373,57 +237,40 @@ def convert_unit(unit, date):
     unit_output = []
     normal_cells = []
 
-    convert_specials = {'MoocVideo': convert_MoocVideo_to_xml,
-                        'MoocPeerAssessment':
-                        convert_MoocPeerAssessment_to_xml,
-                        'MoocSelfAssessment':
-                        convert_MoocSelfAssessment_to_xml,
-                        'MoocCheckboxesAssessment':
-                        convert_MoocCheckboxesAssessment_to_xml,
-                        'MoocMultipleChoiceAssessment':
-                        convert_MoocMultipleChoiceAssessment_to_xml,
-                        'MoocDiscussion': convert_MoocDiscussion_to_xml}
-
     for cell in cells:
         # Markdown-like cell
-        if cell.cell_type != 'code':
+        if cell.cell_type == 'markdown':
             normal_cells.append(cell)
             continue
 
         # Empty code cell
-        if not hasattr(cell, 'outputs') or not cell.outputs:
+        if not hasattr(cell, 'outputs'):
             continue
 
-        # Cells with mooc components, special processing required
-        try:
-            cell_text = cell.outputs[0].data['text/plain']
-        except (AttributeError, KeyError):
-            cell_text = ''
-
-        special = False
-        for i, j in convert_specials.items():
-            if i in cell_text:
-                if normal_cells:
-                    html = convert_normal_cells(normal_cells)
-                    unit_output.append(['html', html])
-                    normal_cells = []
-
-                par = eval(cell_text, {i: dict for i in convert_specials})
-                try:
-                    out = j(par)
-                except TypeError:
-                    out = j(par, date)
-
-                if i != 'MoocDiscussion':
-                    unit_output.append([i, out])
-                else:
-                    unit_output.append([i, out[0], out[1]])
-                special = True
-                break
+        xml_components = []
+        for output in cell.outputs:
+            data = output.get('data')
+            if data and 'application/vnd.edx.olxml+xml' in data:
+                xml_components.append(
+                    data['application/vnd.edx.olxml+xml']
+                )
 
         # Regular code cell
-        if not special:
+        if not xml_components:
             normal_cells.append(cell)
+            continue
+
+        if len(xml_components) > 1:
+            raise RuntimeError('More than 1 xml component in a cell.')
+
+        # Cells with mooc components, special processing required
+        xml = ElementTree.fromstring(xml_components[0])
+
+        if normal_cells:
+            html = convert_normal_cells(normal_cells)
+            unit_output.append(['html', html])
+            normal_cells = []
+        unit_output.append([xml.tag, xml])
 
     if normal_cells:
         html = convert_normal_cells(normal_cells)
@@ -526,7 +373,7 @@ def converter(mooc_folder, args, content_folder=None):
                                      include_header=False)
 
             for i, unit in enumerate(units):
-                vertical_url = sequential.url + '_{0}'.format(str(i).zfill(2))
+                vertical_url = sequential.url + f'_{i:02}'
                 # add vertical info to sequential_xml
                 vertical_sub = SubElement(sequential_xml, 'vertical')
                 vertical_sub.attrib['url_name'] = vertical_url
@@ -537,7 +384,7 @@ def converter(mooc_folder, args, content_folder=None):
 
                 unit_output = convert_unit(unit, date=sequential.date)
                 for (j, out) in enumerate(unit_output):
-                    out_url = vertical_url + "_out_{0}".format(str(j).zfill(2))
+                    out_url = vertical_url + f"_out_{j:02}"
                     if out[0] == 'html':
                         # adding html subelement
                         html_subelement = SubElement(vertical_xml, 'html')
@@ -558,58 +405,29 @@ def converter(mooc_folder, args, content_folder=None):
                         save_html(body, html_path)
                         html_path = os.path.join(dirpath, 'html',
                                                  out_url + '.html')
-                        save_html(IFRAME_TEMPLATE.format(id=out_url, url=url, js=js),
-                                  html_path)
+                        save_html(
+                            IFRAME_TEMPLATE.format(
+                                id=out_url, url=url, js=js
+                            ),
+                            html_path
+                        )
 
-                    elif out[0] == 'MoocVideo':
+                    elif out[0] in ('video', 'discussion', 'problem'):
                         # adding video subelement
-                        video_subelement = SubElement(vertical_xml, 'video')
-                        video_subelement.attrib['url_name'] = out_url
+                        component_subelement = SubElement(vertical_xml, out[0])
+                        if 'url_name' not in component_subelement.attrib:
+                            component_subelement.attrib['url_name'] = out_url
 
-                        # creating video xml
-                        video_xml = out[1]
-                        video_path = os.path.join(dirpath, 'video',
-                                                  out_url + '.xml')
-                        save_xml(video_xml, video_path)
+                        # creating component xml
+                        component_xml = out[1]
+                        component_path = os.path.join(
+                            dirpath, out[0], out_url + '.xml'
+                        )
+                        save_xml(component_xml, component_path)
 
-                    elif out[0] == 'MoocDiscussion':
-                        # adding video subelement
-                        discussion_xml = out[1]
-
-                        discussion_subelement = SubElement(vertical_xml,
-                                                           'discussion')
-                        discussion_subelement.attrib['url_name'] = \
-                            discussion_xml.attrib['discussion_id']
-
-                        # creating video xml
-                        discussion_path = os.path.join(dirpath, 'discussion',
-                                                       out[2]+'.xml')
-                        save_xml(discussion_xml, discussion_path)
-
-                    elif out[0] == 'MoocPeerAssessment':
-                        peer_sub = out[1]
-                        if 'url_name' not in peer_sub.attrib:
-                            peer_sub.attrib['url_name'] = out_url+'_'+'peer'
-                        vertical_xml.append(peer_sub)
-
-                    elif out[0] == 'MoocSelfAssessment':
-                        self_sub = out[1]
-                        if 'url_name' not in self_sub.attrib:
-                            self_sub.attrib['url_name'] = out_url+'_'+'self'
-                        vertical_xml.append(self_sub)
-
-                    elif out[0] in ('MoocCheckboxesAssessment',
-                                    'MoocMultipleChoiceAssessment'):
-                        # adding problem subelement
-                        problem = SubElement(vertical_xml, 'problem')
-                        problem.attrib['url_name'] = out_url
-
-                        # creating problem xml
-                        problem_xml = out[1]
-                        problem_path = os.path.join(dirpath, 'problem',
-                                                    out_url + '.xml')
-
-                        save_xml(problem_xml, problem_path)
+                    elif out[0] == 'openassessment':
+                        out[1].attrib['url_name'] = out_url
+                        vertical_xml.append(out[1])
 
                 save_xml(vertical_xml, os.path.join(dirpath, 'vertical',
                                                     vertical_url + '.xml'))
@@ -636,7 +454,7 @@ def converter(mooc_folder, args, content_folder=None):
 
 
 def warn_about_status(mooc_folder, silent=False):
-    git = 'git --git-dir={0}/.git --work-tree={0}/ '.format(mooc_folder)
+    git = f'git --git-dir={mooc_folder}/.git --work-tree={mooc_folder}/ '
     status = subprocess.check_output(git + "status",
                                      shell=True).decode('utf-8').split("\n")[0]
     if "On branch master" not in status:
@@ -666,8 +484,8 @@ def main():
     args = parser.parse_args()
 
     if args.debug:
-        msg = 'Debug mode : folder %s will contain uncompressed data.'
-        print(msg % (mooc_folder + '/generated/files'))
+        msg = 'Debug mode : folder {} will contain uncompressed data.'
+        print(msg.format(mooc_folder + '/generated/files'))
 
     print('Path to mooc folder:', mooc_folder)
     print('Path to notebooks:', args.source)

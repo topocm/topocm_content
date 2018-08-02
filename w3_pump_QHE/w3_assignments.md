@@ -33,7 +33,7 @@ Bonus: See what happens to the edge states as you introduce a constriction in th
 
 
 ```python
-MoocSelfAssessment(due=4*7, review_due=5*7)
+MoocSelfAssessment()
 ```
 
 **Now share your results:**
@@ -69,7 +69,7 @@ Then you can get bonus points by reviewing that paper instead!
 
 
 ```python
-MoocPeerAssessment(due=4*7, review_due=5*7)
+MoocSelfAssessment()
 ```
 
 **Do you have questions about what you read? Would you like to suggest other papers? Tell us:**

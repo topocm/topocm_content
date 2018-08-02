@@ -27,7 +27,7 @@ What about conductance in a two terminal geometry: can you see the crossover fro
 
 
 ```python
-MoocSelfAssessment(due=9, review_due=16)
+MoocSelfAssessment()
 ```
 
 **Now share your results:**
@@ -55,7 +55,7 @@ Then you can get bonus points by reviewing that paper instead!
 
 
 ```python
-MoocPeerAssessment(due=9, review_due=16)
+MoocSelfAssessment()
 ```
 
 **Do you have questions about what you read? Would you like to suggest other papers? Tell us:**

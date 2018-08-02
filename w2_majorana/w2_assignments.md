@@ -48,7 +48,7 @@ PreprintReference("1210.3237")
 
 
 ```python
-MoocSelfAssessment(due=5*7, review_due=6*7)
+MoocSelfAssessment()
 ```
 
 
@@ -84,7 +84,7 @@ Then you can get bonus points by reviewing that paper instead!
 
 
 ```python
-MoocPeerAssessment(due=5*7, review_due=6*7)
+MoocSelfAssessment()
 ```
 
 
