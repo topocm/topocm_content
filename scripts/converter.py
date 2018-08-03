@@ -390,21 +390,17 @@ def converter(mooc_folder, args, content_folder=None):
     shutil.rmtree(dirpath)
 
 
-def warn_about_status(mooc_folder, silent=False):
+def warn_about_status(mooc_folder):
     git = f'git --git-dir={mooc_folder}/.git --work-tree={mooc_folder}/ '
     status = subprocess.check_output(git + "status",
                                      shell=True).decode('utf-8').split("\n")[0]
     if "On branch master" not in status:
         print("Not on master branch, do not upload to edx.\n",
               "Press Enter to continue.")
-        if not silent:
-            input()
         return
     if subprocess.check_output(git + "diff", shell=True):
         print("Some files are modified, do not upload to edx.\n",
               "Press Enter to continue.")
-        if not silent:
-            input()
 
 
 def main():
@@ -415,8 +411,6 @@ def main():
                         help='debugging flag')
     parser.add_argument('-o', '--open', action='store_true',
                         help='opening uncompressed folder with files')
-    parser.add_argument('-s', '--silent', action='store_true',
-                        help='opening uncompressed folder with files')
 
     args = parser.parse_args()
 
@@ -426,7 +420,7 @@ def main():
 
     print('Path to mooc folder:', mooc_folder)
     print('Path to notebooks:', args.source)
-    warn_about_status(mooc_folder, args.silent)
+    warn_about_status(mooc_folder)
     converter(mooc_folder, args, content_folder=args.source)
 
 

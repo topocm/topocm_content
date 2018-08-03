@@ -45,7 +45,7 @@ mirror to github:
 
 edx archive:
   stage: build
-  script: ./scripts/converter.py --silent ./generated/with_output
+  script: ./scripts/converter.py ./generated/with_output
   artifacts:
     paths:
       - generated/import_to_edx.tar.gz
