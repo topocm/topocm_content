@@ -2,7 +2,6 @@
 
 * **Before you begin**
   * [About this course](w0_background/intro.ipynb)
-  * Starting survey
 * **Topology in toy models**
   * [Hamiltonians, topology, and symmetry](w1_topointro/0d.ipynb)
   * [Bulk-edge correspondence in the Kitaev chain](w1_topointro/1D.ipynb)
