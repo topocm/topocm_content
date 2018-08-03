@@ -13,7 +13,7 @@ from types import SimpleNamespace
 import shutil
 import subprocess
 import urllib.request
-from xml.etree.ElementTree import Element, SubElement
+from xml.etree.ElementTree import SubElement
 from xml.etree import ElementTree
 from xml.dom import minidom
 
@@ -209,9 +209,6 @@ def prettify(elem):
 
 
 def save_xml(xml, path):
-    if os.path.exists(path):
-        print("Not overwriting existing file,", path)
-        return
     with io.open(path, 'w', encoding='utf-8') as f:
         text = prettify(xml)
         text = re.sub(r"\$\$(.*?)\$\$", r"\[\1\]", text)
@@ -268,13 +265,13 @@ def convert_unit(unit, date):
 
         if normal_cells:
             html = convert_normal_cells(normal_cells)
-            unit_output.append(['html', html])
+            unit_output.append(html)
             normal_cells = []
-        unit_output.append([xml.tag, xml])
+        unit_output.append(xml)
 
     if normal_cells:
         html = convert_normal_cells(normal_cells)
-        unit_output.append(['html', html])
+        unit_output.append(html)
         normal_cells = []
 
     return unit_output
@@ -296,113 +293,67 @@ def converter(mooc_folder, args, content_folder=None):
                             os.path.join(target, 'html/edx/figures'))
     html_folder = os.path.join(target, 'html/edx')
 
-    # Basic info
-    info_org = 'DelftX'
-    info_course = 'TOPOCMx'
-    info_display_name = 'Topology in Condensed Matter: Tying Quantum Knots'
-    info_run = 'course'
-    info_start = "2016-02-08T10:00:00Z"
-
     # Temporary locations
-    dirpath = tempfile.mkdtemp() + '/' + info_run
+    dirpath = tempfile.mkdtemp() + '/course'
     if args.debug:
         print('Temporary path: ', dirpath)
 
-    # Copying edx_skeleton
     skeleton = mooc_folder + '/edx_skeleton'
-    if os.path.exists(skeleton):
-        shutil.copytree(skeleton, dirpath)
-    else:
-        raise RuntimeError('No edx skeleton!')
+    shutil.copytree(skeleton, dirpath)
 
     # Loading data from syllabus
     syllabus_nb = os.path.join(content_folder, 'syllabus.ipynb')
     data = parse_syllabus(syllabus_nb, content_folder)
 
-    # saving syllabus
-    syllabus = split_into_units(syllabus_nb)[0]
-    cell = syllabus.cells[1]
-    cell['source'] = re.sub(r"(?<!!)\[(.*?)\]\(.*?\)", r"\1", cell['source'])
-    syllabus_html = export_unit_to_html(syllabus)
-    save_html(syllabus_html, os.path.join(dirpath, 'tabs', 'syllabus.html'))
-
-    # $run$.xml in 'course' folder
-    xml_course = Element('course')
-    xml_course.attrib['display_name'] = info_display_name
-    xml_course.attrib['start'] = info_start
+    course_xml_path = os.path.join(dirpath, 'course.xml')
+    with open(course_xml_path) as f:
+        xml_course = ElementTree.fromstring(f.read())
 
     for chapter in data.chapters:
-        chapter_sub = SubElement(xml_course, 'chapter')
-        chapter_sub.attrib['url_name'] = chapter.url
-
-    wiki = SubElement(xml_course, 'wiki')
-    wiki.attrib['slug'] = ".".join([info_org, info_course, info_run])
-
-    save_xml(xml_course, os.path.join(dirpath, 'course', info_run+'.xml'))
-
-    # saving chapters xmls inside 'chapter' folder
-    for chapter in data.chapters:
-        chapter_xml = Element('chapter')
-        chapter_xml.attrib['display_name'] = chapter.name
-        chapter_xml.attrib['start'] = date_to_edx(chapter.date)
+        chapter_xml = SubElement(xml_course, 'chapter', attrib=dict(
+            url_name=chapter.url,
+            display_name=chapter.name,
+            start=date_to_edx(chapter.date),
+        ))
 
         for sequential in chapter.sequentials:
-            sequential_sub = SubElement(chapter_xml, 'sequential')
-            sequential_sub.attrib['url_name'] = sequential.url
+            sequential_xml = SubElement(chapter_xml, 'sequential', attrib=dict(
+                url_name=sequential.url,
+                display_name=sequential.name,
+                graded=('true' if chapter.url != 'sec_00' else 'false'),
+            ))
 
-        save_xml(chapter_xml,
-                 os.path.join(dirpath, 'chapter', chapter.url+'.xml'))
+            if sequential.name == 'Assignments':
+                sequential_xml.attrib['format'] = "Research"
+            elif chapter.url != 'sec_00':
+                sequential_xml.attrib['format'] = "Self-check"
 
-    # saving sequentials xmls inside 'sequential' folder
-    # saving vertical xmls inside 'vertical' folder
-    for chapter in data.chapters:
-        for sequential in chapter.sequentials:
-            sequential_xml = Element('sequential')
-            sequential_xml.attrib['display_name'] = sequential.name
-
-            if chapter.url != 'sec_00':
-                if sequential.name == 'Assignments':
-                    sequential_xml.attrib['format'] = "Research"
-                else:
-                    sequential_xml.attrib['format'] = "Self-check"
-
-                sequential_xml.attrib['graded'] = "true"
-
-            # getting units
             units = split_into_units(sequential.source_notebook,
                                      include_header=False)
 
             for i, unit in enumerate(units):
                 vertical_url = sequential.url + f'_{i:02}'
                 # add vertical info to sequential_xml
-                vertical_sub = SubElement(sequential_xml, 'vertical')
-                vertical_sub.attrib['url_name'] = vertical_url
-
-                # creating vertical.xml
-                vertical_xml = Element('vertical')
-                vertical_xml.attrib['display_name'] = unit.metadata.name
+                vertical = SubElement(sequential_xml, 'vertical', attrib=dict(
+                    url_name=vertical_url,
+                    display_name=unit.metadata.name,
+                ))
 
                 unit_output = convert_unit(unit, date=sequential.date)
                 for (j, out) in enumerate(unit_output):
                     out_url = vertical_url + f"_out_{j:02}"
-                    if out[0] == 'html':
+                    if isinstance(out, str):
                         # adding html subelement
-                        html_subelement = SubElement(vertical_xml, 'html')
-                        html_subelement.attrib['url_name'] = out_url
+                        SubElement(vertical, 'html', attrib=dict(
+                            url_name=out_url,
+                            display_name=unit.metadata.name,
+                            filename=out_url
+                        ))
 
-                        # creating html xml
-                        html_xml = Element('html')
-                        html_xml.attrib['display_name'] = unit.metadata.name
-                        html_xml.attrib['filename'] = out_url
-
-                        save_xml(html_xml, os.path.join(dirpath, 'html',
-                                                        out_url + '.xml'))
-
-                        body = out[1]
                         html_path = os.path.join(html_folder,
                                                  out_url + '.html')
+                        save_html(out, html_path)
 
-                        save_html(body, html_path)
                         html_path = os.path.join(dirpath, 'html',
                                                  out_url + '.html')
                         save_html(
@@ -412,27 +363,13 @@ def converter(mooc_folder, args, content_folder=None):
                             html_path
                         )
 
-                    elif out[0] in ('video', 'discussion', 'problem'):
+                    else:
                         # adding video subelement
-                        component_subelement = SubElement(vertical_xml, out[0])
-                        if 'url_name' not in component_subelement.attrib:
-                            component_subelement.attrib['url_name'] = out_url
+                        vertical.append(out)
+                        if 'url_name' not in out.attrib:
+                            out.attrib['url_name'] = out_url
 
-                        # creating component xml
-                        component_xml = out[1]
-                        component_path = os.path.join(
-                            dirpath, out[0], out_url + '.xml'
-                        )
-                        save_xml(component_xml, component_path)
-
-                    elif out[0] == 'openassessment':
-                        out[1].attrib['url_name'] = out_url
-                        vertical_xml.append(out[1])
-
-                save_xml(vertical_xml, os.path.join(dirpath, 'vertical',
-                                                    vertical_url + '.xml'))
-            save_xml(sequential_xml, os.path.join(dirpath, 'sequential',
-                                                  sequential.url + '.xml'))
+    save_xml(xml_course, course_xml_path)
 
     # Creating tar
     tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
