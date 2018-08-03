@@ -11,11 +11,9 @@ import tempfile
 from time import strptime
 from types import SimpleNamespace
 import shutil
-import subprocess
 import urllib.request
 from xml.etree.ElementTree import SubElement
 from xml.etree import ElementTree
-from xml.dom import minidom
 
 import nbformat
 from nbformat import v4 as current
@@ -88,17 +86,16 @@ def date_to_edx(date, add_days=0):
     return date
 
 
-def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
+def parse_syllabus(syllabus_file, content_folder=''):
     # loading raw syllabus
-    syll = split_into_units(syllabus_file)[0]
-    cell = syll.cells[1]
+    syll = nbformat.read(syllabus_file, as_version=4).cells[0].source
 
     section = '^\* \*\*(?P<section>.*)\*\*$'
     subsection = '^  \* \[(?P<title>.*)\]\((?P<filename>.*)\)$'
     syllabus_line = section + '|' + subsection
 
     syllabus = []
-    for line in cell.source.split('\n'):
+    for line in syll.split('\n'):
         match = re.match(syllabus_line, line)
         if match is None:
             continue
@@ -111,10 +108,8 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
 
     data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(syllabus):
-        if not parse_all:
-            # Don't convert sections with no release date.
-            if section[1] is None:
-                continue
+        if section[1] is None:
+            continue
 
         # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
@@ -138,7 +133,7 @@ def parse_syllabus(syllabus_file, content_folder='', parse_all=False):
     return data
 
 
-def split_into_units(nb_name, include_header=True):
+def split_into_units(nb_name):
     """Split notebook into units where top level headings occur."""
     nb = nbformat.read(nb_name, as_version=4)
 
@@ -169,51 +164,12 @@ def split_into_units(nb_name, include_header=True):
             units.append(current.new_notebook(metadata={
                 'name': nb_name
             }))
-            if include_header:
-                units[-1].cells.append(cell)
         else:
             if not units:  # We did not encounter a title yet.
                 continue
             units[-1].cells.append(cell)
 
     return units
-
-
-def export_unit_to_html(unit, export_html=exportHtml):
-    """Export unit into html format."""
-    (body, resources) = export_html.from_notebook_node(unit)
-    body = re.sub(r'\\begin\{ *equation *\}', '\[', body)
-    body = re.sub(r'\\end\{ *equation *\}', '\]', body)
-    return body
-
-
-def make_filename_valid(string):
-    cleaned_up_filename = re.sub(r'[/\\:$%*?,"<>| ]', '', string)
-    return cleaned_up_filename
-
-
-def save_html(body, target_path):
-    """Save html body into edX course."""
-    with io.open(target_path, 'w', encoding='utf-8') as f:
-        f.write(body)
-
-
-def prettify(elem):
-    """Return a pretty-printed XML string for the Element."""
-    rough_string = ElementTree.tostring(elem, 'utf-8')
-    reparsed = minidom.parseString(rough_string)
-    output = reparsed.toprettyxml(indent="  ")
-
-    # output = str(output)
-    return output[output.find("\n")+1:]
-
-
-def save_xml(xml, path):
-    with io.open(path, 'w', encoding='utf-8') as f:
-        text = prettify(xml)
-        text = re.sub(r"\$\$(.*?)\$\$", r"\[\1\]", text)
-        text = re.sub(r"\$(.*?)\$", r"\(\1\)", text)
-        f.write(text)
 
 
 def convert_normal_cells(normal_cells):
@@ -223,7 +179,7 @@ def convert_normal_cells(normal_cells):
             cell.source = re.sub(r'\\begin\{ *equation *\}', '\[', cell.source)
             cell.source = re.sub(r'\\end\{ *equation *\}', '\]', cell.source)
     tmp = current.new_notebook(cells=normal_cells)
-    html = export_unit_to_html(tmp)
+    html = exportHtml.from_notebook_node(tmp)[0]
     return html
 
 
@@ -295,8 +251,6 @@ def converter(mooc_folder, args, content_folder=None):
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/course'
-    if args.debug:
-        print('Temporary path: ', dirpath)
 
     skeleton = mooc_folder + '/edx_skeleton'
     shutil.copytree(skeleton, dirpath)
@@ -328,8 +282,7 @@ def converter(mooc_folder, args, content_folder=None):
             elif chapter.url != 'sec_00':
                 sequential_xml.attrib['format'] = "Self-check"
 
-            units = split_into_units(sequential.source_notebook,
-                                     include_header=False)
+            units = split_into_units(sequential.source_notebook)
 
             for i, unit in enumerate(units):
                 vertical_url = sequential.url + f'_{i:02}'
@@ -352,16 +305,15 @@ def converter(mooc_folder, args, content_folder=None):
 
                         html_path = os.path.join(html_folder,
                                                  out_url + '.html')
-                        save_html(out, html_path)
+                        with open(html_path, 'w') as f:
+                            f.write(out)
 
                         html_path = os.path.join(dirpath, 'html',
                                                  out_url + '.html')
-                        save_html(
-                            IFRAME_TEMPLATE.format(
+                        with open(html_path, 'w') as f:
+                            f.write(IFRAME_TEMPLATE.format(
                                 id=out_url, url=url, js=js
-                            ),
-                            html_path
-                        )
+                            ))
 
                     else:
                         # adding video subelement
@@ -369,7 +321,8 @@ def converter(mooc_folder, args, content_folder=None):
                         if 'url_name' not in out.attrib:
                             out.attrib['url_name'] = out_url
 
-    save_xml(xml_course, course_xml_path)
+    with open(course_xml_path, 'w') as f:
+        f.write(ElementTree.tostring(xml_course, encoding='unicode'))
 
     # Creating tar
     tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
@@ -377,50 +330,18 @@ def converter(mooc_folder, args, content_folder=None):
     tar.add(dirpath, arcname='')
     tar.close()
 
-    # Some debugging
-    if args.debug:
-        shutil.copytree(dirpath, target + '/files')
-    if args.open:
-        if not args.debug:
-            print('--open flag works only with debug')
-        else:
-            subprocess.check_call(['nautilus', '--', target + '/files'])
-
     # Cleaning
     shutil.rmtree(dirpath)
-
-
-def warn_about_status(mooc_folder):
-    git = f'git --git-dir={mooc_folder}/.git --work-tree={mooc_folder}/ '
-    status = subprocess.check_output(git + "status",
-                                     shell=True).decode('utf-8').split("\n")[0]
-    if "On branch master" not in status:
-        print("Not on master branch, do not upload to edx.\n",
-              "Press Enter to continue.")
-        return
-    if subprocess.check_output(git + "diff", shell=True):
-        print("Some files are modified, do not upload to edx.\n",
-              "Press Enter to continue.")
 
 
 def main():
     mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
     parser = argparse.ArgumentParser()
     parser.add_argument('source', nargs='?', help='folder to convert')
-    parser.add_argument('-d', '--debug', action='store_true',
-                        help='debugging flag')
-    parser.add_argument('-o', '--open', action='store_true',
-                        help='opening uncompressed folder with files')
-
     args = parser.parse_args()
-
-    if args.debug:
-        msg = 'Debug mode : folder {} will contain uncompressed data.'
-        print(msg.format(mooc_folder + '/generated/files'))
 
     print('Path to mooc folder:', mooc_folder)
     print('Path to notebooks:', args.source)
-    warn_about_status(mooc_folder)
     converter(mooc_folder, args, content_folder=args.source)
 
 

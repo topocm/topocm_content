@@ -7,10 +7,8 @@ import shutil
 from traitlets.config import Config
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
-from converter import (export_unit_to_html,
-                       mooc_folder,
+from converter import (mooc_folder,
                        parse_syllabus,
-                       save_html,
                        scripts_path,
                        split_into_units,
                        url)
@@ -55,24 +53,21 @@ generated_ipynbs = os.path.join(mooc_folder, 'generated/with_output')
 
 # Loading data from syllabus
 syllabus_nb = os.path.join(generated_ipynbs, 'syllabus.ipynb')
-data = parse_syllabus(syllabus_nb, generated_ipynbs, parse_all=True)
-
-# saving syllabus
-syllabus = split_into_units(syllabus_nb)[0]
+data = parse_syllabus(syllabus_nb, generated_ipynbs)
 
 for chapter in data.chapters:
     chap_num = int(chapter.url[-2:])
     for sequential in chapter.sequentials:
-        units = split_into_units(sequential.source_notebook,
-                                 include_header=False)
+        units = split_into_units(sequential.source_notebook)
         folder, fname = sequential.source_notebook.split('/')[-2:]
         for i, unit in enumerate(units):
             fname = fname.replace('.ipynb', '')
             new_fname = '{}_{}'.format(fname, i)
             new_path = os.path.join(mooc_folder, output_dir, folder, new_fname + '.html')
             os.makedirs(os.path.dirname(new_path), exist_ok=True)
-            html = export_unit_to_html(unit, exportHtml)
-            save_html(html, new_path)
+            html = exportHtml.from_notebook_node(unit)[0]
+            with open(new_path, 'w') as f:
+                f.write(html)
 
             with open('website_assets/iframes.txt', 'a') as f:
                 ID = '{}_{}'.format(folder, new_fname)
