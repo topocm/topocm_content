@@ -77,7 +77,7 @@ Then you can get bonus points by reviewing that paper instead!
 
 
 ```python
-MoocPeerAssessment()
+MoocSelfAssessment()
 ```
 
 **Do you have questions about what you read? Would you like to suggest other papers? Tell us:**

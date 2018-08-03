@@ -7,8 +7,6 @@ stages:
 
 execute_ipynbs:
   stage: execute
-  before_script:
-    - pip install notedown
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
@@ -47,7 +45,7 @@ mirror to github:
 
 edx archive:
   stage: build
-  script: ./scripts/converter.py --silent ./generated/with_output
+  script: ./scripts/converter.py ./generated/with_output
   artifacts:
     paths:
       - generated/import_to_edx.tar.gz

@@ -29,7 +29,7 @@ We know that Berry curvature is concentrated close to the Dirac points. Do you n
 
 
 ```python
-MoocSelfAssessment(due=3*7 + 2, review_due=4*7 + 2)
+MoocSelfAssessment()
 ```
 
 **Now share your results:**
@@ -55,7 +55,7 @@ Then you can get bonus points by reviewing that paper instead!
 
 
 ```python
-MoocPeerAssessment(due=3*7 + 2, review_due=4*7 + 2)
+MoocSelfAssessment()
 ```
 
 **Do you have questions about what you read? Would you like to suggest other papers? Tell us:**

@@ -1,20 +1,43 @@
 import sys
 import os
-from hashlib import md5
+import secrets
 
-module_dir = os.path.dirname(__file__)
-sys.path.extend(module_dir)
+from xml.etree.ElementTree import Element, SubElement
+from xml.etree import ElementTree
+
+from hashlib import md5
 
 from IPython import display
 import feedparser
 
-__all__ = ['MoocVideo', 'PreprintReference', 'MoocDiscussion',
-            'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
-            'MoocPeerAssessment', 'MoocSelfAssessment']
+module_dir = os.path.dirname(__file__)
+sys.path.extend(module_dir)
+
+
+__all__ = [
+    'MoocVideo', 'PreprintReference', 'MoocDiscussion',
+    'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
+    'MoocSelfAssessment'
+]
+
+
+def _add_solution(el, text):
+    """Add a solution xml to a problem."""
+    sol = SubElement(el, 'solution')
+    div = SubElement(sol, 'div')
+    div.attrib['class'] = 'detailed-solution'
+    title = SubElement(div, 'p')
+    title.text = 'Explanation'
+    content = SubElement(div, 'p')
+    content.text = text
+
 
 class MoocComponent:
-    def __repr__(self):
-        return '{0}(**{1})'.format(self.__class__.__name__, repr(self.param))
+    def _repr_mimebundle_(self, include, exclude):
+        return {
+            'application/vnd.edx.olxml+xml':
+            ElementTree.tostring(self.xml, encoding='unicode'),
+        }
 
 
 class MoocVideo(MoocComponent, display.YouTubeVideo):
@@ -22,27 +45,34 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
                  download_track='true', download_video='true',
                  show_captions='true', **kwargs):
         """A video component of an EdX mooc embeddable in IPython notebook."""
-        tmp = locals()
-        del tmp['kwargs'], tmp['self'], tmp['__class__']
-        del tmp['id'], tmp['src_location'], tmp['res']
-        kwargs.update(tmp)
-        kwargs['youtube_id_1_0'] = id
-        kwargs['youtube'] = "1.00:" + id
 
-        # Add source if provided
-        loc = ("http://delftxdownloads.tudelft.nl/"
-               "TOPOCMx-QuantumKnots/TOPOCMx-{0}-video.{1}.mp4")
+        self.xml = Element('video', attrib=dict(
+            youtube=f'1.00:{id}',
+            youtube_id_1_0=id,
+            display_name=display_name,
+            download_track=download_track,
+            download_video=download_video,
+            show_captions=show_captions,
+            **kwargs,
+        ))
+
         if src_location is not None:
-            kwargs['source'] = loc.format(src_location, res)
+            self.xml.attrib['source'] = (
+                "http://delftxdownloads.tudelft.nl/TOPOCMx-QuantumKnots/"
+                f"TOPOCMx-{src_location}-video.{res}.mp4"
+            )
 
-        self.param = kwargs
         super().__init__(id, rel=0, cc_load_policy=1)
 
     def _repr_html_(self):
         orig = super()._repr_html_()
-        return ('<div class="embed-responsive embed-responsive-16by9">{}</div>'
-                .format(orig.replace('<iframe',
-                                     '<iframe class="embed-responsive-item" ')))
+        return (
+            '<div class="embed-responsive embed-responsive-16by9">{}</div>'
+            .format(orig.replace(
+                '<iframe',
+                '<iframe class="embed-responsive-item" '
+            ))
+        )
 
 
 class PreprintReference:
@@ -61,7 +91,7 @@ class PreprintReference:
         title = data['entries'][0]['title']
         s = '<h3 class="title mathjax">' + title + '</h3>'
 
-        s += '<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a><br>' % (ind, ind)
+        s += f'<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a><br>' % (ind, ind)
 
         s += '<div class="authors">'
         s += ", ".join(author.name for author in data['entries'][0]['authors'])
@@ -78,49 +108,26 @@ class PreprintReference:
         return s
 
 
-class MoocPeerAssessment(MoocComponent):
-    def __init__(self, must_grade=5, must_be_graded_by=3, due=9, review_due=16,
-                 url_name=None, **kwargs):
-
-        self.placeholder = ('<p><b> Read one of the above papers and see how it is\n'
-                            'related to the current topic.</b></p>\n'
-                            '<p><b>In the live version of the course, you would '
-                            'need to write a summary which is then assessed by '
-                            'your peers.</b></p>')
-
-        tmp = locals()
-        del tmp['kwargs'], tmp['self']
-        kwargs.update(tmp)
-
-        with open(module_dir + '/xmls/openassessment_peer.xml', 'r') as content_file:
-            openassessment_peer = content_file.read()
-
-        kwargs['openassessment_peer'] = openassessment_peer
-
-        self.param = kwargs
-
-    def _repr_html_(self):
-        return self.placeholder
-
-
 class MoocSelfAssessment(MoocComponent):
-    def __init__(self, due=9, review_due=16, url_name=None, **kwargs):
+    def __init__(self):
+        self.placeholder = (
+            '<p><b> MoocSelfAssessment description</b></p>\n'
+            '<p><b>In the live version of the course, you would '
+            'need to share your solution and grade yourself.'
+            '</b></p>'
+        )
 
-        tmp = locals()
-        del tmp['kwargs'], tmp['self']
-        kwargs.update(tmp)
+        content_filename = module_dir + '/xmls/openassessment_self.xml'
+        with open(content_filename, 'r') as content_file:
+            self.xml = xml = ElementTree.fromstring(content_file.read())
 
-        self.placeholder = ('<p><b> MoocSelfAssessment description</b></p>\n'
-                            '<p><b>In the live version of the course, you would '
-                            'need to share your solution and grade yourself.'
-                            '</b></p>')
+        assessment = xml.find('assessments').find('assessment')
 
-        with open(module_dir + '/xmls/openassessment_self.xml', 'r') as content_file:
-            openassessment_self = content_file.read()
+        xml.attrib['submission_start'] = '2001-12-31T10:00:00Z'
+        xml.attrib['submission_due'] = '2100-12-31T10:00:00Z'
 
-        kwargs['openassessment_self'] = openassessment_self
-
-        self.param = kwargs
+        assessment.attrib['start'] = '2001-12-31T10:00:00Z'
+        assessment.attrib['due'] = '2100-12-31T10:00:00Z'
 
     def _repr_html_(self):
         return self.placeholder
@@ -128,7 +135,7 @@ class MoocSelfAssessment(MoocComponent):
 
 class MoocCheckboxesAssessment(MoocComponent):
     def __init__(self, question, answers, correct_answers, max_attempts=2,
-                 display_name="Question", **kwargs):
+                 display_name="Question", explanation=None):
         """
         MoocCheckboxesAssessment component
 
@@ -140,31 +147,51 @@ class MoocCheckboxesAssessment(MoocComponent):
         correct_answers : list of int
 
         """
-        tmp = locals()
-        del tmp['kwargs'], tmp['self']
-        kwargs.update(tmp)
+        self.xml = xml = Element('problem', attrib=dict(
+            display_name=display_name,
+            max_attempts=str(max_attempts),
+        ))
 
-        self.param = kwargs
+        SubElement(xml, 'p', text='question')
+        SubElement(xml, 'p', text='Select the answers that match')
 
-    def _get_html_repr(self):
-        param = self.param
-        s = '<h4>%s</h4>' % param['question']
+        sub = SubElement(xml, 'choiceresponse')
+        sub = SubElement(sub, 'checkboxgroup')
+        sub.attrib['label'] = "Select the answers that match"
+        sub.attrib['direction'] = "vertical"
+
+        for i, ans in enumerate(answers):
+            choice = SubElement(sub, 'choice')
+            if i in correct_answers:
+                choice.attrib['correct'] = 'true'
+            else:
+                choice.attrib['correct'] = 'false'
+            choice.text = ans
+
+        if explanation is not None:
+            _add_solution(xml, explanation)
+
+        self.question = question
+        self.answers = answers
+        self.correct_answers = correct_answers
+        self.explanation = explanation
+
+    def _repr_html_(self):
+        s = '<h4>%s</h4>' % self.question
         s += '<form><input type="checkbox">  '
-        s += '<br><input type="checkbox">  '.join(param['answers'])
+        s += '<br><input type="checkbox">  '.join(self.answers)
         s += '</form>'
 
-        answer = 'The correct answer{0}:<br>'.format('s are' if
-                                                  len(param['correct_answers']) > 1
-                                                  else ' is')
+        answer = 'The correct answer{0}:<br>'.format(
+            's are' if len(self.correct_answers) > 1 else ' is'
+        )
         tmp = []
-        for i in param['correct_answers']:
-            tmp.append(param['answers'][i])
+        for i in self.correct_answers:
+            tmp.append(self.answers[i])
         answer += ', '.join(t for t in tmp)
         answer += '.'
-        try:
-            answer += '<br><i>' + param['explanation'] + '</i>'
-        except KeyError:
-            pass
+        if self.explanation is not None:
+            answer += '<br><i>' + self.explanation + '</i>'
 
         s += """
         <button title="Click to show/hide content" type="button"
@@ -176,15 +203,12 @@ class MoocCheckboxesAssessment(MoocComponent):
         <div id="{0}" style="display:none">
         {1} <br>
         </div>    """
-        return s.format(md5(repr(self).encode('utf-8')).hexdigest(), answer)
-
-    def _repr_html_(self):
-        return self._get_html_repr()
+        return s.format(secrets.token_urlsafe(20), answer)
 
 
 class MoocMultipleChoiceAssessment(MoocComponent):
     def __init__(self, question, answers, correct_answer, max_attempts=2,
-                 display_name="Question", **kwargs):
+                 display_name="Question", explanation=None):
         """
         MoocMultipleChoiceAssessment component
 
@@ -196,26 +220,46 @@ class MoocMultipleChoiceAssessment(MoocComponent):
         correct_answers : int
 
         """
-        tmp = locals()
-        del tmp['kwargs'], tmp['self']
-        kwargs.update(tmp)
+        self.xml = xml = Element('problem', attrib=dict(
+            display_name=display_name,
+            max_attempts=str(max_attempts),
+        ))
 
-        self.param = kwargs
+        SubElement(xml, 'p', text=question)
+        SubElement(xml, 'p', text='Please select correct answer')
 
-    def _get_html_repr(self):
-        param = self.param
-        s = '<h4>%s</h4>' % param['question']
-        s+= '<form>'
-        for ans in param['answers']:
-            s += '<input type="radio" name="answer" value="%s">' % ans + ans + '<br>'
-        s+= '</form>'
+        sub = SubElement(xml, 'multiplechoiceresponse')
+        sub = SubElement(sub, 'choicegroup')
+        sub.attrib['label'] = "Please select correct answer"
+        sub.attrib['type'] = "MultipleChoice"
+
+        for i, ans in enumerate(answers):
+            choice = SubElement(sub, 'choice')
+            if i == correct_answer:
+                choice.attrib['correct'] = 'true'
+            else:
+                choice.attrib['correct'] = 'false'
+            choice.text = ans
+
+        if explanation is not None:
+            _add_solution(xml, explanation)
+
+        self.question = question
+        self.answers = answers
+        self.correct_answer = correct_answer
+        self.explanation = explanation
+
+    def _repr_html_(self):
+        s = '<h4>%s</h4>' % self.question
+        s += '<form>'
+        for ans in self.answers:
+            s += f'<input type="radio" name="answer" value="{ans}">{ans}<br>'
+        s += '</form>'
 
         answer = 'The correct answer is: <br>'
-        answer += param['answers'][param['correct_answer']]
-        try:
-            answer += '<br><i>' + param['explanation'] + '</i>'
-        except KeyError:
-            pass
+        answer += self.answers[self.correct_answer]
+        if self.explanation is not None:
+            answer += f'<br><i>' + self.explanation + '</i>'
 
         s += """
         <button title="Click to show/hide content" type="button"
@@ -225,27 +269,30 @@ class MoocMultipleChoiceAssessment(MoocComponent):
          .style.display='none'}}">Show answer</button>
 
         <div id="{0}" style="display:none">{1}</div>"""
-        return s.format(md5(repr(self).encode('utf-8')).hexdigest(), answer)
-
-    def _repr_html_(self):
-        return self._get_html_repr()
+        return s.format(secrets.token_urlsafe(20), answer)
 
 
 class MoocDiscussion(MoocComponent):
-    def __init__(self, discussion_category, discussion_target, display_name=None,
-                 discussion_id=None, **kwargs):
-
-        tmp = locals()
-        del tmp['kwargs'], tmp['self']
-        kwargs.update(tmp)
-
-        if display_name is None:
-            kwargs['display_name'] = discussion_target
-
-        if discussion_id is None:
-            kwargs['discussion_id'] = md5(discussion_category.encode('utf-8') + discussion_target.encode('utf-8')).hexdigest()
-
-        self.param = kwargs
+    def __init__(
+        self, discussion_category, discussion_target, display_name=None,
+        discussion_id=None, **kwargs,
+    ):
+        discussion_id = md5(
+            discussion_category.encode('utf-8')
+            + discussion_target.encode('utf-8')
+        ).hexdigest()
+        self.xml = Element('discussion', attrib=dict(
+            discussion_category=discussion_category,
+            discussion_target=discussion_target,
+            display_name=(display_name or discussion_target),
+            discussion_id=discussion_id,
+            url_name=discussion_id,
+            **kwargs
+        ))
+        self.display_name = (display_name or discussion_target)
 
     def _repr_html_(self):
-        return "<p><b>Discussion</b> entitled '{0}' is available in the online version of the course.</p>".format(self.param['display_name'])
+        return (
+            f"<p><b>Discussion</b> {self.display_name}"
+            " is available in the EdX version of the course.</p>"
+        )
