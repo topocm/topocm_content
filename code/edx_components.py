@@ -1,6 +1,7 @@
 import sys
 import os
 import secrets
+from textwrap import dedent
 
 from xml.etree.ElementTree import Element, SubElement
 from xml.etree import ElementTree
@@ -193,7 +194,7 @@ class MoocCheckboxesAssessment(MoocComponent):
         if self.explanation is not None:
             answer += '<br><i>' + self.explanation + '</i>'
 
-        s += """
+        s += dedent("""
         <button title="Click to show/hide content" type="button"
         onclick="if(document.getElementById('{0}')
          .style.display=='none') {{document.getElementById('{0}')
@@ -202,7 +203,7 @@ class MoocCheckboxesAssessment(MoocComponent):
 
         <div id="{0}" style="display:none">
         {1} <br>
-        </div>    """
+        </div>    """)
         return s.format(secrets.token_urlsafe(20), answer)
 
 
@@ -261,14 +262,14 @@ class MoocMultipleChoiceAssessment(MoocComponent):
         if self.explanation is not None:
             answer += f'<br><i>' + self.explanation + '</i>'
 
-        s += """
+        s += dedent("""
         <button title="Click to show/hide content" type="button"
         onclick="if(document.getElementById('{0}')
          .style.display=='none') {{document.getElementById('{0}')
          .style.display=''}}else{{document.getElementById('{0}')
          .style.display='none'}}">Show answer</button>
 
-        <div id="{0}" style="display:none">{1}</div>"""
+        <div id="{0}" style="display:none">{1}</div>""")
         return s.format(secrets.token_urlsafe(20), answer)
 
 
