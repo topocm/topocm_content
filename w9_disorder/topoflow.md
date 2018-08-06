@@ -1,5 +1,3 @@
-
-
 ```python
 import sys
 import os

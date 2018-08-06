@@ -1,5 +1,3 @@
-
-
 ```python
 # This cell is present in all the notebooks.
 # It makes the necessary packages available and adjusts various settings.

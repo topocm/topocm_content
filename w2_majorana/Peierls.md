@@ -1,5 +1,3 @@
-
-
 ```python
 # This first cell will be removed by the converter.
 ```
