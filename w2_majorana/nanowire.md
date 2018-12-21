@@ -228,7 +228,7 @@ with $\Delta' = \Delta U^\dagger$.
 
 Why is this basis useful?
 
-* First of all, because in this new basis the $s$-wave pairing is a unit matrix regardless of system we consider.
+* First of all, because in this new basis the $s$-wave pairing is a unit matrix regardless of the system we consider.
 * Second, because it's easy to get the Hamiltonian of holes. We take the Hamiltonian for electrons, and change the signs of all terms that respect time-reversal symmetry, but not for those that break it, such as the term proportional to the magnetic field $B$. So if the electrons have a Hamiltonian $H(B)$, the Hamiltonian of the holes just becomes $-H(-B)$.
 
 There is one disadvantage. The particle-hole symmetry now becomes more complicated. For our system with only one orbital and spin it is $\mathcal{P} = \sigma_y \tau_y \mathcal{K}$. But, let us tell you, the advantages are worth it.
