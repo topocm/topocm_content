@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 import secrets
 from textwrap import dedent
 
@@ -31,6 +32,10 @@ def _add_solution(el, text):
     title.text = 'Explanation'
     content = SubElement(div, 'p')
     content.text = text
+
+
+def _replace_latex_delimiters(text):
+    return re.sub(r'\$(.+?)\$', (lambda match: fr"\({match.group(1)}\)"), text)
 
 
 class MoocComponent:
@@ -153,12 +158,12 @@ class MoocCheckboxesAssessment(MoocComponent):
             max_attempts=str(max_attempts),
         ))
 
-        SubElement(xml, 'p', text='question')
-        SubElement(xml, 'p', text='Select the answers that match')
 
         sub = SubElement(xml, 'choiceresponse')
+        SubElement(sub, 'label').text = _replace_latex_delimiters(question)
+        SubElement(sub, 'description').text = 'Select the answers that match'
+
         sub = SubElement(sub, 'checkboxgroup')
-        sub.attrib['label'] = "Select the answers that match"
         sub.attrib['direction'] = "vertical"
 
         for i, ans in enumerate(answers):
@@ -167,10 +172,10 @@ class MoocCheckboxesAssessment(MoocComponent):
                 choice.attrib['correct'] = 'true'
             else:
                 choice.attrib['correct'] = 'false'
-            choice.text = ans
+            choice.text = _replace_latex_delimiters(ans)
 
         if explanation is not None:
-            _add_solution(xml, explanation)
+            _add_solution(xml, _replace_latex_delimiters(explanation))
 
         self.question = question
         self.answers = answers
@@ -226,12 +231,11 @@ class MoocMultipleChoiceAssessment(MoocComponent):
             max_attempts=str(max_attempts),
         ))
 
-        SubElement(xml, 'p', text=question)
-        SubElement(xml, 'p', text='Please select correct answer')
-
         sub = SubElement(xml, 'multiplechoiceresponse')
+        SubElement(sub, 'label').text = _replace_latex_delimiters(question)
+        SubElement(sub, 'description').text = 'Select the correct answer'
+
         sub = SubElement(sub, 'choicegroup')
-        sub.attrib['label'] = "Please select correct answer"
         sub.attrib['type'] = "MultipleChoice"
 
         for i, ans in enumerate(answers):
@@ -240,10 +244,10 @@ class MoocMultipleChoiceAssessment(MoocComponent):
                 choice.attrib['correct'] = 'true'
             else:
                 choice.attrib['correct'] = 'false'
-            choice.text = ans
+            choice.text = _replace_latex_delimiters(ans)
 
         if explanation is not None:
-            _add_solution(xml, explanation)
+            _add_solution(xml, _replace_latex_delimiters(explanation))
 
         self.question = question
         self.answers = answers
