@@ -291,6 +291,14 @@ def converter(mooc_folder, content_folder=None):
     shutil.rmtree(dirpath)
 
 
+def expand_syllabus(toc, template, out):
+    """Plug the TOC data into a syllabus template."""
+    Path(out).write_text(
+        jinja2.Template(Path(template).read_text())
+        .render(chapters=YAML().load(Path(toc)))
+    )
+
+
 def main():
     mooc_folder = Path(__file__).parent.parent
     parser = argparse.ArgumentParser()

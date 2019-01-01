@@ -12,6 +12,7 @@ execute_ipynbs:
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
     - export DEST=generated/with_output
     - mkdir -p $DEST
+    - python -c "from scripts import converter; converter.expand_syllabus('toc.yml', 'syllabus.md.j2', 'syllabus.md')"
     - cp syllabus.md $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
