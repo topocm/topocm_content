@@ -30,7 +30,8 @@ exportHtml = HTMLExporter(config={
         'template_file': 'edx',
         'template_path': ['.', str(Path(__file__).parent)],
         'exclude_input': True,
-    }
+        'anchor_link_text': ' ',
+    },
 })
 
 url = (
