@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import datetime
 from itertools import dropwhile
 import os
 import re
 import tarfile
 import tempfile
-from time import strptime
-from types import SimpleNamespace
 import shutil
 import urllib.request
 from xml.etree.ElementTree import SubElement
