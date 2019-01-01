@@ -7,6 +7,8 @@ stages:
 
 execute_ipynbs:
   stage: execute
+  before_script:
+    - pip install ruamel.yaml
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
