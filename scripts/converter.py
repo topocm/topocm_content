@@ -211,7 +211,7 @@ def converter(mooc_folder, content_folder=None):
     html_folder = target / 'html/edx'
 
     # Temporary locations
-    dirpath = tempfile.mkdtemp() + '/course'
+    dirpath = Path(tempfile.mkdtemp()) / 'course'
 
     skeleton = mooc_folder / 'edx_skeleton'
     shutil.copytree(skeleton, dirpath)
