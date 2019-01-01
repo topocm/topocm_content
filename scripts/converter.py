@@ -13,31 +13,28 @@ import shutil
 import urllib.request
 from xml.etree.ElementTree import SubElement
 from xml.etree import ElementTree
+from pathlib import Path
 
 from ruamel.yaml import YAML
+import jinja2
 import nbformat
 from nbformat import v4 as current
 from nbconvert import HTMLExporter
-from traitlets.config import Config
 
 try:
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':./code'
 except KeyError:
     os.environ['PYTHONPATH'] = './code'
 
-START_DATE = "1 Jan 2000"  # Any date in the past.
+START_DATE = "2000-01-01T10:00:00Z"  # Any date in the past.
 
-scripts_path = os.path.dirname(os.path.realpath(__file__))
-mooc_folder = os.path.join(scripts_path, os.pardir)
-
-cfg = Config({
+exportHtml = HTMLExporter(config={
     'HTMLExporter': {
         'template_file': 'edx',
-        'template_path': ['.', scripts_path],
+        'template_path': ['.', str(Path(__file__).parent)],
         'exclude_input': True,
     }
 })
-exportHtml = HTMLExporter(config=cfg)
 
 url = (
     "https://cdnjs.cloudflare.com/ajax/libs"
@@ -76,18 +73,8 @@ iFrameResize({{
 """
 
 
-def date_to_edx(date, add_days=0):
-    tmp = strptime(date, '%d %b %Y')
-
-    date = datetime.datetime(tmp.tm_year, tmp.tm_mon, tmp.tm_mday, 10)
-    date = date + datetime.timedelta(days=add_days)
-    date = date.strftime('%Y-%m-%dT%H:%M:%SZ')
-    return date
-
-
 def parse_syllabus(table_of_contents, content_folder=''):
-    with open(table_of_contents) as f:
-        source = YAML().load(f)
+    source = YAML().load(Path(table_of_contents))
 
     data = SimpleNamespace(category='main', chapters=[])
     for i, section in enumerate(source):
@@ -96,7 +83,6 @@ def parse_syllabus(table_of_contents, content_folder=''):
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
         chapter.name = section['title']
-        chapter.date = START_DATE
         chapter.url = f"sec_{i:02}"
 
         for j, subsection in enumerate(section['sections']):
@@ -104,7 +90,6 @@ def parse_syllabus(table_of_contents, content_folder=''):
             sequential = SimpleNamespace(category='sequential', verticals=[])
 
             sequential.name = subsection['title']
-            sequential.date = START_DATE
             sequential.url = f"subsec_{i:02}_{j:02}"
             sequential.source_notebook = (
                 f"{content_folder}/{subsection['location']}.ipynb"
@@ -158,11 +143,10 @@ def split_into_units(nb_name):
 def convert_normal_cells(normal_cells):
     """ Convert normal_cells into html. """
     tmp = current.new_notebook(cells=normal_cells)
-    html = exportHtml.from_notebook_node(tmp)[0]
-    return html
+    return exportHtml.from_notebook_node(tmp)[0]
 
 
-def convert_unit(unit, date):
+def convert_unit(unit):
     """ Convert unit into html and special xml componenets. """
     cells = unit.cells
 
@@ -212,41 +196,38 @@ def convert_unit(unit, date):
     return unit_output
 
 
-def converter(mooc_folder, args, content_folder=None):
+def converter(mooc_folder, content_folder=None):
     """ Do converting job. """
     # Mooc content location
     if content_folder is None:
         content_folder = mooc_folder
 
     # copying figures
-    target = os.path.join(mooc_folder, 'generated')
-    os.makedirs(os.path.join(target, 'html/edx/figures'), exist_ok=True)
-    for entry, *_ in os.walk(content_folder):
-        if re.match(content_folder + r'/w\d+_.+/figures', entry):
-            for filename in os.listdir(entry):
-                shutil.copy(os.path.join(entry, filename),
-                            os.path.join(target, 'html/edx/figures'))
-    html_folder = os.path.join(target, 'html/edx')
+    target = mooc_folder / 'generated'
+    figures_path = target / 'html/edx/figures'
+    os.makedirs(figures_path, exist_ok=True)
+    for figure in content_folder.glob('w*/figures/*'):
+        shutil.copy(figure, figures_path)
+    html_folder = target / 'html/edx'
 
     # Temporary locations
     dirpath = tempfile.mkdtemp() + '/course'
 
-    skeleton = mooc_folder + '/edx_skeleton'
+    skeleton = mooc_folder / 'edx_skeleton'
     shutil.copytree(skeleton, dirpath)
 
     # Loading data from toc
-    toc = os.path.join(content_folder, 'toc.yml')
+    toc = content_folder / 'toc.yml'
     data = parse_syllabus(toc, content_folder)
 
-    course_xml_path = os.path.join(dirpath, 'course.xml')
-    with open(course_xml_path) as f:
-        xml_course = ElementTree.fromstring(f.read())
+    course_xml_path = dirpath / 'course.xml'
+    xml_course = ElementTree.fromstring(course_xml_path.read_text())
 
     for chapter in data.chapters:
         chapter_xml = SubElement(xml_course, 'chapter', attrib=dict(
             url_name=chapter.url,
             display_name=chapter.name,
-            start=date_to_edx(chapter.date),
+            start=START_DATE,
         ))
 
         for sequential in chapter.sequentials:
@@ -271,7 +252,7 @@ def converter(mooc_folder, args, content_folder=None):
                     display_name=unit.metadata.name,
                 ))
 
-                unit_output = convert_unit(unit, date=sequential.date)
+                unit_output = convert_unit(unit)
                 for (j, out) in enumerate(unit_output):
                     out_url = vertical_url + f"_out_{j:02}"
                     if isinstance(out, str):
@@ -282,17 +263,13 @@ def converter(mooc_folder, args, content_folder=None):
                             filename=out_url
                         ))
 
-                        html_path = os.path.join(html_folder,
-                                                 out_url + '.html')
-                        with open(html_path, 'w') as f:
-                            f.write(out)
+                        html_path = html_folder / out_url + '.html'
+                        html_path.write_text(out)
 
-                        html_path = os.path.join(dirpath, 'html',
-                                                 out_url + '.html')
-                        with open(html_path, 'w') as f:
-                            f.write(IFRAME_TEMPLATE.format(
-                                id=out_url, url=url, js=js
-                            ))
+                        html_path = dirpath / 'html' / out_url + '.html'
+                        html_path.write_text(
+                            IFRAME_TEMPLATE.format(id=out_url, url=url, js=js)
+                        )
 
                     else:
                         # adding video subelement
@@ -300,11 +277,12 @@ def converter(mooc_folder, args, content_folder=None):
                         if 'url_name' not in out.attrib:
                             out.attrib['url_name'] = out_url
 
-    with open(course_xml_path, 'w') as f:
-        f.write(ElementTree.tostring(xml_course, encoding='unicode'))
+    course_xml_path.write_text(
+        ElementTree.tostring(xml_course, encoding='unicode')
+    )
 
     # Creating tar
-    tar_filepath = os.path.join(target, 'import_to_edx.tar.gz')
+    tar_filepath = target / 'import_to_edx.tar.gz'
     tar = tarfile.open(name=tar_filepath, mode='w:gz')
     tar.add(dirpath, arcname='')
     tar.close()
@@ -314,14 +292,14 @@ def converter(mooc_folder, args, content_folder=None):
 
 
 def main():
-    mooc_folder = os.path.join(os.path.dirname(__file__), os.path.pardir)
+    mooc_folder = Path(__file__).parent.parent
     parser = argparse.ArgumentParser()
     parser.add_argument('source', nargs='?', help='folder to convert')
     args = parser.parse_args()
 
     print('Path to mooc folder:', mooc_folder)
     print('Path to notebooks:', args.source)
-    converter(mooc_folder, args, content_folder=args.source)
+    converter(mooc_folder, content_folder=Path(args.source))
 
 
 if __name__ == "__main__":
