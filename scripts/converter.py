@@ -14,6 +14,7 @@ import urllib.request
 from xml.etree.ElementTree import SubElement
 from xml.etree import ElementTree
 
+from ruamel.yaml import YAML
 import nbformat
 from nbformat import v4 as current
 from nbconvert import HTMLExporter
@@ -23,6 +24,8 @@ try:
     os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + ':./code'
 except KeyError:
     os.environ['PYTHONPATH'] = './code'
+
+START_DATE = "1 Jan 2000"  # Any date in the past.
 
 scripts_path = os.path.dirname(os.path.realpath(__file__))
 mooc_folder = os.path.join(scripts_path, os.pardir)
@@ -82,47 +85,30 @@ def date_to_edx(date, add_days=0):
     return date
 
 
-def parse_syllabus(syllabus_file, content_folder=''):
-    # loading raw syllabus
-    syll = nbformat.read(syllabus_file, as_version=4).cells[0].source
-
-    section = r'^\* \*\*(?P<section>.*)\*\*$'
-    subsection = r'^  \* \[(?P<title>.*)\]\((?P<filename>.*)\)$'
-    syllabus_line = section + '|' + subsection
-
-    syllabus = []
-    for line in syll.split('\n'):
-        match = re.match(syllabus_line, line)
-        if match is None:
-            continue
-        name = match.group('section')
-        if name is not None:
-            # Release date in the past, customize if necessary.
-            syllabus.append([name, '1 Jan 2000', []])
-            continue
-        name, filename = match.group('title'), match.group('filename')
-        syllabus[-1][-1].append((name, filename))
+def parse_syllabus(table_of_contents, content_folder=''):
+    with open(table_of_contents) as f:
+        source = YAML().load(f)
 
     data = SimpleNamespace(category='main', chapters=[])
-    for i, section in enumerate(syllabus):
-        if section[1] is None:
-            continue
+    for i, section in enumerate(source):
 
         # creating chapter
         chapter = SimpleNamespace(category='chapter', sequentials=[])
 
-        chapter.name = section[0]
-        chapter.date = section[1]
+        chapter.name = section['title']
+        chapter.date = START_DATE
         chapter.url = f"sec_{i:02}"
 
-        for j, subsection in enumerate(section[2]):
+        for j, subsection in enumerate(section['sections']):
             # creating sequential
             sequential = SimpleNamespace(category='sequential', verticals=[])
 
-            sequential.name = subsection[0]
-            sequential.date = chapter.date
+            sequential.name = subsection['title']
+            sequential.date = START_DATE
             sequential.url = f"subsec_{i:02}_{j:02}"
-            sequential.source_notebook = content_folder + '/' + subsection[1]
+            sequential.source_notebook = (
+                f"{content_folder}/{subsection['location']}.ipynb"
+            )
 
             chapter.sequentials.append(sequential)
 
@@ -171,10 +157,6 @@ def split_into_units(nb_name):
 
 def convert_normal_cells(normal_cells):
     """ Convert normal_cells into html. """
-    for cell in normal_cells:
-        if cell.cell_type == 'markdown':
-            cell.source = re.sub(r'\\begin\{ *equation *\}', '\[', cell.source)
-            cell.source = re.sub(r'\\end\{ *equation *\}', '\]', cell.source)
     tmp = current.new_notebook(cells=normal_cells)
     html = exportHtml.from_notebook_node(tmp)[0]
     return html
@@ -252,9 +234,9 @@ def converter(mooc_folder, args, content_folder=None):
     skeleton = mooc_folder + '/edx_skeleton'
     shutil.copytree(skeleton, dirpath)
 
-    # Loading data from syllabus
-    syllabus_nb = os.path.join(content_folder, 'syllabus.ipynb')
-    data = parse_syllabus(syllabus_nb, content_folder)
+    # Loading data from toc
+    toc = os.path.join(content_folder, 'toc.yml')
+    data = parse_syllabus(toc, content_folder)
 
     course_xml_path = os.path.join(dirpath, 'course.xml')
     with open(course_xml_path) as f:
