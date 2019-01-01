@@ -203,11 +203,15 @@ def converter(mooc_folder, content_folder=None):
 
         for section_number, section in enumerate(chapter['sections']):
             section_url = f"subsec_{chapter_number:02}_{section_number:02}"
-            sequential_xml = SubElement(chapter_xml, 'sequential', attrib=dict(
-                url_name=section_url,
-                display_name=section['title'],
-                graded=bool(chapter_number),
-            ))
+            sequential_xml = SubElement(
+                chapter_xml,
+                'sequential',
+                attrib={
+                    'url_name': section_url,
+                    'display_name': section['title'],
+                    'graded': ('true' if chapter_number else 'false'),
+                },
+            )
 
             if section['title'] == 'Assignments':
                 sequential_xml.attrib['format'] = "Research"
