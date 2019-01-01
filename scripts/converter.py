@@ -2,7 +2,6 @@
 
 import argparse
 import datetime
-import io
 from itertools import dropwhile
 import os
 import re
@@ -73,9 +72,6 @@ iFrameResize({{
 </script>
 """
 
-with open(os.path.join(scripts_path, 'release_dates')) as f:
-    release_dates = eval(f.read())
-
 
 def date_to_edx(date, add_days=0):
     tmp = strptime(date, '%d %b %Y')
@@ -90,8 +86,8 @@ def parse_syllabus(syllabus_file, content_folder=''):
     # loading raw syllabus
     syll = nbformat.read(syllabus_file, as_version=4).cells[0].source
 
-    section = '^\* \*\*(?P<section>.*)\*\*$'
-    subsection = '^  \* \[(?P<title>.*)\]\((?P<filename>.*)\)$'
+    section = r'^\* \*\*(?P<section>.*)\*\*$'
+    subsection = r'^  \* \[(?P<title>.*)\]\((?P<filename>.*)\)$'
     syllabus_line = section + '|' + subsection
 
     syllabus = []
@@ -101,7 +97,8 @@ def parse_syllabus(syllabus_file, content_folder=''):
             continue
         name = match.group('section')
         if name is not None:
-            syllabus.append([name, release_dates.get(name), []])
+            # Release date in the past, customize if necessary.
+            syllabus.append([name, '1 Jan 2000', []])
             continue
         name, filename = match.group('title'), match.group('filename')
         syllabus[-1][-1].append((name, filename))
