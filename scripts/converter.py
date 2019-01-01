@@ -73,37 +73,9 @@ iFrameResize({{
 """
 
 
-def parse_syllabus(table_of_contents, content_folder=''):
-    source = YAML().load(Path(table_of_contents))
-
-    data = SimpleNamespace(category='main', chapters=[])
-    for i, section in enumerate(source):
-
-        # creating chapter
-        chapter = SimpleNamespace(category='chapter', sequentials=[])
-
-        chapter.name = section['title']
-        chapter.url = f"sec_{i:02}"
-
-        for j, subsection in enumerate(section['sections']):
-            # creating sequential
-            sequential = SimpleNamespace(category='sequential', verticals=[])
-
-            sequential.name = subsection['title']
-            sequential.url = f"subsec_{i:02}_{j:02}"
-            sequential.source_notebook = (
-                f"{content_folder}/{subsection['location']}.ipynb"
-            )
-
-            chapter.sequentials.append(sequential)
-
-        data.chapters.append(chapter)
-    return data
-
-
 def split_into_units(nb_name):
     """Split notebook into units where top level headings occur."""
-    nb = nbformat.read(nb_name, as_version=4)
+    nb = nbformat.read(str(nb_name), as_version=4)
 
     # Split markdown cells on titles.
     def split_cells():
@@ -217,35 +189,37 @@ def converter(mooc_folder, content_folder=None):
     shutil.copytree(skeleton, dirpath)
 
     # Loading data from toc
-    toc = mooc_folder / 'toc.yml'
-    data = parse_syllabus(toc, content_folder)
+    chapters = YAML().load(Path(mooc_folder / 'toc.yml').read_text())
 
     course_xml_path = dirpath / 'course.xml'
     xml_course = ElementTree.fromstring(course_xml_path.read_text())
 
-    for chapter in data.chapters:
+    for chapter_number, chapter in enumerate(chapters):
         chapter_xml = SubElement(xml_course, 'chapter', attrib=dict(
-            url_name=chapter.url,
-            display_name=chapter.name,
+            url_name=f"sec_{chapter_number:02}",
+            display_name=chapter['title'],
             start=START_DATE,
         ))
 
-        for sequential in chapter.sequentials:
+        for section_number, section in enumerate(chapter['sections']):
+            section_url = f"subsec_{chapter_number:02}_{section_number:02}"
             sequential_xml = SubElement(chapter_xml, 'sequential', attrib=dict(
-                url_name=sequential.url,
-                display_name=sequential.name,
-                graded=('true' if chapter.url != 'sec_00' else 'false'),
+                url_name=section_url,
+                display_name=section['title'],
+                graded=bool(chapter_number),
             ))
 
-            if sequential.name == 'Assignments':
+            if section['title'] == 'Assignments':
                 sequential_xml.attrib['format'] = "Research"
-            elif chapter.url != 'sec_00':
+            elif chapter_number:
                 sequential_xml.attrib['format'] = "Self-check"
 
-            units = split_into_units(sequential.source_notebook)
+            units = split_into_units(
+                content_folder / (section['location'] + '.ipynb')
+            )
 
             for i, unit in enumerate(units):
-                vertical_url = sequential.url + f'_{i:02}'
+                vertical_url = section_url + f'_{i:02}'
                 # add vertical info to sequential_xml
                 vertical = SubElement(sequential_xml, 'vertical', attrib=dict(
                     url_name=vertical_url,
@@ -263,10 +237,10 @@ def converter(mooc_folder, content_folder=None):
                             filename=out_url
                         ))
 
-                        html_path = html_folder / out_url + '.html'
+                        html_path = html_folder / (out_url + '.html')
                         html_path.write_text(out)
 
-                        html_path = dirpath / 'html' / out_url + '.html'
+                        html_path = dirpath / 'html' / (out_url + '.html')
                         html_path.write_text(
                             IFRAME_TEMPLATE.format(id=out_url, url=url, js=js)
                         )
