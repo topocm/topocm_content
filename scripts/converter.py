@@ -191,6 +191,11 @@ def converter(mooc_folder, content_folder=None):
     # Loading data from toc
     chapters = YAML().load(Path(mooc_folder / 'toc.yml').read_text())
 
+    # Convert the syllabus and save it in /tabs
+    (skeleton / 'tabs' / 'syllabus.html').write_text(
+        exportHtml.from_filename(content_folder / 'syllabus.ipynb')[0]
+    )
+
     course_xml_path = dirpath / 'course.xml'
     xml_course = ElementTree.fromstring(course_xml_path.read_text())
 
