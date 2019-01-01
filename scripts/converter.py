@@ -217,7 +217,7 @@ def converter(mooc_folder, content_folder=None):
     shutil.copytree(skeleton, dirpath)
 
     # Loading data from toc
-    toc = content_folder / 'toc.yml'
+    toc = mooc_folder / 'toc.yml'
     data = parse_syllabus(toc, content_folder)
 
     course_xml_path = dirpath / 'course.xml'
