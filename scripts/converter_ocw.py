@@ -8,6 +8,8 @@ from pathlib import Path
 
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
+from ruamel.yaml import YAML
+
 from converter import split_into_units, url
 
 IFRAME_TEMPLATE = r"""
