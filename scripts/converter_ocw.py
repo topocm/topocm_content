@@ -4,14 +4,13 @@ import os
 import datetime
 import glob
 import shutil
-from traitlets.config import Config
+from pathlib import Path
+
 from nbconvert import HTMLExporter
 from nbconvert.filters.markdown import markdown2html_pandoc
-from converter import (mooc_folder,
-                       parse_syllabus,
-                       scripts_path,
-                       split_into_units,
-                       url)
+from ruamel.yaml import YAML
+
+from converter import split_into_units, url
 
 IFRAME_TEMPLATE = r"""
 <iframe id="{id}" scrolling="no" width="100%" height="600px", frameborder=0>
@@ -40,34 +39,34 @@ with open('website_assets/iframes.txt', 'w') as f:
     now = datetime.datetime.now()
     print('Executed on {} at {}.'.format(now.date(), now.time()), file=f)
 
-cfg = Config({'HTMLExporter': {'template_file': 'ocw',
-                               'template_path': ['.', scripts_path],
-                               'filters': {'markdown2html':
-                                           markdown2html_pandoc}}})
-
-exportHtml = HTMLExporter(config=cfg)
+exportHtml = HTMLExporter(config={
+    'HTMLExporter': {
+        'template_file': 'ocw',
+        'template_path': ['.', str(Path(__file__).parent)],
+        'filters': {'markdown2html': markdown2html_pandoc}
+    }
+})
 
 # Mooc content location
-output_dir = os.path.join(mooc_folder, 'generated/html/ocw')
-generated_ipynbs = os.path.join(mooc_folder, 'generated/with_output')
+mooc_folder = Path(__file__).parent.parent
+output_dir = mooc_folder / 'generated/html/ocw'
+generated_ipynbs = mooc_folder / 'generated/with_output'
 
 # Loading data from syllabus
-syllabus_nb = os.path.join(generated_ipynbs, 'syllabus.ipynb')
-data = parse_syllabus(syllabus_nb, generated_ipynbs)
+syllabus_nb = generated_ipynbs / 'syllabus.ipynb'
+chapters = YAML().load(Path(mooc_folder / 'toc.yml').read_text())
 
-for chapter in data.chapters:
-    chap_num = int(chapter.url[-2:])
-    for sequential in chapter.sequentials:
-        units = split_into_units(sequential.source_notebook)
-        folder, fname = sequential.source_notebook.split('/')[-2:]
+for chapter in chapters:
+    for section in chapter['sections']:
+        notebook = generated_ipynbs / (section['location'] + '.ipynb')
+        units = split_into_units(notebook)
+        folder, fname = notebook.parent, notebook.name
         for i, unit in enumerate(units):
             fname = fname.replace('.ipynb', '')
-            new_fname = '{}_{}'.format(fname, i)
-            new_path = os.path.join(mooc_folder, output_dir, folder, new_fname + '.html')
-            os.makedirs(os.path.dirname(new_path), exist_ok=True)
-            html = exportHtml.from_notebook_node(unit)[0]
-            with open(new_path, 'w') as f:
-                f.write(html)
+            new_fname = f'{fname}_{i}'
+            new_path = mooc_folder / output_dir / folder / (new_fname + '.html')
+            os.makedirs(new_path.parent, exist_ok=True)
+            new_path.write_text(exportHtml.from_notebook_node(unit)[0])
 
             with open('website_assets/iframes.txt', 'a') as f:
                 ID = '{}_{}'.format(folder, new_fname)

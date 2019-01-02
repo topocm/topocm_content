@@ -4,7 +4,7 @@ channels:
 dependencies:
   - python=3.6
   - matplotlib=2.0.0
-  - kwant=1.3* # Untill v1.3 is out
+  - kwant=1.3*
   - scipy=1.1*
   - holoviews=1.7*
   - feedparser=5.2*
@@ -14,3 +14,5 @@ dependencies:
   - notebook
   - markdown
   - notedown
+  - pip:
+    - ruamel.yaml

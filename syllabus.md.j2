@@ -1,58 +1,10 @@
 # Syllabus
 
-* **Before you begin**
-  * [About this course](w0_background/intro.ipynb)
-* **Topology in toy models**
-  * [Hamiltonians, topology, and symmetry](w1_topointro/0d.ipynb)
-  * [Bulk-edge correspondence in the Kitaev chain](w1_topointro/1D.ipynb)
-  * [Assignments](w1_topointro/w1_assignments.ipynb)
-* **Majoranas I**
-  * [From Kitaev chain to a nanowire](w2_majorana/nanowire.ipynb)
-  * [Majorana signatures: 4π-periodic Josephson effect, Andreev conductance quantization](w2_majorana/signatures.ipynb)
-  * [Why Majoranas are cool: braiding and quantum computation](w2_majorana/braiding.ipynb)
-  * [Assignments](w2_majorana/w2_assignments.ipynb)
-* **More parameters: charge pumping**
-  * [Thouless pumps and winding invariant](w3_pump_QHE/pumps.ipynb)
-  * [Quantum Hall effect: pumping electrons in Landau levels](w3_pump_QHE/Laughlinargument.ipynb)
-  * [Quantum Hall effect: edge states](w3_pump_QHE/QHEedgestates.ipynb)
-  * [Assignments](w3_pump_QHE/w3_assignments.ipynb)
-* **Chern insulators**
-  * [Quantum Hall Effect on the lattice and Dirac Hamiltonian](w4_haldane/QHE_lattice.ipynb)
-  * [Haldane model, Berry curvature, and Chern number](w4_haldane/haldane_model.ipynb)
-  * [Assignments](w4_haldane/w4_assignments.ipynb)
-* **Quantum spin Hall effect**
-  * [Time-reversal symmetry and fermion parity pumps](w5_qshe/fermion_parity_pump.ipynb)
-  * [Experimental progress and candidate materials](w5_qshe/qshe_experiments.ipynb)
-  * [Assignments](w5_qshe/w5_assignments.ipynb)
-* **Three-dimensional topological insulators**
-  * [Dirac equation of the surface states, 3D Bernevig-Hughes-Zhang model](w6_3dti/bhz.ipynb)
-  * [Experimental progress and candidate materials](w6_3dti/3dti_signatures.ipynb)
-  * [Assignments](w6_3dti/w6_assignments.ipynb)
-* **Topological defects**
-  * [Majoranas in topological insulators and superconductors](w7_defects/ti_majoranas.ipynb)
-  * [Crystalline defects in weak topological insulators](w7_defects/crystalline_defects.ipynb)
-  * [Assignments](w7_defects/w7_assignments.ipynb)
-* **General approach to topological classification**
-  * [10 symmetry classes and the periodic table of topological insulators](w8_general/classification.ipynb)
-  * [Different approaches to topological invariants](w8_general/invariants.ipynb)
-  * [Assignments](w8_general/w8_assignments.ipynb)
-* **Anderson localization and topology**
-  * [Disorder and the scaling theory of localization](w9_disorder/scaling.ipynb)
-  * [Flow diagram of topological insulators](w9_disorder/topoflow.ipynb)
-  * [Assignments](w9_disorder/w9_assignments.ipynb)
-* **Extensions of classification I**
-  * [Topology in gapless systems](w10_extensions/gapless.ipynb)
-  * [Topological mechanics](w10_extensions/mechanics.ipynb)
-  * [Assignments](w10_extensions/w10_assignments.ipynb)
-* **Extensions of classification II**
-  * [Floquet topological insulators](w11_extensions2/floquet.ipynb)
-  * [Crystalline topological insulators](w11_extensions2/cti.ipynb)
-  * [Assignments](w11_extensions2/w11_assignments.ipynb)
-* **Beyond single-particle physics**
-  * [Fractional quantum Hall effect and topological particles](w12_manybody/fqhe.ipynb)
-  * [Topological order and the toric code](w12_manybody/topoorder.ipynb)
-  * [Assignments](w12_manybody/w12_assignments.ipynb)
-
+{% for chapter in chapters -%}
+* **{{chapter.title}}**
+{% for section in chapter.sections %}  * [{{section.title}}]({{section.location}}.ipynb)
+{% endfor -%}
+{%- endfor %}
 ## Course structure
 
 * Each section consists of several relatively self-contained topics, each introduced and summarized by an expert.
@@ -72,12 +24,12 @@
 
 ## Other course developers
 
-The initial verison of the course was created by:  
-Anton Akhmerov  
-Jay Sau  
-Bernard van Heck  
-Sebastian Rubbert  
-Rafał Skolasiński.
+The initial verison of the course was created by:
+* Anton Akhmerov
+* Jay Sau
+* Bernard van Heck
+* Sebastian Rubbert
+* Rafał Skolasiński
 
 ## Acknowledgements
 

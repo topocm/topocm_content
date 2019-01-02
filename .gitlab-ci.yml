@@ -7,11 +7,14 @@ stages:
 
 execute_ipynbs:
   stage: execute
+  before_script:
+    - pip install ruamel.yaml
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
     - export DEST=generated/with_output
     - mkdir -p $DEST
+    - python -c "from scripts import converter; converter.expand_syllabus('toc.yml', 'syllabus.md.j2', 'syllabus.md')"
     - cp syllabus.md $DEST
     - cp -r data $DEST
     - cp -r w[!e]*_* $DEST
@@ -45,6 +48,8 @@ mirror to github:
 
 edx archive:
   stage: build
+  before_script:
+    - pip install ruamel.yaml
   script: ./scripts/converter.py ./generated/with_output
   artifacts:
     paths:
@@ -57,6 +62,8 @@ pelican website:
   stage: build
   variables:
     DEST: "generated/html"
+  before_script:
+    - pip install ruamel.yaml
   script:
     - python scripts/converter_pelican.py
     - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
@@ -69,6 +76,8 @@ pelican website:
 
 ocw website:
   stage: build
+  before_script:
+    - pip install ruamel.yaml
   script:
     - python scripts/converter_ocw.py
     - mv website_assets/iframes.txt generated/html/ocw
