@@ -12,14 +12,15 @@ execute_ipynbs:
   script:
     - export PYTHONPATH=$PYTHONPATH:${PWD}/code
     - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
-    - export DEST=generated/with_output
-    - mkdir -p $DEST
-    - python -c "from scripts import converter; converter.expand_syllabus('toc.yml', 'syllabus.md.j2', 'syllabus.md')"
-    - cp syllabus.md $DEST
+    - export MARKDOWN=generated/markdown
+    - mkdir -p $MARKDOWN
+    - cp -r src/* $MARKDOWN
+    - python scripts/preprocess_markdown.py
+    - export WITH_OUTPUT=generated/with_output
     - cp -r data $DEST
-    - cp -r w[!e]*_* $DEST
-    - find $DEST -name '*.md' | parallel --delay 3 --jobs 32 notedown -o --run --timeout -1 --match fenced
-    - rm -rf $DEST/data
+    - cp -r $MARKDOWN/* $WITH_OUTPUT
+    - find $WITH_OUTPUT -name '*.md' | parallel --delay 3 --jobs 32 notedown -o --run --timeout -1 --match fenced
+    - rm -rf $WITH_OUTPUT/data
   artifacts:
     paths:
       - generated/with_output
