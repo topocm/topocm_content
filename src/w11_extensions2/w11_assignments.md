@@ -29,15 +29,21 @@ MoocDiscussion('Labs', 'Floquet and crystalline')
 
 # Review assignment
 
+### arXiv:1010.6126
 
-```python
-display_html(PreprintReference('1010.6126', description="Computes topological edge states from floquet Hamiltonian."))
-display_html(PreprintReference('1212.3324', description="Points out and explains why the floquet Hamiltonian in momentum space "
-                               "does not capture the presence of floquet edge states."))
-display_html(PreprintReference('1202.1003', description="Theoretical prediction of topological crystalline insulator"))
-display_html(PreprintReference('1212.6191', description="Are topological crystalline surface states stable against "
-                               "disorder?"))
-```
+**Hint:** Computes topological edge states from Floquet Hamiltonian.
+
+### arXiv:1212.3324
+
+**Hint:** Points out and explains why the floquet Hamiltonian in momentum space does not capture the presence of Floquet edge states.
+
+### arXiv:1202.1003
+
+**Hint:** Theoretical prediction of topological crystalline insulator.
+
+### arXiv:1212.6191
+
+**Hint:** Are topological crystalline surface states stable against disorder?
 
 ### Bonus: Find your own paper to review!
 

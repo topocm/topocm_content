@@ -43,14 +43,23 @@ MoocDiscussion('Labs', 'Extensions')
 
 # Review assignment
 
+### arXiv:1504.01350
 
-```python
-display_html(PreprintReference('1504.01350'))
-display_html(PreprintReference('1503.06808', description="Different mechanical TI"))
-display_html(PreprintReference('1309.5846', description="Weyl + disorder"))
-display_html(PreprintReference('1410.1320', description="The best of both worlds"))
-display_html(PreprintReference('0909.5680', description="A general approach to gapless superconductors."))
-```
+### arXiv:1503.06808
+
+**Hint:** Different mechanical TI
+
+### arXiv:1309.5846
+
+**Hint:** Weyl + disorder
+
+### arXiv:1410.1320
+
+**Hint:** The best of both worlds
+
+### arXiv:0909.5680
+
+**Hint:** A general approach to gapless superconductors.
 
 ### Bonus: Find your own paper to review!
 

@@ -20,7 +20,7 @@ One mechanism of opening the gap on the surface of a topological insulator is to
 
 ### Many invariants
 
-The BHZ model is rather rich and allows to produce every possible topological invariant. Can you find the parameter values that produce all the desired values of the invariants? (Hint: you need to make the model anisotropic). 
+The BHZ model is rather rich and allows to produce every possible topological invariant. Can you find the parameter values that produce all the desired values of the invariants? (Hint: you need to make the model anisotropic).
 
 
 ```python
@@ -36,14 +36,25 @@ MoocDiscussion('Labs', '3DTI')
 
 # Review assignment
 
+### arXiv:1410.0655
 
-```python
-display_html(PreprintReference('1410.0655', description="What enters the measurement of a Dirac point conductance"))
-display_html(PreprintReference('0811.1303', description="Consequences of magneto-electric effect"))
-display_html(PreprintReference('1401.7461', description="Weak and strong topological insulators with disorder"))
-display_html(PreprintReference('1311.1758', description="Topological, but not insulator"))
-display_html(PreprintReference('1005.3762', description="Threading flux through a topological insulator"))
-```
+**Hint:** What enters the measurement of a Dirac point conductance.
+
+### arXiv:0811.1303
+
+**Hint:** Consequences of magneto-electric effect.
+
+### arXiv:1401.7461
+
+**Hint:** Weak and strong topological insulators with disorder.
+
+### arXiv:1311.1758
+
+**Hint:** Topological, but not insulator.
+
+### arXiv:1005.3762
+
+**Hint:** Threading flux through a topological insulator.
 
 ### Bonus: Find your own paper to review!
 

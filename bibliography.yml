@@ -1,0 +1,1957 @@
+- abstract: Motivated by recent developments in the field of one-dimensional topological
+    superconductors, we investigate the topological properties of s-matrix of generic
+    superconducting junctions where dimension should not play any role. We argue that
+    for a finite junction the s-matrix is always topologically trivial. We resolve
+    an apparent contradiction with the previous results by taking into account the
+    low-energy resonant poles of s-matrix. Thus no common topological transition occur
+    in a finite junction. We reveal a transition of a different kind that concerns
+    the configuration of the resonant poles.
+  authors:
+  - D. I. Pikulin
+  - Yuli V. Nazarov
+  doi: 10.1134/S0021364011210090
+  id: '1103.0780'
+  journal: Jetp Lett.
+  journal_url: http://dx.doi.org/10.1134/s0021364011210090
+  on_arxiv: 2011-03-03
+  page: '693'
+  published: 2012-01-01
+  title: Topological properties of superconducting junctions
+  vol: '94'
+- abstract: The phase-dependent bound states (Andreev levels) of a Josephson junction
+    can cross at the Fermi level, if the superconducting ground state switches between
+    even and odd fermion parity. The level crossing is topologically protected, in
+    the absence of time-reversal and spin-rotation symmetry, irrespective of whether
+    the superconductor itself is topologically trivial or not. We develop a statistical
+    theory of these topological transitions in an N-mode quantum-dot Josephson junction,
+    by associating the Andreev level crossings with the real eigenvalues of a random
+    non-Hermitian matrix. The number of topological transitions in a 2pi phase interval
+    scales as sqrt(N) and their spacing distribution is a hybrid of the Wigner and
+    Poisson distributions of random-matrix theory.
+  authors:
+  - C. W. J. Beenakker
+  - J. M. Edge
+  - J. P. Dahlhaus
+  - D. I. Pikulin
+  - Shuo Mi
+  - M. Wimmer
+  doi: 10.1103/PhysRevLett.111.037001
+  id: '1305.2924'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.111.037001
+  on_arxiv: 2013-05-13
+  page: '037001'
+  published: 2013-07-17
+  title: Wigner-Poisson statistics of topological transitions in a Josephson junction
+  vol: '111'
+- abstract: Semiconducting nanowires in proximity to superconductors are promising
+    experimental systems for Majorana fermions, which may ultimately be used as building
+    blocks for topological quantum computers. A serious challenge in the experimental
+    realization of the Majorana fermions is the supression of topological superconductivity
+    by disorder. We show that Majorana fermions protected by a robust topological
+    gap can occur at the ends of a chain of quantum dots connected by s-wave superconductors.
+    In the appropriate parameter regime, we establish that the quantum dot/superconductor
+    system is equivalent to a 1D Kitaev chain, which can be tuned to be in a robust
+    topological phase with Majorana end modes even in the case where the quantum dots
+    and superconductors are both strongly disordered. Such a spin-orbit coupled quantum
+    dot - s-wave superconductor array provides an ideal experimental platform for
+    the observation of non-Abelian Majorana modes.
+  authors:
+  - Jay D. Sau
+  - S. Das Sarma
+  doi: 10.1038/ncomms1966
+  id: '1111.6600'
+  journal: Nat Commun
+  journal_url: http://dx.doi.org/10.1038/ncomms1966
+  on_arxiv: 2011-11-28
+  page: '964'
+  published: 2012-01-01
+  title: How to realize a robust practical Majorana chain in a quantum dot-superconductor
+    linear array
+  vol: '3'
+- abstract: A single two-dimensinoal Dirac fermion state has been recently observed
+    on the surface of topological insulator Bi$_2$Te$_3$ by angle-resolved photoemission
+    spectroscopy (ARPES). We study the surface band structure using $k \cdot p$ theory
+    and find an unconventional hexagonal warping term, which is the counterpart of
+    cubic Dresselhaus spin-orbit coupling in rhombohedral structures. We show that
+    this hexagonal warping term naturally explains the observed hexagonal snow-flake
+    Fermi surface. The strength of hexagonal warping is characterized by a single
+    parameter, which is extracted from the size of the Fermi surface. We predict a
+    number of testable signatures of hexagonal warping in spectroscopy experiments
+    on Bi$_2$Te$_3$. We also explore the possibility of a spin-density wave due to
+    strong nesting of the Fermi surface.
+  authors:
+  - Liang Fu
+  doi: 10.1103/PhysRevLett.103.266801
+  id: '0908.1418'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.103.266801
+  on_arxiv: 2009-08-10
+  page: '266801'
+  published: 2009-12-21
+  title: Hexagonal Warping Effects in the Surface States of Topological Insulator
+    Bi$_2$Te$_3$
+  vol: '103'
+- abstract: We report on electronic transport measurements of dual-gated nano-devices
+    of the low-carrier density topological insulator Bi1.5Sb0.5Te1.7Se1.3. In all
+    devices the upper and lower surface states are independently tunable to the Dirac
+    point by the top and bottom gate electrodes. In thin devices, electric fields
+    are found to penetrate through the bulk, indicating finite capacitive coupling
+    between the surface states. A charging model allows us to use the penetrating
+    electric field as a measurement of the inter-surface capacitance $C_{TI}$ and
+    the surface state energy-density relationship $\mu$(n), which is found to be consistent
+    with independent ARPES measurements. At high magnetic fields, increased field
+    penetration through the surface states is observed, strongly suggestive of the
+    opening of a surface state band gap due to broken time-reversal symmetry.
+  authors:
+  - Valla Fatemi
+  - Benjamin Hunt
+  - Hadar Steinberg
+  - Stephen L. Eltinge
+  - Fahad Mahmood
+  - Nicholas P. Butch
+  - Kenji Watanabe
+  - Takashi Taniguchi
+  - Nuh Gedik
+  - Ray Ashoori
+  - Pablo Jarillo-Herrero
+  doi: 10.1103/PhysRevLett.113.206801
+  id: '1410.0655'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.113.206801
+  on_arxiv: 2014-10-02
+  page: '206801'
+  published: 2014-11-14
+  title: Electrostatic Coupling between Two Surfaces of a Topological Insulator Nanodevice
+  vol: '113'
+- abstract: Existence of the magnetic monopole is compatible with the fundamental
+    laws of nature, however, this illusive particle has yet to be detected experimentally.
+    In this work, we show that an electric charge near the topological surface state
+    induces an image magnetic monopole charge due to the topological magneto-electric
+    effect. The magnetic field generated by the image magnetic monopole can be experimentally
+    measured, and the inverse square law of the field dependence can be determined
+    quantitatively. We propose that this effect can be used to experimentally realize
+    a gas of quantum particles carrying fractional statistics, consisting of the bound
+    states of the electric charge and the image magnetic monopole charge.
+  authors:
+  - Xiao-Liang Qi
+  - Rundong Li
+  - Jiadong Zang
+  - Shou-Cheng Zhang
+  doi: 10.1126/science.1167747
+  id: '0811.1303'
+  journal: Science
+  journal_url: http://dx.doi.org/10.1126/science.1167747
+  on_arxiv: 2008-11-08
+  page: '1184'
+  published: 2009-02-27
+  title: Seeing the magnetic monopole through the mirror of topological surface states
+  vol: '323'
+- abstract: The role of disorder in the field of three-dimensional time reversal invariant
+    topological insulators has become an active field of research recently. However,
+    the computation of Z2 invariants for large, disordered systems still poses a considerable
+    challenge. In this paper we apply and extend a recently proposed method based
+    on the scattering matrix approach, which allows the study of large systems at
+    reasonable computational effort with few-channel leads. By computing the Z2 invariant
+    directly for the disordered topological Anderson insulator, we unambiguously identify
+    the topological nature of this phase without resorting to its connection with
+    the clean case. We are able to efficiently compute the Z2 phase diagram in the
+    mass-disorder plane. The topological phase boundaries are found to be well described
+    by the self consistent Born approximation, both for vanishing and finite chemical
+    potential.
+  authors:
+  - Björn Sbierski
+  - Piet W. Brouwer
+  doi: 10.1103/PhysRevB.89.155311
+  id: '1401.7461'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.89.155311
+  on_arxiv: 2014-01-29
+  page: '155311'
+  published: 2014-04-15
+  title: Z2 phase diagram of three-dimensional disordered topological insulator via
+    scattering matrix approach
+  vol: '89'
+- abstract: Many promising building blocks of future electronic technology - including
+    non-stoichiometric compounds, strongly correlated oxides, and strained or patterned
+    films - are inhomogeneous on the nanometer length scale. Exploiting the inhomogeneity
+    of such materials to design next-generation nanodevices requires a band structure
+    probe with nanoscale spatial resolution. To address this demand, we report the
+    first simultaneous observation and quantitative reconciliation of two candidate
+    probes - Landau level spectroscopy and quasiparticle interference imaging - which
+    we employ here to reconstruct the multi-component surface state band structure
+    of the topological semimetal antimony(Sb). We thus establish the technique of
+    band structure tunneling microscopy (BSTM), whose unique advantages include nanoscale
+    access to non-rigid band structure deformation, empty state dispersion, and magnetic
+    field dependent states. We use BSTM to elucidate the relationship between bulk
+    conductivity and surface state robustness in topological materials, and to quantify
+    essential metrics for spintronics applications.
+  authors:
+  - Anjan Soumyanarayanan
+  - Michael M. Yee
+  - Yang He
+  - Hsin Lin
+  - Dillon R. Gardner
+  - Arun Bansil
+  - Young S. Lee
+  - Jennifer E. Hoffman
+  id: '1311.1758'
+  on_arxiv: 2013-11-07
+  title: Imaging the Nanoscale Band Structure of Topological Sb
+- abstract: A direct signature of electron transport at the metallic surface of a
+    topological insulator is the Aharonov-Bohm oscillation observed in a recent study
+    of Bi_2Se_3 nanowires [Peng et al., Nature Mater. 9, 225 (2010)] where conductance
+    was found to oscillate as a function of magnetic flux $\phi$ through the wire,
+    with a period of one flux quantum $\phi_0=h/e$ and maximum conductance at zero
+    flux. This seemingly agrees neither with diffusive theory, which would predict
+    a period of half a flux quantum, nor with ballistic theory, which in the simplest
+    form predicts a period of $\phi_0$ but a minimum at zero flux due to a nontrivial
+    Berry phase in topological insulators. We show how h/e and h/2e flux oscillations
+    of the conductance depend on doping and disorder strength, provide a possible
+    explanation for the experiments, and discuss further experiments that could verify
+    the theory.
+  authors:
+  - J. H. Bardarson
+  - P. W. Brouwer
+  - J. E. Moore
+  doi: 10.1103/PhysRevLett.105.156803
+  id: '1005.3762'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.105.156803
+  on_arxiv: 2010-05-20
+  page: '156803'
+  published: 2010-10-07
+  title: Aharonov-Bohm oscillations in disordered topological insulator nanowires
+  vol: '105'
+- abstract: We present a simple prescription to flatten isolated Bloch bands with
+    non-zero Chern number. We first show that approximate flattening of bands with
+    non-zero Chern number is possible by tuning ratios of nearest-neighbor and next-nearest
+    neighbor hoppings in the Haldane model and, similarly, in the chiral-pi-flux square
+    lattice model. Then we show that perfect flattening can be attained with further
+    range hoppings that decrease exponentially with distance. Finally, we add interactions
+    to the model and present exact diagonalization results for a small system at 1/3
+    filling that support (i) the existence of a spectral gap, (ii) that the ground
+    state is a topological state, and (iii) that the Hall conductance is quantized.
+  authors:
+  - Titus Neupert
+  - Luiz Santos
+  - Claudio Chamon
+  - Christopher Mudry
+  doi: 10.1103/PhysRevLett.106.236804
+  id: '1012.4723'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.106.236804
+  on_arxiv: 2010-12-21
+  page: '236804'
+  published: 2011-06-06
+  title: Fractional quantum Hall states at zero magnetic field
+  vol: '106'
+- abstract: The search for topologically non-trivial states of matter has become an
+    important goal for condensed matter physics. Here, we give a theoretical introduction
+    to the quantum anomalous Hall (QAH) effect based on magnetic topological insulators
+    in two-dimension (2D) and three-dimension (3D). In 2D topological insulators,
+    magnetic order breaks the symmetry between the counter-propagating helical edge
+    states, and as a result, the quantum spin Hall effect can evolve into the QAH
+    effect. In 3D, magnetic order opens up a gap for the topological surface states,
+    and chiral edge state has been predicted to exist on the magnetic domain walls.
+    We present the phase diagram in thin films of a magnetic topological insulator
+    and review the basic mechanism of ferromagnetic order in magnetically doped topological
+    insulators. We also review the recent experimental observation of the QAH effect.
+    We discuss more recent theoretical work on the coexistence of the helical and
+    chiral edge states, multi-channel chiral edge states, the theory of the plateau
+    transition, and the thickness dependence in the QAH effect.
+  authors:
+  - Jing Wang
+  - Biao Lian
+  - Shou-Cheng Zhang
+  doi: 10.1088/0031-8949/2015/T164/014003
+  id: '1409.6715'
+  journal: Phys. Scr.
+  journal_url: http://dx.doi.org/10.1088/0031-8949/2015/t164/014003
+  on_arxiv: 2014-09-23
+  page: '014003'
+  published: 2015-12-01
+  title: Quantum anomalous Hall effect in magnetic topological insulators
+  vol: T164
+- abstract: 'Motivated by new capabilities to realise artificial gauge fields in ultracold
+    atomic systems, and by their potential to access correlated topological phases
+    in lattice systems, we present a new strategy for designing topologically non-trivial
+    band structures. Our approach is simple and direct: it amounts to considering
+    tight-binding models directly in reciprocal space. These models naturally cause
+    atoms to experience highly uniform magnetic flux density and lead to topological
+    bands with very narrow dispersion, without fine-tuning of parameters. Further,
+    our construction immediately yields instances of optical Chern lattices, as well
+    as band structures of higher Chern number, |C|>1.'
+  authors:
+  - N. R. Cooper
+  - R. Moessner
+  doi: 10.1103/PhysRevLett.109.215302
+  id: '1208.4579'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.109.215302
+  on_arxiv: 2012-08-22
+  page: '215302'
+  published: 2012-11-20
+  title: Designing Topological Bands in Reciprocal Space
+  vol: '109'
+- abstract: When electrons are confined in two dimensions and subjected to strong
+    magnetic fields, the Coulomb interactions between them become dominant and can
+    lead to novel states of matter such as fractional quantum Hall liquids. In these
+    liquids electrons linked to magnetic flux quanta form complex composite quasipartices,
+    which are manifested in the quantization of the Hall conductivity as rational
+    fractions of the conductance quantum. The recent experimental discovery of an
+    anomalous integer quantum Hall effect in graphene has opened up a new avenue in
+    the study of correlated 2D electronic systems, in which the interacting electron
+    wavefunctions are those of massless chiral fermions. However, due to the prevailing
+    disorder, graphene has thus far exhibited only weak signatures of correlated electron
+    phenomena, despite concerted experimental efforts and intense theoretical interest.
+    Here, we report the observation of the fractional quantum Hall effect in ultraclean
+    suspended graphene, supporting the existence of strongly correlated electron states
+    in the presence of a magnetic field. In addition, at low carrier density graphene
+    becomes an insulator with an energy gap tunable by magnetic field. These newly
+    discovered quantum states offer the opportunity to study a new state of matter
+    of strongly correlated Dirac fermions in the presence of large magnetic fields.
+  authors:
+  - Kirill I. Bolotin
+  - Fereshte Ghahari
+  - Michael D. Shulman
+  - Horst L. Stormer
+  - Philip Kim
+  doi: 10.1038/nature08582
+  id: '0910.2763'
+  journal: Nature
+  journal_url: http://dx.doi.org/10.1038/nature08582
+  on_arxiv: 2009-10-15
+  page: '196'
+  published: 2009-11-01
+  title: Observation of the Fractional Quantum Hall Effect in Graphene
+  vol: '462'
+- abstract: Non-Abelian anyons--particles whose exchange noncommutatively transforms
+    a system's quantum state--are widely sought for the exotic fundamental physics
+    they harbor as well as for quantum computing applications. There now exist numerous
+    blueprints for stabilizing the simplest type of non-Abelian anyon, defects binding
+    Majorana modes, by judiciously interfacing widely available materials. Following
+    this line of attack, we introduce a device fabricated from conventional fractional
+    quantum Hall states and s-wave superconductors that supports exotic non-Abelian
+    anyons that bind `parafermions', which can be viewed as fractionalized Majorana
+    fermions. We show that these modes can be experimentally identified (and distinguished
+    from Majoranas) using Josephson measurements. We also provide a practical recipe
+    for braiding parafermions and show that they give rise to non-Abelian statistics.
+    Interestingly, braiding in our setup produces a richer set of topologically protected
+    qubit operations when compared to the Majorana case. As a byproduct, we establish
+    a new, experimentally realistic Majorana platform in weakly spin-orbit-coupled
+    materials such as GaAs.
+  authors:
+  - David J. Clarke
+  - Jason Alicea
+  - Kirill Shtengel
+  doi: 10.1038/ncomms2340
+  id: '1204.5479'
+  journal: Nat Commun
+  journal_url: http://dx.doi.org/10.1038/ncomms2340
+  on_arxiv: 2012-04-24
+  page: '1348'
+  published: 2013-12-01
+  title: Exotic non-Abelian anyons from conventional fractional quantum Hall states
+  vol: '4'
+- abstract: We present a comprehensive and self-contained simplified review of the
+    quantum computing scheme of Phys. Rev. Lett. 98, 190504 (2007), which features
+    a 2-D nearest neighbor coupled lattice of qubits, a threshold error rate approaching
+    1%, natural asymmetric and adjustable strength error correction and low overhead
+    arbitrarily long-range logical gates. These features make it by far the best and
+    most practical quantum computing scheme devised to date. We restrict the discussion
+    to direct manipulation of the surface code using the stabilizer formalism, both
+    of which we also briefly review, to make the scheme accessible to a broad audience.
+  authors:
+  - Austin G. Fowler
+  - Ashley M. Stephens
+  - Peter Groszkowski
+  doi: 10.1103/PhysRevA.80.052312
+  id: '0803.0272'
+  journal: Phys. Rev. A
+  journal_url: http://dx.doi.org/10.1103/physreva.80.052312
+  on_arxiv: 2008-03-03
+  page: '052312'
+  published: 2009-11-11
+  title: High threshold universal quantum computation on the surface code
+  vol: '80'
+- abstract: We consider an annular superconductor-insulator-superconductor Josephson-junction,
+    with the insulator being a double layer of electron and holes at Abelian fractional
+    quantum Hall states of identical fillings. When the two superconductors gap out
+    the edge modes, the system has a topological ground state degeneracy in the thermodynamic
+    limit akin to the fractional quantum Hall degeneracy on a torus. In the quasi-one-dimensional
+    limit, where the width of the insulator becomes small, the ground state energies
+    are split. We discuss several implications of the topological degeneracy that
+    survive the crossover to the quasi-one-dimensional limit. In particular, the Josephson
+    effect shows a $2\pi d$-periodicity, where $d$ is the ground state degeneracy
+    in the 2 dimensional limit. We find that at special values of the relative phase
+    between the two superconductors there are protected crossing points in which the
+    degeneracy is not completely lifted. These features occur also if the insulator
+    is a time-reversal-invariant fractional topological insulator. We describe the
+    latter using a construction based on coupled wires. Furthermore, when the superconductors
+    are replaced by systems with an appropriate magnetic order that gap the edges
+    via a spin-flipping backscattering, the Josephson effect is replaced by a spin
+    Josephson effect.
+  authors:
+  - Eran Sagi
+  - Yuval Oreg
+  - Ady Stern
+  - Bertrand I. Halperin
+  doi: 10.1103/PhysRevB.91.245144
+  id: '1502.01665'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.91.245144
+  on_arxiv: 2015-02-05
+  page: '245144'
+  published: 2015-06-19
+  title: Imprint of topological degeneracy in quasi-one-dimensional fractional quantum
+    Hall states
+  vol: '91'
+- abstract: We report the discovery of Weyl semimetal NbAs featuring topological Fermi
+    arc surface states.
+  authors:
+  - Su-Yang Xu
+  - Nasser Alidoust
+  - Ilya Belopolski
+  - Chenglong Zhang
+  - Guang Bian
+  - Tay-Rong Chang
+  - Hao Zheng
+  - Vladimir Strokov
+  - Daniel S. Sanchez
+  - Guoqing Chang
+  - Zhujun Yuan
+  - Daixiang Mou
+  - Yun Wu
+  - Lunan Huang
+  - Chi-Cheng Lee
+  - Shin-Ming Huang
+  - BaoKai Wang
+  - Arun Bansil
+  - Horng-Tay Jeng
+  - Titus Neupert
+  - Adam Kaminski
+  - Hsin Lin
+  - Shuang Jia
+  - M. Zahid Hasan
+  doi: 10.1038/nphys3437
+  id: '1504.01350'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys3437
+  on_arxiv: 2015-04-06
+  page: '748'
+  published: 2015-09-01
+  title: Discovery of a Weyl Fermion semimetal state in NbAs
+  vol: '11'
+- abstract: 'A topological insulator is characterized by a dichotomy between the interior
+    and the edge of a finite system: While the bulk has a non-zero energy gap, the
+    edges are forced to sustain excitations traversing these gaps. Originally proposed
+    for electrons governed by quantum mechanics, it has remained an important open
+    question if the same physics can be observed for systems obeying Newton''s equations
+    of motion. Here, we report on measurements that characterize the collective behavior
+    of mechanical oscillators exhibiting the phenomenology of the quantum spin hall
+    effect. The phononic edge modes are shown to be helical and we demonstrate their
+    topological protection via the stability against imperfections. Our results open
+    the door to the design of topological acoustic meta-materials that can capitalize
+    on the stability of the surfaces phonons as reliable wave guides.'
+  authors:
+  - Roman Süsstrunk
+  - Sebastian D. Huber
+  doi: 10.1126/science.aab0239
+  id: '1503.06808'
+  journal: Science
+  journal_url: http://dx.doi.org/10.1126/science.aab0239
+  on_arxiv: 2015-03-23
+  page: '47'
+  published: 2015-07-03
+  title: Observation of phononic helical edge states in a mechanical 'topological
+    insulator'
+  vol: '349'
+- abstract: We study the effect of electrostatic disorder on the conductivity of a
+    three-dimensional antiferromagnetic insulator (a stack of quantum anomalous Hall
+    layers with staggered magnetization). The phase diagram contains regions where
+    the increase of disorder first causes the appearance of surface conduction (via
+    a topological phase transition), followed by the appearance of bulk conduction
+    (via a metal-insulator transition). The conducting surface states are stabilized
+    by an effective time-reversal symmetry that is broken locally by the disorder
+    but restored on long length scales. A simple self-consistent Born approximation
+    reliably locates the boundaries of this socalled "statistical" topological phase.
+  authors:
+  - P. Baireuther
+  - J. M. Edge
+  - I. C. Fulga
+  - C. W. J. Beenakker
+  - J. Tworzydło
+  doi: 10.1103/PhysRevB.89.035410
+  id: '1309.5846'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.89.035410
+  on_arxiv: 2013-09-23
+  page: '035410'
+  published: 2014-01-09
+  title: Quantum phase transitions of a disordered antiferromagnetic topological insulator
+  vol: '89'
+- abstract: Topological band structures in electronic systems like topological insulators
+    and semimetals give rise to highly unusual physical properties. Analogous topological
+    effects have also been discussed in bosonic systems, but the novel phenomena typically
+    occur only when the system is excited by finite-frequency probes. A mapping recently
+    proposed by Kane and Lubensky [Nat. Phys. 10, 39 (2014)], however, establishes
+    a closer correspondence. It relates the zero-frequency excitations of mechanical
+    systems to topological zero modes of fermions that appear at the edges of an otherwise
+    gapped system. Here we generalize the mapping to systems with an intrinsically
+    gapless bulk. In particular, we construct mechanical counterparts of topological
+    semimetals. The resulting gapless bulk modes are physically distinct from the
+    usual acoustic Goldstone phonons, and appear even in the absence of continuous
+    translation invariance. Moreover, the zero-frequency phonon modes feature adjustable
+    momenta and are topologically protected as long as the lattice coordination is
+    unchanged. Such protected soft modes with tunable wavevector may be useful in
+    designing mechanical structures with fault-tolerant properties.
+  authors:
+  - Hoi Chun Po
+  - Yasaman Bahri
+  - Ashvin Vishwanath
+  doi: 10.1103/PhysRevB.93.205158
+  id: '1410.1320'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.93.205158
+  on_arxiv: 2014-10-06
+  page: '205158'
+  published: 2016-05-31
+  title: Phonon analogue of topological nodal semimetals
+  vol: '93'
+- abstract: 'We show that time-reversal invariant superconductors in d=2 (d=3) dimensions
+    can support topologically stable Fermi points (lines), characterized by an integer
+    topological charge. Combining this with the momentum space symmetries present,
+    we prove analogs of the fermion doubling theorem: for d=2 lattice models admitting
+    a spin X electron-hole structure, the number of Fermi points is a multiple of
+    four, while for d=3, Fermi lines come in pairs. We show two implications of our
+    findings for topological superconductors in d=3: first, we relate the bulk topological
+    invariant to a topological number for the surface Fermi points in the form of
+    an index theorem. Second, we show that the existence of topologically stable Fermi
+    lines results in extended gapless regions in a generic topological superconductor
+    phase diagram.'
+  authors:
+  - B. Béri
+  doi: 10.1103/PhysRevB.81.134515
+  id: '0909.5680'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.81.134515
+  on_arxiv: 2009-09-30
+  page: '134515'
+  published: 2010-04-14
+  title: Topologically stable gapless phases of time-reversal invariant superconductors
+  vol: '81'
+- abstract: Frames, or lattices consisting of mass points connected by rigid bonds
+    or central force springs, are important model constructs that have applications
+    in such diverse fields as structural engineering, architecture, and materials
+    science. The difference between the number of bonds and the number of degrees
+    of freedom of these lattices determines the number of their zero-frequency "floppy
+    modes". When these are balanced, the system is on the verge of mechanical instability
+    and is termed isostatic. It has recently been shown that certain extended isostatic
+    lattices exhibit floppy modes localized at their boundary. These boundary modes
+    are insensitive to local perturbations, and appear to have a topological origin,
+    reminiscent of the protected electronic boundary modes that occur in the quantum
+    Hall effect and in topological insulators. In this paper we establish the connection
+    between the topological mechanical modes and the topological band theory of electronic
+    systems, and we predict the existence of new topological bulk mechanical phases
+    with distinct boundary modes. We introduce model systems in one and two dimensions
+    that exemplify this phenomenon.
+  authors:
+  - C. L. Kane
+  - T. C. Lubensky
+  doi: 10.1038/nphys2835
+  id: '1308.0554'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys2835
+  on_arxiv: 2013-08-02
+  page: '39'
+  published: 2014-01-01
+  title: Topological Boundary Modes in Isostatic Lattices
+  vol: '10'
+- abstract: Networks of rigid bars connected by joints, termed linkages, provide a
+    minimal framework to design robotic arms and mechanical metamaterials built out
+    of folding components. Here, we investigate a chain-like linkage that, according
+    to linear elasticity, behaves like a topological mechanical insulator whose zero-energy
+    modes are localized at the edge. Simple experiments we performed using prototypes
+    of the chain vividly illustrate how the soft motion, initially localized at the
+    edge, can in fact propagate unobstructed all the way to the opposite end. We demonstrate
+    using real prototypes, simulations and analytical models that the chain is a mechanical
+    conductor, whose carriers are nonlinear solitary waves, not captured within linear
+    elasticity. Indeed, the linkage prototype can be regarded as the simplest example
+    of a topological metamaterial whose protected mechanical excitations are solitons,
+    moving domain walls between distinct topological mechanical phases. More practically,
+    we have built a topologically protected mechanism that can perform basic tasks
+    such as transporting a mechanical state from one location to another. Our work
+    paves the way towards adopting the principle of topological robustness in the
+    design of robots assembled from activated linkages as well as in the fabrication
+    of complex molecular nanostructures.
+  authors:
+  - Bryan Gin-ge Chen
+  - Nitin Upadhyaya
+  - Vincenzo Vitelli
+  doi: 10.1073/pnas.1405969111
+  id: '1404.2263'
+  journal: Proceedings of the National Academy of Sciences
+  journal_url: http://dx.doi.org/10.1073/pnas.1405969111
+  on_arxiv: 2014-04-08
+  page: '13004'
+  published: 2014-09-09
+  title: Nonlinear conduction via solitons in a topological mechanical insulator
+  vol: '111'
+- abstract: 'Mechanical metamaterials are artificial structures with unusual properties,
+    such as negative Poisson ratio, bistability or tunable vibrational properties,
+    that originate in the geometry of their unit cell. At the heart of such unusual
+    behaviour is often a soft mode: a motion that does not significantly stretch or
+    compress the links between constituent elements. When activated by motors or external
+    fields, soft modes become the building blocks of robots and smart materials. Here,
+    we demonstrate the existence of topological soft modes that can be positioned
+    at desired locations in a metamaterial while being robust against a wide range
+    of structural deformations or changes in material parameters. These protected
+    modes, localized at dislocations, are the mechanical analogue of topological states
+    bound to defects in electronic systems. We create physical realizations of the
+    topological modes in prototypes of kagome lattices built out of rigid triangular
+    plates. We show mathematically that they originate from the interplay between
+    two Berry phases: the Burgers vector of the dislocation and the topological polarization
+    of the lattice. Our work paves the way towards engineering topologically protected
+    nano-mechanical structures for molecular robotics or information storage and read-out.'
+  authors:
+  - Jayson Paulose
+  - Bryan Gin-ge Chen
+  - Vincenzo Vitelli
+  doi: 10.1038/nphys3185
+  id: '1406.3323'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys3185
+  on_arxiv: 2014-06-12
+  page: '153'
+  published: 2015-02-01
+  title: Topological modes bound to dislocations in mechanical metamaterials
+  vol: '11'
+- abstract: States of self-stress, tensions and compressions of structural elements
+    that result in zero net forces, play an important role in determining the load-bearing
+    ability of structures ranging from bridges to metamaterials with tunable mechanical
+    properties. We exploit a class of recently introduced states of self-stress analogous
+    to topological quantum states to sculpt localized buckling regions in the interior
+    of periodic cellular metamaterials. Although the topological states of self stress
+    arise in the linear response of an idealized mechanical frame of harmonic springs
+    connected by freely-hinged joints, they leave a distinct signature in the nonlinear
+    buckling behaviour of a cellular material built out of elastic beams with rigid
+    joints. The salient feature of these localized buckling regions is that they are
+    indistinguishable from their surroundings as far as material parameters or connectivity
+    of their constituent elements are concerned. Furthermore, they are robust against
+    a wide range of structural perturbations. We demonstrate the effectiveness of
+    this topological design through analytical and numerical calculations as well
+    as buckling experiments performed on two- and three-dimensional metamaterials
+    built out of stacked kagome lattices.
+  authors:
+  - Jayson Paulose
+  - Anne S. Meeussen
+  - Vincenzo Vitelli
+  doi: 10.1073/pnas.1502939112
+  id: '1502.03396'
+  journal: Proc Natl Acad Sci USA
+  journal_url: http://dx.doi.org/10.1073/pnas.1502939112
+  on_arxiv: 2015-02-11
+  page: '7639'
+  published: 2015-06-23
+  title: Selective buckling via states of self-stress in topological metamaterials
+  vol: '112'
+- abstract: Topological insulators (TIs) are a novel class of materials with nontrivial
+    surface or edge states. Time-reversal symmetry (TRS) protected TIs are characterized
+    by the Z2 topological invariant and their helical property becomes lost in an
+    applied magnetic field. Currently there exist extensive efforts searching for
+    TIs that are protected by symmetries other than TRS. Here we show, a topological
+    phase characterized by a spin Chern topological invariant is realized in an inverted
+    electron-hole bilayer engineered from indium arsenide-gallium antimonide (InAs/GaSb)
+    semiconductors which retains robust helical edges under a strong magnetic field.
+    Wide conductance plateaus of 2e2/h value are observed; they persist to 12T applied
+    in-plane magnetic field without evidence for transition to a trivial insulator.
+    In a perpendicular magnetic field up to 8T, there exists no signature to the bulk
+    gap closing. While the Fermi energy remains inside the bulk gap, the longitudinal
+    conductance increases from 2e2/h in strong magnetic fields suggesting a trend
+    towards chiral edge transport. Our findings are first evidences for a quantum
+    spin Hall (QSH) insulator protected by a spin Chern invariant. These results demonstrate
+    that InAs/GaSb bilayers are a novel system for engineering the robust helical
+    edge channels much needed for spintronics and for creating and manipulating Majorana
+    particles in solid state.
+  authors:
+  - Lingjie Du
+  - Ivan Knez
+  - Gerard Sullivan
+  - Rui-Rui Du
+  doi: 10.1103/PhysRevLett.114.096802
+  id: '1306.1925'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.114.096802
+  on_arxiv: 2013-06-08
+  page: 096802
+  published: 2015-03-04
+  title: Observation of Quantum Spin Hall States in InAs/GaSb Bilayers under Broken
+    Time-Reversal Symmetry
+  vol: '114'
+- abstract: We propose and analyze inter-edge tunneling in a quantum spin Hall corner
+    junction as a means to probe the helical nature of the edge states. We show that
+    electron-electron interactions in the one-dimensional helical edge states result
+    in Luttinger parameters for spin and charge that are intertwined, and thus rather
+    different than those for a quantum wire with spin rotation invariance. Consequently,
+    we find that the four-terminal conductance in a corner junction has a distinctive
+    form that could be used as evidence for the helical nature of the edge states.
+  authors:
+  - Chang-Yu Hou
+  - Eun-Ah Kim
+  - Claudio Chamon
+  doi: 10.1103/PhysRevLett.102.076602
+  id: '0808.1723'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.102.076602
+  on_arxiv: 2008-08-13
+  page: '076602'
+  published: 2009-02-17
+  title: Corner Junction as a Probe of Helical Edge States
+  vol: '102'
+- abstract: The 2007 discovery of quantized conductance in HgTe quantum wells delivered
+    the field of topological insulators (TIs) its first experimental confirmation.
+    While many three-dimensional TIs have since been identified, HgTe remains the
+    only known two-dimensional system in this class. Difficulty fabricating HgTe quantum
+    wells has, moreover, hampered their widespread use. With the goal of breaking
+    this logjam we provide a blueprint for stabilizing a robust TI state in a more
+    readily available two-dimensional material---graphene. Using symmetry arguments,
+    density functional theory, and tight-binding simulations, we predict that graphene
+    endowed with certain heavy adatoms realizes a TI with substantial band gap. For
+    indium and thallium, our most promising adatom candidates, a modest 6% coverage
+    produces an estimated gap near 80K and 240K, respectively, which should be detectable
+    in transport or spectroscopic measurements. Engineering such a robust topological
+    phase in graphene could pave the way for a new generation of devices for spintronics,
+    ultra-low-dissipation electronics and quantum information processing.
+  authors:
+  - Conan Weeks
+  - Jun Hu
+  - Jason Alicea
+  - Marcel Franz
+  - Ruqian Wu
+  id: '1104.3282'
+  on_arxiv: 2011-04-17
+  title: Engineering a robust quantum spin Hall state in graphene via adatom deposition
+- abstract: Topological insulators are a newly discovered phase of matter characterized
+    by a gapped bulk surrounded by novel conducting boundary states. Since their theoretical
+    discovery, these materials have encouraged intense efforts to study their properties
+    and capabilities. Among the most striking results of this activity are proposals
+    to engineer a new variety of superconductor at the surfaces of topological insulators.
+    These topological superconductors would be capable of supporting localized Majorana
+    fermions, particles whose braiding properties have been proposed as the basis
+    of a fault-tolerant quantum computer. Despite the clear theoretical motivation,
+    a conclusive realization of topological superconductivity remains an outstanding
+    experimental goal. Here we present measurements of superconductivity induced in
+    two-dimensional HgTe/HgCdTe quantum wells, a material which becomes a quantum
+    spin Hall insulator when the well width exceeds d_{C}=6.3 nm. In wells that are
+    7.5 nm wide, we find that supercurrents are confined to the one-dimensional sample
+    edges as the bulk density is depleted. However, when the well width is decreased
+    to 4.5 nm the edge supercurrents cannot be distinguished from those in the bulk.
+    These results provide evidence for superconductivity induced in the helical edges
+    of the quantum spin Hall effect, a promising step toward the demonstration of
+    one-dimensional topological superconductivity. Our results also provide a direct
+    measurement of the widths of these edge channels, which range from 180 nm to 408
+    nm.
+  authors:
+  - Sean Hart
+  - Hechen Ren
+  - Timo Wagner
+  - Philipp Leubner
+  - Mathias Mühlbauer
+  - Christoph Brüne
+  - Hartmut Buhmann
+  - Laurens W. Molenkamp
+  - Amir Yacoby
+  doi: 10.1038/nphys3036
+  id: '1312.2559'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys3036
+  on_arxiv: 2013-12-09
+  page: '638'
+  published: 2014-09-01
+  title: Induced Superconductivity in the Quantum Spin Hall Edge
+  vol: '10'
+- abstract: We study the influence of electron puddles created by doping of a 2D topological
+    insulator on its helical edge conductance. A single puddle is modeled by a quantum
+    dot tunnel-coupled to the helical edge. It may lead to significant inelastic backscattering
+    within the edge because of the long electron dwelling time in the dot. We find
+    the resulting correction to the perfect edge conductance. Generalizing to multiple
+    puddles, we assess the dependence of the helical edge resistance on temperature
+    and doping level, and compare it with recent experimental data.
+  authors:
+  - Jukka I. Väyrynen
+  - Moshe Goldstein
+  - Leonid I. Glazman
+  doi: 10.1103/PhysRevLett.110.216402
+  id: '1303.1766'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.110.216402
+  on_arxiv: 2013-03-07
+  page: '216402'
+  published: 2013-05-21
+  title: Helical edge resistance introduced by charge puddles
+  vol: '110'
+- abstract: Certain band insulators allow for the adiabatic pumping of quantized charge
+    or spin for special time-dependences of the Hamiltonian. These "topological pumps"
+    are closely related to two dimensional topological insulating phases of matter
+    upon rolling the insulator up to a cylinder and threading it with a time dependent
+    flux. In this article we extend the classification of topological pumps to the
+    Wigner Dyson and chiral classes, coupled to multi-channel leads. The topological
+    index distinguishing different topological classes is formulated in terms of the
+    scattering matrix of the system. We argue that similar to topologically non-trivial
+    insulators, topological pumps are characterized by the appearance of protected
+    gapless end states during the course of a pumping cycle. We show that this property
+    allows for the pumping of quantized charge or spin in the weak coupling limit.
+    Our results may also be applied to two dimensional topological insulators, where
+    they give a physically transparent interpretation of the topologically non-trivial
+    phases in terms of scattering matrices.
+  authors:
+  - Dganit Meidan
+  - Tobias Micklitz
+  - Piet W. Brouwer
+  doi: 10.1103/PhysRevB.84.195410
+  id: '1107.2215'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.84.195410
+  on_arxiv: 2011-07-12
+  page: '195410'
+  published: 2011-11-02
+  title: Topological classification of adiabatic processes
+  vol: '84'
+- abstract: We study junctions between superconductors mediated by the edge states
+    of a quantum spin Hall insulator. We show that such junctions exhibit a fractional
+    Josephson effect, in which the current phase relation has a 4\pi, rather than
+    a 2\pi periodicity. This effect is a consequence of the conservation of fermion
+    parity - the number of electrons modulo 2 - in a superconducting junction, and
+    is closely related to the Z_2 topological structure of the quantum spin Hall insulator.
+    Inelastic processes, which violate the conservation of fermion parity, lead to
+    telegraph noise in the equilibrium supercurrent. We predict that the low frequency
+    noise due these processes diverges exponentially with temperature T as T -> 0.
+    Possible experiments on HgCdTe quantum wells will be discussed.
+  authors:
+  - Liang Fu
+  - C. L. Kane
+  doi: 10.1103/PhysRevB.79.161408
+  id: '0804.4469'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.79.161408
+  on_arxiv: 2008-04-28
+  page: '161408'
+  published: 2009-04-28
+  title: Josephson Current and Noise at a Superconductor-Quantum Spin Hall Insulator-Superconductor
+    Junction
+  vol: '79'
+- abstract: We study the proximity effect between an s-wave superconductor and the
+    surface states of a strong topological insulator. The resulting two dimensional
+    state resembles a spinless p_x+ip_y superconductor, but does not break time reversal
+    symmetry. This state supports Majorana bound states at vortices. We show that
+    linear junctions between superconductors mediated by the topological insulator
+    form a non chiral 1 dimensional wire for Majorana fermions, and that circuits
+    formed from these junctions provide a method for creating, manipulating and fusing
+    Majorana bound states.
+  authors:
+  - Liang Fu
+  - C. L. Kane
+  doi: 10.1103/PhysRevLett.100.096407
+  id: '0707.1692'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.100.096407
+  on_arxiv: 2007-07-11
+  page: 096407
+  published: 2008-03-06
+  title: Superconducting proximity effect and Majorana fermions at the surface of
+    a topological insulator
+  vol: '100'
+- abstract: Topological insulators are characterized by an insulating bulk with a
+    finite band gap and conducting edge or surface states, where charge carriers are
+    protected against backscattering. These states give rise to the quantum spin Hall
+    effect without an external magnetic field, where electrons with opposite spins
+    have opposite momentum at a given edge. The surface energy spectrum of a threedimensional
+    topological insulator is made up by an odd number of Dirac cones with the spin
+    locked to the momentum. The long-sought yet elusive Majorana fermion is predicted
+    to arise from a combination of a superconductor and a topological insulator. An
+    essential step in the hunt for this emergent particle is the unequivocal observation
+    of supercurrent in a topological phase. Here, we present the first measurement
+    of a Josephson supercurrent through a topological insulator. Direct evidence for
+    Josephson supercurrents in superconductor (Nb) - topological insulator (Bi2Te3)
+    - superconductor e-beam fabricated junctions is provided by the observation of
+    clear Shapiro steps under microwave irradiation, and a Fraunhofer-type dependence
+    of the critical current on magnetic field. The dependence of the critical current
+    on temperature and length shows that the junctions are in the ballistic limit.
+    Shubnikov-de Haas oscillations in magnetic fields up to 30 T reveal a topologically
+    non-trivial two-dimensional surface state. We argue that the ballistic Josephson
+    current is hosted by this surface state despite the fact that the normal state
+    transport is dominated by diffusive bulk conductivity. The lateral Nb-Bi2Te3-Nb
+    junctions hence provide prospects for the realization of devices supporting Majorana
+    fermions.
+  authors:
+  - M. Veldhorst
+  - M. Snelder
+  - M. Hoek
+  - T. Gang
+  - X. L. Wang
+  - V. K. Guduru
+  - U. Zeitler
+  - W. G. v. d. Wiel
+  - A. A. Golubov
+  - H. Hilgenkamp
+  - A. Brinkman
+  doi: 10.1038/nmat3255
+  id: '1112.3527'
+  journal: Nature Mater
+  journal_url: http://dx.doi.org/10.1038/nmat3255
+  on_arxiv: 2011-12-15
+  page: '417'
+  published: 2012-05-01
+  title: Josephson supercurrent through a topological insulator surface state
+  vol: '11'
+- abstract: We prove a topological criterion for the existence of zero-energy Majorana
+    bound-state on a disclination, a rotation symmetry breaking point defect, in 4-fold
+    symmetric topological crystalline superconductors (TCS). We first establish a
+    complete topological classification of TCS using the Chern invariant and three
+    integral rotation invariants. By analytically and numerically studying disclinations,
+    we algebraically deduce a Z_2-index that identifies the parity of the number of
+    Majorana zero-modes at a disclination. Surprisingly, we also find weakly-protected
+    Majorana fermions bound at the corners of superconductors with trivial Chern and
+    weak invariants.
+  authors:
+  - Jeffrey C. Y. Teo
+  - Taylor L. Hughes
+  doi: 10.1103/PhysRevLett.111.047006
+  id: '1208.6303'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.111.047006
+  on_arxiv: 2012-08-30
+  page: '047006'
+  published: 2013-07-26
+  title: Majorana Fermions and Disclinations in Topological Crystalline Superconductors
+  vol: '111'
+- abstract: Three-dimensional topological insulators are classified into "strong"
+    (STI) and "weak" (WTI) according to the nature of their surface states. While
+    the surface states of the STI are topologically protected from localization, this
+    does not hold for the WTI. In this work we show that the surface states of the
+    WTI are actually protected from any random perturbation that does not break time-reversal
+    symmetry, and does not close the bulk energy gap. Consequently, the conductivity
+    of metallic surfaces in the clean system remains finite even in the presence of
+    strong disorder of this type. In the weak disorder limit the surfaces are found
+    to be perfect metals, and strong surface disorder only acts to push the metallic
+    surfaces inwards. We find that the WTI differs from the STI primarily in its anisotropy,
+    and that the anisotropy is not a sign of its weakness but rather of its richness.
+  authors:
+  - Zohar Ringel
+  - Yaacov E. Kraus
+  - Ady Stern
+  doi: 10.1103/PhysRevB.86.045102
+  id: '1105.4351'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.86.045102
+  on_arxiv: 2011-05-22
+  page: '045102'
+  published: 2012-07-02
+  title: The strong side of weak topological insulators
+  vol: '86'
+- abstract: 'The unrelated discoveries of quasicrystals and topological insulators
+    have in turn challenged prevailing paradigms in condensed-matter physics. We find
+    a surprising connection between quasicrystals and topological phases of matter:
+    (i) quasicrystals exhibit nontrivial topological properties and (ii) these properties
+    are attributed to dimensions higher than that of the quasicrystal. Specifically,
+    we show, both theoretically and experimentally, that one-dimensional quasicrystals
+    are assigned two-dimensional Chern numbers and, respectively, exhibit topologically
+    protected boundary states equivalent to the edge states of a two-dimensional quantum
+    Hall system.We harness the topological nature of these states to adiabatically
+    pump light across the quasicrystal. We generalize our results to higher-dimensional
+    systems and other topological indices. Hence, quasicrystals offer a new platform
+    for the study of topological phases while their topology may better explain their
+    surface properties.'
+  authors:
+  - Yaacov E. Kraus
+  - Yoav Lahini
+  - Zohar Ringel
+  - Mor Verbin
+  - Oded Zilberberg
+  doi: 10.1103/PhysRevLett.109.106402
+  id: '1109.5983'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.109.106402
+  on_arxiv: 2011-09-27
+  page: '106402'
+  published: 2012-09-04
+  title: Topological States and Adiabatic Pumping in Quasicrystals
+  vol: '109'
+- abstract: Electron edge states in graphene in the Quantum Hall effect regime can
+    carry both charge and spin. We show that spin splitting of the zeroth Landau level
+    gives rise to counterpropagating modes with opposite spin polarization. These
+    chiral spin modes lead to a rich variety of spin current states, depending on
+    the spin flip rate. A method to control the latter locally is proposed. We estimate
+    Zeeman spin splitting enhanced by exchange, and obtain a spin gap of a few hundred
+    Kelvin.
+  authors:
+  - D. A. Abanin
+  - P. A. Lee
+  - L. S. Levitov
+  doi: 10.1103/PhysRevLett.96.176803
+  id: cond-mat/0602645
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.96.176803
+  on_arxiv: 2006-02-27
+  page: '176803'
+  published: 2006-05-03
+  title: Spin Filtered Edge States and Quantum Hall Effect in Graphene
+  vol: '96'
+- abstract: In a graphene Landau level (LL), strong Coulomb interactions and the fourfold
+    spin/valley degeneracy lead to an approximate SU(4) isospin symmetry. At partial
+    filling, exchange interactions can spontaneously break this symmetry, manifesting
+    as additional integer quantum Hall plateaus outside the normal sequence. Here
+    we report the observation of a large number of these quantum Hall isospin ferromagnetic
+    (QHIFM) states, which we classify according to their real spin structure using
+    temperature-dependent tilted field magnetotransport. The large measured activation
+    gaps confirm the Coulomb origin of the broken symmetry states, but the order is
+    strongly dependent on LL index. In the high energy LLs, the Zeeman effect is the
+    dominant aligning field, leading to real spin ferromagnets with Skyrmionic excitations
+    at half filling, whereas in the `relativistic' zero energy LL, lattice scale anisotropies
+    drive the system to a spin unpolarized state, likely a charge- or spin-density
+    wave.
+  authors:
+  - Andrea F. Young
+  - Cory R. Dean
+  - Lei Wang
+  - Hechen Ren
+  - Paul Cadden-Zimansky
+  - Kenji Watanabe
+  - Takashi Taniguchi
+  - James Hone
+  - Kenneth L. Shepard
+  - Philip Kim
+  doi: 10.1038/nphys2307
+  id: '1201.4167'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys2307
+  on_arxiv: 2012-01-19
+  page: '550'
+  published: 2012-07-01
+  title: Spin and valley quantum Hall ferromagnetism in graphene
+  vol: '8'
+- abstract: We have determined the finite temperature coherence length of edge states
+    in the Integer Quantum Hall Effect (IQHE) regime. This was realized by measuring
+    the visibility of electronic Mach-Zehnder interferometers of different sizes,
+    at filling factor 2. The visibility shows an exponential decay with the temperature.
+    The characteristic temperature scale is found inversely proportional to the length
+    of the interferometer arm, allowing to define a coherence length $\l_\phi$. The
+    variations of $\l_\phi$ with magnetic field are the same for all samples, with
+    a maximum located at the upper end of the quantum hall plateau. Our results provide
+    the first accurate determination of $\l_\phi$ in the quantum Hall regime.
+  authors:
+  - P. Roulleau
+  - F. Portier
+  - P. Roche
+  - A. Cavanna
+  - G. Faini
+  - U. Gennser
+  - D. Mailly
+  doi: 10.1103/PhysRevLett.100.126802
+  id: '0710.2806'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.100.126802
+  on_arxiv: 2007-10-15
+  page: '126802'
+  published: 2008-03-25
+  title: Direct measurement of the coherence length of edge states in the Integer
+    Quantum Hall Regime
+  vol: '100'
+- abstract: We investigate the effects that a tilting of the magnetic field from the
+    parallel direction has on the states of a 1D Majorana nanowire. Particularly,
+    we focus on the conditions for the existence of Majorana zero modes, uncovering
+    an analytical relation (the sine rule) between the field orientation relative
+    to the wire, its magnitude and the superconducting parameter of the material.
+    The study is then extended to junctions of nanowires, treated as magnetically
+    inhomogeneous straight nanowires composed of two homogeneous arms. It is shown
+    that their spectrum can be explained in terms of the spectra of two independent
+    arms. Finally, we investigate how the localization of the Majorana mode is transferred
+    from the magnetic interface at the corner of the junction to the end of the nanowire
+    when increasing the arm length.
+  authors:
+  - Javier Osca
+  - Daniel Ruiz
+  - Llorenç Serra
+  doi: 10.1103/PhysRevB.89.245405
+  id: '1403.4464'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.89.245405
+  on_arxiv: 2014-03-18
+  page: '245405'
+  published: 2014-06-05
+  title: Effects of tilting the magnetic field in 1D Majorana nanowires
+  vol: '89'
+- abstract: We investigate Josephson currents in mesoscopic rings with a weak link
+    which are in or near a topological superconducting phase. As a paradigmatic example,
+    we consider the Kitaev model of a spinless p-wave superconductor in one dimension,
+    emphasizing how this model emerges from more realistic settings based on semiconductor
+    nanowires. We show that the flux periodicity of the Josephson current provides
+    signatures of the topological phase transition and the emergence of Majorana fermions
+    situated on both sides of the weak link even when fermion parity is not a good
+    quantum number. In large rings, the Majorana fermions hybridize only across the
+    weak link. In this case, the Josephson current is h/e periodic in the flux threading
+    the loop when fermion parity is a good quantum number but reverts to the more
+    conventional h/2e periodicity in the presence of fermion-parity changing relaxation
+    processes. In mesoscopic rings, the Majorana fermions also hybridize through their
+    overlap in the interior of the superconducting ring. We find that in the topological
+    superconducting phase, this gives rise to an h/e-periodic contribution even when
+    fermion parity is not conserved and that this contribution exhibits a peak near
+    the topological phase transition. This signature of the topological phase transition
+    is robust to the effects of disorder. As a byproduct, we find that close to the
+    topological phase transition, disorder drives the system deeper into the topological
+    phase. This is in stark contrast to the known behavior far from the phase transition,
+    where disorder tends to suppress the topological phase.
+  authors:
+  - Falko Pientka
+  - Alessandro Romito
+  - Mathias Duckheim
+  - Yuval Oreg
+  - Felix von Oppen
+  doi: 10.1088/1367-2630/15/2/025001
+  id: '1210.3237'
+  journal: New J. Phys.
+  journal_url: http://dx.doi.org/10.1088/1367-2630/15/2/025001
+  on_arxiv: 2012-10-11
+  page: '025001'
+  published: 2013-02-01
+  title: Signatures of topological phase transitions in mesoscopic superconducting
+    rings
+  vol: '15'
+- abstract: Majorana fermions are particles identical to their own antiparticles.
+    They have been theoretically predicted to exist in topological superconductors.
+    We report electrical measurements on InSb nanowires contacted with one normal
+    (Au) and one superconducting electrode (NbTiN). Gate voltages vary electron density
+    and define a tunnel barrier between normal and superconducting contacts. In the
+    presence of magnetic fields of order 100 mT we observe bound, mid-gap states at
+    zero bias voltage. These bound states remain fixed to zero bias even when magnetic
+    fields and gate voltages are changed over considerable ranges. Our observations
+    support the hypothesis of Majorana fermions in nanowires coupled to superconductors.
+  authors:
+  - V. Mourik
+  - K. Zuo
+  - S. M. Frolov
+  - S. R. Plissard
+  - E. P. A. M. Bakkers
+  - L. P. Kouwenhoven
+  doi: 10.1126/science.1222360
+  id: '1204.2792'
+  journal: Science
+  journal_url: http://dx.doi.org/10.1126/science.1222360
+  on_arxiv: 2012-04-12
+  page: '1003'
+  published: 2012-05-25
+  title: Signatures of Majorana fermions in hybrid superconductor-semiconductor nanowire
+    devices
+  vol: '336'
+- abstract: We calculate the conductance of a ballistic point contact to a superconducting
+    wire, produced by the s-wave proximity effect in a semiconductor with spin-orbit
+    coupling in a parallel magnetic field. The conductance G as a function of contact
+    width or Fermi energy shows plateaus at half-integer multiples of 4e^2/h if the
+    superconductor is in a topologically nontrivial phase. In contrast, the plateaus
+    are at the usual integer multiples in the topologically trivial phase. Disorder
+    destroys all plateaus except the first, which remains precisely quantized, consistent
+    with previous results for a tunnel contact. The advantage of a ballistic contact
+    over a tunnel contact as a probe of the topological phase is the strongly reduced
+    sensitivity to finite voltage or temperature.
+  authors:
+  - M. Wimmer
+  - A. R. Akhmerov
+  - J. P. Dahlhaus
+  - C. W. J. Beenakker
+  doi: 10.1088/1367-2630/13/5/053016
+  id: '1101.5795'
+  journal: New J. Phys.
+  journal_url: http://dx.doi.org/10.1088/1367-2630/13/5/053016
+  on_arxiv: 2011-01-30
+  page: '053016'
+  published: 2011-05-12
+  title: Quantum point contact as a probe of a topological superconductor
+  vol: '13'
+- abstract: Topological quantum computation provides an elegant way around decoherence,
+    as one encodes quantum information in a non-local fashion that the environment
+    finds difficult to corrupt. Here we establish that one of the key operations---braiding
+    of non-Abelian anyons---can be implemented in one-dimensional semiconductor wire
+    networks. Previous work [Lutchyn et al., arXiv:1002.4033 and Oreg et al., arXiv:1003.1145]
+    provided a recipe for driving semiconducting wires into a topological phase supporting
+    long-sought particles known as Majorana fermions that can store topologically
+    protected quantum information. Majorana fermions in this setting can be transported,
+    created, and fused by applying locally tunable gates to the wire. More importantly,
+    we show that networks of such wires allow braiding of Majorana fermions and that
+    they exhibit non-Abelian statistics like vortices in a p+ip superconductor. We
+    propose experimental setups that enable the Majorana fusion rules to be probed,
+    along with networks that allow for efficient exchange of arbitrary numbers of
+    Majorana fermions. This work paves a new path forward in topological quantum computation
+    that benefits from physical transparency and experimental realism.
+  authors:
+  - Jason Alicea
+  - Yuval Oreg
+  - Gil Refael
+  - Felix von Oppen
+  - Matthew P. A. Fisher
+  doi: 10.1038/nphys1915
+  id: '1006.4395'
+  journal: Nature Phys
+  journal_url: http://dx.doi.org/10.1038/nphys1915
+  on_arxiv: 2010-06-23
+  page: '412'
+  published: 2011-05-01
+  title: Non-Abelian statistics and topological quantum information processing in
+    1D wire networks
+  vol: '7'
+- abstract: We study multiband semiconducting nanowires proximity-coupled with an
+    s-wave superconductor. We show that when odd number of subbands are occupied the
+    system realizes non-trivial topological state supporting Majorana modes localized
+    at the ends. We study the topological quantum phase transition in this system
+    and analytically calculate the phase diagram as a function of the chemical potential
+    and magnetic field. Our key finding is that multiband occupancy not only lifts
+    the stringent constraint of one-dimensionality but also allows to have higher
+    carrier density in the nanowire and as such multisubband nanowires are better-suited
+    for observing the Majorana particle. We study the robustness of the topological
+    phase by including the effects of the short- and long-range disorder. We show
+    that in the limit of strong interband mixing there is an optimal regime in the
+    phase diagram ("sweet spot") where the topological state is to a large extent
+    insensitive to the presence of disorder.
+  authors:
+  - Roman M. Lutchyn
+  - Tudor Stanescu
+  - S. Das Sarma
+  doi: 10.1103/PhysRevLett.106.127001
+  id: '1008.0629'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.106.127001
+  on_arxiv: 2010-08-03
+  page: '127001'
+  published: 2011-03-21
+  title: Search for Majorana fermions in multiband semiconducting nanowires
+  vol: '106'
+- abstract: We introduce a strong-disorder renormalization group (RG) approach suitable
+    for investigating the quasiparticle excitations of disordered superconductors
+    in which the quasiparticle spin is not conserved. We analyze one-dimensional models
+    with this RG and with elementary transfer matrix methods. We find that such models
+    with broken spin rotation invariance {\it generically} lie in one of two topologically
+    distinct localized phases. Close enough to the critical point separating the two
+    phases, the system has a power-law divergent low-energy density of states (with
+    a non-universal continuously varying power-law) in either phase, due to quantum
+    Griffiths singularities. This critical point belongs to the same infinite-disorder
+    universality class as the one dimensional particle-hole symmetric Anderson localization
+    problem, while the Griffiths phases in the vicinity of the transition are controlled
+    by lines of strong (but not infinite) disorder fixed points terminating in the
+    critical point.
+  authors:
+  - Olexei Motrunich
+  - Kedar Damle
+  - David A. Huse
+  doi: 10.1103/PhysRevB.63.224204
+  id: cond-mat/0011200
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.63.224204
+  on_arxiv: 2000-11-11
+  page: '224204'
+  published: 2001-05-22
+  title: 'Griffiths effects and quantum critical points in dirty superconductors without
+    spin-rotation invariance: One-dimensional examples'
+  vol: '63'
+- abstract: We present an effective medium theory that explains the disorder-induced
+    transition into a phase of quantized conductance, discovered in computer simulations
+    of HgTe quantum wells. It is the combination of a random potential and quadratic
+    corrections proportional to p^2 sigma_z to the Dirac Hamiltonian that can drive
+    an ordinary band insulator into a topological insulator (having an inverted band
+    gap). We calculate the location of the phase boundary at weak disorder and show
+    that it corresponds to the crossing of a band edge rather than a mobility edge.
+    Our mechanism for the formation of a topological Anderson insulator is generic,
+    and would apply as well to three-dimensional semiconductors with strong spin-orbit
+    coupling.
+  authors:
+  - C. W. Groth
+  - M. Wimmer
+  - A. R. Akhmerov
+  - J. Tworzydło
+  - C. W. J. Beenakker
+  doi: 10.1103/PhysRevLett.103.196805
+  id: '0908.0881'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.103.196805
+  on_arxiv: 2009-08-06
+  page: '196805'
+  published: 2009-11-06
+  title: Theory of the topological Anderson insulator
+  vol: '103'
+- abstract: We numerically calculate the conductivity $\sigma$ of an undoped graphene
+    sheet (size $L$) in the limit of vanishingly small lattice constant. We demonstrate
+    one-parameter scaling for random impurity scattering and determine the scaling
+    function $\beta(\sigma)=d\ln\sigma/d\ln L$. Contrary to a recent prediction, the
+    scaling flow has no fixed point ($\beta>0$) for conductivities up to and beyond
+    the symplectic metal-insulator transition. Instead, the data supports an alternative
+    scaling flow for which the conductivity at the Dirac point increases logarithmically
+    with sample size in the absence of intervalley scattering -- without reaching
+    a scale-invariant limit.
+  authors:
+  - J. H. Bardarson
+  - J. Tworzydło
+  - P. W. Brouwer
+  - C. W. J. Beenakker
+  doi: 10.1103/PhysRevLett.99.106801
+  id: '0705.0886'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.99.106801
+  on_arxiv: 2007-05-07
+  page: '106801'
+  published: 2007-09-05
+  title: Demonstration of one-parameter scaling at the Dirac point in graphene
+  vol: '99'
+- abstract: The beta function of a two-dimensional massless Dirac Hamiltonian subject
+    to a random scalar potential, which e.g., underlies the theoretical description
+    of graphene, is computed numerically. Although it belongs to, from a symmetry
+    standpoint, the two-dimensional symplectic class, the beta function monotonically
+    increases with decreasing $g$. We also provide an argument based on the spectral
+    flows under twisting boundary conditions, which shows that none of states of the
+    massless Dirac Hamiltonian can be localized.
+  authors:
+  - Kentaro Nomura
+  - Mikito Koshino
+  - Shinsei Ryu
+  doi: 10.1103/PhysRevLett.99.146806
+  id: '0705.1607'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.99.146806
+  on_arxiv: 2007-05-11
+  page: '146806'
+  published: 2007-10-05
+  title: Topological delocalization of two-dimensional massless Dirac fermions
+  vol: '99'
+- abstract: A field theory of the Anderson transition in two dimensional disordered
+    systems with spin-orbit interactions and time-reversal symmetry is developed,
+    in which the proliferation of vortex-like topological defects is essential for
+    localization. The sign of vortex fugacity determines the $Z_2$ topological class
+    of the localized phase. There are two distinct, but equivalent transitions between
+    the metallic phase and the two insulating phases. The critical conductivity and
+    correlation length exponent of these transitions are computed in a $N=1-\epsilon$
+    expansion in the number of replicas, where for small $\epsilon$ the critical points
+    are perturbatively connected to the Kosterlitz Thouless critical point. Delocalized
+    states, which arise at the surface of weak topological insulators and topological
+    crystalline insulators, occur because vortex proliferation is forbidden due to
+    the presence of symmetries that are violated by disorder, but are restored by
+    disorder averaging.
+  authors:
+  - Liang Fu
+  - C. L. Kane
+  doi: 10.1103/PhysRevLett.109.246605
+  id: '1208.3442'
+  journal: Phys. Rev. Lett.
+  journal_url: http://dx.doi.org/10.1103/physrevlett.109.246605
+  on_arxiv: 2012-08-16
+  page: '246605'
+  published: 2012-12-14
+  title: Topology, Delocalization via Average Symmetry and the Symplectic Anderson
+    Transition
+  vol: '109'
+- abstract: We present an analytic theory of quantum criticality in quasi one-dimensional
+    topological Anderson insulators. We describe these systems in terms of two parameters
+    $(g,\chi)$ representing localization and topological properties, respectively.
+    Certain critical values of $\chi$ (half-integer for $\Bbb{Z}$ classes, or zero
+    for $\Bbb{Z}_2$ classes) define phase boundaries between distinct topological
+    sectors. Upon increasing system size, the two parameters exhibit flow similar
+    to the celebrated two parameter flow of the integer quantum Hall insulator. However,
+    unlike the quantum Hall system, an exact analytical description of the entire
+    phase diagram can be given in terms of the transfer-matrix solution of corresponding
+    supersymmetric non-linear sigma-models. In $\Bbb{Z}_2$ classes we uncover a hidden
+    supersymmetry, present at the quantum critical point.
+  authors:
+  - Alexander Altland
+  - Dmitry Bagrets
+  - Alex Kamenev
+  doi: 10.1103/PhysRevB.91.085429
+  id: '1411.5992'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.91.085429
+  on_arxiv: 2014-11-21
+  page: 085429
+  published: 2015-02-27
+  title: 'Topology vs. Anderson localization: non-perturbative solutions in one dimension'
+  vol: '91'
+- abstract: The search for topologically non-trivial states of matter has become an
+    important goal for condensed matter physics. Recently, a new class of topological
+    insulators has been proposed. These topological insulators have an insulating
+    gap in the bulk, but have topologically protected edge states due to the time
+    reversal symmetry. In two dimensions the helical edge states give rise to the
+    quantum spin Hall (QSH) effect, in the absence of any external magnetic field.
+    Here we review a recent theory which predicts that the QSH state can be realized
+    in HgTe/CdTe semiconductor quantum wells. By varying the thickness of the quantum
+    well, the band structure changes from a normal to an "inverted" type at a critical
+    thickness $d_c$. We present an analytical solution of the helical edge states
+    and explicitly demonstrate their topological stability. We also review the recent
+    experimental observation of the QSH state in HgTe/(Hg,Cd)Te quantum wells. We
+    review both the fabrication of the sample and the experimental setup. For thin
+    quantum wells with well width $d_{QW}< 6.3$ nm, the insulating regime shows the
+    conventional behavior of vanishingly small conductance at low temperature. However,
+    for thicker quantum wells ($d_{QW}> 6.3$ nm), the nominally insulating regime
+    shows a plateau of residual conductance close to $2e^2/h$. The residual conductance
+    is independent of the sample width, indicating that it is caused by edge states.
+    Furthermore, the residual conductance is destroyed by a small external magnetic
+    field. The quantum phase transition at the critical thickness, $d_c= 6.3$ nm,
+    is also independently determined from the occurrence of a magnetic field induced
+    insulator to metal transition.
+  authors:
+  - Markus Koenig
+  - Hartmut Buhmann
+  - Laurens W. Molenkamp
+  - Taylor L. Hughes
+  - Chao-Xing Liu
+  - Xiao-Liang Qi
+  - Shou-Cheng Zhang
+  doi: 10.1143/JPSJ.77.031007
+  id: '0801.0901'
+  journal: J. Phys. Soc. Jpn.
+  journal_url: http://dx.doi.org/10.1143/jpsj.77.031007
+  on_arxiv: 2008-01-07
+  page: '031007'
+  published: 2008-03-15
+  title: 'The Quantum Spin Hall Effect: Theory and Experiment'
+  vol: '77'
+- abstract: Topological insulators are electronic materials that have a bulk band
+    gap like an ordinary insulator, but have protected conducting states on their
+    edge or surface. The 2D topological insulator is a quantum spin Hall insulator,
+    which is a close cousin of the integer quantum Hall state. A 3D topological insulator
+    supports novel spin polarized 2D Dirac fermions on its surface. In this Colloquium
+    article we will review the theoretical foundation for these electronic states
+    and describe recent experiments in which their signatures have been observed.
+    We will describe transport experiments on HgCdTe quantum wells that demonstrate
+    the existence of the edge states predicted for the quantum spin Hall insulator.
+    We will then discuss experiments on Bi_{1-x}Sb_x, Bi_2 Se_3, Bi_2 Te_3 and Sb_2
+    Te_3 that establish these materials as 3D topological insulators and directly
+    probe the topology of their surface states. We will then describe exotic states
+    that can occur at the surface of a 3D topological insulator due to an induced
+    energy gap. A magnetic gap leads to a novel quantum Hall state that gives rise
+    to a topological magnetoelectric effect. A superconducting energy gap leads to
+    a state that supports Majorana fermions, and may provide a new venue for realizing
+    proposals for topological quantum computation. We will close by discussing prospects
+    for observing these exotic states, a well as other potential device applications
+    of topological insulators.
+  authors:
+  - M. Z. Hasan
+  - C. L. Kane
+  doi: 10.1103/RevModPhys.82.3045
+  id: '1002.3895'
+  journal: Rev. Mod. Phys.
+  journal_url: http://dx.doi.org/10.1103/revmodphys.82.3045
+  on_arxiv: 2010-02-20
+  page: '3045'
+  published: 2010-11-08
+  title: Topological Insulators
+  vol: '82'
+- abstract: Topological insulators are new states of quantum matter which can not
+    be adiabatically connected to conventional insulators and semiconductors. They
+    are characterized by a full insulating gap in the bulk and gapless edge or surface
+    states which are protected by time-reversal symmetry. These topological materials
+    have been theoretically predicted and experimentally observed in a variety of
+    systems, including HgTe quantum wells, BiSb alloys, and Bi$_2$Te$_3$ and Bi$_2$Se$_3$
+    crystals. We review theoretical models, materials properties and experimental
+    results on two-dimensional and three-dimensional topological insulators, and discuss
+    both the topological band theory and the topological field theory. Topological
+    superconductors have a full pairing gap in the bulk and gapless surface states
+    consisting of Majorana fermions. We review the theory of topological superconductors
+    in close analogy to the theory of topological insulators.
+  authors:
+  - Xiao-Liang Qi
+  - Shou-Cheng Zhang
+  doi: 10.1103/RevModPhys.83.1057
+  id: '1008.2026'
+  journal: Rev. Mod. Phys.
+  journal_url: http://dx.doi.org/10.1103/revmodphys.83.1057
+  on_arxiv: 2010-08-12
+  page: '1057'
+  published: 2011-10-14
+  title: Topological insulators and superconductors
+  vol: '83'
+- abstract: 'This is a colloquium-style introduction to the midgap excitations in
+    superconductors known as Majorana fermions. These elusive particles, equal to
+    their own antiparticle, may or may not exist in Nature as elementary building
+    blocks, but in condensed matter they can be constructed out of electron and hole
+    excitations. What is needed is a superconductor to hide the charge difference,
+    and a topological (Berry) phase to eliminate the energy difference from zero-point
+    motion. A pair of widely separated Majorana fermions, bound to magnetic or electrostatic
+    defects, has non-Abelian exchange statistics. A qubit encoded in this Majorana
+    pair is expected to have an unusually long coherence time. We discuss strategies
+    to detect Majorana fermions in a topological superconductor, as well as possible
+    applications in a quantum computer. The status of the experimental search is reviewed.
+    Contents: I. What Are They? (Their origin in particle physics; Their emergence
+    in superconductors; Their potential for quantum computing) II. How to Make Them
+    (Shockley mechanism; Chiral p-wave superconductors; Topological insulators; Semiconductor
+    heterostructures) III. How to Detect Them (Half-integer conductance quantization;
+    Nonlocal tunneling; 4\pi-periodic Josephson effect; Thermal metal-insulator transition)
+    IV. How to Use Them (Topological qubits; Read out; Braiding) V. Outlook on the
+    Experimental Progress [scheduled for vol. 4 of Annual Review of Condensed Matter
+    Physics]'
+  authors:
+  - C. W. J. Beenakker
+  doi: 10.1146/annurev-conmatphys-030212-184337
+  id: '1112.1950'
+  journal: Annu. Rev. Condens. Matter Phys.
+  journal_url: http://dx.doi.org/10.1146/annurev-conmatphys-030212-184337
+  on_arxiv: 2011-12-08
+  page: '113'
+  published: 2013-04-01
+  title: Search for Majorana fermions in superconductors
+  vol: '4'
+- abstract: 'The 1937 theoretical discovery of Majorana fermions--whose defining property
+    is that they are their own anti-particles--has since impacted diverse problems
+    ranging from neutrino physics and dark matter searches to the fractional quantum
+    Hall effect and superconductivity. Despite this long history the unambiguous observation
+    of Majorana fermions nevertheless remains an outstanding goal. This review article
+    highlights recent advances in the condensed matter search for Majorana that have
+    led many in the field to believe that this quest may soon bear fruit. We begin
+    by introducing in some detail exotic `topological'' one- and two-dimensional superconductors
+    that support Majorana fermions at their boundaries and at vortices. We then turn
+    to one of the key insights that arose during the past few years; namely, that
+    it is possible to `engineer'' such exotic superconductors in the laboratory by
+    forming appropriate heterostructures with ordinary s-wave superconductors. Numerous
+    proposals of this type are discussed, based on diverse materials such as topological
+    insulators, conventional semiconductors, ferromagnetic metals, and many others.
+    The all-important question of how one experimentally detects Majorana fermions
+    in these setups is then addressed. We focus on three classes of measurements that
+    provide smoking-gun Majorana signatures: tunneling, Josephson effects, and interferometry.
+    Finally, we discuss the most remarkable properties of condensed matter Majorana
+    fermions--the non-Abelian exchange statistics that they generate and their associated
+    potential for quantum computation.'
+  authors:
+  - Jason Alicea
+  doi: 10.1088/0034-4885/75/7/076501
+  id: '1202.1293'
+  journal: Rep. Prog. Phys.
+  journal_url: http://dx.doi.org/10.1088/0034-4885/75/7/076501
+  on_arxiv: 2012-02-06
+  page: '076501'
+  published: 2012-07-01
+  title: New directions in the pursuit of Majorana fermions in solid state systems
+  vol: '75'
+- abstract: This short review article provides a pedagogical introduction to the rapidly
+    growing research field of Majorana fermions in topological superconductors. We
+    first discuss in some details the simplest "toy model" in which Majoranas appear,
+    namely a one-dimensional tight-binding representation of a p-wave superconductor,
+    introduced more than ten years ago by Kitaev. We then give a general introduction
+    to the remarkable properties of Majorana fermions in condensed matter systems,
+    such as their intrinsically non-local nature and exotic exchange statistics, and
+    explain why these quasiparticles are suspected to be especially well suited for
+    low-decoherence quantum information processing. We also discuss the experimentally
+    promising (and perhaps already successfully realized) possibility of creating
+    topological superconductors using semiconductors with strong spin-orbit coupling,
+    proximity-coupled to standard s-wave superconductors and exposed to a magnetic
+    field. The goal is to provide an introduction to the subject for experimentalists
+    or theorists who are new to the field, focusing on the aspects which are most
+    important for understanding the basic physics. The text should be accessible for
+    readers with a basic understanding of quantum mechanics and second quantization,
+    and does not require knowledge of quantum field theory or topological states of
+    matter.
+  authors:
+  - Martin Leijnse
+  - Karsten Flensberg
+  doi: 10.1088/0268-1242/27/12/124003
+  id: '1206.1736'
+  journal: Semicond. Sci. Technol.
+  journal_url: http://dx.doi.org/10.1088/0268-1242/27/12/124003
+  on_arxiv: 2012-06-08
+  page: '124003'
+  published: 2012-12-05
+  title: Introduction to topological superconductivity and Majorana fermions
+  vol: '27'
+- abstract: I. Introduction (What is new in RMT, Superconducting quasiparticles, Experimental
+    platforms) II. Topological superconductivity (Kitaev chain, Majorana operators,
+    Majorana zero-modes, Phase transition beyond mean-field) III. Fundamental symmetries
+    (Particle-hole symmetry, Majorana representation, Time-reversal and chiral symmetry)
+    IV. Hamiltonian ensembles (The ten-fold way, Midgap spectral peak, Energy level
+    repulsion) V. Scattering matrix ensembles (Fundamental symmetries, Chaotic scattering,
+    Circular ensembles, Topological quantum numbers) VI. Electrical conduction (Majorana
+    nanowire, Counting Majorana zero-modes, Conductance distribution, Weak antilocalization,
+    Andreev resonances, Shot noise of Majorana edge modes) VII. Thermal conduction
+    (Topological phase transitions, Super-universality, Heat transport by Majorana
+    edge modes, Thermopower and time-delay matrix, Andreev billiard with chiral symmetry)
+    VIII. Josephson junctions (Fermion parity switches, 4{\pi}-periodic Josephson
+    effect, Discrete vortices) IX. Conclusion
+  authors:
+  - C. W. J. Beenakker
+  doi: 10.1103/RevModPhys.87.1037
+  id: '1407.2131'
+  journal: Rev. Mod. Phys.
+  journal_url: http://dx.doi.org/10.1103/revmodphys.87.1037
+  on_arxiv: 2014-07-08
+  page: '1037'
+  published: 2015-09-03
+  title: Random-matrix theory of Majorana fermions and topological superconductors
+  vol: '87'
+- abstract: Topological quantum computation has recently emerged as one of the most
+    exciting approaches to constructing a fault-tolerant quantum computer. The proposal
+    relies on the existence of topological states of matter whose quasiparticle excitations
+    are neither bosons nor fermions, but are particles known as {\it Non-Abelian anyons},
+    meaning that they obey {\it non-Abelian braiding statistics}. Quantum information
+    is stored in states with multiple quasiparticles, which have a topological degeneracy.
+    The unitary gate operations which are necessary for quantum computation are carried
+    out by braiding quasiparticles, and then measuring the multi-quasiparticle states.
+    The fault-tolerance of a topological quantum computer arises from the non-local
+    encoding of the states of the quasiparticles, which makes them immune to errors
+    caused by local perturbations. To date, the only such topological states thought
+    to have been found in nature are fractional quantum Hall states, most prominently
+    the \nu=5/2 state, although several other prospective candidates have been proposed
+    in systems as disparate as ultra-cold atoms in optical lattices and thin film
+    superconductors. In this review article, we describe current research in this
+    field, focusing on the general theoretical concepts of non-Abelian statistics
+    as it relates to topological quantum computation, on understanding non-Abelian
+    quantum Hall states, on proposed experiments to detect non-Abelian anyons, and
+    on proposed architectures for a topological quantum computer. We address both
+    the mathematical underpinnings of topological quantum computation and the physics
+    of the subject using the \nu=5/2 fractional quantum Hall state as the archetype
+    of a non-Abelian topological state enabling fault-tolerant quantum computation.
+  authors:
+  - Chetan Nayak
+  - Steven H. Simon
+  - Ady Stern
+  - Michael Freedman
+  - Sankar Das Sarma
+  doi: 10.1103/RevModPhys.80.1083
+  id: '0707.1889'
+  journal: Rev. Mod. Phys.
+  journal_url: http://dx.doi.org/10.1103/revmodphys.80.1083
+  on_arxiv: 2007-07-12
+  page: '1083'
+  published: 2008-09-12
+  title: Non-Abelian Anyons and Topological Quantum Computation
+  vol: '80'
+- abstract: The dichotomy between fermions and bosons is at the root of many physical
+    phenomena, from metallic conduction of electricity to super-fluidity, and from
+    the periodic table to coherent propagation of light. The dichotomy originates
+    from the symmetry of the quantum mechanical wave function to the interchange of
+    two identical particles. In systems that are confined to two spatial dimensions
+    particles that are neither fermions nor bosons, coined "anyons", may exist. The
+    fractional quantum Hall effect offers an experimental system where this possibility
+    is realized. In this paper we present the concept of anyons, we explain why the
+    observation of the fractional quantum Hall effect almost forces the notion of
+    anyons upon us, and we review several possible ways for a direct observation of
+    the physics of anyons. Furthermore, we devote a large part of the paper to non-abelian
+    anyons, motivating their existence from the point of view of trial wave functions,
+    giving a simple exposition of their relation to conformal field theories, and
+    reviewing several proposals for their direct observation.
+  authors:
+  - Ady Stern
+  doi: 10.1016/j.aop.2007.10.008
+  id: '0711.4697'
+  journal: Annals of Physics
+  journal_url: http://dx.doi.org/10.1016/j.aop.2007.10.008
+  on_arxiv: 2007-11-29
+  page: '204'
+  published: 2008-01-01
+  title: Anyons and the quantum Hall effect - a pedagogical review
+  vol: '323'
+- abstract: Contribution to the 44th IFF Spring School held at the Forschungszentrum
+    J\"ulich in 2013 on "Quantum Information Processing". The notes include a pedagogic
+    (but incomplete) introduction to Majorana fermions; especially paying attention
+    to the usefulness for quantum information purposes. It contains an introduction
+    to topological aspects of superconductors, braiding, physical implementations,
+    and measurement of the quantum information using superconducting qubits.
+  authors:
+  - Fabian Hassler
+  id: '1404.0897'
+  on_arxiv: 2014-04-03
+  title: Majorana Qubits
+- abstract: Topological insulators represent unique phases of matter with insulating
+    bulk and conducting edge or surface states, immune to small perturbations such
+    as backscattering due to disorder. This stems from their peculiar band structure,
+    which provides topological protections. While conventional tools (pressure, doping
+    etc.) to modify the band structure are available, time periodic perturbations
+    can provide tunability by adding time as an extra dimension enhanced to the problem.
+    In this short review, we outline the recent research on topological insulators
+    in non equilibrium situations. Firstly, we introduce briefly the Floquet formalism
+    that allows to describe steady states of the electronic system with an effective
+    time-independent Hamiltonian. Secondly, we summarize recent theoretical work on
+    how light irradiation drives semi-metallic graphene or a trivial semiconducting
+    system into a topological phase. Finally, we show how photons can be used to probe
+    topological edge or surface states.
+  authors:
+  - Jérôme Cayssol
+  - Balázs Dóra
+  - Ferenc Simon
+  - Roderich Moessner
+  doi: 10.1002/pssr.201206451
+  id: '1211.5623'
+  journal: Phys. Status Solidi RRL
+  journal_url: http://dx.doi.org/10.1002/pssr.201206451
+  on_arxiv: 2012-11-23
+  page: '101'
+  published: 2013-02-01
+  title: Floquet topological insulators
+  vol: '7'
+- abstract: In this review, we discuss recent progress in the explorations of topological
+    materials beyond topological insulators; specifically, we focus on topological
+    crystalline insulators and bulk topological superconductors. The basic concepts,
+    model Hamiltonians, and novel electronic properties of these new topological materials
+    are explained. The key role of symmetries that underlie their topological properties
+    is elucidated. Key issues in their materials realizations are also discussed.
+  authors:
+  - Yoichi Ando
+  - Liang Fu
+  doi: 10.1146/annurev-conmatphys-031214-014501
+  id: '1501.00531'
+  journal: Annu. Rev. Condens. Matter Phys.
+  journal_url: http://dx.doi.org/10.1146/annurev-conmatphys-031214-014501
+  on_arxiv: 2015-01-03
+  page: '361'
+  published: 2015-03-01
+  title: 'Topological Crystalline Insulators and Topological Superconductors: From
+    Concepts to Materials'
+  vol: '6'
+- abstract: Topological properties of physical systems can lead to robust behaviors
+    that are insensitive to microscopic details. Such topologically robust phenomena
+    are not limited to static systems but can also appear in driven quantum systems.
+    In this paper, we show that the Floquet operators of periodically driven systems
+    can be divided into topologically distinct (homotopy) classes, and give a simple
+    physical interpretation of this classification in terms of the spectra of Floquet
+    operators. Using this picture, we provide an intuitive understanding of the well-known
+    phenomenon of quantized adiabatic pumping. Systems whose Floquet operators belong
+    to the trivial class simulate the dynamics generated by time-independent Hamiltonians,
+    which can be topologically classified according to the schemes developed for static
+    systems. We demonstrate these principles through an example of a periodically
+    driven two--dimensional hexagonal lattice model which exhibits several topological
+    phases. Remarkably, one of these phases supports chiral edge modes even though
+    the bulk is topologically trivial.
+  authors:
+  - Takuya Kitagawa
+  - Erez Berg
+  - Mark Rudner
+  - Eugene Demler
+  doi: 10.1103/PhysRevB.82.235114
+  id: '1010.6126'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.82.235114
+  on_arxiv: 2010-10-29
+  page: '235114'
+  published: 2010-12-10
+  title: Topological characterization of periodically-driven quantum systems
+  vol: '82'
+- abstract: Recently, several authors have investigated topological phenomena in periodically-driven
+    systems of non-interacting particles. These phenomena are identified through analogies
+    between the Floquet spectra of driven systems and the band structures of static
+    Hamiltonians. Intriguingly, these works have revealed that the topological characterization
+    of driven systems is richer than that of static systems. In particular, in driven
+    systems in two dimensions (2D), robust chiral edge states can appear even though
+    the Chern numbers of all the bulk Floquet bands are zero. Here we elucidate the
+    crucial distinctions between static and driven 2D systems, and construct a new
+    topological invariant that yields the correct edge state structure in the driven
+    case. We provide formulations in both the time and frequency domains, which afford
+    additional insight into the origins of the "anomalous" spectra which arise in
+    driven systems. Possible realizations of these phenomena in solid state and cold
+    atomic systems are discussed.
+  authors:
+  - Mark S. Rudner
+  - Netanel H. Lindner
+  - Erez Berg
+  - Michael Levin
+  id: '1212.3324'
+  on_arxiv: 2012-12-13
+  title: Anomalous edge states and the bulk-edge correspondence for periodically-driven
+    two dimensional systems
+- abstract: Topological crystalline insulators are new states of matter in which the
+    topological nature of electronic structures arises from crystal symmetries. Here
+    we predict the first material realization of topological crystalline insulator
+    in the semiconductor SnTe, by identifying its nonzero topological index. We predict
+    that as a manifestation of this nontrivial topology, SnTe has metallic surface
+    states with an even number of Dirac cones on high-symmetry crystal surfaces such
+    as {001}, {110} and {111}. These surface states form a new type of high-mobility
+    chiral electron gas, which is robust against disorder and topologically protected
+    by reflection symmetry of the crystal with respect to {110} mirror plane. Breaking
+    this mirror symmetry via elastic strain engineering or applying an in-plane magnetic
+    field can open up a continuously tunable band gap on the surface, which may lead
+    to wide-ranging applications in thermoelectrics, infrared detection, and tunable
+    electronics. Closely related semiconductors PbTe and PbSe also become topological
+    crystalline insulators after band inversion by pressure, strain and alloying.
+  authors:
+  - Timothy H. Hsieh
+  - Hsin Lin
+  - Junwei Liu
+  - Wenhui Duan
+  - Arun Bansil
+  - Liang Fu
+  doi: 10.1038/ncomms1969
+  id: '1202.1003'
+  journal: Nat Commun
+  journal_url: http://dx.doi.org/10.1038/ncomms1969
+  on_arxiv: 2012-02-05
+  page: '982'
+  published: 2012-01-01
+  title: Topological Crystalline Insulators in the SnTe Material Class
+  vol: '3'
+- abstract: We define a class of insulators with gapless surface states protected
+    from localization due to the statistical properties of a disordered ensemble,
+    namely due to the ensemble's invariance under a certain symmetry. We show that
+    these insulators are topological, and are protected by a $\mathbb{Z}_2$ invariant.
+    Finally, we prove that every topological insulator gives rise to an infinite number
+    of classes of statistical topological insulators in higher dimensions. Our conclusions
+    are confirmed by numerical simulations.
+  authors:
+  - I. C. Fulga
+  - B. van Heck
+  - J. M. Edge
+  - A. R. Akhmerov
+  doi: 10.1103/PhysRevB.89.155424
+  id: '1212.6191'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.89.155424
+  on_arxiv: 2012-12-26
+  page: '155424'
+  published: 2014-04-21
+  title: Statistical Topological Insulators
+  vol: '89'
+- abstract: We develop a unified framework to classify topological defects in insulators
+    and superconductors described by spatially modulated Bloch and Bogoliubov de Gennes
+    Hamiltonians. We consider Hamiltonians H(k,r) that vary slowly with adiabatic
+    parameters r surrounding the defect and belong to any of the ten symmetry classes
+    defined by time reversal symmetry and particle-hole symmetry. The topological
+    classes for such defects are identified, and explicit formulas for the topological
+    invariants are presented. We introduce a generalization of the bulk-boundary correspondence
+    that relates the topological classes to defect Hamiltonians to the presence of
+    protected gapless modes at the defect. Many examples of line and point defects
+    in three dimensional systems will be discussed. These can host one dimensional
+    chiral Dirac fermions, helical Dirac fermions, chiral Majorana fermions and helical
+    Majorana fermions, as well as zero dimensional chiral and Majorana zero modes.
+    This approach can also be used to classify temporal pumping cycles, such as the
+    Thouless charge pump, as well as a fermion parity pump, which is related to the
+    Ising non-Abelian statistics of defects that support Majorana zero modes.
+  authors:
+  - Jeffrey C. Y. Teo
+  - C. L. Kane
+  doi: 10.1103/PhysRevB.82.115120
+  id: '1006.0690'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.82.115120
+  on_arxiv: 2010-06-03
+  page: '115120'
+  published: 2010-09-22
+  title: Topological Defects and Gapless Modes in Insulators and Superconductors
+  vol: '82'
+- abstract: We discover novel topological pumps in the Josephson effects for superconductors.
+    The phase difference, which is odd under the chiral symmetry defined by the product
+    of time-reversal and particle-hole symmetries, acts as an anomalous adiabatic
+    parameter. These pumping cycles are different from those in the "periodic table",
+    and are characterized by $Z\times Z$ or $Z_2\times Z_2$ strong invariants. We
+    determine the general classifications in class AIII, and those in class DIII with
+    a single anomalous parameter. For the $Z_2\times Z_2$ topological pump in class
+    DIII, one $Z_2$ invariant describes the coincidence of fermion parity and spin
+    pumps whereas the other one reflects the non-Abelian statistics of Majorana Kramers
+    pairs, leading to three distinct fractional Josephson effects.
+  authors:
+  - Fan Zhang
+  - C. L. Kane
+  doi: 10.1103/PhysRevB.90.020501
+  id: '1310.5281'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.90.020501
+  on_arxiv: 2013-10-20
+  page: '020501'
+  published: 2014-07-08
+  title: Anomalous Topological Pumps and Fractional Josephson Effects
+  vol: '90'
+- abstract: We apply ideas from $C^*$-algebra to the study of disordered topological
+    insulators. We extract certain almost commuting matrices from the free Fermi Hamiltonian,
+    describing band projected coordinate matrices. By considering topological obstructions
+    to approximating these matrices by exactly commuting matrices, we are able to
+    compute invariants quantifying different topological phases. We generalize previous
+    two dimensional results to higher dimensions; we give a general expression for
+    the topological invariants for arbitrary dimension and several symmetry classes,
+    including chiral symmetry classes, and we present a detailed $K$-theory treatment
+    of this expression for time reversal invariant three dimensional systems. We can
+    use these results to show non-existence of localized Wannier functions for these
+    systems. We use this approach to calculate the index for time-reversal invariant
+    systems with spin-orbit scattering in three dimensions, on sizes up to $12^3$,
+    averaging over a large number of samples. The results show an interesting separation
+    between the localization transition and the point at which the average index (which
+    can be viewed as an "order parameter" for the topological insulator) begins to
+    fluctuate from sample too sample, implying the existence of an unsuspected quantum
+    phase transition separating two different delocalized phases in this system. One
+    of the particular advantages of the $C^*$-algebraic technique that we present
+    is that it is significantly faster in practice than other methods of computing
+    the index, allowing the study of larger systems. In this paper, we present a detailed
+    discussion of numerical implementation of our method.
+  authors:
+  - M. B. Hastings
+  - T. A. Loring
+  doi: 10.1016/j.aop.2010.12.013
+  id: '1012.1019'
+  journal: Annals of Physics
+  journal_url: http://dx.doi.org/10.1016/j.aop.2010.12.013
+  on_arxiv: 2010-12-05
+  page: '1699'
+  published: 2011-07-01
+  title: 'Topological Insulators and C^*-Algebras: Theory and Numerical Practice'
+  vol: '326'
+- abstract: The topological invariant of a topological insulator (or superconductor)
+    is given by the number of symmetry-protected edge states present at the Fermi
+    level. Despite this fact, established expressions for the topological invariant
+    require knowledge of all states below the Fermi energy. Here, we propose a way
+    to calculate the topological invariant employing solely its scattering matrix
+    at the Fermi level without knowledge of the full spectrum. Since the approach
+    based on scattering matrices requires much less information than the Hamiltonian-based
+    approaches (surface versus bulk), it is numerically more efficient. In particular,
+    is better-suited for studying disordered systems. Moreover, it directly connects
+    the topological invariant to transport properties potentially providing a new
+    way to probe topological phases.
+  authors:
+  - I. C. Fulga
+  - F. Hassler
+  - A. R. Akhmerov
+  doi: 10.1103/PhysRevB.85.165409
+  id: '1106.6351'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.85.165409
+  on_arxiv: 2011-06-30
+  page: '165409'
+  published: 2012-04-05
+  title: Scattering theory of topological insulators and superconductors
+  vol: '85'
+- abstract: A number of recent articles have reported the existence of topologically
+    non-trivial states and associated end states in one-dimensional incommensurate
+    lattice models that would usually only be expected in higher dimensions. Using
+    an explicit construction, we here argue that the end states have precisely the
+    same origin as their counterparts in commensurate models and that incommensurability
+    does not in fact provide a meaningful connection to the topological classification
+    of systems in higher dimensions. In particular, we show that it is possible to
+    smoothly interpolate between states with commensurate and incommensurate modulation
+    parameters without closing the band gap and without states crossing the band gap.
+  authors:
+  - Kevin A. Madsen
+  - Emil J. Bergholtz
+  - Piet W. Brouwer
+  doi: 10.1103/PhysRevB.88.125118
+  id: '1307.2577'
+  journal: Phys. Rev. B
+  journal_url: http://dx.doi.org/10.1103/physrevb.88.125118
+  on_arxiv: 2013-07-09
+  page: '125118'
+  published: 2013-09-11
+  title: Topological equivalence of crystal and quasicrystal band structures
+  vol: '88'
+- abstract: The quasi-bound states of a superconducting quantum dot that is weakly
+    coupled to a normal metal appear as resonances in the Andreev reflection probability,
+    measured via the differential conductance. We study the evolution of these Andreev
+    resonances when an external parameter (such as magnetic field or gate voltage)
+    is varied, using a random-matrix model for the $N\times N$ scattering matrix.
+    We contrast the two ensembles with broken time-reversal symmetry, in the presence
+    or absence of spin-rotation symmetry (class C or D). The poles of the scattering
+    matrix in the complex plane, encoding the center and width of the resonance, are
+    repelled from the imaginary axis in class C. In class D, in contrast, a number
+    $\propto\sqrt{N}$ of the poles has zero real part. The corresponding Andreev resonances
+    are pinned to the middle of the gap and produce a zero-bias conductance peak that
+    does not split over a range of parameter values (Y-shaped profile), unlike the
+    usual conductance peaks that merge and then immediately split (X-shaped profile).
+  authors:
+  - Shuo Mi
+  - D. I. Pikulin
+  - M. Marciani
+  - C. W. J. Beenakker
+  doi: 10.1134/S1063776114120176
+  id: '1405.6896'
+  journal: J. Exp. Theor. Phys.
+  journal_url: http://dx.doi.org/10.1134/s1063776114120176
+  on_arxiv: 2014-05-27
+  page: '1018'
+  published: 2014-12-01
+  title: X-shaped and Y-shaped Andreev resonance profiles in a superconducting quantum
+    dot
+  vol: '119'

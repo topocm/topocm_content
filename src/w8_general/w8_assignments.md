@@ -47,13 +47,21 @@ MoocDiscussion('Labs', 'Topological invariants')
 
 # Review assignment
 
+### arXiv:1006.0690
 
-```python
-display_html(PreprintReference('1006.0690', description="The most general classification"))
-display_html(PreprintReference('1310.5281', description="Beyond classification"))
-display_html(PreprintReference('1012.1019', description="The non-commutative invariants"))
-display_html(PreprintReference('1106.6351', description="All about scattering"))
-```
+**Hint:** The most general classification.
+
+### arXiv:1310.5281
+
+**Hint:** Beyond classification.
+
+### arXiv:1012.1019
+
+**Hint:** The non-commutative invariants.
+
+### arXiv:1106.6351
+
+**Hint:** All about scattering.
 
 ### Bonus: Find your own paper to review!
 

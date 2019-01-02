@@ -45,20 +45,23 @@ MoocDiscussion('Labs', 'Quantum Hall effect')
 
 For the third week we have these papers:
 
+### arXiv:1109.5983
 
-```python
-display_html(PreprintReference('1109.5983', description="Topological pumping can be used to characterize quasicrystals too! "
-                "Whether this is really unique to quasicrystals is debated though <a href=http://arxiv.org/abs/1307.2577v2>"
-                "http://arxiv.org/abs/1307.2577v2</a>"))
-display_html(PreprintReference('cond-mat/0602645', 
-  description="Quantum Hall effect applies beyond parabolic dispersions with interesting twists. "
-              "Figure out what different features arise from other cases. "))
+**Hint:** Topological pumping can be used to characterize quasicrystals too!
+Whether this is really unique to quasicrystals is debated though arXiv:1307.2577.
 
-display_html(PreprintReference('1201.4167', description="An experiment detecting the interesting consequences of "
-                                       "coexistence of quantum Hall and ferromagnetism in graphene."))
-display_html(PreprintReference('0710.2806', description="Aharonov-Bohm interference using quantum hall edge"
-                                       "quasiparticles."))
-```
+### arXiv:cond-mat/0602645
+
+**Hint:** Quantum Hall effect applies beyond parabolic dispersions with interesting twists.
+Figure out what different features arise from other cases.
+
+### arXiv:1201.4167
+
+**Hint:** An experiment detecting the interesting consequences of coexistence of quantum Hall and ferromagnetism in graphene.
+
+### arXiv:0710.2806
+
+**Hint:** Aharonov-Bohm interference using quantum hall edge quasiparticles.
 
 ### Bonus: Find your own paper to review!
 

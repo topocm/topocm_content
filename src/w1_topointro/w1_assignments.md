@@ -9,7 +9,7 @@ init_notebook()
 
 So you've made it through the content of the first week. Congratulations!
 
-Now let's get our hands dirty. 
+Now let's get our hands dirty.
 
 Let's begin by grabbing the notebooks of this week and the extra code we use to run these notebooks over [here](http://tiny.cc/topocm_smc). (Click the [i] button to the left of the folder that you want to copy.)
 
@@ -72,17 +72,20 @@ MoocDiscussion('Labs', 'Toy models simulations')
 
 For the first week we have these papers:
 
+### arXiv:1103.0780
 
-```python
-display_html(PreprintReference('1103.0780', 
-  description="Topological classification is not always applied to Hamiltonians. "
-              "Figure out what is the topological quantity in open systems. "
-              "See this idea also applied in <a href=http://arxiv.org/abs/1405.6896>"
-              "http://arxiv.org/abs/1405.6896</a>"))
-display_html(PreprintReference('1305.2924', description="This is a study of statistical properties "
-                                       "of topological transitions."))
-display_html(PreprintReference('1111.6600', description="A toy model may still be useful in practice."))
-```
+**Hint:** Topological classification is not always applied to Hamiltonians.
+Figure out what is the topological quantity in open systems.
+See this idea also applied in arXiv:1405.6896.
+
+### arXiv:1305.2924
+
+**Hint:** This is a study of statistical properties of topological transitions.
+
+### arXiv:1111.6600
+
+**Hint:** A toy model may still be useful in practice.
+
 
 ### Bonus: Find your own paper to review!
 

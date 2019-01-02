@@ -24,10 +24,7 @@ Plot the band structure for different field directions, and compare to the origi
 
 Compare your results with what you find over here:
 
-
-```python
-display_html(PreprintReference('1403.4464'))
-```
+* arXiv:1403.4464
 
 ## From $4\pi$ to $2\pi$.
 
@@ -39,11 +36,7 @@ Study the spectrum of a superconducting ring as a function of magnetic field, as
 
 What do you see? Compare your results with the paper below.
 
-
-```python
-PreprintReference("1210.3237")
-```
-
+* arXiv:1210.3237
 
 ```python
 MoocSelfAssessment()
@@ -60,20 +53,23 @@ As we mentioned, there are really hundreds of papers that use the models and con
 
 Here is a small selection of the ones that you may find interesting.
 
+### arXiv:1204.2792',
 
-```python
-display_html(PreprintReference('1204.2792',
-                               description="Welcome to the real world."))
+**Hint:** Welcome to the real world.
 
-display_html(PreprintReference('1101.5795',
-                               description="Majorana conductance with many modes."))
+### arXiv:1101.5795',
 
-display_html(PreprintReference('1006.4395',
-                               description="To play a nice melody, you just need a keyboard. "
-                                           "This paper first showed how Majoranas in wire networks can be moved around"))
+**Hint:** Majorana conductance with many modes.
 
-display_html(PreprintReference('1008.0629', description="Real nanowires are more complicated."))
-```
+### arXiv:1006.4395',
+
+**Hint:** To play a nice melody, you just need a keyboard.
+This paper first showed how Majoranas in wire networks can be moved around
+
+### arXiv:1008.0629
+
+**Hint:** Real nanowires are more complicated.
+
 
 ### Bonus: Find your own paper to review!
 

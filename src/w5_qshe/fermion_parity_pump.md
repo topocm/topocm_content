@@ -28,7 +28,7 @@ def hopy(site1, site2, p):
 
 
 def bhz(w=20):
-    """ Make ribbon system with bhz model. 
+    """ Make ribbon system with bhz model.
 
     slowed parameters are used on the edge for finite size system.
     """
@@ -134,9 +134,9 @@ def scattering_det_pfaff(syst, p):
         # the space of antisymmetric matrices
         smat = 0.5 * (smat - smat.T)
         return pf.pfaffian(smat)
-    
+
     pfaff = [pfaffian(syst, p, 0), pfaffian(syst, p, np.pi)]
-    
+
     ks = np.linspace(0.0, np.pi, 50)
     det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, args=[p]).data) for p.ky in ks]
     det = np.array(det)
@@ -280,7 +280,7 @@ $$
 S = \mathcal{T}^2 S^T.
 $$
 
-So if $\mathcal{T}^2=1$, the scattering matrix is symmetric ($S=S^T$), while if $\mathcal{T}^2=-1$, it is antisymmetric ($S=-S^T$). 
+So if $\mathcal{T}^2=1$, the scattering matrix is symmetric ($S=S^T$), while if $\mathcal{T}^2=-1$, it is antisymmetric ($S=-S^T$).
 
 What does this imply if we try to set $t=t'=0$?
 
@@ -314,7 +314,7 @@ print('Transmission eigenvalues')
 pprint_matrix(np.linalg.eigvalsh(t @ t.T.conj())[::-1])
 ```
 
-> We conclude that if $\mathcal{T}^2=-1$ and the number of edge states going in one direction is odd, they cannot be gapped out, and the system is topological. On the other hand, if there is an even number of such edge states, they can be gapped out. Since these are the only two options, the integer invariant of a Chern insulator is reduced to a $\pm 1$ invariant in the presence of time reversal symmetry. These topologically protected, counterpropagating edge states are often referred to as **helical edge states**. 
+> We conclude that if $\mathcal{T}^2=-1$ and the number of edge states going in one direction is odd, they cannot be gapped out, and the system is topological. On the other hand, if there is an even number of such edge states, they can be gapped out. Since these are the only two options, the integer invariant of a Chern insulator is reduced to a $\pm 1$ invariant in the presence of time reversal symmetry. These topologically protected, counterpropagating edge states are often referred to as **helical edge states**.
 
 # Helical edge states are Kramers pairs
 
@@ -499,21 +499,18 @@ Ms = np.linspace(-1, 1, 11)
 
 We now have a quantity equal to $\pm 1$, which cannot change continuously unless there's a gap closing (when there's a gap closing, $\det r$ becomes equal to $0$). It is relatively hard to prove that this invariant counts the pumping of fermion parity, but if you're interested, check out this paper:
 
-
-```python
-PreprintReference('1107.2215', description="", show_abstract=False)
-```
+* arXiv:1107.2215
 
 From reading the paper, or just from the above discussion, you see that it takes a lot of effort to derive an explicit expression for a topological invariant. Even though it is a hard task, sometimes one can guess the right result (one of us was indeed able to guess the above expression for $Q$ before it was known). Other times, one can invoke some simplification and obtain some important insight. This is what we will do in the next unit.
 
 # A simplification: inversion symmetry
 
 As just mentioned, topological invariants in higher dimensions are often difficult to write down and evaluate in the general case. Luckily, in the presence of [inversion symmetry](http://en.wikipedia.org/wiki/Parity_%28physics%29#Effect_of_spatial_inversion_on_some_variables_of_classical_physics) - which reverses the lattice coordinates with respect to a symmetry center - the topological condition can be stated in rather simple terms.
-This turns out to be quite useful to describe most topological materials, which happen to have crystal structure with inversion symmetry. 
+This turns out to be quite useful to describe most topological materials, which happen to have crystal structure with inversion symmetry.
 
 From our earlier discussion, we know that a system is a time-reversal invariant topological insulator if it has an odd number of helical edge states. We will now see how we can find an expression for the bulk topological invariant, using inversion symmetry and bulk-boundary correspondence.
 
-So let's consider a two-dimensional Bloch Hamiltonian $H(\mathbf{k})$ with both inversion and time-reversal symmetry. Inversion symmetry has a unitary operator $\mathcal{P}$ which maps $\mathbf{k}\rightarrow -\mathbf{k}$ and satisfies $\mathcal{P}^2=1$. If we have both inversion symmetry $\mathcal{P}$ and time-reversal $\mathcal{T}$, we get an anti-unitary symmetry $\mathcal{T}\otimes\mathcal{P}$, which preserves $\mathbf{k}$ and squares to $-1$. 
+So let's consider a two-dimensional Bloch Hamiltonian $H(\mathbf{k})$ with both inversion and time-reversal symmetry. Inversion symmetry has a unitary operator $\mathcal{P}$ which maps $\mathbf{k}\rightarrow -\mathbf{k}$ and satisfies $\mathcal{P}^2=1$. If we have both inversion symmetry $\mathcal{P}$ and time-reversal $\mathcal{T}$, we get an anti-unitary symmetry $\mathcal{T}\otimes\mathcal{P}$, which preserves $\mathbf{k}$ and squares to $-1$.
 
 > These are precisely the conditions needed for Kramers theorem to apply - only this time, every point $\mathbf{k}$ is mapped to itself because inversion symmetry is included as well. We conclude that every eigenstate at any $\mathbf{k}$ is two-fold degenerate.  We may label these two eigenstates with an index $\sigma=\pm$. If spin is a good quantum number, $\sigma$ labels two states with opposite spin. However, this may not be the case so we will just refer to it as a pseudospin associated with Kramers degeneracy.
 
@@ -526,11 +523,11 @@ Our next step is to calculate the effective description of helical edge states a
 Let's imagine that the helical edge runs along the $y$ direction, and that the domain wall is described by a mass profile $M(x)$ along the $x$ direction, which is zero at the domain wall:
 
 ![](figures/qsh_domain_wall.svg)
- 
- 
+
+
 In this configuration, $k_y$ is still a good quantum number, and we can study the energy dispersion of states bound to the domain wall as a function of $k_y$. If the edge is gapless there must be a momentum, say $\bar{k}_y$, where counterpropagating modes cross at the Fermi level. Let's fix $k_y=\bar{k}_y$, and write down an effective Hamiltonian for the motion transverse to the domain wall.
 
-We have in total four states, distinguished by two quantum numbers: their direction of propagation, which we denote with $b=\pm$, and their pseudospin $\sigma$. Inversion symmetry $\mathcal{P}$ flips the direction of propagation $b$, while the pseudo-spin degeneracy $\sigma$ is related to the combination of inversion and time-reversal $\mathcal{T}\otimes\mathcal{P}.$ To lowest order in the momentum $k_x$ perpendicular to the domain wall, the states at the transition point disperse linearly with $k_x$, and are two-fold degenerate. In fact, as we noted from Kramers degeneracy, the Hamiltonian must be chosen such that none of the terms break the two-fold degeneracy associated with the pseudospin $\sigma$. This means that the domain wall cannot couple states with different values of $\sigma$, which leads us to an effective Hamiltonian 
+We have in total four states, distinguished by two quantum numbers: their direction of propagation, which we denote with $b=\pm$, and their pseudospin $\sigma$. Inversion symmetry $\mathcal{P}$ flips the direction of propagation $b$, while the pseudo-spin degeneracy $\sigma$ is related to the combination of inversion and time-reversal $\mathcal{T}\otimes\mathcal{P}.$ To lowest order in the momentum $k_x$ perpendicular to the domain wall, the states at the transition point disperse linearly with $k_x$, and are two-fold degenerate. In fact, as we noted from Kramers degeneracy, the Hamiltonian must be chosen such that none of the terms break the two-fold degeneracy associated with the pseudospin $\sigma$. This means that the domain wall cannot couple states with different values of $\sigma$, which leads us to an effective Hamiltonian
 
 $$
 H(\bar{k}_y)=\sum_{\sigma,b}\,k_x b\,|b,\sigma\rangle\langle b,\sigma|+M(x)(|+,\sigma\rangle\langle -,\sigma|+h.c.)]\,.
@@ -554,8 +551,8 @@ Kramers pairs are colored in red and blue and have the same linestyle. On the le
 
 > We can determine the topological invariant for the inversion symmetric topological insulators entirely from the bulk Hamiltonian at time-reversal invariant momenta, since gap closings at any other point can only add domain wall states in multiples of four.
 
-Does this mean that any gap closing at a TRIM is a topological transition? The states $|b,\sigma\rangle$ are Bloch states with definite values of $k_y$. We are considering a time-reversal invariant value of $k_y$, and since $b$ is flipped by inversion symmetry, we can apply inversion symmetry to conclude that the states $|\pm,\sigma\rangle$ 
-transform into each other under inversion i.e. $\mathcal{P}|\pm,\sigma\rangle= |\mp,\sigma\rangle$. By combining these states 
+Does this mean that any gap closing at a TRIM is a topological transition? The states $|b,\sigma\rangle$ are Bloch states with definite values of $k_y$. We are considering a time-reversal invariant value of $k_y$, and since $b$ is flipped by inversion symmetry, we can apply inversion symmetry to conclude that the states $|\pm,\sigma\rangle$
+transform into each other under inversion i.e. $\mathcal{P}|\pm,\sigma\rangle= |\mp,\sigma\rangle$. By combining these states
 into symmetric and anti-symmetric superpositions
 
 $$|e,\sigma\rangle=\frac{1}{\sqrt{2}}\left[|+,\sigma\rangle\, + \,|-,\sigma\rangle\right],\,\quad |o,\sigma\rangle=\frac{i}{\sqrt{2}}\left[|+,\sigma\rangle\, - \,|-,\sigma\rangle\right],$$

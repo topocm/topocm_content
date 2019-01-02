@@ -19,7 +19,7 @@ Anderson model is just the simpest [tight binding model on a square lattice](htt
 
 Tune your model in the clean limit such that it has a relatively large number of modes (at least 3). Then calculate conductance as a function of $L$ at a finite disorder, while keeping $W$ constant.
 
-The weak disorder regime should look ohmic or classical i.e $g \sim N_{ch}\lambda_{MFP}/L$. Here $\lambda_{MFP}$ is the mean free path, and $N_{ch}$ is the number of channels. 
+The weak disorder regime should look ohmic or classical i.e $g \sim N_{ch}\lambda_{MFP}/L$. Here $\lambda_{MFP}$ is the mean free path, and $N_{ch}$ is the number of channels.
 
 First, verify that when $g \gtrsim 1$ you observe the classical behavior and evaluate the mean free path.
 
@@ -37,13 +37,9 @@ Calculate the energies of all the states in a finite Kitaev chain with disorder.
 
 Do so for many disorder realizations, and build a histograph of the density of states for different values of average $m$ and of disorder strengh around the critical point $m=0$.
 
-If all goes well, you should observe different behaviors: the density of states in a finite region around $m=0$ has a weak power law divergence, that eventually turns into an actual gap. Check out this paper for details: 
+If all goes well, you should observe different behaviors: the density of states in a finite region around $m=0$ has a weak power law divergence, that eventually turns into an actual gap. Check out this paper for details:
 
-
-```python
-PreprintReference("cond-mat/0011200", show_abstract=False)
-```
-
+* arXiv:cond-mat/0011200
 
 ```python
 MoocSelfAssessment()
@@ -58,15 +54,25 @@ MoocDiscussion('Labs', 'Disorder')
 
 # Review assignment
 
+### arXiv:0908.0881
 
-```python
-display_html(PreprintReference('0908.0881', description="The topological Anderson insulator"))
-display_html(PreprintReference('0705.0886', description="One-parameter scaling in graphene"))
-display_html(PreprintReference('0705.1607', description="Scaling with Dirac fermions"))
-display_html(PreprintReference('1208.3442', description="The average symmetry and weak transitions"))
-display_html(PreprintReference('1411.5992', description=("A technical paper about localization in 1D, "
-                                                        "but you don't need to follow the calculations.")))
-```
+**Hint:** The topological Anderson insulator.
+
+### arXiv:0705.0886
+
+**Hint:** One-parameter scaling in graphene.
+
+### arXiv:0705.1607
+
+**Hint:** Scaling with Dirac fermions.
+
+### arXiv:1208.3442
+
+**Hint:** The average symmetry and weak transitions.
+
+### arXiv:1411.5992
+
+**Hint:** A technical paper about localization in 1D, but you don't need to follow the calculations.
 
 ### Bonus: Find your own paper to review!
 

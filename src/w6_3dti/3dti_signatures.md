@@ -14,7 +14,7 @@ warnings.simplefilter("ignore", UserWarning)
 
 def bhz(L, W, H, system_type):
     """A cuboid region of BHZ material with two leads attached.
-    
+
     parameters for leads and scattering region can be defined separately
     """
     # Onsite and hoppings matrices used for building BHZ model
@@ -42,9 +42,9 @@ def bhz(L, W, H, system_type):
         x1, y1, z1 = site1.pos
         x2, y2, z2 = site2.pos
         return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
-    
+
     lat = kwant.lattice.general(np.identity(3))    
-    
+
     if system_type == 'sys':
         syst = kwant.Builder()
         syst[lat.shape(shape_syst, (0,0,0))] = lambda site, p: onsite(site, p) - p.mu_scat * np.eye(4)
@@ -53,7 +53,7 @@ def bhz(L, W, H, system_type):
         syst = kwant.Builder(sym)
         syst[lat.shape(shape_lead, (0,0,0))] = lambda site, p: onsite(site, p) - p.mu_lead * np.eye(4)
     elif system_type == 'infinite':
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs)) 
+        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = lambda site, p: onsite(site, p) - p.mu_lead * np.eye(4)
 
     syst[kwant.HoppingKind((1,0,0), lat)] = hopx_phase
@@ -98,12 +98,12 @@ def plot_bands(p, L, W, H):
 
 
 def plot_cond_spect(mu, cond_plot, bands_plot):
-    return (cond_plot*holoviews.VLine(mu)(style={'color': 'b'}) + 
+    return (cond_plot*holoviews.VLine(mu)(style={'color': 'b'}) +
             bands_plot.relabel('Spectrum')*holoviews.HLine(mu)(style={'color': 'b'}))
 
 
 def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
-    
+
     def evaluate_on_grid(X, Y, func):
         """ X, Y should be in np.meshgrid form. It's enough for func to work on floats. """
         data = []
@@ -119,7 +119,7 @@ def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
                       C* 0.5 * ( (kx+1j*ky)**3 + (kx-1j*ky)**3 ) * pauli.sz)
             return sla.eigh(matrix)[0]
         return func
-    
+
     zmin, zmax = -1.0, 3.5
     xylims = (-1.2, 1.2)
     zlims = (-1.0, 3.5)
@@ -139,7 +139,7 @@ def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
     kwargs = {'extents': (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
               'kdims': kdims,
               'vdims': vdims}
-    
+
     # hex_cmap colormap is defined below.
     %opts Trisurface (cmap=hex_cmap linewidth=0)
     plot = holoviews.Overlay([holoviews.Trisurface((x.flat, y.flat, energies[:, :, i].flat), **kwargs)(plot=style)
@@ -191,11 +191,11 @@ It is also the behavior that is observed experimentally. In the figure below, yo
 
 (copyright Hasan lab, Princeton, see license in the beginning of the chapter)
 
-Note that in such a measurement, you cannot separate contributions of states coming from the different surfaces, or potentially also from the sides or the sample, or even from the bulk - we'll discuss this issue soon in more detail. 
+Note that in such a measurement, you cannot separate contributions of states coming from the different surfaces, or potentially also from the sides or the sample, or even from the bulk - we'll discuss this issue soon in more detail.
 
 Nevertheless, the observed maximum in resistance corresponds to the minimum in conductance computed just above, and it demonstrates the presence of a Dirac point between the conduction and valence bands.
 
-This behavior discussed above is not very striking. For instance, the same behavior is observed in graphene. The conductance is not sensitive to degeneracies in the electron spectrum in a qualitative way, so just from it, we cannot demonstrate that the surface of a 3D TI has a single Dirac cone, unlike graphene which has four. Hence, while the measurement above is a signature of a surface state, it is not a particularly striking one. 
+This behavior discussed above is not very striking. For instance, the same behavior is observed in graphene. The conductance is not sensitive to degeneracies in the electron spectrum in a qualitative way, so just from it, we cannot demonstrate that the surface of a 3D TI has a single Dirac cone, unlike graphene which has four. Hence, while the measurement above is a signature of a surface state, it is not a particularly striking one.
 
 Perhaps we will be more lucky with topological signatures of 3D topological insulators, if we look at the Hall conductance?
 
@@ -205,13 +205,13 @@ In last chapter, we saw that one single surface of a 3D topological insulator is
 
 You may say - OK, we can live with this and be happy with our $(2n+1)$ sequence. After all, it looks almost as unique as the $(n+1/2)$ sequence. Sure, it does not allow us to see directly the half-integer value, but it gives a step between plateaus which is twice the usual one, and no plateau with $n=0$. After all, measuring *twice* that sequence was a good enough probe for graphene.
 
-So let's look at a Hall conductance measurements performed on a slab of a 3D TI, focusing for instance on the blue trace. 
+So let's look at a Hall conductance measurements performed on a slab of a 3D TI, focusing for instance on the blue trace.
 
 ![](figures/LL_spectroscopy.png)
 
 (copyright Hasan lab, Princeton, see license in the beginning of the chapter)
 
-You see a sequence of plateaus with integer steps of a normal height $e^2/h$. Nothing special. Why did our prediction of a $(2n+1)$ sequence fail? 
+You see a sequence of plateaus with integer steps of a normal height $e^2/h$. Nothing special. Why did our prediction of a $(2n+1)$ sequence fail?
 
 The reason is that there is no symmetry at all between top and bottom surfaces, they are really independent. For instance, they might have different doping, and hence be characterized by different values $n_\textrm{top}$ and $n_\textrm{bottom}$ of the Chern integer.
 
@@ -272,18 +272,18 @@ MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=
 
 Scanning tunneling microscopy (STM) is another tool to image surface states in a topological insulator. In the process of STM we tunnel electrons into the surface from a metallic tip. In contrast to ARPES, the electrons are not going into free space, so we don't have momentum resolution. On the other hand, we do trade momentum resolution for nearly atomic spatial resolution. We know where exactly on the surface the electron came from.
 
-Tunneling into a uniform surface can tell us a little bit about which orbital on an atom, the electrons at a certain energy come from. Otherwise, we'd see a uniform surface, which wouldn't have much information.  We can make things more interesting and, strangely enough, get more information by sprinkling some impurities on the surface. The impurities scatter the surface electrons and produce a standing wave pattern on the surface, which depends on the Fermi surface momenta of the electrons at the particular tunneling energy (Note: in this unit we refer to the equal energy surface in momentum space at the tunneling energy as Fermi surface for convenience). The resulting pattern is referred to QPI. Specifically, Fourier transforming the QPI pattern directly maps out the momentum transfer across the Fermi-surface of the surface state. 
+Tunneling into a uniform surface can tell us a little bit about which orbital on an atom, the electrons at a certain energy come from. Otherwise, we'd see a uniform surface, which wouldn't have much information.  We can make things more interesting and, strangely enough, get more information by sprinkling some impurities on the surface. The impurities scatter the surface electrons and produce a standing wave pattern on the surface, which depends on the Fermi surface momenta of the electrons at the particular tunneling energy (Note: in this unit we refer to the equal energy surface in momentum space at the tunneling energy as Fermi surface for convenience). The resulting pattern is referred to QPI. Specifically, Fourier transforming the QPI pattern directly maps out the momentum transfer across the Fermi-surface of the surface state.
 
-Clearly, we can expect to map out some properties of the momentum space scattering on the surface of the topological insulator. 
+Clearly, we can expect to map out some properties of the momentum space scattering on the surface of the topological insulator.
 
-In the simulation below. we see that the Fourier transform shows an interesting pattern: 
+In the simulation below. we see that the Fourier transform shows an interesting pattern:
 
 ![](figures/QPI_pic_adapted.png)
 (adapted, copyright Hasan lab, Princeton, see license in the beginning of the chapter)  
 
 By comparing the QPI patterns showing spin-dependent and spin-independent scattering (respectively on the left and right column on the right side of the arrow), we see that the intensity at momenta connecting opposite points on the Fermi surface is suppressed in the case of spin-independent scattering.
 
-In fact, by comparing the fourier transform of the QPI on the right with the Fermi surface on the left, we begin to see that the absence of back-scattering, which is one of the key properties of the topological insulator surface state plays a key role. As you might remember from the quantum spin hall systems - elastic backscattering of electrons is forbidden between states at $\bf k$ and $-\bf k$ because of Kramers' theorem. Looking at the QPI pattern from spin-independent impurities and comparing it with the Fermi surface confirms this. 
+In fact, by comparing the fourier transform of the QPI on the right with the Fermi surface on the left, we begin to see that the absence of back-scattering, which is one of the key properties of the topological insulator surface state plays a key role. As you might remember from the quantum spin hall systems - elastic backscattering of electrons is forbidden between states at $\bf k$ and $-\bf k$ because of Kramers' theorem. Looking at the QPI pattern from spin-independent impurities and comparing it with the Fermi surface confirms this.
 
 # The issue of bulk conductivity
 
@@ -314,10 +314,7 @@ It's clear that this shape cannot be explained by the Dirac Hamiltonian with its
 
 This is exactly what was done in this article:
 
-
-```python
-PreprintReference("0908.1418", show_abstract=False)
-```
+* arXiv:0908.1418
 
 There Liang Fu made a relatively simple theoretical exercise. He listed all the terms in the Hamiltonian allowed by time-reversal and crystalline symmetries, that are proportional to $k^3.$ This is the result:
 

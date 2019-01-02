@@ -19,10 +19,7 @@ We are interested in the spectrum below the gap. There are two interesting param
 
 Compare your results to the following paper, particularly Fig. 2.
 
-
-```python
-display_html(PreprintReference('0804.4469', show_abstract=False))
-```
+* arXiv:0804.4469
 
 ## Majorana in a crystalline defect
 
@@ -46,13 +43,21 @@ MoocDiscussion('Labs', 'Topological defects')
 
 # Review assignment
 
+### arXiv:0707.1692
 
-```python
-display_html(PreprintReference('0707.1692', description="In detail, how to create and manipulate Majoranas on the 3D TI surface."))
-display_html(PreprintReference('1112.3527', description="The Josephson effect on a 3D TI, in real life."))
-display_html(PreprintReference('1208.6303', description="Disclinations"))
-display_html(PreprintReference('1105.4351', description="How weak is weak?"))
-```
+**Hint:** In detail, how to create and manipulate Majoranas on the 3D TI surface.
+
+### arXiv:1112.3527
+
+**Hint:** The Josephson effect on a 3D TI, in real life.
+
+### arXiv:1208.6303
+
+**Hint:** Disclinations.
+
+### arXiv:1105.4351
+
+**Hint:** How weak is weak?
 
 ### Bonus: Find your own paper to review!
 

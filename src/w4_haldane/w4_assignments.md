@@ -39,12 +39,17 @@ MoocDiscussion('Labs', 'Chern insulators')
 
 # Review assignment
 
+### arXiv:1012.4723
 
-```python
-display_html(PreprintReference('1012.4723', description="The hunt for flat bands"))
-display_html(PreprintReference('1409.6715', description="Making a Chern insulator more like quantum Hall effect"))
-display_html(PreprintReference('1208.4579', description="A Chern insulator without lattice"))
-```
+**Hint:** The hunt for flat bands.
+
+### arXiv:1409.6715
+
+**Hint:** Making a Chern insulator more like quantum Hall effect.
+
+### arXiv:1208.4579
+
+**Hint:** A Chern insulator without lattice.
 
 ### Bonus: Find your own paper to review!
 

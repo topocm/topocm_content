@@ -7,13 +7,22 @@ init_notebook()
 
 # Review assignment
 
+### arXiv:0910.2763
 
-```python
-display_html(PreprintReference('0910.2763', description="Fractional quantum Hall effect in graphene"))
-display_html(PreprintReference('1204.5479', description="Fractional Majoranas in fractional quantum Hall edges"))
-display_html(PreprintReference('0803.0272', description="A scheme for quantum computation using the toric code"))
-display_html(PreprintReference('1502.01665', description="Making a fractional quantum Hall effect by coupling wires"))
-```
+**Hint:** Fractional quantum Hall effect in graphene
+
+### arXiv:1204.5479
+
+**Hint:** Fractional Majoranas in fractional quantum Hall edges
+
+### arXiv:0803.0272
+
+**Hint:** A scheme for quantum computation using the toric code
+
+### arXiv:1502.01665
+
+**Hint:** Making a fractional quantum Hall effect by coupling wires
+
 
 ### Bonus: Find your own paper to review!
 

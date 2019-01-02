@@ -17,7 +17,7 @@ sys.path.extend(module_dir)
 
 
 __all__ = [
-    'MoocVideo', 'PreprintReference', 'MoocDiscussion',
+    'MoocVideo', 'MoocDiscussion',
     'MoocCheckboxesAssessment', 'MoocMultipleChoiceAssessment',
     'MoocSelfAssessment'
 ]
@@ -79,39 +79,6 @@ class MoocVideo(MoocComponent, display.YouTubeVideo):
                 '<iframe class="embed-responsive-item" '
             ))
         )
-
-
-class PreprintReference:
-    def __init__(self, index, description="", show_abstract=True):
-        """Formatted basic information from arxiv preprint."""
-
-        arxiv_query = "http://export.arxiv.org/api/query?id_list="
-        self.index = index
-        self.show_abstract = show_abstract
-        self.description = description
-        self.data = feedparser.parse(arxiv_query + index)
-
-    def _repr_html_(self):
-        data = self.data
-        ind = self.index
-        title = data['entries'][0]['title']
-        s = '<h3 class="title mathjax">' + title + '</h3>'
-
-        s += f'<p><a href=http://arxiv.org/abs/%s>http://arxiv.org/abs/%s</a><br>' % (ind, ind)
-
-        s += '<div class="authors">'
-        s += ", ".join(author.name for author in data['entries'][0]['authors'])
-        s += '</div></p>'
-
-        if self.show_abstract:
-            s += '<p><blockquote class="abstract mathjax">'
-            s += data['entries'][0]['summary']
-            s += '</blockquote></p>'
-
-        if self.description:
-            s += '<p><b>Hint:</b> %s </p>' % self.description
-
-        return s
 
 
 class MoocSelfAssessment(MoocComponent):

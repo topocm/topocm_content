@@ -17,8 +17,8 @@ The main concepts and mathematical ideas will be presented in the context of rea
 MoocVideo("i-eNPei2zMg", src_location="10.2-intro")
 ```
 
-The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under 
-a <a rel="license"
+The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under a
+<a rel="license"
 href="http://creativecommons.org/licenses/by-sa/4.0/"
 target="_blank">Creative Commons Attribution-ShareAlike 4.0
 International License.</a>
@@ -46,10 +46,7 @@ The constraint counting does not tell you where the mode will be located, but if
 
 A study of the vibrational modes of this chain was presented in the original paper of Kane and Lubensky, which was mentioned in the introductory video:
 
-
-```python
-PreprintReference('1308.0554', description="", show_abstract=False)
-```
+* arXiv:1308.0554
 
 We shall now show that the zero mode localized at the edge is a time snaphot of a non-linear object, the kink that separates regions of left and right leaning rotors, a bit like a domain wall in an Ising model:
 
@@ -81,7 +78,7 @@ $$
 $$
 
 where $\bar u\equiv |r\sin\bar\theta|>0$. Besides the uniform left- and right-leaning solutions
-$u(x)=\pm \bar u$, this equation admits only one *zero-energy* solution (for $u<\bar{u}$) given by the kink 
+$u(x)=\pm \bar u$, this equation admits only one *zero-energy* solution (for $u<\bar{u}$) given by the kink
 
 $$
 u(x) = \bar u\tanh\left(\frac{x-x_0}{w_0}\right),
@@ -138,12 +135,9 @@ MoocVideo("BE4NDhfdpBQ", src_location="10.2-topological-linkages-I")
 MoocVideo("mRjpzC4rJx0", src_location="10.2-topological-linkages-II")
 ```
 
-If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper: 
+If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper:
 
-
-```python
-PreprintReference('1404.2263', description="", show_abstract=False)
-```
+* arXiv:1404.2263
 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](http://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
@@ -208,7 +202,7 @@ Consider the example in the right panel of the figure. Note that if you apply a 
 
 We see therefore that states of self stress are assignments of tensions or compressions to (some of) the bonds that do not result in net forces on the nodes. As such, they are *dual* to the zero energy mechanical modes, which are displacements of some of the sites that do not result in tensions or compressions of the bonds (that's why they cost zero elastic energy).
 
-This relation between states of self stress and zero modes can be made more precise by introducing the rigidity, or compatibility, matrix $R_{ij}$ that describes the small distortions of the mechanical structure captured by linear elastic theories. This $R$ matrix relates the bond extensions $e_i = R_{ij} u_j$ to the site displacements $u_j$. 
+This relation between states of self stress and zero modes can be made more precise by introducing the rigidity, or compatibility, matrix $R_{ij}$ that describes the small distortions of the mechanical structure captured by linear elastic theories. This $R$ matrix relates the bond extensions $e_i = R_{ij} u_j$ to the site displacements $u_j$.
 
 The zero energy modes are members of the null space of $R_{ij}$, which in an isostatic system are also the (right) eigenvectors of $R_{ij}$ with eigenvalue 0. (Convince yourself that the rigidity matrix is square for an isostatic system.)
 
@@ -218,7 +212,7 @@ Here we merely remark that if one smoothly deforms the network without cutting b
 
 # Topological band theory
 
-The first step is to set up a topological band theory of vibrational modes by defining the Fourier-transformed rigidity matrix $R(\mathbf{k})$ whose determinant is complex: $\det R(\mathbf{k}) \equiv |\det R(\mathbf{k})|e^{i\phi(\mathbf{k})}$. Consider now for simplicity a two dimensional lattice whose phonons are gapped, away from $\mathbf{k}=\mathbf{0}$, like the twisted Kagome lattice shown at the end of the introductory video. 
+The first step is to set up a topological band theory of vibrational modes by defining the Fourier-transformed rigidity matrix $R(\mathbf{k})$ whose determinant is complex: $\det R(\mathbf{k}) \equiv |\det R(\mathbf{k})|e^{i\phi(\mathbf{k})}$. Consider now for simplicity a two dimensional lattice whose phonons are gapped, away from $\mathbf{k}=\mathbf{0}$, like the twisted Kagome lattice shown at the end of the introductory video.
 
 Two winding numbers,
 $n_i=\{n_1,n_2\}$, of $\phi(\mathbf{k})$ can be evaluated using
@@ -247,12 +241,12 @@ $$
 
 where $\hat{n}$ is the inward-pointing normal to the boundary, and $V_\text{cell}$ is the $d$-dimensional volume of the unit cell.
 
-Notice that this result applies to a **patch** of the material, unlike the original Maxwell count which is a **global** statement. It can be understood intuitively with the aid of the electrostatic analogy to polarized media. Just as Gauss's law yields the net charge enclosed in a region from the flux of the *electric* polarization through its boundary, the net 
-value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given by the flux of the *topological* polarization through its boundary. 
+Notice that this result applies to a **patch** of the material, unlike the original Maxwell count which is a **global** statement. It can be understood intuitively with the aid of the electrostatic analogy to polarized media. Just as Gauss's law yields the net charge enclosed in a region from the flux of the *electric* polarization through its boundary, the net
+value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given by the flux of the *topological* polarization through its boundary.
 
 # Dislocations and topological zero modes
 
-Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes. 
+Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes.
 
 
 ```python
@@ -263,29 +257,26 @@ The key point in designing the lattice in the video  is that the dislocations mu
 
 More details can be found in this paper:
 
+* arXiv:1406.3323
 
-```python
-PreprintReference('1406.3323', show_abstract=False)
-```
+Since no lattice point disclinations are used, every lattice point still has exactly four bonds emanating from it (remember the condition for isostaticity from the first control question!).
 
-Since no lattice point disclinations are used, every lattice point still has exactly four bonds emanating from it (remember the condition for isostaticity from the first control question!). 
-
-Each dislocation is characterized by a topological charge of its own called the Burgers vector, $\bf b$, that measures the deficit in *any* circuit surrounding it that would be closed in a perfect lattice. The dipole moment, $\bf d$, of the 
+Each dislocation is characterized by a topological charge of its own called the Burgers vector, $\bf b$, that measures the deficit in *any* circuit surrounding it that would be closed in a perfect lattice. The dipole moment, $\bf d$, of the
 five- and seven-fold coordinated plaquettes (highlighted in green and orange respectively)
 is obtained upon rotating $\bf b$ by $\pi/2$. It points outward from the added strip of material that terminates at the dislocation, and its length is equal to the width of that strip. Therefore, $\bf d$ quantifies the orientation and size of the effective ‘‘edge’’ created by the dislocation. The dipole moments of the dislocation on the left in the video (${\bf d}_l = (2/\sqrt{3})({\bf a}_1- {\bf a}_2/2)$)  and on the right (${\bf d}_r =-{\bf d}_l$) are aligned with and against the
 lattice polarization, respectively (see also the last figure).
 
-If you evaluate the flux of the topological polarization, $\mathbf{P}_T$, through a contour encircling an isolated dislocation using the last equation of the previous unit, you obtain 
+If you evaluate the flux of the topological polarization, $\mathbf{P}_T$, through a contour encircling an isolated dislocation using the last equation of the previous unit, you obtain
 
 $$
 \nu_\text{T} =\frac{1}{V_\text{cell}}\mathbf{P}_T  \cdot  \mathbf{d},
 $$
 
-where $V_\text{cell} = |\,\textbf{a}_1\,\times\,\textbf{a}_2\,|$ is the unit cell area. The topologically protected modes arise from a delicate interplay between 
-a Berry phase associated with cycles in the Brillouin zone, embedded in ${\bf P}_T$, and the Berry phase of a topological 
+where $V_\text{cell} = |\,\textbf{a}_1\,\times\,\textbf{a}_2\,|$ is the unit cell area. The topologically protected modes arise from a delicate interplay between
+a Berry phase associated with cycles in the Brillouin zone, embedded in ${\bf P}_T$, and the Berry phase of a topological
 defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$).
 
-A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers. 
+A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
 
 ```python
@@ -327,7 +318,7 @@ class FigurePlot(ElementPlot):
         element = self.hmap.last
         self.handles['fig'] = element.data
         return self.handles['fig']
-    
+
     def _init_axis(self, fig, ax):
         """Override this method to avoid creating a useless figure."""
         return None, None
@@ -370,14 +361,11 @@ As you can see, by controlling the position of states of self stress, you can pr
 
 You can find out more details in this paper.
 
-
-```python
-PreprintReference('1502.03396', show_abstract=False)
-```
+* arXiv:1502.03396
 
 In summary, states of self stress and zero modes represent **propensities** that a structure has to respond by mechanical failure (triggered by stress concentrations) or free motion respectively. In topological mechanics we control how these states of motion or stress are positioned in a material by lattice geometry and topology, rather than variations in local properties like elastic moduli or local coordination.
 
-As a result these states are designed to be topologically robust under smooth deformations and yet tunable, e.g. you can choose where to position them by adding defects to the lattice and choose their localization properties by playing with the gap. The tunability in response to changes in lattice structure is a crucial feature that lets us exploit the properties of weak topological insulators in a mechanical context. 
+As a result these states are designed to be topologically robust under smooth deformations and yet tunable, e.g. you can choose where to position them by adding defects to the lattice and choose their localization properties by playing with the gap. The tunability in response to changes in lattice structure is a crucial feature that lets us exploit the properties of weak topological insulators in a mechanical context.
 
 # Conclusions
 

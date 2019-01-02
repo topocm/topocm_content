@@ -104,11 +104,11 @@ The easiest way to install `kwant` when you are using Linux or OS X is with `con
 
        bash Miniconda3-latest-MacOSX-x86_64.sh
 
-   and follow its instructions. Make sure that ``conda`` is in your PATH, which you 
+   and follow its instructions. Make sure that ``conda`` is in your PATH, which you
    can do by adding ``export PATH="$HOME/miniconda3/bin:$PATH"`` to your ``.bashrc``
    or ``.bash_profile``.
 
-3. Add the [conda-forge](https://conda-forge.github.io/) channel and install 
+3. Add the [conda-forge](https://conda-forge.github.io/) channel and install
    Kwant and its dependencies with:
 
        conda config --add channels conda-forge
@@ -122,7 +122,7 @@ Every document that you see in our course (including the one that you are readin
 
 These notebooks are extremely handy, they allow:
 
-* To use an interactive computing environment where you can see what your simulation does right as you are creating it. 
+* To use an interactive computing environment where you can see what your simulation does right as you are creating it.
 * To combine nicely formatted text (with Latex equations and images) together with code in any language and the output of that code.
 * To easily share that same code: here, take a look at the source of [the notebook](http://nbviewer.ipython.org/github/topocm/topocm_content/blob/master/w0_background/intro.ipynb) that you are currently reading.
 * To convert it to a presentation, blog post, or an EdX course.
@@ -160,21 +160,26 @@ We are mostly going to focus on the overall structure of the field and study the
 For a more formal and complete source of information on topological insulators and superconductors we recommend you to look into the reviews below. (Of course we think they will be much easier to follor after you finish the course).
 
 
-```python
-display_html(HTML("<h2>Topological insulator reviews</h2>"),
-             PreprintReference("0801.0901", show_abstract=False),
-             PreprintReference("1002.3895", show_abstract=False),
-             PreprintReference("1008.2026", show_abstract=False),
-             HTML("<h2>Majorana fermion reviews</h2>"),
-             PreprintReference("1112.1950", show_abstract=False),
-             PreprintReference("1202.1293", show_abstract=False),
-             PreprintReference("1206.1736", show_abstract=False),
-             PreprintReference("1407.2131", show_abstract=False),
-             HTML("<h2>Advanced topics: Fractional particles and topological quantum computation</h2>"),
-             PreprintReference("0707.1889", show_abstract=False),
-             PreprintReference("0711.4697", show_abstract=False),
-             PreprintReference("1404.0897", show_abstract=False),
-             HTML("<h2>Extra topics</h2>"),
-             PreprintReference("1211.5623", show_abstract=False),
-             PreprintReference("1501.00531", show_abstract=False))
-```
+## Topological insulator reviews
+
+* arXiv:0801.0901
+* arXiv:1002.3895
+* arXiv:1008.2026
+
+## Majorana fermion reviews
+
+* arXiv:1112.1950
+* arXiv:1202.1293
+* arXiv:1206.1736
+* arXiv:1407.2131
+
+## Advanced topics: Fractional particles and topological quantum computation
+
+* arXiv:0707.1889
+* arXiv:0711.4697
+* arXiv:1404.0897
+
+## Extra topics
+
+* arXiv:1211.5623
+* arXiv:1501.00531
