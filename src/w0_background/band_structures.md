@@ -14,5 +14,5 @@ as waves. We can always write a wave equation for waves in the form of the famou
 $$i\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
-Just to give you a sense of how a familiar wave-equation for a string $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string.
+Just to give you a sense of what a Schrodinger equation might look like let us convert a familiar wave-equation for a string to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. 
 <!-- YOUR TEXT GOES HERE -->
