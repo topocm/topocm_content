@@ -18,7 +18,11 @@ Just to give you a sense of what a Schrodinger equation might look like let us c
 $$\partial_t h = c\partial_x h_1$$ and 
 $$\partial_t h_1=-c\partial_x h.$$
 
-We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0h_1(x,t)\end{array}\right)\partial_x.$$ Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation. But this indeed is the wave-function for helical Majorana particles that we will encounter later on.
+We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)\partial_x.$$ Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation. But this indeed is the wave-function for helical Majorana particles that we will encounter later on.
+
+The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$ where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
+
+The main things you should remember about wave equations for electrons is that (a) $\Psi(x,t)$ is complex, (b) H is a Hermitean (clarified later)  matrix or operator (c) density of electrons are related to $|\Psi(x,t)|^2$. The last more subtle point we need to talk about, which has to do with materials containing many electrons, is the \textit{Pauli exclusion principle}. When we have many electrons we have to choose wave-functions for each electron to occupy. These wave-functions must be taken to be "orthogonal" (elaborated later). 
 
 
 <!-- YOUR TEXT GOES HERE -->
