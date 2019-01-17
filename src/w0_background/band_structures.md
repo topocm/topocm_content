@@ -11,7 +11,7 @@ init_notebook()
 For most of this course, all you would need to know 
 quantum mechanics is that particles should really be treated
 as waves. We can always write a wave equation for waves in the form of the famous Schrodinger equation 
-$$i\partial_t \Psi = H\Psi,$$
+$$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
 Just to give you a sense of what a Schrodinger equation might look like let us convert a familiar wave-equation for a string to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\inf}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
@@ -24,5 +24,5 @@ The wave-function $\Psi$ in the Schrodinger equation that describes electrons is
 
 The main things you should remember about wave equations for electrons is that (a) $\Psi(x,t)$ is complex, (b) H is a Hermitean (clarified later)  matrix or operator (c) density of electrons are related to $|\Psi(x,t)|^2$. The last more subtle point we need to talk about, which has to do with materials containing many electrons, is the \textit{Pauli exclusion principle}. When we have many electrons we have to choose wave-functions for each electron to occupy. These wave-functions must be taken to be "orthogonal" (elaborated later). 
 
-
+Since we will be interested in static properties of electrons in materials for much of our course, it helps to make the simplofying ansatz: $\Psi=e^{-i E t/\hbar}\psi$
 <!-- YOUR TEXT GOES HERE -->
