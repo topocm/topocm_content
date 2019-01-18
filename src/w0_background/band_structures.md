@@ -23,10 +23,11 @@ We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\
 The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$ where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
 
 The main things you should remember about wave equations for electrons is that 
->*(a) $\Psi(x,t)$ is complex, 
-*(b) H is a Hermitean (clarified later)  matrix or operator 
-*(c) density of electrons are related to $|\Psi(x,t)|^2$.
-*(d) If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
+
+* (a) $\Psi(x,t)$ is complex, 
+* (b) H is a Hermitean (clarified later)  matrix or operator 
+* (c) density of electrons are related to $|\Psi(x,t)|^2$.
+* (d) If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
 
 The last point is more subtle and is called the \textit{Pauli exclusion principle}. We will elaborate on orthogonality later.
 
@@ -47,15 +48,19 @@ You can dump this matrix into Mathematica and it will give you three eigenvector
 
 ## Bloch's theorem for bulk electrons
 
-Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle. We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem. To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. The defining characteristic of a crystal is that the atomic positions repeat in a periodic manner in space. We call the repeating group of orbitals a "unit-cell". Therefore, all orbitals in a crystal can be labeled as a pair $a=(l,n)$, where $l$ is the orbital poisition in the unit cell and $n$ labels the unit cell. For our example of a atomic ring, $l$ wouldn't be needed and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
+Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle. We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem. To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. The defining characteristic of a crystal is that the atomic positions repeat in a periodic manner in space. We call the repeating group of orbitals a **unit-cell**. Therefore, all orbitals in a crystal can be labeled as a pair $a=(l,n)$, where $l$ is the orbital poisition in the unit cell and $n$ labels the unit cell. For our example of a atomic ring, $l$ wouldn't be needed and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
 
 The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}=H_{(l,n-m),(l',0)}$ for all pairs of unit-cell $n$ and $m$. 
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz: $$\psi_{(l,n)}=e^{i k n}u_l,$$
 
 where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell. The parameter $k$ is called crystal momentum and is quite analogous to momentum 
-except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the \textit{Brillouin Zone}.
+except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the **Brillouin Zone**.
 You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
 >Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
 
 where $$H^{(k)Bloch}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
 The Bloch equation written above is an eigenvalue problem at any momentum $k$. The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
+
+### Su-Schrieffer-Heeger as an example
+
+Let us now work through an example.
