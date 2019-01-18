@@ -63,4 +63,4 @@ The Bloch equation written above is an eigenvalue problem at any momentum $k$. T
 
 ### Example: Su-Schrieffer-Heeger model
 
-Let us now work through an example. The Su-Schri
+Let us now work through an example. The Su-Schrieffer-Heeger model is the simplest model for polyacetylene, which to a physicist can be thought of as a chain of atoms with one orbital per atom. However, the hopping strength alternates (corresponding to the alternating bond-length ) between $t_1$ and $t_2$.
