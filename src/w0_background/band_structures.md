@@ -52,8 +52,10 @@ Actually, we didn't really need Mathematica to solve the problem of an electron 
 The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}=H_{(l,n-m),(l',0)}$ for all pairs of unit-cell $n$ and $m$. 
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz: $$\psi_{(l,n)}=e^{i k n}u_l,$$
 
-where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell.
-You can then substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
->Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
+where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell. The parameter $k$ is called crystal momentum and is quite analogous to momentum 
+except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the \textit{Brillouin Zone}.
+You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
+>Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
 
 where $$H^{(k)Bloch}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
+The Bloch equation written above is an eigenvalue problem at any momentum $k$. The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
