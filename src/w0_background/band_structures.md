@@ -61,6 +61,6 @@ You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{
 where $$H^{(k)Bloch}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
 The Bloch equation written above is an eigenvalue problem at any momentum $k$. The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
 
-### Su-Schrieffer-Heeger as an example
+### Example: Su-Schrieffer-Heeger model
 
-Let us now work through an example.
+Let us now work through an example. The Su-Schri
