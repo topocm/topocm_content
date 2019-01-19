@@ -63,4 +63,12 @@ The Bloch equation written above is an eigenvalue problem at any momentum $k$. T
 
 ### Example: Su-Schrieffer-Heeger model
 
-Let us now work through an example. The Su-Schrieffer-Heeger model is the simplest model for polyacetylene, which to a physicist can be thought of as a chain of atoms with one orbital per atom. However, the hopping strength alternates (corresponding to the alternating bond-length ) between $t_1$ and $t_2$.
+Let us now work through an example. The Su-Schrieffer-Heeger (SSH) model is the simplest model for polyacetylene, which to a physicist can be thought of as a chain of atoms with one orbital per atom. However, the hopping strength alternates (corresponding to the alternating bond-length ) between $t_1$ and $t_2$. Ususally you could assume that since each orbital has one atom there is only one atom per unit cell. But this would mean all the atoms are identical. On the other hand, in polyacetylene, half the atoms are on the right end of a short bond and half of them are on the left. 
+> Thus there are two kinds of atoms - the former kind we label $R$ and the latter $L$. Thus there are two orbitals per unit cell that we label $|L,n\rangle$ and $|R,n\rangle$ with $n$ being the unit-cell label.
+
+The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
+>The $2\times 2$ Bloch Hamiltonian is then written as $$H^{(k,Bloch)}_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
+
+The above Bloch Hamiltonian is a $2\times 2$ Hamiltonian at each $k$. We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
+> Therefore, as $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
+
