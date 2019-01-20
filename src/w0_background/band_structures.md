@@ -73,4 +73,10 @@ The above Bloch Hamiltonian is a $2\times 2$ Hamiltonian at each $k$. We can cal
 > Therefore, as $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
 This notion of an insulator will be rather important in our course. So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(k,-)}$ with ane electron at each $k$ leaving the upper state empty. This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
-> Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. This insulator is rather easy to understand in the $t_2=0$ limit and corresponds to the double bonds in the polyacetylene chain being occupied by localized electrons. 
+> Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. 
+
+This insulator is rather easy to understand in the $t_2=0$ limit and corresponds to the double bonds in the polyacetylene chain being occupied by localized electrons. 
+
+## k.p perturbation theory
+
+Finally let us now consider the effect of smoothness of $H^{k,Bloch}$ as a function of $k$.
