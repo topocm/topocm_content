@@ -14,7 +14,8 @@ as waves. The equation for any wave can be recast  in to  the form of the famous
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
-Just to give you a sense of what a Schrodinger equation actually looks like let us convert a familiar wave-equation for a string to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\inf}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
+In case you haven't been indoctrinated (skip this and the next paragraph if you have) with quantum mechanics , let me show you how to 
+convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\inf}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 $$\partial_t h = c\partial_x h_1$$ and 
 $$\partial_t h_1=-c\partial_x h.$$
 
@@ -69,6 +70,8 @@ The Bloch equation written above is an eigenvalue problem at any momentum $k$. T
 
 Let us now work through an example. The Su-Schrieffer-Heeger (SSH) model is the simplest model for polyacetylene, which to a physicist can be thought of as a chain of atoms with one orbital per atom. However, the hopping strength alternates (corresponding to the alternating bond-length ) between $t_1$ and $t_2$. Ususally you could assume that since each orbital has one atom there is only one atom per unit cell. But this would mean all the atoms are identical. On the other hand, in polyacetylene, half the atoms are on the right end of a short bond and half of them are on the left. 
 > Thus there are two kinds of atoms - the former kind we label $R$ and the latter $L$. Thus there are two orbitals per unit cell that we label $|L,n\rangle$ and $|R,n\rangle$ with $n$ being the unit-cell label.
+
+![]figures/Trans-_CH_n.svg
 
 The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
 >The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H^{(k,Bloch)}_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
