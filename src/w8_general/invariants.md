@@ -247,7 +247,7 @@ This is a [polynomial eigenvalue problem](http://en.wikipedia.org/wiki/Nonlinear
 
 $$
 \begin{pmatrix}
-- t_r & 0\\
+-t_r & 0\\
 0 & 1
 \end{pmatrix} \psi'=
 z\begin{pmatrix}
