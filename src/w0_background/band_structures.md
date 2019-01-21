@@ -67,10 +67,10 @@ Let us now work through an example. The Su-Schrieffer-Heeger (SSH) model is the 
 > Thus there are two kinds of atoms - the former kind we label $R$ and the latter $L$. Thus there are two orbitals per unit cell that we label $|L,n\rangle$ and $|R,n\rangle$ with $n$ being the unit-cell label.
 
 The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
->The $2\times 2$ Bloch Hamiltonian is then written as $$H^{(k,Bloch)}_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
+>The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H^{(k,Bloch)}_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
 
-The above Bloch Hamiltonian is a $2\times 2$ Hamiltonian at each $k$. We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
-> Therefore, as $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
+We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
+> As $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
 This notion of an insulator will be rather important in our course. So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(k,-)}$ with ane electron at each $k$ leaving the upper state empty. This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
 > Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. 
@@ -79,4 +79,7 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 
 ## k.p perturbation theory
 
-Finally let us now consider the effect of smoothness of $H^{k,Bloch}$ as a function of $k$.
+Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $H^{k,Bloch}=H^{k=0,Bloch}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$. Using standrad perturbation theory 
+> we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)}^\dagger H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
+
+where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2.$  
