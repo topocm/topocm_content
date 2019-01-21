@@ -36,9 +36,12 @@ This ansatz simplifies the Schrodinger equation to a time-independent form:
 $$H\psi=E\psi,$$
 which resembles the eigenvalue problem in linear algebra.
 
-In fact, the linear algebra connection goes further. We will often consider electrons in materials within the so-called "tight-binding" approximation where electrons are assumed to occupy a discrete set of orbitals on atoms. We will then take $\psi_a$ to denote the wave-function amplitude of the electron on orbital $a$. We then consider $\psi_a$ to be the components of the wave-function $\psi$, which then becomes a vector. In this linear algebra analogy the Hamiltonian $H$ is seen as a matrix with components $H_{ab}$. With these definitions, the time-independent Schrodinger equation from the last paragraph really becomes an eigenvalue problem. Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$. How these are concretely done will become clearer as the course progresses.
+In fact, the good news for those of you familiar with linear algebra is that most of what we talk about is ultimately linear algebra. To model materials, We will often consider electrons within the so-called **tight-binding** approximation where electrons are assumed to occupy a discrete set of orbitals on atoms. We will then take $\psi_a$ to denote the wave-function amplitude of the electron on orbital $a$. We then consider $\psi_a$ to be the components of the wave-function $\psi$, which then becomes a vector. In this linear algebra analogy the Hamiltonian $H$ is seen as a matrix with components $H_{ab}$. With these definitions, the time-independent Schrodinger equation from the last paragraph really becomes an eigenvalue problem. Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$. 
+> A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are: (a) if $H$ is an $N\times N$ matrix, the eigenvalue index $n$ goes from $n=1,\dots,N$. (b) $H is **Hermitean** i.e. $H_{ab}=H_{ba}^*$. (c) Eigenstates are **orthogonal** i.e. $\psi^\dagger_n \psi_m=0$ for $m\neq n$.
 
-Physicists have a funny but convenient notation for doing linear algebra called the Dirac "bra-ket" notation. In this notation, wave-functions such as $\psi$ are represented by "kets" i.e. $\psi\rightarrow |\psi\rangle$. The components of the wave-function $\psi_a$ (i.e. the real information content) get represented by the equation: $$|\psi\rangle=\sum_a \psi_a |a\rangle.$$
+How this math is related to material will become clearer shortly.
+
+Physicists have a funny but convenient notation for doing linear algebra called the Dirac **bra-ket** notation. In this notation, wave-functions such as $\psi$ are represented by "kets" i.e. $\psi\rightarrow |\psi\rangle$. The components of the wave-function $\psi_a$ (i.e. the real information content) get represented by the equation: $$|\psi\rangle=\sum_a \psi_a |a\rangle.$$
 Similarly the Hamiltonian $H$ is elevated to being an operator defined as:$$H=\sum_{ab}H_{ab}|a\rangle \langle b|.$$ The object $\langle b|$ is called a bra and together with the ket it forms a "bra-ket" with the property $\langle b| a\rangle=\delta_{ab}$. The Schrodinger equation now looks like $$H|\psi\rangle = E|\psi\rangle,$$
 which can be checked to be the same equation as the linear algebra form. 
 
@@ -56,7 +59,7 @@ The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}
 where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell. The parameter $k$ is called crystal momentum and is quite analogous to momentum 
 except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the **Brillouin Zone**.
 You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
->Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
+>  Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
 
 where $$H^{(k)Bloch}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
 The Bloch equation written above is an eigenvalue problem at any momentum $k$. The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
@@ -80,6 +83,6 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 ## k.p perturbation theory
 
 Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $H^{k,Bloch}=H^{k=0,Bloch}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$. Using standrad perturbation theory 
-> we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)}^\dagger H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
+>  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)}^\dagger H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
 
 where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2.$  
