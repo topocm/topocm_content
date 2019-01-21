@@ -29,7 +29,7 @@ The main things you should remember about wave equations for electrons is that
 * density of electrons are related to $|\Psi(x,t)|^2$.
 * If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
 
-The last point is more subtle and is called the ** Pauli exclusion principle **. We will elaborate on orthogonality later.
+The last point is more subtle and is called the **Pauli exclusion principle**. We will elaborate on orthogonality later.
 
 Since we will be interested in static properties of electrons in materials for much of our course, it helps to make the simplifying ansatz: $\Psi=e^{-i E t/\hbar}\psi$.
 This ansatz simplifies the Schrodinger equation to a time-independent form:
