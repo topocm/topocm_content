@@ -114,7 +114,7 @@ Let's see what this band structure looks like (**once again move the slider** to
 ```python
 mus = np.arange(-3, 3, 0.25)
 
-plots = {(mu, Dirac_cone): bandstructure(mu, Dirac_cone=Dirac_cone) 
+plots = {(t1-t2, Dirac_cone): bandstructure(mu, Dirac_cone=Dirac_cone) 
          for mu in mus 
          for Dirac_cone in ["Show", "Hide"]}
 
@@ -129,7 +129,7 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 ## $k\cdot p$ perturbation theory
 
 Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $$H^{(k,Bloch)}=H^{(k=0,Bloch)}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$$. Using standard perturbation theory 
->  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)\dagger} H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)\dagger} H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
+>  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)\dagger} H^{'(k=0,Bloch)} u^{(n)}$ and $m_n^{-1}=u^{(n)\dagger} H^{''(k=0,Bloch)} u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'(k=0,Bloch)} u^{(m)}|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
 
 where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2$. 
 
@@ -137,4 +137,7 @@ where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $
 The series expansion of $H^{(k,Bloch)}$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
 A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|)$$. The label $n$ is discrete - analogous to the unit-cell label. In addition, we need to represent the $N\times N$ matrix structure of $H^{(k=0,Bloch)}$. This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$. Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
-$$H^{(k,Bloch)}\approx \sum_{n,a,b} (H^{(k=0,Bloch)}_{ab}+H^{''(k=0,Bloch)}_{ab})|n,a\rangle \langle n,b| +i H^{'(k=0,Bloch)}_{ab}(|n+1, a\rangle\langle n,b|-|n,a\rangle\langle n+1,b|) -H^{''(k=0,Bloch)}_{ab}(|n+2,a\rangle\langle n,b|+|n,a\rangle\langle n+2,b|).$$ 
+$$H^{(k,Bloch)}\approx \sum_{n,a,b} (H^{(k=0,Bloch)}_{ab}|n,a\rangle \langle n,b| +i H^{'(k=0,Bloch)}_{ab}(|n+1, a\rangle\langle n,b|-|n,a\rangle\langle n+1,b|),$$
+where we have dropped the $k^2$ term for compactness. Just in case you needed it in the future $k^2$ would discretize into $k^2=-\sum_n (|n\rangle \langle n+2|+|n+2\rangle\langle n|-2|n\rangle \langle n|)$.
+
+But wait! Didn't we just go in a circle by starting in a lattice Hamiltonian and coming back to a discrete Hamiltonian? Well, actually, the lattice in the discretized model from the last paragraph has almost nothing to do with the microscopic lattice we started with. More often then not, the lattice constant (i.e. effective size of the unit-cell) in the latter representation is orders of magnitude larger than the microscopic lattice constant. So, the discrete model following from $k\cdot p$ is orders of more efficient to work with than tht microscopic model, which is why we will most often work with these. Of course, there is always a danger of missing certain lattice level phenomena in such a coarse-grained model. Practically, we will often not even bother with the microscopic lattice model, but rather start with a continuum $k\cdot p$ model and then discretize it. This is because, the latter models can often be constrained quite well by a combination symmetry arguments as well as experimental measurements.
