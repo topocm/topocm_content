@@ -45,24 +45,13 @@ def kitaev_chain(L=None, periodic=False):
     return syst
 
 
-def bandstructure(mu, delta=1, t=1, Dirac_cone="Hide", show_pf=False):
+def bandstructure(mu, delta=1, t=1, Dirac_cone="Hide"):
     syst = kitaev_chain(None)
     p = SimpleNamespace(t=t, delta=delta, mu=mu)
     plot = holoviews.Overlay([spectrum(syst, p, ydim="$E/T$", xdim='$k$')][-4:4])
     h_1 = h_k(syst, p, 0)
     h_2 = h_k(syst, p, np.pi)
-    pfaffians = [find_pfaffian(h_1), find_pfaffian(h_2)]
-    
-    if show_pf:
-        signs = [('>' if pf > 0 else '<') for pf in pfaffians]
-        title = "$\mu = {mu} t$, Pf$(iH_{{k=0}}) {sign1} 0$, Pf$(iH_{{k=\pi}}) {sign2} 0$"
-        title = title.format(mu=mu, sign1=signs[0], sign2=signs[1])
-        plot *= holoviews.VLine(0) * holoviews.VLine(-np.pi)
-    else:
-        if pfaffians[0] * pfaffians[1] < 0:
-            title = "$\mu = {mu} t$, topological ".format(mu=mu)
-        else:
-            title = "$\mu = {mu} t$, trivial ".format(mu=mu)
+   
         
     if Dirac_cone == "Show":
         ks = np.linspace(-np.pi, np.pi)
@@ -177,7 +166,7 @@ where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $
 ### Discretizing continuum models for materials
 The series expansion of $H^{(k,Bloch)}$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
-A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|)$$. The label $n$ is discrete - analogous to the unit-cell label. In addition, we need to represent the $N\times N$ matrix structure of $H^{(k=0,Bloch)}$. This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$. Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
+A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|).$$ The label $n$ is discrete - analogous to the unit-cell label. In addition, we need to represent the $N\times N$ matrix structure of $H^{(k=0,Bloch)}$. This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$. Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
 $$H^{(k,Bloch)}\approx \sum_{n,a,b} (H^{(k=0,Bloch)}_{ab}|n,a\rangle \langle n,b| +i H^{'(k=0,Bloch)}_{ab}(|n+1, a\rangle\langle n,b|-|n,a\rangle\langle n+1,b|),$$
 where we have dropped the $k^2$ term for compactness. Just in case you needed it in the future $k^2$ would discretize into $k^2=-\sum_n (|n\rangle \langle n+2|+|n+2\rangle\langle n|-2|n\rangle \langle n|)$.
 
