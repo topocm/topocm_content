@@ -3,6 +3,32 @@ import sys
 sys.path.append('../code')
 from init_mooc_nb import *
 init_notebook()
+
+def bandstructure(mu, delta=1, t=1, Dirac_cone="Hide", show_pf=False):
+    syst = kitaev_chain(None)
+    p = SimpleNamespace(t=t, delta=delta, mu=mu)
+    plot = holoviews.Overlay([spectrum(syst, p, ydim="$E/T$", xdim='$k$')][-4:4])
+    h_1 = h_k(syst, p, 0)
+    h_2 = h_k(syst, p, np.pi)
+    pfaffians = [find_pfaffian(h_1), find_pfaffian(h_2)]
+    
+    if show_pf:
+        signs = [('>' if pf > 0 else '<') for pf in pfaffians]
+        title = "$\mu = {mu} t$, Pf$(iH_{{k=0}}) {sign1} 0$, Pf$(iH_{{k=\pi}}) {sign2} 0$"
+        title = title.format(mu=mu, sign1=signs[0], sign2=signs[1])
+        plot *= holoviews.VLine(0) * holoviews.VLine(-np.pi)
+    else:
+        if pfaffians[0] * pfaffians[1] < 0:
+            title = "$\mu = {mu} t$, topological ".format(mu=mu)
+        else:
+            title = "$\mu = {mu} t$, trivial ".format(mu=mu)
+        
+    if Dirac_cone == "Show":
+        ks = np.linspace(-np.pi, np.pi)
+        ec = np.sqrt((mu + 2 * t)**2 + 4.0 * (delta * ks)**2)
+        plot *= holoviews.Path((ks, ec), kdims=[dims.k, dims.E_t])(style={'linestyle':'--', 'color':'r'})
+        plot *= holoviews.Path((ks, -ec), kdims=[dims.k, dims.E_t])(style={'linestyle':'--', 'color':'r'})
+    return plot.relabel(title)
 ```
 
 # A quick review of band structures
@@ -81,6 +107,19 @@ The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,
 
 We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
 > As $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
+
+Let's see what this band structure looks like (**once again move the slider** to change $\mu$):
+
+
+```python
+mus = np.arange(-3, 3, 0.25)
+
+plots = {(mu, Dirac_cone): bandstructure(mu, Dirac_cone=Dirac_cone) 
+         for mu in mus 
+         for Dirac_cone in ["Show", "Hide"]}
+
+holoviews.HoloMap(plots, kdims=[dims.mu_t, "Dirac cone"])
+```
 
 This notion of an insulator will be rather important in our course. So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(k,-)}$ with ane electron at each $k$ leaving the upper state empty. This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
 > Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. 
