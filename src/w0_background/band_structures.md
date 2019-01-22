@@ -4,6 +4,47 @@ sys.path.append('../code')
 from init_mooc_nb import *
 init_notebook()
 
+%output size=150
+dims = SimpleNamespace(E_t=holoviews.Dimension(r'$E/t$'),
+                       mu_t=holoviews.Dimension(r'$\mu/t$'),
+                       lambda_=holoviews.Dimension(r'$\lambda$'),
+                       x=holoviews.Dimension(r'$x$'),
+                       k=holoviews.Dimension(r'$k$'),
+                       amplitude=holoviews.Dimension(r'$|u|^2 + |v|^2$'))
+
+holoviews.core.dimension.title_format = ''
+
+def kitaev_chain(L=None, periodic=False):
+    lat = kwant.lattice.chain()
+
+    if L is None:
+        syst = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
+        L = 1
+    else:
+        syst = kwant.Builder()
+
+    # transformation to antisymmetric basis
+    U = np.array([[1.0, 1.0], [1.j, -1.j]]) / np.sqrt(2)
+
+    def onsite(onsite, p): 
+        return - p.mu * U @ pauli.sz @ U.T.conj()
+    
+    for x in range(L):
+        syst[lat(x)] = onsite
+
+    def hop(site1, site2, p):
+        return U @ (-p.t * pauli.sz - 1j * p.delta * pauli.sy) @ U.T.conj()
+    
+    syst[kwant.HoppingKind((1,), lat)] = hop
+
+    if periodic:
+        def last_hop(site1, site2, p):
+            return hop(site1, site2, p) * (1 - 2 * p.lambda_)
+        
+        syst[lat(0), lat(L - 1)] = last_hop
+    return syst
+
+
 def bandstructure(mu, delta=1, t=1, Dirac_cone="Hide", show_pf=False):
     syst = kitaev_chain(None)
     p = SimpleNamespace(t=t, delta=delta, mu=mu)
