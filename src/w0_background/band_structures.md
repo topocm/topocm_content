@@ -14,6 +14,7 @@ as waves. The equation for any wave can be recast  in to  the form of the famous
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
+### Motivating the Schrodinger equation
 In case you haven't been indoctrinated (skip this and the next paragraph if you have) with quantum mechanics , let me show you how to 
 convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\inf}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 $$\partial_t h = c\partial_x h_1$$ and 
@@ -21,6 +22,7 @@ $$\partial_t h_1=-c\partial_x h.$$
 
 We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)\partial_x.$$ Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation. But this indeed is the wave-function for helical Majorana particles that we will encounter later on.
 
+### Schrodinger equation and wave-functions
 The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$ where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
 
 The main things you should remember about wave equations for electrons is that 
@@ -53,7 +55,8 @@ You can dump this matrix into Mathematica and it will give you three eigenvector
 
 ## Bloch's theorem for bulk electrons
 
-Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle. We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem. To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. The defining property of a crystal is that the atomic positions repeat in a periodic manner in space. We can account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. Therefore, all orbitals in a crystal can be labeled as a pair $a=(l,n)$, where $l$ is the orbital poisition in the unit cell and $n$ labels the unit cell. For our example of a atomic ring, $l$ wouldn't be needed and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
+Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle. We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem. To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. The defining property of a crystal is that the atomic positions repeat in a periodic manner in space. We can account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. We construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$. By combining the unit cell and the lattice vectors, we can construct positions $a=(l,n)$ 
+of all the orbitals in the crystal. For our example of a atomic ring, $l$ wouldn't be needed and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
 
 The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}=H_{(l,n-m),(l',0)}$ for all pairs of unit-cell $n$ and $m$. 
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz: $$\psi_{(l,n)}=e^{i k n}u_l,$$
@@ -86,7 +89,13 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 
 ## k.p perturbation theory
 
-Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $H^{k,Bloch}=H^{k=0,Bloch}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$. Using standrad perturbation theory 
->  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)}^\dagger H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
+Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $H^{k,Bloch}=H^{k=0,Bloch}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$. Using standard perturbation theory 
+>  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)\dagger} H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)\dagger} H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
 
-where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2.$  
+where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2$. 
+
+### Discretizing continuum models for materials
+The series expansion of $H^{(k,Bloch)}$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
+
+A continuum Hamiltonian is often easier to work with analytically then the crystal. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can represent $k$ as a discrete derivative operator:
+$$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|).$$ 
