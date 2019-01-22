@@ -17,7 +17,7 @@ where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian.
 
 ### Motivating the Schrodinger equation
 In case you haven't been indoctrinated (skip this and the next paragraph if you have) with quantum mechanics , let me show you how to 
-convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\inf}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
+convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 $$\partial_t h = c\partial_x h_1$$ and 
 $$\partial_t h_1=-c\partial_x h.$$
 
