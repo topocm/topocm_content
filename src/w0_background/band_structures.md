@@ -4,61 +4,6 @@ sys.path.append('../code')
 from init_mooc_nb import *
 init_notebook()
 
-%output size=150
-dims = SimpleNamespace(E_t=holoviews.Dimension(r'$E/t$'),
-                       mu_t=holoviews.Dimension(r'$\mu/t$'),
-                       lambda_=holoviews.Dimension(r'$\lambda$'),
-                       x=holoviews.Dimension(r'$x$'),
-                       k=holoviews.Dimension(r'$k$'),
-                       amplitude=holoviews.Dimension(r'$|u|^2 + |v|^2$'))
-
-holoviews.core.dimension.title_format = ''
-
-def kitaev_chain(L=None, periodic=False):
-    lat = kwant.lattice.chain()
-
-    if L is None:
-        syst = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
-        L = 1
-    else:
-        syst = kwant.Builder()
-
-    # transformation to antisymmetric basis
-    U = np.array([[1.0, 1.0], [1.j, -1.j]]) / np.sqrt(2)
-
-    def onsite(onsite, p): 
-        return - p.mu * U @ pauli.sz @ U.T.conj()
-    
-    for x in range(L):
-        syst[lat(x)] = onsite
-
-    def hop(site1, site2, p):
-        return U @ (-p.t * pauli.sz - 1j * p.delta * pauli.sy) @ U.T.conj()
-    
-    syst[kwant.HoppingKind((1,), lat)] = hop
-
-    if periodic:
-        def last_hop(site1, site2, p):
-            return hop(site1, site2, p) * (1 - 2 * p.lambda_)
-        
-        syst[lat(0), lat(L - 1)] = last_hop
-    return syst
-
-
-def bandstructure(mu, delta=1, t=1, Dirac_cone="Hide"):
-    syst = kitaev_chain(None)
-    p = SimpleNamespace(t=t, delta=delta, mu=mu)
-    plot = holoviews.Overlay([spectrum(syst, p, ydim="$E/T$", xdim='$k$')][-4:4])
-    h_1 = h_k(syst, p, 0)
-    h_2 = h_k(syst, p, np.pi)
-   
-        
-    if Dirac_cone == "Show":
-        ks = np.linspace(-np.pi, np.pi)
-        ec = np.sqrt((mu + 2 * t)**2 + 4.0 * (delta * ks)**2)
-        plot *= holoviews.Path((ks, ec), kdims=[dims.k, dims.E_t])(style={'linestyle':'--', 'color':'r'})
-        plot *= holoviews.Path((ks, -ec), kdims=[dims.k, dims.E_t])(style={'linestyle':'--', 'color':'r'})
-    return plot.relabel(title)
 ```
 
 # A quick review of band structures
@@ -138,18 +83,6 @@ The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,
 We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
 > As $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
-Let's see what this band structure looks like (**once again move the slider** to change $\mu$):
-
-
-```python
-mus = np.arange(-3, 3, 0.25)
-
-plots = {(t1-t2, Dirac_cone): bandstructure(mu, Dirac_cone=Dirac_cone) 
-         for mu in mus 
-         for Dirac_cone in ["Show", "Hide"]}
-
-holoviews.HoloMap(plots, kdims=[dims.mu_t, "Dirac cone"])
-```
 
 This notion of an insulator will be rather important in our course. So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(k,-)}$ with ane electron at each $k$ leaving the upper state empty. This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
 > Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. 
