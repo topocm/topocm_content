@@ -87,15 +87,15 @@ This notion of an insulator will be rather important in our course. So let us de
 
 This insulator is rather easy to understand in the $t_2=0$ limit and corresponds to the double bonds in the polyacetylene chain being occupied by localized electrons. 
 
-## k.p perturbation theory
+## $k\cdot p$ perturbation theory
 
-Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $H^{k,Bloch}=H^{k=0,Bloch}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$. Using standard perturbation theory 
->  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)\dagger} H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)\dagger} H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)}^\dagger H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
+Let us now think about how we can use the smoothness of $H^{k,Bloch}$ to predict energies and wave-functions at finite $k$ from $H^{k=0,Bloch}$ and its derivatives. We start by expanding the Bloch Hamiltonian $$H^{(k,Bloch)}=H^{(k=0,Bloch)}+k H^{'(k=0,Bloch)}+(k^2/2)H^{''(k=0,Bloch)}$$. Using standard perturbation theory 
+>  we can conclude that the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n = u^{(n)\dagger} H^{'(k=0,Bloch)} u_n$ and $m_n^{-1}=u^{(n)\dagger} H^{''(k=0,Bloch)} u_n+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'(k=0,Bloch)} u_n|^2}{E^{(k=0,n)}-E^{(k=0,m)}}$,
 
 where $E^{(k=0,n)}$ and $u^{(n)}$ are energy eigenvalues and eigenfunctions of $H^{(k=0,Bloch)}$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(k=0,n)}-E^{(k=0,m)}$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(k,-)}\simeq -(t_1-t_2)+\frac{t_2^2}{(t_1-t_2)}k^2$. 
 
 ### Discretizing continuum models for materials
 The series expansion of $H^{(k,Bloch)}$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
-A continuum Hamiltonian is often easier to work with analytically then the crystal. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can represent $k$ as a discrete derivative operator:
-$$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|).$$ 
+A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals. On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|)$$. The label $n$ is discrete - analogous to the unit-cell label. In addition, we need to represent the $N\times N$ matrix structure of $H^{(k=0,Bloch)}$. This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$. Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
+$$H^{(k,Bloch)}\approx \sum_{n,a,b} (H^{(k=0,Bloch)}_{ab}+H^{''(k=0,Bloch)}_{ab})|n,a\rangle \langle n,b| +i H^{'(k=0,Bloch)}_{ab}(|n+1, a\rangle\langle n,b|-|n,a\rangle\langle n+1,b|) -H^{''(k=0,Bloch)}_{ab}(|n+2,a\rangle\langle n,b|+|n,a\rangle\langle n+2,b|).$$ 
