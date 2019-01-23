@@ -52,22 +52,22 @@ which can be checked to be the same equation as the linear algebra form.
 ### Example: Atomic triangle
 Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom is assumed to have one orbital. We label the orbitals on the atoms as $|0\rangle,|1\rangle,|2\rangle$. With this labeling, the **hopping** amplitude $t$ of electrons between orbitals is represented by the Hamiltonian $$H=-t(|0\rangle \langle 1|+|1\rangle \langle 2|+|2\rangle \langle 0|)+h.c,$$
 where $h.c.$ stands for Hermitean conjugate, which means that you reverse the ordering of the labels and take a complex conjugate. We can also write the Hamiltonian in matrix form $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
-You can dump this matrix into Mathematica and it will give you three eigenvectors $\psi^{(n=1,2,3)}_a$ with energy eigenvalues $E^{(n=1,2,3)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$). The corresponding eigenvectors $\psi^{(n=1,2,3)}_a$ are $(1,1,1),(1,\omega,\omega^2),(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
+You can dump this matrix into Mathematica and it will give you three eigenvectors $\psi^{(n=1,2,3)}_a$ with energy eigenvalues $E^{(n=1,2,3)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$). The corresponding eigenvectors $\psi^{(n=1,2,3)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
 
 Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle. We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem. To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. The defining property of a crystal is that the atomic positions repeat in a periodic manner in space. We can account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. We construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$. By combining the unit cell and the lattice vectors, we can construct positions $a=(l,n)$ 
-of all the orbitals in the crystal. For our example of a atomic ring, $l$ wouldn't be needed and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
-
+of all the orbitals in the crystal. For our example of an atomic ring of size $N$, the index $l$ wouldn't be needed since there is only one orbital per unit-cell and $n$ would take values $1$ to $N$. In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
 The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}=H_{(l,n-m),(l',0)}$ for all pairs of unit-cell $n$ and $m$. 
+
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz: $$\psi_{(l,n)}=e^{i k n}u_l,$$
 
-where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell. The parameter $k$ is called crystal momentum and is quite analogous to momentum 
+where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell. The parameter $k$ is called crystal momentum and is quite analogous to momentum (apart from a factor of $\hbar$)
 except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the **Brillouin Zone**.
 You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
->  Thus the Bloch functions $u_l^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k)Bloch}u^{(k)}=E^{(k)}u^{(k)},$$
+>  Thus the Bloch functions $u^{(k)}$ and energies $E^{(k)}$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H^{(k,Bloch)}u^{(k)}=E^{(k)}u^{(k)},$$
 
-where $$H^{(k)Bloch}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
+where $$H^{(k,Bloch)}_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
 The Bloch equation written above is an eigenvalue problem at any momentum $k$. The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
 
 ### Example: Su-Schrieffer-Heeger model
@@ -80,7 +80,7 @@ Let us now work through an example. The Su-Schrieffer-Heeger (SSH) model is the 
 The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
 >The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H^{(k,Bloch)}_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
 
-We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(k,+)} goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
+We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(k,\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(k,+)}$ goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
 > As $k$ varies no energy eigenvalue $E^{k,\pm}$ ever enters the range $-(t_1-t_2)$ to $t_1-t_2$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
 
