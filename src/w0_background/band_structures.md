@@ -15,9 +15,11 @@ as waves. The equation for any wave can be recast  in to  the form of the famous
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
-### Motivating the Schrodinger equation
-In case you haven't been indoctrinated (skip this and the next paragraph if you have) with quantum mechanics , let me show you how to 
-convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string. This wave-equation is second order in time. Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
+### Beyond the Schrodinger equation
+In case you haven't been indoctrinated with quantum mechanics (skip this section if you have), let me show you how to 
+convert a familiar wave-equation for a string in to a Schrodinger-like form. You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string.
+This wave-equation is second order in time.
+Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 $$\partial_t h = c\partial_x h_1$$ and 
 $$\partial_t h_1=-c\partial_x h.$$
 
@@ -29,7 +31,7 @@ The wave-function $\Psi$ in the Schrodinger equation that describes electrons is
 The main things you should remember about wave equations for electrons is that 
 
 * $\Psi(x,t)$ is complex, 
-* H is a Hermitean (clarified later)  matrix or operator 
+* H is a Hermitian (clarified later)  matrix or operator 
 * density of electrons are related to $|\Psi(x,t)|^2$.
 * If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
 
@@ -41,7 +43,7 @@ $$H\psi=E\psi,$$
 which resembles the eigenvalue problem in linear algebra.
 
 In fact, the good news for those of you familiar with linear algebra is that most of what we talk about is ultimately linear algebra. To model materials, we will often consider electrons within the so-called **tight-binding** approximation where electrons are assumed to occupy a discrete set of orbitals on atoms. We will then take $\psi_a$ to denote the wave-function amplitude of the electron on orbital $a$. The wave-function amplitudes $\psi_a$ can be combined into $\psi$, which is then thought of as a vector. In this linear algebra analogy the Hamiltonian $H$ is seen as a matrix with components $H_{ab}$. With these definitions, the time-independent Schrodinger equation from the last paragraph really becomes an eigenvalue problem. Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$. 
-> A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are: (a) if $H$ is an $N\times N$ matrix, the eigenvalue index $n$ goes from $n=1,\dots,N$. (b) $H$ is **Hermitean** i.e. $H_{ab}=H_{ba}^*$. (c) Eigenstates are **orthogonal** i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
+> A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are: (a) if $H$ is an $N\times N$ matrix, the eigenvalue index $n$ goes from $n=1,\dots,N$. (b) $H$ is **Hermitian** i.e. $H_{ab}=H_{ba}^*$. (c) Eigenstates are **orthogonal** i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
 
 
 Physicists have a funny but convenient notation for doing linear algebra called the Dirac **bra-ket** notation. In this notation, wave-functions such as $\psi$ are represented by **kets** i.e. $\psi\rightarrow |\psi\rangle$. We construct The "ket" $|\psi\rangle$ from the components of the wave-function $\psi_a$ using the equation: $$|\psi\rangle=\sum_a \psi_a |a\rangle.$$
@@ -51,7 +53,7 @@ which can be checked to be the same equation as the linear algebra form.
 
 ### Example: Atomic triangle
 Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom is assumed to have one orbital. We label the orbitals on the atoms as $|0\rangle,|1\rangle,|2\rangle$. With this labeling, the **hopping** amplitude $t$ of electrons between orbitals is represented by the Hamiltonian $$H=-t(|0\rangle \langle 1|+|1\rangle \langle 2|+|2\rangle \langle 0|)+h.c,$$
-where $h.c.$ stands for Hermitean conjugate, which means that you reverse the ordering of the labels and take a complex conjugate. We can also write the Hamiltonian in matrix form $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
+where $h.c.$ stands for Hermitian conjugate, which means that you reverse the ordering of the labels and take a complex conjugate. We can also write the Hamiltonian in matrix form $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
 You can dump this matrix into Mathematica and it will give you three eigenvectors $\psi^{(n=1,2,3)}_a$ with energy eigenvalues $E^{(n=1,2,3)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$). The corresponding eigenvectors $\psi^{(n=1,2,3)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
