@@ -114,15 +114,15 @@ Thus there are two kinds of atoms - the former kind we label $R$ and the latter 
 The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
 The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H(k)_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
 
-We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E(k)^{(\pm)}=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ 
-Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(k,+)}$ goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{k,-}=-E^{(+,k)}$. 
+We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(\pm)}(k)=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ 
+Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(+)}(k)$ goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{(-)}(k)=-E^{(+)}(k)$. 
 > As $k$ varies no energy eigenvalue $E(k)^{(\pm)}$ ever enters the range $-|t_1-t_2|$ to $|t_1-t_2|$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
 
 This notion of an insulator is rather important in our course.
 So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. 
 This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. 
-Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(k,-)}$ with ane electron at each $k$ leaving the upper state empty. 
+Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(-)}(k)$ with ane electron at each $k$ leaving the upper state empty. 
 This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
  Such a gapped state with a fixed number of electrons cannot respond to an applied voltage and as such must be an insulator. 
 
@@ -133,12 +133,12 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 Let us now think about how we can use the smoothness of $H(k)$ to predict energies and wave-functions at finite $k$ from $H(k=0)$ and its derivatives.
 We start by expanding the Bloch Hamiltonian $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
 Using standard perturbation theory we can conclude that:
->   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(k,n)}=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E(k=0)^{(n)}-E(k=0)^{(m)}}$,
+>   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
 
-where $E(k=0)^{(n)}$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E(k=0)^{(n)}-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
+where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E(k=0)^{(n)}-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
 
 ### Discretizing continuum models for materials
-The series expansion of $H^{(k,Bloch)}$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. 
+The series expansion of $H(k)$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. 
 This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. 
 The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
@@ -146,7 +146,9 @@ A continuum Hamiltonian is sometimes easier to work with analytically then the c
 On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i(2\Lambda)^{-1}\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|).$$ 
 The label $n$ is discrete - analogous to the unit-cell label, where the unit cell has size $\Lambda$. 
 To check that this is a representation of the derivative, apply $i k=\partial_x$ to $|\psi\rangle$ as $i k|\psi\rangle\approx \sum_n \frac{\psi_{n+1}-\psi_{n-1}}{2\Lambda}|n\rangle$. 
-In addition, we need to represent the $N\times N$ matrix structure of $H^{(k=0,Bloch)}$. This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$. Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
+In addition, we need to represent the $N\times N$ matrix structure of $H(k=0)$. 
+This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$.
+Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
 $$H(k)\approx \sum_{n,a,b} H(k=0)_{ab}|a,n\rangle \langle b,n| +i H^{'}(k=0)_{ab}(|a,n+1\rangle\langle b,n|-|a,n\rangle\langle b,n+1|),$$
 where we have dropped the $k^2$ term for compactness.
 For future reference, $k^2$ would discretize into $k^2=-\sum_n (|n\rangle \langle n+2|+|n+2\rangle\langle n|-2|n\rangle \langle n|)$.
