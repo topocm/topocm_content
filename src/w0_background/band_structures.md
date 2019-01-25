@@ -135,7 +135,7 @@ We start by expanding the Bloch Hamiltonian $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k
 Using standard perturbation theory we can conclude that:
 >   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
 
-where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E(k=0)^{(n)}-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
+where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
 
 ### Discretizing continuum models for materials
 The series expansion of $H(k)$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. 
