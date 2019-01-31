@@ -63,12 +63,12 @@ We can often model electrons in materials within the  **tight-binding** approxim
 We then take $\psi_a$ to be the wave-function of the electron on orbital $a$. 
 The wave-functions $\psi_a$ can be combined into $\psi$, which is then a vector.
 In this case, the Hamiltonian $H$ becomes a matrix with components $H_{ab}$.
-With these definitions, the time-independent Schrodinger equation from the last paragraph really becomes an eigenvalue problem.
+These definitions transform the time-independent Schrodinger equation into a matrix eigenvalue problem from linear algebra.
 Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$. 
 A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are: 
 * if $H$ is an $N\times N$ matrix, the eigenvalue index $n$ goes from $n=1,\dots,N$. 
-*  $H$ is **Hermitian** i.e. $H_{ab}=H_{ba}^*$. 
-* Eigenstates are **orthogonal** i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
+*  $H$ is Hermitian i.e. $H_{ab}=H_{ba}^*$. 
+* Eigenstates are orthogonal i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
 
 
 Physicists have a funny but convenient notation for doing linear algebra called the Dirac **bra-ket** notation. 
