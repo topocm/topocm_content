@@ -87,8 +87,12 @@ where $h.c.$ stands for Hermitian conjugate, which means that you reverse the or
 We can also write the Hamiltonian in matrix form 
 $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
 Diagonalizing this matrix is a straightforward exercise that results in three eigenvectors $\psi^{(n)}_a$ (with $n=1,2,3$)
-corresponding to energy eigenvalues $E^{(n)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$).
-The corresponding eigenvectors $\psi^{(n)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
+corresponding to energy eigenvalues 
+$$E^{(n)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$$
+(where $t=|t|e^{i\theta}$).
+The corresponding eigenvectors 
+$$\psi^{(n)}_a=3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$
+$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
 
@@ -128,10 +132,13 @@ Thus there are two kinds of atoms - the former kind we label $R$ and the latter 
 
 ![](figures/Trans-_CH_n.svg)
 
-The Hamiltonian for the SSH model is $H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$ This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
+The Hamiltonian for the SSH model is 
+$$H=\sum_n \{t_1(|L,n\rangle\langle R,n|+|R,n\rangle\langle L,n|)+t_2(|L,n\rangle\langle R,n-1|+|R,n-1\rangle\langle L,n|)\}.$$
+This Hamiltonian is clearly periodic with shift of $n$ and the non-zero matrix elements of the Hamiltonian can be written as $H_{(L,0),(R,0)}=H_{(R,0),(L,0)}=t_1$ and $H_{(L,1),(R,0)}=H_{(R,-1),(L,0)}=t_2$. 
 The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H(k)_{ll'=1,2}=\left(\begin{array}{cc}0& t_1+t_2 e^{i k}\\t_1+t_2 e^{-ik}&0\end{array}\right).$$
 
-We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are $E^{(\pm)}(k)=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$ 
+We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are 
+$$E^{(\pm)}(k)=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$$ 
 Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(+)}(k)$ goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{(-)}(k)=-E^{(+)}(k)$. 
 > As $k$ varies no energy eigenvalue $E(k)^{(\pm)}$ ever enters the range $-|t_1-t_2|$ to $|t_1-t_2|$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
@@ -151,9 +158,12 @@ Let us now think about how we can use the smoothness of $H(k)$ to predict energi
 We start by expanding the Bloch Hamiltonian 
 $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
 Using standard perturbation theory we can conclude that:
-  the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
-
-where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
+  the velocity and mass of a non-degenerate band near $k\sim 0$ is written as 
+  $$v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$$
+  and
+  $$m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$$,
+where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding 
+$$E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$$. 
 
 ### Discretizing continuum models for materials
 The series expansion of $H(k)$ that we discussed in the previous paragraph is a continuum description of a material. 
@@ -178,7 +188,9 @@ So the discrete model following from $k\cdot p$ is orders of magnitude more effi
 Of course, there is always a danger of missing certain lattice level phenomena in such a coarse-grained model. 
 Practically, we often do not start with an atomistic lattice model, but rather with a continuum $k\cdot p$ model and then discretize it. 
 This is because, the latter models can often be constrained quite well by a combination symmetry arguments as well as experimental measurements. 
-For example the $k\cdot p$ model for the conduction band minimum state of a GaAs quantum well is $H(k)=\hbar^2 k^2/2m^*+\alpha_R (\sigma_x k_y-\sigma_y k_x)$, where $m^*$ is the electron effective mass, $\sigma_{x,y}$ are Pauli matrices and $\alpha_R$ is the Rashba spin-orbit coupling. This model is rather complicated to derive from the atomistic level (though it can be done). On the hand, it has also been checked experimentally through transport.
+For example the $k\cdot p$ model for the conduction band minimum state of a GaAs quantum well is 
+$$H(k)=\hbar^2 k^2/2m^*+\alpha_R (\sigma_x k_y-\sigma_y k_x)$$,
+where $m^*$ is the electron effective mass, $\sigma_{x,y}$ are Pauli matrices and $\alpha_R$ is the Rashba spin-orbit coupling. This model is rather complicated to derive from the atomistic level (though it can be done). On the hand, it has also been checked experimentally through transport.
 
 ## Summary
 
