@@ -93,9 +93,9 @@ The corresponding eigenvectors $\psi^{(n)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\o
 
 ## Bloch's theorem for bulk electrons
 
-Actually, we didn't really need Mathematica to solve the problem of an electron in a triangle.
-We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem.
-To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. 
+Actually, we can even solve the problem of an electron in an N site ring (triangle being $N=3$).
+The trick to doing this is a neat theorem called Bloch's theorem.
+Bloch's theorem is the key to understanding electrons in a crystal. 
 The defining property of a crystal is that the atomic positions repeat in a periodic manner in space.
 We account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. 
 We construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$.
@@ -137,7 +137,7 @@ Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e.
 
 
 This notion of an insulator is rather important in our course.
-So let us dewell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. 
+So let us dwell on this a bit further. Assuming we have a periodic ring with $2N$ atoms so that $n$ takes $N$ values, single valuedness of the wave-function $\psi_{(l,n)}$ requires that $e^{i k N}=1$. 
 This means that $k$ is allowed $N$ discrete values separated by $2\pi/N$ spanning the range $[-\pi,\pi]$. 
 Next to describe the lower-energy state of the electrons we can fill only the lower eigenvalue $E^{(-)}(k)$ with ane electron at each $k$ leaving the upper state empty. 
 This describes a state with $N$ electrons. Furthermore, we can see that to excite the system one would need to transfer an electron from a negative energy state to a positive energy state that would cost at least $2(t_1-t_2)$ in energy. 
@@ -151,29 +151,29 @@ Let us now think about how we can use the smoothness of $H(k)$ to predict energi
 We start by expanding the Bloch Hamiltonian 
 $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
 Using standard perturbation theory we can conclude that:
->   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
+  the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
 
 where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding $E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$. 
 
 ### Discretizing continuum models for materials
-The series expansion of $H(k)$ that we discussed in the previous paragraph is often thought of as a continuum description of a material. 
+The series expansion of $H(k)$ that we discussed in the previous paragraph is a continuum description of a material. 
 This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. 
 The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
 A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals.
 On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator: $$k=-i\partial_x\approx -i(2\Lambda)^{-1}\sum_n (|n+1\rangle\langle n|-|n\rangle\langle n+1|).$$ 
-The label $n$ is discrete - analogous to the unit-cell label, where the unit cell has size $\Lambda$. 
+The label $n$ is discrete-analogous to the unit-cell label, where the unit cell has size $\Lambda$. 
 To check that this is a representation of the derivative, apply $i k=\partial_x$ to $|\psi\rangle$ as $i k|\psi\rangle\approx \sum_n \frac{\psi_{n+1}-\psi_{n-1}}{2\Lambda}|n\rangle$. 
 In addition, we need to represent the $N\times N$ matrix structure of $H(k=0)$. 
 This is done by introducing label $a=1,\dots N$ so that the Hamiltonian is defined on a space labeled by $|a,n\rangle$.
-Applying these steps to the Hamiltonian within the $k\cdot p$ approximation takes the discrete form:
+Applying these steps to the the $k\cdot p$ Hamiltonian takes the discrete form:
 $$H(k)\approx \sum_{n,a,b} H(k=0)_{ab}|a,n\rangle \langle b,n| +i H^{'}(k=0)_{ab}(|a,n+1\rangle\langle b,n|-|a,n\rangle\langle b,n+1|),$$
 where we have dropped the $k^2$ term for compactness.
 For future reference, $k^2$ would discretize into $k^2=-\sum_n (|n\rangle \langle n+2|+|n+2\rangle\langle n|-2|n\rangle \langle n|)$.
 
 But wait! Didn't we just go in a circle by starting in a lattice Hamiltonian and coming back to a discrete Hamiltonian? 
-Well, actually, the lattice in the discretized model from the last paragraph has almost nothing to do with the microscopic lattice we started with. 
-More often then not, the lattice constant $\Lambda$ (i.e. effective size of the unit-cell) in the latter representation is orders of magnitude larger than the microscopic lattice constant.
+Well, actually, the lattice in the newly discretized model has almost nothing to do with the microscopic lattice we started with. 
+More often than not, the lattice constant $\Lambda$ (i.e. effective size of the unit-cell) in the latter representation is orders of magnitude larger than the microscopic lattice constant.
 So the discrete model following from $k\cdot p$ is orders of magnitude more efficient to work with than tht microscopic model, which is why we most often work with these.
 Of course, there is always a danger of missing certain lattice level phenomena in such a coarse-grained model. 
 Practically, we often do not start with an atomistic lattice model, but rather with a continuum $k\cdot p$ model and then discretize it. 
