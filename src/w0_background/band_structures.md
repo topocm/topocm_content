@@ -8,14 +8,14 @@ init_notebook()
 
 # A quick review of band structures
 
-## Quicker intro to quantum mechanics from waves to electrons
+## Quantum mechanics: electrons as waves
 For most of this course, all you would need to know about 
 quantum mechanics is that particles should really be treated
 as waves. The equation for any wave can be recast  in to  the form of the famous Schrodinger equation 
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
 
-### Beyond the Schrodinger equation
+### Schrodinger equation besides electrons
 In case you haven't been indoctrinated with quantum mechanics (skip this section if you have), let us see how to 
 convert a familiar wave-equation for a string in to a Schrodinger-like form.
 You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string.
@@ -28,7 +28,7 @@ $$\partial_t h_1=-c\partial_x h.$$
 We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).$$ Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation.
 But this indeed is the wave-function for helical Majorana particles that we encounter later on.
 
-### Schrodinger equation and wave-functions
+### Applying the Schrodinger equation
 The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$ where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
 
 The main things you should remember about wave equations for electrons is that 
