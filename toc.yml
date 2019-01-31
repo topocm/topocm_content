@@ -2,6 +2,8 @@
   sections:
   - title: "About this course"
     location: w0_background/intro
+  - title: "Brief review of band structures"
+    location: w0_background/band_structures
 - title: "Topology in toy models"
   sections:
   - title: "Hamiltonians, topology, and symmetry"
