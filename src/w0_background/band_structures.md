@@ -8,9 +8,9 @@ init_notebook()
 
 # A quick review of band structures
 
-For the material of this course we assume familiarity with basic linear 
-algebra, quantum mechanics and solid state physics. In this chapter, 
-we briefly review the concepts most relevant to this course.
+For the material of this course we assume familiarity with basic linear algebra, quantum mechanics and solid state physics.
+In this chapter, we briefly review the concepts most relevant to this course. 
+If you think you know how you would proceed if you are given to compute the bandstructure of a model can skip this chapter.
 
 ## Quantum mechanics: electrons as waves
 Quantum mechanics begins with stating that particles such as electrons should really be treated
@@ -197,7 +197,7 @@ The main goal of this section was to review the simplest models for how electron
 
 Let us summarize this review of bandstructures: 
 * Quantum mechanics views electrons as waves described by the Schrodinger equation.
-* The Schrodinger equation when written in a basis of orbitals becomes a matrix eigenvalue problem from linear algebra.
+* The Schrodinger equation written in a basis of orbitals becomes a matrix eigenvalue problem from linear algebra.
 * The Schrodinger equation for electrons in crystals can be solved using Bloch's theorem, where crystal momentum $k$ is a good quantum number.
 * The crystal momentum $k$ is periodic within the Brillouin zone.
 * We can treat the crystal momentum $k$ as a derivative when $k$ is small - called the $k\cdot p$ approximation.
