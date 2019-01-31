@@ -10,7 +10,7 @@ init_notebook()
 
 For the material of this course we assume familiarity with basic linear algebra, quantum mechanics and solid state physics.
 In this chapter, we briefly review the concepts most relevant to this course. 
-If you think you know how you would proceed if you are given to compute the bandstructure of a model can skip this chapter.
+If you think you know how you would proceed if you are given to compute the bandstructure of graphene can skip this chapter.
 
 ## Quantum mechanics: electrons as waves
 Quantum mechanics begins with stating that particles such as electrons should really be treated
