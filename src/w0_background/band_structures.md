@@ -90,8 +90,8 @@ corresponding to energy eigenvalues
 $$E^{(n)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$$
 (where $t=|t|e^{i\theta}$).
 The corresponding eigenvectors 
-$$\psi^{(n)}_a=3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$
-$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
+$$\psi^{(n)}_a=3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$$
+where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
 
