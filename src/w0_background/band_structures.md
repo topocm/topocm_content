@@ -18,18 +18,24 @@ where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian.
 ### Schrodinger equation besides electrons
 In case you haven't been indoctrinated with quantum mechanics (skip this section if you have), let us see how to 
 convert a familiar wave-equation for a string in to a Schrodinger-like form.
-You must have seen a wave-equation for a string that looks like $$\partial_t^2 h-c^2\partial_x^2 h=0,$$ where $h(x,t)$ is the vertical displacement of the string.
+You must have seen a wave-equation for a string that looks like 
+$$\partial_t^2 h-c^2\partial_x^2 h=0,$$
+where $h(x,t)$ is the vertical displacement of the string.
 This wave-equation is second order in time.
 Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. 
 After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 $$\partial_t h = c\partial_x h_1$$ and 
 $$\partial_t h_1=-c\partial_x h.$$
 
-We can turn this into the Schrodinger equation if we define: $$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).$$ Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation.
+We can turn this into the Schrodinger equation if we define:
+$$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).$$
+Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation.
 But this indeed is the wave-function for helical Majorana particles that we encounter later on.
 
 ### Applying the Schrodinger equation
-The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$ where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
+The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):
+$$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$
+where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
 
 The main things you should remember about wave equations for electrons is that 
 
@@ -69,9 +75,11 @@ which can be checked to be the same equation as the linear algebra form.
 
 ### Example: Atomic triangle
 Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom is assumed to have one orbital. We label the orbitals on the atoms as $|0\rangle,|1\rangle,|2\rangle$. 
-With this labeling, the **hopping** amplitude $t$ of electrons between orbitals is represented by the Hamiltonian $$H=-t(|0\rangle \langle 1|+|1\rangle \langle 2|+|2\rangle \langle 0|)+h.c,$$
+With this labeling, the **hopping** amplitude $t$ of electrons between orbitals is represented by the Hamiltonian
+$$H=-t(|0\rangle \langle 1|+|1\rangle \langle 2|+|2\rangle \langle 0|)+h.c,$$
 where $h.c.$ stands for Hermitian conjugate, which means that you reverse the ordering of the labels and take a complex conjugate. 
-We can also write the Hamiltonian in matrix form $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
+We can also write the Hamiltonian in matrix form 
+$$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
 You can dump this matrix into Mathematica to get the three eigenvectors $\psi^{(n=1,2,3)}_a$ corresponding to energy eigenvalues $E^{(n=1,2,3)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$). The corresponding eigenvectors $\psi^{(n=1,2,3)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
@@ -131,7 +139,8 @@ This insulator is rather easy to understand in the $t_2=0$ limit and corresponds
 ## $k\cdot p$ perturbation theory
 
 Let us now think about how we can use the smoothness of $H(k)$ to predict energies and wave-functions at finite $k$ from $H(k=0)$ and its derivatives.
-We start by expanding the Bloch Hamiltonian $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
+We start by expanding the Bloch Hamiltonian 
+$$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
 Using standard perturbation theory we can conclude that:
 >   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as $v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$ and $m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$,
 
