@@ -24,7 +24,8 @@ where $h(x,t)$ is the vertical displacement of the string.
 This wave-equation is second order in time.
 Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. 
 After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
-$$\partial_t h = c\partial_x h_1$$ and 
+$$\partial_t h = c\partial_x h_1$$ 
+and 
 $$\partial_t h_1=-c\partial_x h.$$
 
 We can turn this into the Schrodinger equation if we define:
