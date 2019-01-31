@@ -193,12 +193,12 @@ $$H(k)=\hbar^2 k^2/2m^*+\alpha_R (\sigma_x k_y-\sigma_y k_x)$$,
 where $m^*$ is the electron effective mass, $\sigma_{x,y}$ are Pauli matrices and $\alpha_R$ is the Rashba spin-orbit coupling. This model is rather complicated to derive from the atomistic level (though it can be done). On the hand, it has also been checked experimentally through transport.
 
 ## Summary
-
-Let us summarize this review of bandstructures. 
 The main goal of this section was to review the simplest models for how electrons in crystals can be described quantum mechanically.
-Quantum mechanics views electrons as waves described by the Schrodinger equation.
-The Schrodinger equation when written in a basis of orbitals becomes a matrix eigenvalue problem from linear algebra.
-The Schrodinger equation for electrons in crystals can be solved using Bloch's theorem, where crystal momentum $k$ is a good quantum number.
-We can treat the crystal moemntum $k$ as a derivative when $k$ is small.
-This leads to the $k\cdot p$ Hamiltonian for many materials.
-We solve this Hamiltonian numerically by discretizing the derivative.
+
+Let us summarize this review of bandstructures: 
+* Quantum mechanics views electrons as waves described by the Schrodinger equation.
+* The Schrodinger equation when written in a basis of orbitals becomes a matrix eigenvalue problem from linear algebra.
+* The Schrodinger equation for electrons in crystals can be solved using Bloch's theorem, where crystal momentum $k$ is a good quantum number.
+* The crystal momentum $k$ is periodic within the Brillouin zone.
+* We can treat the crystal momentum $k$ as a derivative when $k$ is small - called the $k\cdot p$ approximation.
+* We solve this Hamiltonian numerically by discretizing the derivative $k$.
