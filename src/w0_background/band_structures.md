@@ -8,9 +8,12 @@ init_notebook()
 
 # A quick review of band structures
 
+For the material of this course we assume familiarity with basic linear 
+algebra, quantum mechanics and solid state physics. In this chapter, 
+we briefly review the concepts most relevant to this course.
+
 ## Quantum mechanics: electrons as waves
-For most of this course, all you would need to know about 
-quantum mechanics is that particles should really be treated
+Quantum mechanics begins with stating that particles such as electrons should really be treated
 as waves. These waves are described by the famous Schrodinger equation 
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
@@ -19,7 +22,8 @@ eigenvalue problem in linear algebra. In the following, we assume
 familiarity with basic linear (matrix) algebra.
 
 ### Schrodinger equation besides electrons
-In case you haven't been indoctrinated with quantum mechanics (skip this sub-section if you have), let us see how to 
+Our main focus is quantum-mechanical systems, however, as we will see, many ideas apply also in completely classical context of sound propagation and elasticity.
+To see this, let us  
 convert a familiar wave-equation for a string in to a Schrodinger-like form.
 You must have seen a wave-equation for a string that looks like 
 $$\partial_t^2 h-c^2\partial_x^2 h=0,$$
@@ -55,10 +59,10 @@ This ansatz simplifies the Schrodinger equation to a time-independent form:
 $$H\psi=E\psi,$$
 which is an eigenvalue problem in linear algebra.
 
-We can often model electrons in materials within the so-called **tight-binding** approximation where electrons are assumed to occupy a discrete set of orbitals on atoms. 
-We then take $\psi_a$ to denote the wave-function amplitude of the electron on orbital $a$. 
-The wave-function amplitudes $\psi_a$ can be combined into $\psi$, which is then thought of as a vector.
-In this linear algebra analogy the Hamiltonian $H$ is seen as a matrix with components $H_{ab}$.
+We can often model electrons in materials within the  **tight-binding** approximation where electrons are assumed to occupy a discrete set of orbitals. 
+We then take $\psi_a$ to be the wave-function of the electron on orbital $a$. 
+The wave-functions $\psi_a$ can be combined into $\psi$, which is then a vector.
+In this case, the Hamiltonian $H$ becomes a matrix with components $H_{ab}$.
 With these definitions, the time-independent Schrodinger equation from the last paragraph really becomes an eigenvalue problem.
 Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$. 
 A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are: 
