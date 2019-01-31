@@ -71,7 +71,7 @@ A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$
 * Eigenstates are orthogonal i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
 
 
-Physicists have a funny but convenient notation for doing linear algebra called the Dirac **bra-ket** notation. 
+Physicists have a convenient notation for doing linear algebra called the Dirac **bra-ket** notation. 
 In this notation, wave-functions such as $\psi$ are represented by **kets** i.e. $\psi\rightarrow |\psi\rangle$. 
 We construct the ket $|\psi\rangle$ from the components of the wave-function $\psi_a$ using the equation: $$|\psi\rangle=\sum_a \psi_a |a\rangle.$$
 Similarly, we turn the Hamiltonian $H$ in to  an **operator** using the equation :$$H=\sum_{ab}H_{ab}|a\rangle \langle b|,$$
@@ -81,13 +81,15 @@ The Schrodinger equation now looks like $$H|\psi\rangle = E|\psi\rangle,$$
 which can be checked to be the same equation as the linear algebra form. 
 
 ### Example: Atomic triangle
-Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom is assumed to have one orbital. We label the orbitals on the atoms as $|0\rangle,|1\rangle,|2\rangle$. 
-With this labeling, the **hopping** amplitude $t$ of electrons between orbitals is represented by the Hamiltonian
+Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom has one orbital. We label the orbitals as $|0\rangle,|1\rangle,|2\rangle$. 
+With this labeling, the **hopping** amplitude $t$ of electrons between orbitals has the Hamiltonian
 $$H=-t(|0\rangle \langle 1|+|1\rangle \langle 2|+|2\rangle \langle 0|)+h.c,$$
 where $h.c.$ stands for Hermitian conjugate, which means that you reverse the ordering of the labels and take a complex conjugate. 
 We can also write the Hamiltonian in matrix form 
 $$H_{ab}=-\left(\begin{array}{ccc}0&t&t^*\\t^*&0&t\\t&t^*&0\end{array}\right).$$
-You can dump this matrix into Mathematica to get the three eigenvectors $\psi^{(n=1,2,3)}_a$ corresponding to energy eigenvalues $E^{(n=1,2,3)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$). The corresponding eigenvectors $\psi^{(n=1,2,3)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
+Diagonalizing this matrix is a straightforward exercise that results in three eigenvectors $\psi^{(n)}_a$ (with $n=1,2,3$)
+corresponding to energy eigenvalues $E^{(n)}=-2 |t| \cos{\theta},|t|\cos{\theta}\pm |t|\sqrt{3}\sin{\theta}$ (where $t=|t|e^{i\theta}$).
+The corresponding eigenvectors $\psi^{(n)}_a$ are $3^{-1/2}(1,1,1),3^{-1/2}(1,\omega,\omega^2),3^{-1/2}(1,\omega^2,\omega)$ where $\omega$ is the cube-root of unity (i.e. $\omega^3=1$).
 
 ## Bloch's theorem for bulk electrons
 
@@ -95,9 +97,9 @@ Actually, we didn't really need Mathematica to solve the problem of an electron 
 We can even solve an N site ring (triangle being $N=3$). The trick is a neat theorem called Bloch's theorem.
 To understand this model in the context of the tight-binding approximation, let us consider electrons in a crystal. 
 The defining property of a crystal is that the atomic positions repeat in a periodic manner in space.
-We can account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. 
+We account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. 
 We construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$.
-By combining the unit cell and the lattice vectors, we can construct positions $a=(l,n)$ 
+By combining the unit cell and the lattice vectors, we  construct positions $a=(l,n)$ 
 of all the orbitals in the crystal.
 For our example of an atomic ring of size $N$, the index $l$ wouldn't be needed since there is only one orbital per unit-cell and $n$ would take values $1$ to $N$.
 In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers. 
