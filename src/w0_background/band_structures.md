@@ -160,7 +160,7 @@ Using standard perturbation theory we can conclude that:
   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as 
   $$v_n =\partial_k E^{(n)}(k)= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$$
   and
-  $$m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$$,
+  $$m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)},$$
 where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding 
 $$E^{(-)}(k)\simeq -(t_1-t_2)-\frac{t_2^2}{(t_1-t_2)}k^2$$. 
 
@@ -188,7 +188,7 @@ Of course, there is always a danger of missing certain lattice level phenomena i
 Practically, we often do not start with an atomistic lattice model, but rather with a continuum $k\cdot p$ model and then discretize it. 
 This is because, the latter models can often be constrained quite well by a combination symmetry arguments as well as experimental measurements. 
 For example the $k\cdot p$ model for the conduction band minimum state of a GaAs quantum well is 
-$$H(k)=\hbar^2 k^2/2m^*+\alpha_R (\sigma_x k_y-\sigma_y k_x)$$,
+$$H(k)=\hbar^2 k^2/2m^*+\alpha_R (\sigma_x k_y-\sigma_y k_x),$$
 where $m^*$ is the electron effective mass, $\sigma_{x,y}$ are Pauli matrices and $\alpha_R$ is the Rashba spin-orbit coupling. This model is rather complicated to derive from the atomistic level (though it can be done). On the hand, it has also been checked experimentally through transport.
 
 ## Summary
