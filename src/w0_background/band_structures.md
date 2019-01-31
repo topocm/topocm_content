@@ -11,12 +11,15 @@ init_notebook()
 ## Quantum mechanics: electrons as waves
 For most of this course, all you would need to know about 
 quantum mechanics is that particles should really be treated
-as waves. The equation for any wave can be recast  in to  the form of the famous Schrodinger equation 
+as waves. These waves are described by the famous Schrodinger equation 
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
+The problem of analyzing this Schrodinger equation can be reduced to the 
+eigenvalue problem in linear algebra. In the following, we assume 
+familiarity with basic linear (matrix) algebra.
 
 ### Schrodinger equation besides electrons
-In case you haven't been indoctrinated with quantum mechanics (skip this section if you have), let us see how to 
+In case you haven't been indoctrinated with quantum mechanics (skip this sub-section if you have), let us see how to 
 convert a familiar wave-equation for a string in to a Schrodinger-like form.
 You must have seen a wave-equation for a string that looks like 
 $$\partial_t^2 h-c^2\partial_x^2 h=0,$$
@@ -41,7 +44,7 @@ where $m$ is the mass of the electron and $V(x)$ is the background potential ene
 The main things you should remember about wave equations for electrons is that 
 
 * $\Psi(x,t)$ is complex, 
-* H is a Hermitian (clarified later)  matrix or operator 
+* H is a Hermitian  matrix or operator 
 * density of electrons are related to $|\Psi(x,t)|^2$.
 * If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
 
@@ -50,9 +53,8 @@ The last point is more subtle and is called the **Pauli exclusion principle**. W
 Since we are interested in static properties of electrons in materials for much of our course, it helps to make the simplifying ansatz: $\Psi=e^{-i E t/\hbar}\psi$.
 This ansatz simplifies the Schrodinger equation to a time-independent form:
 $$H\psi=E\psi,$$
-which resembles the eigenvalue problem in linear algebra.
+which is an eigenvalue problem in linear algebra.
 
-In fact, the good news for those of you familiar with linear algebra is that most of what we talk about is ultimately linear algebra.
 We can often model electrons in materials within the so-called **tight-binding** approximation where electrons are assumed to occupy a discrete set of orbitals on atoms. 
 We then take $\psi_a$ to denote the wave-function amplitude of the electron on orbital $a$. 
 The wave-function amplitudes $\psi_a$ can be combined into $\psi$, which is then thought of as a vector.
