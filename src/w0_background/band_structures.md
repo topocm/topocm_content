@@ -113,11 +113,11 @@ where $u_l$ is the periodic part of the Bloch function which is identical in eac
 
 The parameter $k$ is called crystal momentum and is quite analogous to momentum (apart from a factor of $\hbar$)
 except that it is confined in the range $k\in [-\pi,\pi]$ which is referred to as the **Brillouin Zone**.
-You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E_k e^{i k n}u_{l}$. 
+You can now substitute this ansatz into the Schrodinger equation: $\sum_{l'm}H_{(l,n),(l',m)}u_{l'}e^{i k m}=E(k) e^{i k n}u_{l}(k)$. 
  Thus the Bloch functions $u(k)$ and energies $E(k)$ are obtained from the eigenvalue equation (so-called Bloch equation) $$H(k)u(k)=E(k)u(k),$$
 where $$H(k)_{ll'}=\sum_{m}H_{(l,-m),(l',0)}e^{-i k m}.$$
 The Bloch equation written above is an eigenvalue problem at any momentum $k$. 
-The resulting eigenvalues $E^{(n,k)}$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
+The resulting eigenvalues $E^{(n)}(k)$ consitute the bandstructure of a material, where the eigenvalue label $n$ is also called a band index. 
 
 ### Example: Su-Schrieffer-Heeger model
 
@@ -139,7 +139,7 @@ The $2\times 2$ Bloch Hamiltonian is calculated to be: $$H(k)_{ll'=1,2}=\left(\b
 We can calculate the eigenvalues of this Hamiltonian by taking determinants and we find that the eigenvalues are 
 $$E^{(\pm)}(k)=\pm \sqrt{t_1^2+t_2^2+2 t_1 t_2\cos{k}}.$$ 
 Since $L$ and $R$ on a given unit-cell surrounded one of the shorter bonds (i.e. with larger hopping ) we expect $t_1>t_2$. As $k$ varies across $[-\pi,\pi]$, $E^{(+)}(k)$ goes from $t_1-t_2$ to $t_1+t_2$. Note that the other energy eigenvalue is just the negative $E^{(-)}(k)=-E^{(+)}(k)$. 
-> As $k$ varies no energy eigenvalue $E(k)^{(\pm)}$ ever enters the range $-|t_1-t_2|$ to $|t_1-t_2|$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
+> As $k$ varies no energy eigenvalue $E^{(\pm)}(k)$ ever enters the range $-|t_1-t_2|$ to $|t_1-t_2|$. This range is called an **band gap**, which is the first seminal prediction of Bloch theory that explains insulators.
 
 
 This notion of an insulator is rather important in our course.
@@ -158,7 +158,7 @@ We start by expanding the Bloch Hamiltonian
 $$H(k)\approx H(k=0)+k H^{'}(k=0)+(k^2/2)H^{''}(k=0)$$. 
 Using standard perturbation theory we can conclude that:
   the velocity and mass of a non-degenerate band near $k\sim 0$ is written as 
-  $$v_n =\partial_k E^{(k,n)}= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$$
+  $$v_n =\partial_k E^{(n)}(k)= u^{(n)\dagger} H^{'}(k=0) u^{(n)}$$
   and
   $$m_n^{-1}=\partial^2_k E^{(n)}(k)=u^{(n)\dagger} H^{''}(k=0) u^{(n)}+\sum_{m\neq n}\frac{|u^{(n)\dagger} H^{'}(k=0) u^{(m)}|^2}{E^{(n)}(k=0)-E^{(m)}(k=0)}$$,
 where $E^{(n)}(k=0)$ and $u^{(n)}(k=0)$ are energy eigenvalues and eigenfunctions of $H(k=0)$. One of the immediate consequences of this is that the effective mass $m_n $ vanishes as the energy denominator $E^{(n)}(k=0)-E^{(m)}(k=0)$ (i.e. gap ) becomes small. This can be checked to be the case by expanding 
