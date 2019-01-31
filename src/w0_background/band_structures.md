@@ -17,9 +17,8 @@ Quantum mechanics begins with stating that particles such as electrons should re
 as waves. These waves are described by the famous Schrodinger equation 
 $$i\hbar\partial_t \Psi = H\Psi,$$
 where at this point $\Psi$ is the "wave-function" and $H$ is the Hamiltonian. 
-The problem of analyzing this Schrodinger equation can be reduced to the 
-eigenvalue problem in linear algebra. In the following, we assume 
-familiarity with basic linear (matrix) algebra.
+The problem of analyzing this Schrodinger equation can be reduced to the eigenvalue problem in linear algebra, though in many cases the vector space might be infinite dimensional.
+In the following, we assume familiarity with basic finite dimensional linear (matrix) algebra.
 
 ### Schrodinger equation besides electrons
 Our main focus is quantum-mechanical systems, however, as we will see, many ideas apply also in completely classical context of sound propagation and elasticity.
@@ -48,9 +47,9 @@ where $m$ is the mass of the electron and $V(x)$ is the background potential ene
 The main things you should remember about wave equations for electrons is that 
 
 * $\Psi(x,t)$ is complex, 
-* H is a Hermitian  matrix or operator 
+* $H$ is a Hermitian  matrix or operator 
 * density of electrons are related to $|\Psi(x,t)|^2$.
-* If N is the number of electrons, one needs to occupy $N$ orthogonal wave-functions to occupy.
+* If $N$ is the number of electrons, one must occupy $N$ orthogonal wave-functions.
 
 The last point is more subtle and is called the **Pauli exclusion principle**. We elaborate on orthogonality later.
 
@@ -97,8 +96,9 @@ Actually, we can even solve the problem of an electron in an N site ring (triang
 The trick to doing this is a neat theorem called Bloch's theorem.
 Bloch's theorem is the key to understanding electrons in a crystal. 
 The defining property of a crystal is that the atomic positions repeat in a periodic manner in space.
-We account for ALL the atoms in the crystal by first identifying a group of orbitals labelled by $l$ called the **unit-cell**. 
-We construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$.
+We account for ALL the atoms in the crystal by first identifying a finite group of orbitals called the **unit-cell**.
+We choose the unit-cell so that we can construct the crystal by translating the unit cell by a discrete set of vectors called lattice vectors to $n$.
+We label the orbitals in the unit-cell by the index $l$, which takes a finite set of values.
 By combining the unit cell and the lattice vectors, we  construct positions $a=(l,n)$ 
 of all the orbitals in the crystal.
 For our example of an atomic ring of size $N$, the index $l$ wouldn't be needed since there is only one orbital per unit-cell and $n$ would take values $1$ to $N$.
