@@ -10,7 +10,7 @@ init_notebook()
 
 For the material of this course we assume familiarity with basic linear algebra, quantum mechanics and solid state physics.
 In this chapter, we briefly review the concepts most relevant to this course. 
-If you think you know how you would proceed if you are given to compute the bandstructure of graphene then you can skip this chapter.
+If you think you know how you would proceed if you are given to compute the bandstructure of graphene then you can likely skip this chapter.
 
 ## Quantum mechanics: electrons as waves
 Quantum mechanics begins with stating that particles such as electrons should really be treated
@@ -22,20 +22,19 @@ In the following, we assume familiarity with basic finite dimensional linear (ma
 
 ### Schrodinger equation besides electrons
 Our main focus is quantum-mechanical systems, however, as we will see, many ideas apply also in completely classical context of sound propagation and elasticity.
-To see this, let us  
-convert a familiar wave-equation for a string in to a Schrodinger-like form.
+To see this, let us  convert a familiar wave-equation for a string in to a Schrodinger-like form.
 You must have seen a wave-equation for a string that looks like 
 $$\partial_t^2 h-c^2\partial_x^2 h=0,$$
 where $h(x,t)$ is the vertical displacement of the string.
 This wave-equation is second order in time.
-Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1}\int_{-\infty}^x dx_1 \partial_t h(x_1,t)$. 
+Let's try to make it first order like the Schrodinger equation by defining $h_1(x,t)=c^{-1} \partial_t h(x,t)$ and $h_2(x,t)=\partial_x h(x,t)$. 
 After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
-$$\partial_t h = c\partial_x h_1$$ 
+$$\partial_t h_2 = c\partial_x h_1$$ 
 and 
-$$\partial_t h_1=-c\partial_x h.$$
+$$\partial_t h_1=-c\partial_x h_2.$$
 
 We can turn this into the Schrodinger equation if we define:
-$$\Psi(x,t)=\left(\begin{array}{c}h(x,t)\\h_1(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).$$
+$$\Psi(x,t)=\left(\begin{array}{c}h_1(x,t)\\h_2(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).$$
 Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation.
 But this indeed is the wave-function for helical Majorana particles that we encounter later on.
 
@@ -44,7 +43,7 @@ The wave-function $\Psi$ in the Schrodinger equation that describes electrons is
 $$H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),$$
 where $m$ is the mass of the electron and $V(x)$ is the background potential energy over which the electron is moving.
 
-The main things you should remember about wave equations for electrons is that 
+The main things that you should remember about wave equations for electrons are:  
 
 * $\Psi(x,t)$ is complex, 
 * $H$ is a Hermitian  matrix or operator 
