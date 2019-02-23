@@ -65,7 +65,7 @@ for chapter in chapters:
             fname = fname.replace('.ipynb', '')
             new_fname = f'{fname}_{i}'
             new_path = mooc_folder / output_dir / folder / (new_fname + '.html')
-            os.makedirs(new_path.parent, exist_ok=True)
+            new_path.parent.mkdir(exist_ok=True)
             new_path.write_text(exportHtml.from_notebook_node(unit)[0])
 
             with open('website_assets/iframes.txt', 'a') as f:

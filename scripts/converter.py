@@ -175,7 +175,7 @@ def converter(mooc_folder, content_folder=None):
     # copying figures
     target = mooc_folder / 'generated'
     figures_path = target / 'html/edx/figures'
-    os.makedirs(figures_path, exist_ok=True)
+    figures_path.mkdir(exist_ok=True)
     for figure in content_folder.glob('w*/figures/*'):
         shutil.copy(figure, figures_path)
     html_folder = target / 'html/edx'
