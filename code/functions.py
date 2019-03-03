@@ -7,35 +7,83 @@ import kwant
 import numpy as np
 import holoviews as hv
 
-if tuple(int(i) for i in np.__version__.split('.')[:3]) <= (1, 8, 0):
-    raise RuntimeError("numpy >= (1, 8, 0) is required")
+__all__ = ['spectrum', 'hamiltonian_array', 'pauli']
 
-__all__ = ['spectrum', 'hamiltonian_array', 'h_k', 'pauli']
+pauli = dict(s0=np.array([[1., 0.], [0., 1.]]),
+             sx=np.array([[0., 1.], [1., 0.]]),
+             sy=np.array([[0., -1j], [1j, 0.]]),
+             sz=np.array([[1., 0.], [0., -1.]]))
 
-pauli = SimpleNamespace(s0=np.array([[1., 0.], [0., 1.]]),
-                        sx=np.array([[0., 1.], [1., 0.]]),
-                        sy=np.array([[0., -1j], [1j, 0.]]),
-                        sz=np.array([[1., 0.], [0., -1.]]))
+for first, second in itertools.product(pauli.items(), pauli.items()):
+    pauli[first[0] + second[0]] = np.kron(first[1], second[1])
 
-pauli.s0s0 = np.kron(pauli.s0, pauli.s0)
-pauli.s0sx = np.kron(pauli.s0, pauli.sx)
-pauli.s0sy = np.kron(pauli.s0, pauli.sy)
-pauli.s0sz = np.kron(pauli.s0, pauli.sz)
-pauli.sxs0 = np.kron(pauli.sx, pauli.s0)
-pauli.sxsx = np.kron(pauli.sx, pauli.sx)
-pauli.sxsy = np.kron(pauli.sx, pauli.sy)
-pauli.sxsz = np.kron(pauli.sx, pauli.sz)
-pauli.sys0 = np.kron(pauli.sy, pauli.s0)
-pauli.sysx = np.kron(pauli.sy, pauli.sx)
-pauli.sysy = np.kron(pauli.sy, pauli.sy)
-pauli.sysz = np.kron(pauli.sy, pauli.sz)
-pauli.szs0 = np.kron(pauli.sz, pauli.s0)
-pauli.szsx = np.kron(pauli.sz, pauli.sx)
-pauli.szsy = np.kron(pauli.sz, pauli.sy)
-pauli.szsz = np.kron(pauli.sz, pauli.sz)
+pauli = SimpleNamespace(**pauli)
 
 
-def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
+def hamiltonian_array(syst, params=None, n_points=50):
+    """Evaluate the Hamiltonian of a system over a grid of parameters.
+
+    Parameters
+    ----------
+    syst : kwant.System or a callable
+    params : dict
+        A container of Hamiltonian parameters. The parameters that are
+        sequences with length larger than 1 are used to loop over.
+    n_points : int
+        Number of points to use when sampling over momenta.
+    
+    Notes
+    -----
+    If parameters named ``k_x, k_y, k_z`` are expected, but not specified,
+    they are interpreted as momenta, and their limits are computed to match
+    the Brillouin zone size.
+
+    Returns
+    -------
+    hamiltonians : numpy.ndarray
+        An array with the Hamiltonians. The first n-2 dimensions correspond to
+        the expanded variables.
+
+    Examples:
+    ---------
+    >>> hamiltonian_array(syst, dict(t=1, mu=np.linspace(-2, 2),
+    ...                              k_x=np.linspace(-np.pi, np.pi)))
+
+    """
+    if p is None:
+        p = {}
+        
+    if isinstance(syst, kwant.System):
+        def ham(**kwargs):
+            return syst.hamiltonian_submatrix(params=kwargs, sparse=False)
+    else:
+        ham = syst
+
+    # Separate parameters over which we'll loop
+    fixed = {
+        k: (v[0] if isinstance(v, collections.Iterable) else v)
+        for k, v in params.items()
+        if not (isinstance(v, collections.Iterable) and len(v) > 1)
+    }
+    changing = {
+        k: v for k, v in params.items()
+        if (isinstance(v, collections.Iterable) and len(v) > 1)
+    }
+
+    hamiltonians = np.array([
+        ham(**fixed, **dict(zip(changing.keys(), value)))
+        for value in itertools.product(*changing.values())
+    ])
+
+    hamiltonians = hamiltonians.reshape(
+        [len(value) for value in values]
+        + hamiltonians.shape[1:]
+    )
+
+    return hamiltonians
+
+
+def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
              ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
              xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False):
     """Function that plots system spectrum for varying parameters or momenta.
@@ -74,7 +122,7 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     """
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
     if p is None:
-        p = SimpleNamespace()
+        p = dict()
     dimensionality = syst.symmetry.num_directions
     k = [k_x, k_y, k_z]
     k = [(np.linspace(-np.pi, np.pi, 101) if i is None else i)
@@ -127,7 +175,7 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot[xlims, ylims](plot={'Path': ticks})
+        return plot[xlims, ylims].opts(plot={'Path': ticks})
 
     elif len(variables) == 2:
         # 2D plot.
@@ -183,122 +231,7 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot(plot={'Overlay': {'fig_size': 200}})
+        return plot.opts(plot={'Overlay': {'fig_size': 200}})
 
     else:
         raise ValueError("Cannot make 4D plots yet.")
-
-
-
-def h_k(syst, p, momentum):
-    """Function that returns the Hamiltonian of a kwant 1D system as a momentum.
-    """
-    return hamiltonian_array(syst, p, momentum)[0]
-
-
-def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
-    """Evaluate the Hamiltonian of a system over a grid of parameters.
-
-    Parameters:
-    -----------
-    syst : kwant.Builder object
-        The un-finalized kwant system whose Hamiltonian is calculated.
-    p : SimpleNamespace object
-        A container of Hamiltonian parameters. The parameters that are
-        sequences are used to loop over.
-    k_x, k_y, k_z : floats or sequences of floats
-        Momenta at which the Hamiltonian has to be evaluated.  If the system
-        only has 1 translation symmetry, only `k_x` is used, and interpreted as
-        lattice momentum. Otherwise the momenta are in reciprocal space.
-    return_grid : bool
-        Whether to also return the names of the variables used for expansion,
-        and their values.
-
-    Returns:
-    --------
-    hamiltonians : numpy.ndarray
-        An array with the Hamiltonians. The first n-2 dimensions correspond to
-        the expanded variables.
-    parameters : list of tuples
-        Names and ranges of values that were used in evaluation of the
-        Hamiltonians.
-
-    Examples:
-    ---------
-    >>> hamiltonian_array(syst, SimpleNamespace(t=1, mu=np.linspace(-2, 2)),
-    ...                   k_x=np.linspace(-np.pi, np.pi))
-    >>> hamiltonian_array(sys_2d, p, np.linspace(-np.pi, np.pi),
-    ...                   np.linspace(-np.pi, np.pi))
-
-    """
-    if p is None:
-        p = SimpleNamespace()
-    try:
-        space_dimensionality = syst.symmetry.periods.shape[-1]
-    except AttributeError:
-        space_dimensionality = 0
-    dimensionality = syst.symmetry.num_directions
-    pars = copy(p)
-    if dimensionality == 0:
-        syst = syst.finalized()
-        def momentum_to_lattice(k):
-            return []
-    else:
-        if len(syst.symmetry.periods) == 1:
-            def momentum_to_lattice(k):
-                if any(k[dimensionality:]):
-                    raise ValueError("Dispersion is 1D, but more momenta are provided.")
-                return [k[0]]
-        else:
-            B = np.array(syst.symmetry.periods).T
-            A = B @ np.linalg.inv(B.T @ B)
-
-            def momentum_to_lattice(k):
-                k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
-                if np.any(abs(residuals) > 1e-7):
-                    raise RuntimeError("Requested momentum doesn't correspond"
-                                       " to any lattice momentum.")
-                return list(k)
-        syst = kwant.wraparound.wraparound(syst).finalized()
-
-    changing = dict()
-    for key, value in pars.__dict__.items():
-        if isinstance(value, collections.Iterable):
-            changing[key] = value
-
-    for key, value in [('k_x', k_x), ('k_y', k_y), ('k_z', k_z)]:
-        if key in changing:
-            raise RuntimeError('One of the system parameters is {}, '
-                               'which is reserved for momentum. '
-                               'Please rename it.'.format(key))
-        if isinstance(value, collections.Iterable):
-            changing[key] = value
-
-    if not changing:
-        hamiltonians = syst.hamiltonian_submatrix([pars] +
-                                                  momentum_to_lattice([k_x, k_y, k_z]),
-                                                  sparse=False)[None, ...]
-        if return_grid:
-            return hamiltonians, []
-        else:
-            return hamiltonians
-
-    def hamiltonian(**values):
-        pars.__dict__.update(values)
-        k = [values.get('k_x', k_x), values.get('k_y', k_y),
-             values.get('k_z', k_z)]
-        k = momentum_to_lattice(k)
-        return syst.hamiltonian_submatrix(args=([pars] + k), sparse=False)
-
-    names, values = zip(*sorted(changing.items()))
-    hamiltonians = [hamiltonian(**dict(zip(names, value)))
-                    for value in itertools.product(*values)]
-    size = list(hamiltonians[0].shape)
-
-    hamiltonians = np.array(hamiltonians).reshape([len(value)
-                                                   for value in values] + size)
-
-    if return_grid:
-        return hamiltonians, list(zip(names, values))
-    else:
-        return hamiltonians

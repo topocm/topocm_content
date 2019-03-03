@@ -10,7 +10,6 @@ from xml.etree import ElementTree
 from hashlib import md5
 
 from IPython import display
-import feedparser
 
 module_dir = os.path.dirname(__file__)
 sys.path.extend(module_dir)
