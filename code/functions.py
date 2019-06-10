@@ -20,7 +20,7 @@ for first, second in itertools.product(pauli.items(), pauli.items()):
 pauli = SimpleNamespace(**pauli)
 
 
-def hamiltonian_array(syst, params=None, n_points=50):
+def hamiltonian_array(syst, params):
     """Evaluate the Hamiltonian of a system over a grid of parameters.
 
     Parameters
@@ -29,14 +29,6 @@ def hamiltonian_array(syst, params=None, n_points=50):
     params : dict
         A container of Hamiltonian parameters. The parameters that are
         sequences with length larger than 1 are used to loop over.
-    n_points : int
-        Number of points to use when sampling over momenta.
-    
-    Notes
-    -----
-    If parameters named ``k_x, k_y, k_z`` are expected, but not specified,
-    they are interpreted as momenta, and their limits are computed to match
-    the Brillouin zone size.
 
     Returns
     -------
@@ -44,49 +36,32 @@ def hamiltonian_array(syst, params=None, n_points=50):
         An array with the Hamiltonians. The first n-2 dimensions correspond to
         the expanded variables.
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> hamiltonian_array(syst, dict(t=1, mu=np.linspace(-2, 2),
     ...                              k_x=np.linspace(-np.pi, np.pi)))
 
     """
-    if p is None:
-        p = {}
-        
-    if isinstance(syst, kwant.System):
+    if isinstance(syst, kwant.system.System):
         def ham(**kwargs):
             return syst.hamiltonian_submatrix(params=kwargs, sparse=False)
     else:
         ham = syst
 
-    # Separate parameters over which we'll loop
-    fixed = {
-        k: (v[0] if isinstance(v, collections.Iterable) else v)
-        for k, v in params.items()
-        if not (isinstance(v, collections.Iterable) and len(v) > 1)
-    }
-    changing = {
-        k: v for k, v in params.items()
-        if (isinstance(v, collections.Iterable) and len(v) > 1)
-    }
-
-    hamiltonians = np.array([
-        ham(**fixed, **dict(zip(changing.keys(), value)))
-        for value in itertools.product(*changing.values())
-    ])
-
-    hamiltonians = hamiltonians.reshape(
-        [len(value) for value in values]
-        + hamiltonians.shape[1:]
+    ham = np.vectorize(
+        ham,
+        signature = ','.join(['()'] * len(params)) + '->(n,n)'
     )
 
-    return hamiltonians
+    return ham(**params)
 
 
-def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
-             ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
-             xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False):
-    """Function that plots system spectrum for varying parameters or momenta.
+def spectrum(
+    syst, params, title=None, xdim=None,
+    ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
+    xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False
+):
+    """Plot system spectrum for varying parameters or momenta.
 
     Parameters:
     -----------
@@ -95,49 +70,56 @@ def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     p : SimpleNamespace object
         A container used to store Hamiltonian parameters. The parameters that
         are sequences are used as plot axes.
-    k_x, k_y, k_z : floats or sequences of floats
-        Real space momenta at which the Hamiltonian has to be evaluated.
-        If the system dimensionality is low, extra momenta are ignored.
     title : function or str
-        Function that takes p as argument and generates a string. If a string
-        it's used as static title.
+        Function that takes params as argument and returns the title.
+        If a string it's used as static title.
     xdim, ydim, zdim : holoviews.Dimension or string
-        The labels of the axes. Default to best guess, and extra ones
-        are ignored.
+        The labels of the axes. Default to best guess.
     xticks, yticks zticks : list
         Lists of axes xticks, extra ones are ignored.
     xlims, ylims, zlims : tuple
         Upper and lower plot limit of the axes. If None the upper and lower
         limits of the ticks are used. Extra ones are ignored.
     num_bands : int
-        Number of bands that should be plotted, only works for 2D plots. If
-        None all bands are plotted.
+        Number of bands near the middle that should be plotted.
     return_energies : bool
         If True the function only returns the energies in an array.
 
     Returns:
     --------
-    plot : holoviews.Path object
+    plot : holoviews plot object
         Plot of varying parameter vs. spectrum.
     """
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
-    if p is None:
-        p = dict()
+    if params is None:
+        params = dict()
+
+    # Add momenta to parameters
     dimensionality = syst.symmetry.num_directions
-    k = [k_x, k_y, k_z]
-    k = [(np.linspace(-np.pi, np.pi, 101) if i is None else i)
-         for i in k]
-    k = [(i if j < dimensionality else 0) for (j, i) in enumerate(k)]
-    k_x, k_y, k_z = k
+    momenta_keys = 'k_x k_y k_z'.split()[:dimensionality]
+    momenta = {
+        k: params.get(k, np.linspace(-np.pi, np.pi, 101))
+        for k in momenta_keys
+    }
+    params = {**momenta, **params}
 
-    hamiltonians, variables = hamiltonian_array(syst, p, k_x, k_y, k_z, True)
-    # Don't waste effort calculating eigenvalues if we aren't going to plot
-    # anything.
-    if len(variables) in (1, 2):
-        energies = np.linalg.eigvalsh(hamiltonians)
+    hamiltonians = hamiltonian_array(syst, params=params)
 
+    energies = np.linalg.eigvalsh(hamiltonians)
+
+    constants = {
+        k: v for k, v in
+    }
     if len(variables) == 0:
         raise ValueError("A 0D plot requested")
+
+    if num_bands is not None:
+        mid = energies.shape[-1] // 2
+        to_take = (
+            (slice(None),) * (len(energies.shape) - 1)
+            + (slice(mid - num_bands//2, mid + num_bands//2),)
+        )
+        energies = energies[to_take]
 
     if return_energies:
         return energies
@@ -145,7 +127,7 @@ def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     elif len(variables) == 1:
         # 1D plot.
         if xdim is None:
-            if variables[0][0] in 'k_x k_y k_z'.split():
+            if variables[0][0] in momenta_keys:
                 xdim = r'${}$'.format(variables[0][0])
             else:
                 xdim = variables[0][0]
@@ -171,7 +153,7 @@ def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         ylims = slice(*ylims) if ylims is not None else slice(None)
 
         if callable(title):
-            plot = plot.relabel(title(p))
+            plot = plot.relabel(title(**params))
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
@@ -180,22 +162,22 @@ def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
     elif len(variables) == 2:
         # 2D plot.
         style = {}
-        if xticks is None and variables[0][0] in 'k_x k_y k_z'.split():
+        if xticks is None and variables[0][0] in momenta_keys:
             style['xticks'] = pi_ticks
         elif xticks is not None:
             style['xticks'] = list(xticks)
-        if yticks is None and variables[1][0] in 'k_x k_y k_z'.split():
+        if yticks is None and variables[1][0] in momenta_keys:
             style['yticks'] = pi_ticks
         elif yticks is not None:
             style['yticks'] = list(yticks)
 
         if xdim is None:
-            if variables[0][0] in 'k_x k_y k_z'.split():
+            if variables[0][0] in momenta_keys:
                 xdim = r'${}$'.format(variables[0][0])
             else:
                 xdim = variables[0][0]
         if ydim is None:
-            if variables[1][0] in 'k_x k_y k_z'.split():
+            if variables[1][0] in momenta_keys:
                 ydim = r'${}$'.format(variables[1][0])
             else:
                 ydim = variables[1][0]
@@ -217,14 +199,12 @@ def spectrum(syst, params, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
                   'kdims': [xdim, ydim],
                   'vdims': [zdim]}
 
-        if num_bands is None:
-            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
-                               for i in range(energies.shape[-1])])
-        else:
-            mid = energies.shape[-1] // 2
-            num_bands //= 2
-            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
-                               for i in range(mid - num_bands, mid + num_bands)])
+        plot = hv.Overlay(
+            [
+                hv.Surface(energies[:, :, i], **kwargs)(plot=style)
+                for i in range(energies.shape[-1])
+            ]
+        )
 
         if callable(title):
             plot = plot.relabel(title(p))
