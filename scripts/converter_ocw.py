@@ -60,7 +60,7 @@ for chapter in chapters:
     for section in chapter['sections']:
         notebook = generated_ipynbs / (section['location'] + '.ipynb')
         units = split_into_units(notebook)
-        folder, fname = notebook.parent, notebook.name
+        folder, fname = notebook.parts[-2:]
         for i, unit in enumerate(units):
             fname = fname.replace('.ipynb', '')
             new_fname = f'{fname}_{i}'
