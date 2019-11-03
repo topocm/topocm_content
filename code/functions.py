@@ -57,61 +57,64 @@ def hamiltonian_array(syst, params):
 
 
 def spectrum(
-    syst, params, title=None, xdim=None,
-    ydim=None, zdim=None, xticks=None, yticks=None, zticks=None,
-    xlims=None, ylims=None, zlims=None, num_bands=None, return_energies=False
+    syst, params, title=None,
+    num_bands=None, return_energies=False
 ):
     """Plot system spectrum for varying parameters or momenta.
 
     Parameters:
     -----------
-    syst : kwant.Builder object
-        The un-finalized (in)finite system.
-    p : SimpleNamespace object
-        A container used to store Hamiltonian parameters. The parameters that
-        are sequences are used as plot axes.
+    syst : kwant.System or callable
+        kwant System or a function returning the Hamiltonian
+    params : dict
+        dictionary of parameters. The keys are either strings
+        or instances of `hv.Dimension` for better formatting.
+        Iterable values are expanded over and used as axes.
+        If the system expects extra momenta arguments, these are added.
     title : function or str
         Function that takes params as argument and returns the title.
-        If a string it's used as static title.
-    xdim, ydim, zdim : holoviews.Dimension or string
-        The labels of the axes. Default to best guess.
-    xticks, yticks zticks : list
-        Lists of axes xticks, extra ones are ignored.
-    xlims, ylims, zlims : tuple
-        Upper and lower plot limit of the axes. If None the upper and lower
-        limits of the ticks are used. Extra ones are ignored.
+        If a string it's used as a static title.
     num_bands : int
         Number of bands near the middle that should be plotted.
     return_energies : bool
-        If True the function only returns the energies in an array.
+        If True the function only returns the energies in an array
+        and do not produce a plot.
 
     Returns:
     --------
-    plot : holoviews plot object
+    plot : an appropriate holoviews object
         Plot of varying parameter vs. spectrum.
     """
-    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
+    energy_dim = hv.Dimension(
+        name='energy',
+        label='$E$'
+    )
+
     if params is None:
-        params = dict()
+        params = {}
 
     # Add momenta to parameters
-    dimensionality = syst.symmetry.num_directions
-    momenta_keys = 'k_x k_y k_z'.split()[:dimensionality]
-    momenta = {
-        k: params.get(k, np.linspace(-np.pi, np.pi, 101))
-        for k in momenta_keys
-    }
+    if not callable(syst):
+        momenta = {
+            hv.Dimension(
+                name=k, label=f'${k}$', range=(-np.pi, np.pi)
+            ): np.linspace(-np.pi, np.pi, 101)
+            for k in 'k_x k_y k_z'.split()
+            if k in syst.parameters and not k in params
+        }
+    else:
+        momenta = {}
+        
+    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
+
     params = {**momenta, **params}
 
-    hamiltonians = hamiltonian_array(syst, params=params)
+    # Obtain the data
+    hamiltonians = hamiltonian_array(
+        syst, params={str(dim): value for dim, value in params.items()}
+    )
 
     energies = np.linalg.eigvalsh(hamiltonians)
-
-    constants = {
-        k: v for k, v in
-    }
-    if len(variables) == 0:
-        raise ValueError("A 0D plot requested")
 
     if num_bands is not None:
         mid = energies.shape[-1] // 2
@@ -124,17 +127,23 @@ def spectrum(
     if return_energies:
         return energies
 
-    elif len(variables) == 1:
-        # 1D plot.
-        if xdim is None:
-            if variables[0][0] in momenta_keys:
-                xdim = r'${}$'.format(variables[0][0])
-            else:
-                xdim = variables[0][0]
-        if ydim is None:
-            ydim = r'$E$'
+    # Separate the parameters into constant and varied
+    constants = {
+        k: v for k, v in params.items()
+        if not hasattr(v, "__len__")
+    }
+    variables = {
+        k: v for k, v in params.items()
+        if hasattr(v, "__len__")        
+    }
 
-        plot = hv.Path((variables[0][1], energies), kdims=[xdim, ydim])
+    # Actual plotting
+    if not variables:
+        raise ValueError("No variable parameters")
+
+    elif len(variables) == 1:
+        xdim, values = variables.popitem()
+        plot = hv.Path((values, energies), kdims=[xdim, energy_dim])
 
         ticks = {}
         if isinstance(xticks, collections.Iterable):
@@ -148,9 +157,6 @@ def spectrum(
             ticks['yticks'] = list(yticks)
         elif isinstance(yticks, int):
             ticks['yticks'] = yticks
-
-        xlims = slice(*xlims) if xlims is not None else slice(None)
-        ylims = slice(*ylims) if ylims is not None else slice(None)
 
         if callable(title):
             plot = plot.relabel(title(**params))
@@ -187,17 +193,7 @@ def spectrum(
         if zticks is not None:
             style['zticks'] = zticks
 
-        if xlims is None:
-            xlims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
-        if ylims is None:
-            ylims = np.round([min(variables[1][1]), max(variables[1][1])], 2)
-        if zlims is None:
-            zlims = (None, None)
-
-        kwargs = {'extents': (xlims[0], ylims[0], zlims[0],
-                              xlims[1], ylims[1], zlims[1]),
-                  'kdims': [xdim, ydim],
-                  'vdims': [zdim]}
+        kwargs = {'kdims': [xdim, ydim], 'vdims': [zdim]}
 
         plot = hv.Overlay(
             [
@@ -206,12 +202,15 @@ def spectrum(
             ]
         )
 
-        if callable(title):
-            plot = plot.relabel(title(p))
-        elif isinstance(title, str):
-            plot = plot.relabel(title)
 
         return plot.opts(plot={'Overlay': {'fig_size': 200}})
-
+    
     else:
         raise ValueError("Cannot make 4D plots yet.")
+        
+    if title is not None:
+        plot = plot.relabel(
+            title(**params) if callable(title) else title
+        )
+        
+    return plot
