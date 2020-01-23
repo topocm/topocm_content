@@ -72,7 +72,7 @@ pelican website:
   artifacts:
     paths:
       - generated/html
-    expire_in: 1d
+    expire_in: 30d
 
 
 ocw website:
