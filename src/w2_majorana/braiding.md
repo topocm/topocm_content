@@ -95,7 +95,7 @@ answers = ["Trick question - it is not possible to get N=7 pairs of Majorana mod
            "2^6.",
            "14",
            "The system has an energy gap, so it cannot be degenerate."]
-explanation = ("N pairs of Majoranas means a Hilbert space with dimension 2^7, "
+explanation = ("7 pairs of Majoranas means a Hilbert space with dimension 2^7, "
                "out of which half have even total parity and half have odd total parity. "
                "So the degeneracy at fixed even parity is 2^6.")
 MoocMultipleChoiceAssessment(question, answers, correct_answer=2, explanation=explanation)
