@@ -89,22 +89,30 @@ def make_scatter_sys():
 
 def scattering_det_pfaff(syst, p):
     def pfaffian(syst, p, k_x, k_y):
-        smat = kwant.smatrix(syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y)).data
+        smat = kwant.smatrix(
+            syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
+        ).data
         # since we get relatively large numerical errors we project the matrix on
         # the space of antisymmetric matrices
         smat = 0.5 * (smat - smat.T)
         return pf.pfaffian(smat)
 
+    xdim, ydim = "$k_y$", "phase"
+
     def plot_k_x(syst, p, k_x, label, col):
         pfaff = [pfaffian(syst, p, k_x, 0), pfaffian(syst, p, k_x, np.pi)]
         ks = np.linspace(0.0, np.pi, 50)
         det = [
-            np.linalg.det(kwant.smatrix(syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y)).data)
+            np.linalg.det(
+                kwant.smatrix(
+                    syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
+                ).data
+            )
             for k_y in ks
         ]
         det = np.array(det)
         phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-        kdims = ["$k_y$", "phase"]
+        kdims = [xdim, ydim]
         plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label).opts(
             style={"color": col}
         )
@@ -125,7 +133,9 @@ def scattering_det_pfaff(syst, p):
         "legend_position": "top",
     }
     style_path = {"show_legend": True}
-    return plot[xlims, ylims].opts(plot={"Overlay": style_overlay, "Path": style_path})
+    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
+        plot={"Overlay": style_overlay, "Path": style_path}
+    )
 ```
 
 # Introduction
@@ -375,9 +385,8 @@ MoocMultipleChoiceAssessment(
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
 
-```python
-MoocVideo("s7H6oLighOM", src_location="6.1-summary")
-```
+
+#### MoocVideo("s7H6oLighOM", src_location="6.1-summary")
 
 
 ```python

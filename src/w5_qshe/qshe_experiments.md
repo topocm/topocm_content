@@ -135,22 +135,28 @@ def bhz(w=None):
 
 def G_mu_plot(p, mus, color):
     syst = two_terminal(40, 40).finalized()
-    G = [kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0) for p.mu in mus]
-    kdims = [r"$\mu$", r"G $[e^2/h]$"]
+    G = [
+        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
+        for p.mu in mus
+    ]
+    ydim = r"G $[e^2/h]$"
+    kdims = [r"$\mu$", ydim]
     plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label="Conductance")
     ticks = {"xticks": [-0.8, -0.4, 0, 0.4, 0.8], "yticks": [0, 2, 4, 6, 8, 10]}
-    return plot[:, 0:10].opts(plot=ticks, style={"color": color})
+    return plot.redim.range(**{ydim: (0, 10)}).opts(plot=ticks, style={"color": color})
 
 
 def G_Ez_plot(p, E_zs):
     syst = two_terminal(40, 20).finalized()
     G = [
-        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0) for p.ez_y in E_zs
+        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
+        for p.ez_y in E_zs
     ]
-    kdims = [r"$E_z$", r"G $[e^2/h]$"]
+    ydim = r"G $[e^2/h]$"
+    kdims = [r"$E_z$", ydim]
     plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label="Conductance")
     ticks = {"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]}
-    return plot[:, 0:2].opts(plot=ticks)
+    return plot.redim.range(**{ydim: (0, 2)}).opts(plot=ticks)
 ```
 
 # Introduction

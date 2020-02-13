@@ -97,11 +97,12 @@ def cond_mu(p, L, W, H):
 
 
 def plot_cond_mu(cond, mus):
-    kwargs = {"kdims": [r"$\mu$", r"$G\,[e^2/h]$"]}
+    xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
+    kwargs = {"kdims": [xdim, ydim]}
     plot = holoviews.Path((mus, cond), **kwargs).opts(
         plot={"xticks": 3, "yticks": [0, 2, 4, 6, 8]}, style={"color": "r"}
     )
-    return plot[-0.4:0.4, 0:8].relabel("Conductance")
+    return plot.redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)}).relabel("Conductance")
 
 
 def plot_bands(p, L, W, H):

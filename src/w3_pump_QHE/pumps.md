@@ -393,14 +393,19 @@ def plot_charge(mu):
     phases = np.linspace(0, 2 * np.pi, 100)
     p = SimpleNamespace(t=1, mu=mu, mu_lead=mu, A=0.6, omega=0.3)
     syst = modulated_wire(L=100).finalized()
-    rs = [kwant.smatrix(syst, energy, params=dict(p=p)).submatrix(0, 0) for p.phase in phases]
+    rs = [
+        kwant.smatrix(syst, energy, params=dict(p=p)).submatrix(0, 0)
+        for p.phase in phases
+    ]
     wn = -total_charge(rs)
     title = "$\mu={:.2}$".format(mu)
     kdims = [r"$t/T$", r"$q/e$"]
     plot = holoviews.Path(
         (phases / (2 * np.pi), wn), kdims=kdims, label=title, group="Q"
     )
-    return plot[:, -0.5:3.5].opts(plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3]})
+    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).opts(
+        plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3]}
+    )
 
 
 kwargs = {
