@@ -1,36 +1,40 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size=150
-pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
+
 
 def Qi_Wu_Zhang(w=None):
     def onsite(site, p):
-        return - p.mu * pauli.sz
-    
+        return -p.mu * pauli.sz
+
     def hopx(site1, site2, p):
-        return - 0.5j * p.delta * pauli.sy - p.t * pauli.sz
-    
+        return -0.5j * p.delta * pauli.sy - p.t * pauli.sz
+
     def hopy(site1, site2, p):
-        return - 1j * p.gamma * pauli.sx  - p.gamma * pauli.sz  
-    
+        return -1j * p.gamma * pauli.sx - p.gamma * pauli.sz
+
     lat = kwant.lattice.square()
 
     if w == None:
         syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = onsite
     else:
+
         def ribbon_shape(pos):
-            return (0 <= pos[1] < w )
+            return 0 <= pos[1] < w
 
         sym = kwant.TranslationalSymmetry((1, 0))
         syst = kwant.Builder(sym)
         syst[lat.shape(ribbon_shape, (0, 0))] = onsite
 
-    syst[kwant.HoppingKind((1,0), lat)] = hopx
-    syst[kwant.HoppingKind((0,1), lat)] = hopy
+    syst[kwant.HoppingKind((1, 0), lat)] = hopx
+    syst[kwant.HoppingKind((0, 1), lat)] = hopy
     return syst
 
 
@@ -95,19 +99,29 @@ Finally, before we go on with our plan, keep in mind that considering the phase 
 
 
 ```python
-question = ("It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. "
-            "Apart from the two systems having different dimensionality"
-            ", what's the fundamental difference between the two cases?")
-answers = ["The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.",
-           "The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.",
-           "The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.",
-           ("The Kitaev chiral states exist only at specific parameter values, "
-            "while the quantum Hall edge states don't.")]
-explanation = ("The pair of chiral states in the Kitaev model only exists at "
-               "the phase transition point, when the chain becomes gapless. "
-               "On the other hand, chiral edge states are a topological property of the quantum Hall state. "
-               "They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=3, explanation=explanation)
+question = (
+    "It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. "
+    "Apart from the two systems having different dimensionality"
+    ", what's the fundamental difference between the two cases?"
+)
+answers = [
+    "The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.",
+    "The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.",
+    "The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.",
+    (
+        "The Kitaev chiral states exist only at specific parameter values, "
+        "while the quantum Hall edge states don't."
+    ),
+]
+explanation = (
+    "The pair of chiral states in the Kitaev model only exists at "
+    "the phase transition point, when the chain becomes gapless. "
+    "On the other hand, chiral edge states are a topological property of the quantum Hall state. "
+    "They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # QHE without a magnetic  field
@@ -147,11 +161,13 @@ Aside from special points, this spectrum is gapped, just like we wanted. For ins
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(t=1.0, delta=0.3, gamma=-.5, mu=None)
+p = SimpleNamespace(t=1.0, delta=0.3, gamma=-0.5, mu=None)
 syst = Qi_Wu_Zhang()
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap({p.mu: spectrum(syst, p, zticks=[-4, -2, 0, 2, 4], title=title)
-                   for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap(
+    {p.mu: spectrum(syst, p, zticks=[-4, -2, 0, 2, 4], title=title) for p.mu in mus},
+    kdims=[r"$\mu$"],
+)
 ```
 
 As a check that everything worked, let's look at the dispersion of a ribbon with finite width along the $y$ direction. If there are edge states, we should see a Dirac-like crossing around $k_x=0$.
@@ -162,14 +178,16 @@ p = SimpleNamespace(t=1.0, delta=0.3, gamma=-0.5, mu=None)
 syst = Qi_Wu_Zhang(w=15)
 mus = np.linspace(-2, 0, 11)
 
-style = {'xdim': r'$k$',
-         'ydim': r'$E/t$',
-         'xticks': pi_ticks,
-         'yticks': [-2, 0, 2],
-         'ylims': [-2.2, 2.2],
-         'title': title}
+style = {
+    "xdim": r"$k$",
+    "ydim": r"$E/t$",
+    "xticks": pi_ticks,
+    "yticks": [-2, 0, 2],
+    "ylims": [-2.2, 2.2],
+    "title": title,
+}
 
-holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r"$\mu$"])
 ```
 
 We see that the crossing is there, and it disappears when the gap closes. So we can identify the point $\mu=-2t-2\gamma$ as a critical point at which the quantum Hall state becomes topologically trivial.
@@ -178,15 +196,19 @@ While details such as the bulk spectrum and edge dispersion are different from t
 
 
 ```python
-question = ("How does our lattice model with no magnetic field differ from the original quantum Hall effect?")
-answers = ["Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.",
-           "Quantum Hall effect in a magnetic field has Landau levels "
-           "that do not disperse in k while they disperse in the lattice.",
-           "Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.",
-           "In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the "
-           "lattice the filling fraction per unit cell is arbitrary."]
-explanation = ("In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = "How does our lattice model with no magnetic field differ from the original quantum Hall effect?"
+answers = [
+    "Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.",
+    "Quantum Hall effect in a magnetic field has Landau levels "
+    "that do not disperse in k while they disperse in the lattice.",
+    "Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.",
+    "In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the "
+    "lattice the filling fraction per unit cell is arbitrary.",
+]
+explanation = "In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition."
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Dirac equation at the phase transition
@@ -215,12 +237,12 @@ so it has a velocity $v=2\gamma$, the direction of which depends on the sign of 
 
 
 ```python
-MoocVideo("CXgAcOOVlag", src_location='4.1-summary')
+MoocVideo("CXgAcOOVlag", src_location="4.1-summary")
 ```
 
 **Questions about what you learned? Ask them below**
 
 
 ```python
-MoocDiscussion('Questions', 'Chern insulators')
+MoocDiscussion("Questions", "Chern insulators")
 ```

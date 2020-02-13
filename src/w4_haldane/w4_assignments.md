@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 ```
 
@@ -34,7 +36,7 @@ MoocSelfAssessment()
 
 
 ```python
-MoocDiscussion('Labs', 'Chern insulators')
+MoocDiscussion("Labs", "Chern insulators")
 ```
 
 # Review assignment

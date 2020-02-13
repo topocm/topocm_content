@@ -1,19 +1,22 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 import scipy
+
 %output size=150 fig='png'
-pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 
-def haldane(w=20, boundary='zigzag'):
+def haldane(w=20, boundary="zigzag"):
     def ribbon_shape_zigzag(pos):
-        return (-0.5 / np.sqrt(3) - 0.1 <= pos[1] < np.sqrt(3) * w / 2 + 0.01)
+        return -0.5 / np.sqrt(3) - 0.1 <= pos[1] < np.sqrt(3) * w / 2 + 0.01
 
     def ribbon_shape_armchair(pos):
-        return (-1 <= pos[0] < w)
+        return -1 <= pos[0] < w
 
     def onsite(site, p):
         if site.family == a:
@@ -32,39 +35,43 @@ def haldane(w=20, boundary='zigzag'):
     nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
     nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
 
-    if boundary == 'zigzag':
+    if boundary == "zigzag":
         syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
         syst[lat.shape(ribbon_shape_zigzag, (0, 0))] = onsite
-    elif boundary == 'armchair':
+    elif boundary == "armchair":
         syst = kwant.Builder(kwant.TranslationalSymmetry((0, np.sqrt(3))))
         syst[lat.shape(ribbon_shape_armchair, (0, 0))] = onsite
     else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs)) 
+        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-    
+
     syst[lat.neighbors()] = nn_hopping
-    syst[[kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_a]] = nnn_hopping
-    syst[[kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_b]] = nnn_hopping
+    syst[
+        [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_a]
+    ] = nnn_hopping
+    syst[
+        [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_b]
+    ] = nnn_hopping
 
     return syst
 
 
 def Qi_Wu_Zhang():
     def onsite(site, p):
-        return - p.mu * pauli.sz
-    
+        return -p.mu * pauli.sz
+
     def hopx(site1, site2, p):
-        return - 0.5j * p.delta * pauli.sy - p.t * pauli.sz
-    
+        return -0.5j * p.delta * pauli.sy - p.t * pauli.sz
+
     def hopy(site1, site2, p):
-        return - 1j * p.gamma * pauli.sx  - p.gamma * pauli.sz  
-    
+        return -1j * p.gamma * pauli.sx - p.gamma * pauli.sz
+
     lat = kwant.lattice.square()
 
     syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
     syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1,0), lat)] = hopx
-    syst[kwant.HoppingKind((0,1), lat)] = hopy
+    syst[kwant.HoppingKind((1, 0), lat)] = hopx
+    syst[kwant.HoppingKind((0, 1), lat)] = hopy
     return syst
 
 
@@ -98,9 +105,11 @@ def berry_curvature(syst, p, ks, num_filled_bands=1):
         kx, ky = np.linalg.solve(A, k)
         H = syst.hamiltonian_submatrix([p, kx, ky], sparse=False)
         return scipy.linalg.eigh(H)[1]
-    
-    vectors = np.array([[energy(kx, ky)[:, :num_filled_bands] for kx in ks] for ky in ks])
-    
+
+    vectors = np.array(
+        [[energy(kx, ky)[:, :num_filled_bands] for kx in ks] for ky in ks]
+    )
+
     # The actual Berry curvature calculation
     vectors_x = np.roll(vectors, 1, 0)
     vectors_xy = np.roll(vectors_x, 1, 1)
@@ -115,31 +124,33 @@ def berry_curvature(syst, p, ks, num_filled_bands=1):
     dets = np.ones(len(shifted_vecs[0]), dtype=complex)
     for vec, shifted in zip(shifted_vecs, np.roll(shifted_vecs, 1, 0)):
         dets *= [np.linalg.det(a.T.conj() @ b) for a, b in zip(vec, shifted)]
-    bc = np.angle(dets).reshape(int(np.sqrt(len(dets))), -1)    
-    
+    bc = np.angle(dets).reshape(int(np.sqrt(len(dets))), -1)
+
     bc = (bc + np.pi / 2) % (np.pi) - np.pi / 2
-    
+
     return bc
 
 
-def plot_berry_curvature(syst, p, ks=None, title=None):    
+def plot_berry_curvature(syst, p, ks=None, title=None):
     if ks is None:
         ks = np.linspace(-np.pi, np.pi, 150, endpoint=False)
-    bc = berry_curvature(syst, p, ks)[1:-1,1:-1]
+    bc = berry_curvature(syst, p, ks)[1:-1, 1:-1]
     vmax = max(np.abs(bc).min(), np.abs(bc).max())
-    kwargs = {'bounds': (ks.min(), ks.min(), ks.max(), ks.max()),
-              'kdims': [r'$k_x$', r'$k_y$']}
+    kwargs = {
+        "bounds": (ks.min(), ks.min(), ks.max(), ks.max()),
+        "kdims": [r"$k_x$", r"$k_y$"],
+    }
 
     if callable(title):
-        kwargs['label'] = title(p)
+        kwargs["label"] = title(p)
 
-    plot = {'xticks': pi_ticks, 'yticks': pi_ticks}
-    style = {'clims': [-vmax, vmax]}
+    plot = {"xticks": pi_ticks, "yticks": pi_ticks}
+    style = {"clims": [-vmax, vmax]}
     return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
 
 
 def title(p):
-    title = r'$t={:.2}$, $t_2={:.2}$, $M={:.2}$'
+    title = r"$t={:.2}$, $t_2={:.2}$, $M={:.2}$"
     return title.format(p.t, p.t_2, p.m)
 ```
 
@@ -149,7 +160,7 @@ Duncan Haldane from Princeton University will teach us about an interesting two 
 
 
 ```python
-MoocVideo("7nVO4uMm-do", src_location='4.2-intro')
+MoocVideo("7nVO4uMm-do", src_location="4.2-intro")
 ```
 
 We will now study the model in detail, starting from the beginning.  Along the way, we will also learn about the Chern number, the bulk topological invariant of a quantum Hall state.
@@ -182,8 +193,8 @@ The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives ris
 
 
 ```python
-p = SimpleNamespace(t=1.0, t_2=0.0, m=0.0, phi=np.pi/2)
-syst = haldane(boundary='infinite')
+p = SimpleNamespace(t=1.0, t_2=0.0, m=0.0, phi=np.pi / 2)
+syst = haldane(boundary="infinite")
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 150)
 spectrum(syst, p, k_x=k, k_y=k, title=title)
 ```
@@ -255,12 +266,14 @@ Let's see what happens to the system when these special second neighbor hoppings
 
 
 ```python
-p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi/2, t_2=None)
-syst = haldane(boundary='infinite')
+p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi / 2, t_2=None)
+syst = haldane(boundary="infinite")
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
-kwargs = {'k_x': k, 'k_y': k, 'title': title}
+kwargs = {"k_x": k, "k_y": k, "title": title}
 t_2s = np.linspace(0, 0.10, 11)
-holoviews.HoloMap({p.t_2: spectrum(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r'$t_2$'])
+holoviews.HoloMap(
+    {p.t_2: spectrum(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r"$t_2$"]
+)
 ```
 
 When $t_2=0$ and at a finite $M$, the system is in a boring gapped phase, generically without zero energy states. As you heard in the video, there might be zero energy states for some specific termination of the lattice, but these are not particularly interesting.
@@ -273,27 +286,34 @@ And when it does, chiral edge states appear! We can see this by looking at the o
 ```python
 %%output fig='svg'
 def ribbon_bandstructure(t_2, boundary):
-    p = SimpleNamespace(t=1.0, t_2=t_2, m=0.2, phi=np.pi/2)
+    p = SimpleNamespace(t=1.0, t_2=t_2, m=0.2, phi=np.pi / 2)
 
-    if boundary is 'zigzag':
-        syst = haldane(w=20, boundary='zigzag')
-    elif boundary is 'armchair':
-        syst = haldane(w=20, boundary='armchair', )
-        
-    style = {'k_x': np.linspace(-np.pi, np.pi, 101),
-             'xdim': r'$k$',
-             'ydim': r'$E/t$',
-             'xticks': pi_ticks,
-             'yticks': [-3, 0, 3],
-             'ylims': [-3.2, 3.2],
-             'title': title}
-    
+    if boundary is "zigzag":
+        syst = haldane(w=20, boundary="zigzag")
+    elif boundary is "armchair":
+        syst = haldane(w=20, boundary="armchair",)
+
+    style = {
+        "k_x": np.linspace(-np.pi, np.pi, 101),
+        "xdim": r"$k$",
+        "ydim": r"$E/t$",
+        "xticks": pi_ticks,
+        "yticks": [-3, 0, 3],
+        "ylims": [-3.2, 3.2],
+        "title": title,
+    }
+
     return spectrum(syst, p, **style)
 
+
 t_2s = np.linspace(0, 0.5, 20)
-boundaries = ['zigzag', 'armchair']
-plots = {(t_2, boundary): ribbon_bandstructure(t_2, boundary) for t_2 in t_2s for boundary in boundaries}
-holoviews.HoloMap(plots, kdims=[r'$t_2$', 'Boundary'])
+boundaries = ["zigzag", "armchair"]
+plots = {
+    (t_2, boundary): ribbon_bandstructure(t_2, boundary)
+    for t_2 in t_2s
+    for boundary in boundaries
+}
+holoviews.HoloMap(plots, kdims=[r"$t_2$", "Boundary"])
 ```
 
 The appearance of edge states means that graphene has entered a topological phase after the gap closing. This phase is akin to the quantum Hall phase - the edge states are of the same kind. However, as Duncan Haldane explained in the introduction, it is realized without a strong magnetic field.
@@ -302,18 +322,24 @@ As you know, this means we have created a **Chern insulator**. The reason for th
 
 
 ```python
-question = ("What happens if we take a Haldane model in the topological phase and turn "
-            "on a weak magnetic field?")
+question = (
+    "What happens if we take a Haldane model in the topological phase and turn "
+    "on a weak magnetic field?"
+)
 
-answers = ["Magnetic field introduces Landau levels, which change the number of edge states.",
-           "Since the magnetic field is weak, nothing changes as long as it doesn't close the gap",
-           "The bulk gap closes and there are no edge states anymore.",
-           "The gap doesn't close but the edge states may change direction "
-           "of propagation, depending on the sign of magnetic field."]
+answers = [
+    "Magnetic field introduces Landau levels, which change the number of edge states.",
+    "Since the magnetic field is weak, nothing changes as long as it doesn't close the gap",
+    "The bulk gap closes and there are no edge states anymore.",
+    "The gap doesn't close but the edge states may change direction "
+    "of propagation, depending on the sign of magnetic field.",
+]
 
 explanation = "Topological robustness is still present, so the number of edge states cannot change unless the gap closes."
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Pumping in terms of Berry phase
@@ -416,22 +442,26 @@ To see this more clearly, we can compute the Berry curvature numerically and plo
 
 
 ```python
-p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi/2, t_2=None)
-syst = haldane(boundary='infinite')
-kwargs = {'title': title, 'ks': np.linspace(-2*np.pi, 2*np.pi, 150, endpoint=False)}
+p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi / 2, t_2=None)
+syst = haldane(boundary="infinite")
+kwargs = {"title": title, "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)}
 t_2s = np.linspace(-0.1, 0.1, 11)
-holoviews.HoloMap({p.t_2: plot_berry_curvature(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r'$t_2$'])
+holoviews.HoloMap(
+    {p.t_2: plot_berry_curvature(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r"$t_2$"]
+)
 ```
 
 
 ```python
 question = "How does time-reversal symmetry influence the Berry curvature?"
 
-answers = ["The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.",
-           "Time reversal symmetry doesn't constrain Berry curvature at all.",
-           "There is no constraint, only the integral of Berry curvature (Chern number) should be zero.",
-           "The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature "
-           "at one momentum becomes opposite to the Berry curvature at opposite momentum."]
+answers = [
+    "The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.",
+    "Time reversal symmetry doesn't constrain Berry curvature at all.",
+    "There is no constraint, only the integral of Berry curvature (Chern number) should be zero.",
+    "The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature "
+    "at one momentum becomes opposite to the Berry curvature at opposite momentum.",
+]
 
 MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3)
 ```
@@ -449,13 +479,17 @@ For instance, here is a slider plot for the Berry curvature for the quantum Hall
 p = SimpleNamespace(t=1.0, delta=1.0, gamma=-0.5, mu=None)
 syst = Qi_Wu_Zhang()
 
+
 def title_Qi(p):
-    title = r'$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$'
+    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
     return title.format(p.t, p.mu, p.delta, p.gamma)
 
-kwargs = {'title': title_Qi}
+
+kwargs = {"title": title_Qi}
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap({p.mu: plot_berry_curvature(syst, p, **kwargs) for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap(
+    {p.mu: plot_berry_curvature(syst, p, **kwargs) for p.mu in mus}, kdims=[r"$\mu$"]
+)
 ```
 
 You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that when $\mu = -2t - 2\gamma$ some flux of opposite sign appears at $k_x = k_y=0$, the Dirac point, which leaves no net curvature and leads to a change in the Chern number. This is the signature of the topological transition seen from the Berry curvature.
@@ -464,7 +498,7 @@ You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that wh
 
 
 ```python
-MoocVideo("0gxE68kvdmw", src_location='4.2-summary')
+MoocVideo("0gxE68kvdmw", src_location="4.2-summary")
 ```
 
 **Questions about what you just learned? Ask them below!**
