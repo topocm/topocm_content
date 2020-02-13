@@ -1,4 +1,4 @@
-name: python3
+name: topocondmat
 channels:
   - conda-forge
 dependencies:
