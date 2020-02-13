@@ -271,7 +271,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         syst = syst.finalized()
 
         def momentum_to_lattice(k):
-            return []
+            return {}
 
     else:
         if len(syst.symmetry.periods) == 1:
@@ -279,7 +279,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             def momentum_to_lattice(k):
                 if any(k[dimensionality:]):
                     raise ValueError("Dispersion is 1D, but more momenta are provided.")
-                return [k[0]]
+                return {"k_x": k[0]}
 
         else:
             B = np.array(syst.symmetry.periods).T
@@ -293,7 +293,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
                         "Requested momentum doesn't correspond"
                         " to any lattice momentum."
                     )
-                return list(k)
+                return dict(zip(["k_x", "k_y", "k_z"], list(k)))
 
         syst = kwant.wraparound.wraparound(syst).finalized()
 
@@ -314,7 +314,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
 
     if not changing:
         hamiltonians = syst.hamiltonian_submatrix(
-            [pars] + momentum_to_lattice([k_x, k_y, k_z]), sparse=False
+            params=dict(p=pars, **momentum_to_lattice([k_x, k_y, k_z])), sparse=False
         )[None, ...]
         if return_grid:
             return hamiltonians, []
@@ -325,7 +325,6 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         pars.__dict__.update(values)
         k = [values.get("k_x", k_x), values.get("k_y", k_y), values.get("k_z", k_z)]
         k = momentum_to_lattice(k)
-        k = dict(zip(["k_x", "k_y", "k_z"], k))
         return syst.hamiltonian_submatrix(params=dict(p=pars, **k), sparse=False)
 
     names, values = zip(*sorted(changing.items()))
