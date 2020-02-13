@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 import scipy.sparse.linalg as sl
 
@@ -20,11 +22,16 @@ sysxsz = np.kron(pauli.sysx, pauli.sz)
 def make_qshe_sc(l=40, w=10, lead=False):
     def shape(pos):
         (x, y) = pos
-        return (1.0 * y**2 / l**2 + 1.0 * x**2 / w**2) <= 0.25
+        return (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
 
     def onsite(site, p):
         (x, y) = site.pos
-        return (p.M - 4 * p.B) * s0szsz - 4 * p.D * s0s0sz + p.gaps(x, y)[1] * mys0 + p.gaps(x, y)[0] * s0s0sx
+        return (
+            (p.M - 4 * p.B) * s0szsz
+            - 4 * p.D * s0s0sz
+            + p.gaps(x, y)[1] * mys0
+            + p.gaps(x, y)[0] * s0s0sx
+        )
 
     def hopx(site1, site2, p):
         return p.B * s0szsz + p.D * s0s0sz + 0.5j * p.A * szsxsz
@@ -51,11 +58,16 @@ def make_qshe_sc(l=40, w=10, lead=False):
 def make_qshe_sc_ribbon(w=3):
     def ribbon_shape(pos):
         (x, y) = pos
-        return (0 <= x < w)
+        return 0 <= x < w
 
     def onsite(site, p):
         (x, y) = site.pos
-        return (p.M - 4 * p.B) * s0szsz - 4 * p.D * s0s0sz + p.gaps(x, y)[1] * mys0 + p.gaps(x, y)[0] * s0s0sx
+        return (
+            (p.M - 4 * p.B) * s0szsz
+            - 4 * p.D * s0s0sz
+            + p.gaps(x, y)[1] * mys0
+            + p.gaps(x, y)[0] * s0s0sx
+        )
 
     def hopx(site1, site2, p):
         return p.B * s0szsz + p.D * s0s0sz + 0.5j * p.A * szsxsz
@@ -77,22 +89,23 @@ def make_qshe_sc_ribbon(w=3):
 def make_2d_pwave(w, l):
     def shape(pos):
         (x, y) = pos
-        return (1.0 * y**2 / l**2 + 1.0 * x**2 / w**2) <= 0.25
+        return (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
 
     def hopx(site1, site2, p):
         (x1, y1) = site1.pos
         (x2, y2) = site2.pos
         phi = p.phase(0.5 * (x1 + x2), 0.5 * (y1 + y2))
-        return -p.t * pauli.sz + 1j * p.delta * \
-            (np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy)
+        return -p.t * pauli.sz + 1j * p.delta * (
+            np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
+        )
 
     def hopy(site1, site2, p):
         (x1, y1) = site1.pos
         (x2, y2) = site2.pos
         phi = p.phase(0.5 * (x1 + x2), 0.5 * (y1 + y2))
-        return -p.t * pauli.sz - 1j * p.delta * \
-            (np.cos(np.pi / 2 + phi) * pauli.sx +
-             np.sin(np.pi / 2 + phi) * pauli.sy)
+        return -p.t * pauli.sz - 1j * p.delta * (
+            np.cos(np.pi / 2 + phi) * pauli.sx + np.sin(np.pi / 2 + phi) * pauli.sy
+        )
 
     def onsite(site1, p):
         return (4 * p.t - p.mu) * pauli.sz
@@ -112,22 +125,25 @@ def bhz_slab(l, w, h):
 
     def shape(pos):
         (x, y, z) = pos
-        return (0 <= z < h) and (1.0 * y**2 / l**2 + 1.0 * x**2 / w**2) <= 0.25
+        return (0 <= z < h) and (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
 
     def onsite(site, p):
         (x, y, z) = site.pos
         phi = p.phase(x, y)
-        return (p.C + 2 * p.D1 + 4 * p.D2) * s0s0sz + (p.M + 2 * p.B1 + 4 * p.B2) * s0szsz + \
-            p.delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
+        return (
+            (p.C + 2 * p.D1 + 4 * p.D2) * s0s0sz
+            + (p.M + 2 * p.B1 + 4 * p.B2) * s0szsz
+            + p.delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
+        )
 
     def hopx(site1, site2, p):
-        return - p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sxsxsz
+        return -p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sxsxsz
 
     def hopy(site1, site2, p):
-        return - p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sysxsz
+        return -p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sysxsz
 
     def hopz(site1, site2, p):
-        return - p.D1 * s0s0sz - p.B1 * s0szsz + p.A1 * 0.5j * szsxsz
+        return -p.D1 * s0s0sz - p.B1 * s0szsz + p.A1 * 0.5j * szsxsz
 
     syst[lat.shape(shape, (0, 0, 0))] = onsite
     syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx
@@ -140,10 +156,10 @@ def bhz_slab(l, w, h):
 def calc_energies(syst, p, num_orbitals, num_states):
     ham = syst.hamiltonian_submatrix(args=[p], sparse=True).tocsc()
     energies, states = sl.eigsh(ham, sigma=0, k=num_states)
-    densities = np.linalg.norm(
-        states.reshape(-1, num_orbitals, num_states), axis=1)**2
+    densities = (
+        np.linalg.norm(states.reshape(-1, num_orbitals, num_states), axis=1) ** 2
+    )
     return energies, states, densities
-
 ```
 
 # Introduction
@@ -191,20 +207,26 @@ From the point of view of the superconducting junction, this means that advancin
 
 
 ```python
-question = ("What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?")
+question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
 
-answers = ["The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.",
-           "Then you can no longer apply a flux through the disk.",
-           "The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.",
-           "Nothing changes if the inner edge of the Corbino disk is removed."]
+answers = [
+    "The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.",
+    "Then you can no longer apply a flux through the disk.",
+    "The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.",
+    "Nothing changes if the inner edge of the Corbino disk is removed.",
+]
 
-explanation = ("Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. "
-               "When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. "
-               "The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken "
-               "Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, "
-               "and Kramers theorem doesn't apply anymore.")
+explanation = (
+    "Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. "
+    "When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. "
+    "The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken "
+    "Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, "
+    "and Kramers theorem doesn't apply anymore."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 ## Majoranas on the quantum spin-Hall edge
@@ -242,9 +264,9 @@ w = 60
 sys2 = make_qshe_sc(l, w)
 
 p = SimpleNamespace(A=0.5, B=1.00, D=0.1, M=0.5)
-p.gaps = lambda x, y: [(y < 0)*0.0, (y >= 0)*0.0]
+p.gaps = lambda x, y: [(y < 0) * 0.0, (y >= 0) * 0.0]
 energies0, states0, densities0 = calc_energies(sys2, p, num_orbitals=8, num_states=10)
-p.gaps = lambda x, y: [(y < 0)*0.2, (y >= 0)*0.3]
+p.gaps = lambda x, y: [(y < 0) * 0.2, (y >= 0) * 0.3]
 energies, states, densities = calc_energies(sys2, p, num_orbitals=8, num_states=10)
 
 phi = np.linspace(-np.pi, np.pi, 51)
@@ -253,31 +275,30 @@ y = (l + 0.5) / 2 * np.sin(phi)
 
 fig = plt.figure(figsize=(9, 3.5))
 ax1 = fig.add_subplot(122)
-gap_B = ax1.fill_between(x[:26], 0, y[:26], facecolor='gold', alpha=0.1)
-gap_Sc = ax1.fill_between(x[26:], 0, y[26:], facecolor='blue', alpha=0.1)
-kwant.plotter.map(sys2, densities[:, 0], colorbar=False, ax=ax1, cmap='gist_heat_r')
-plt.plot(x, y, 'k-', lw=2)
-text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor='black', lw=0))
-plt.annotate('$E_Z$', xytext=(-w/20, l/5), xy=(0, l/3), **text_style)
-plt.annotate('$\Delta$', xytext=(-w/20, -l/4), xy=(0, -l/3), **text_style)
+gap_B = ax1.fill_between(x[:26], 0, y[:26], facecolor="gold", alpha=0.1)
+gap_Sc = ax1.fill_between(x[26:], 0, y[26:], facecolor="blue", alpha=0.1)
+kwant.plotter.map(sys2, densities[:, 0], colorbar=False, ax=ax1, cmap="gist_heat_r")
+plt.plot(x, y, "k-", lw=2)
+text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor="black", lw=0))
+plt.annotate("$E_Z$", xytext=(-w / 20, l / 5), xy=(0, l / 3), **text_style)
+plt.annotate("$\Delta$", xytext=(-w / 20, -l / 4), xy=(0, -l / 3), **text_style)
 ax1.set_yticks([])
 ax1.set_xticks([])
-ax1.set_ylim(-l/2-3, l/2+3)
-ax1.set_xlim(-w/2-3, w/2+3)
+ax1.set_ylim(-l / 2 - 3, l / 2 + 3)
+ax1.set_xlim(-w / 2 - 3, w / 2 + 3)
 pot = np.log(abs(energies0[0])) // np.log(10.0) - 1
-fac = abs(energies0[0])*10**(-pot)
-ax1.set_title('Majoranas, $E = $' + scientific_number(abs(energies[0])))
+fac = abs(energies0[0]) * 10 ** (-pot)
+ax1.set_title("Majoranas, $E = $" + scientific_number(abs(energies[0])))
 
 ax0 = fig.add_subplot(121)
-kwant.plotter.map(sys2, densities0[:, 0], colorbar=False, ax=ax0, cmap='gist_heat_r')
+kwant.plotter.map(sys2, densities0[:, 0], colorbar=False, ax=ax0, cmap="gist_heat_r")
 ax0.set_yticks([])
 ax0.set_xticks([])
-ax0.set_ylim(-l/2-3, l/2+3)
-ax0.set_xlim(-w/2-3, w/2+3)
-ax0.set_title('Edge state, $E = $' + scientific_number(abs(energies0[0])))
-plt.plot(x, y, 'k-', lw=2)
+ax0.set_ylim(-l / 2 - 3, l / 2 + 3)
+ax0.set_xlim(-w / 2 - 3, w / 2 + 3)
+ax0.set_title("Edge state, $E = $" + scientific_number(abs(energies0[0])))
+plt.plot(x, y, "k-", lw=2)
 plt.show()
-
 ```
 
 The density of states plot of the lowest energy state reveals one Majorana mode at each of the two interfaces between the magnet and the superconductor.
@@ -360,15 +381,20 @@ Below, we plot the wave function of the lowest energy state in a $p$-wave disk w
 ```python
 import matplotlib.cm
 import matplotlib.colors as mcolors
-colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128)**.25)
-gist_heat_r_rescaled = mcolors.LinearSegmentedColormap.from_list('gist_heat_r_rescaled', colors)
 
-p = SimpleNamespace(t=1.0, mu=0.4, delta=0.5, phase=lambda x, y: np.angle(x+1j*y))
+colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128) ** 0.25)
+gist_heat_r_rescaled = mcolors.LinearSegmentedColormap.from_list(
+    "gist_heat_r_rescaled", colors
+)
+
+p = SimpleNamespace(t=1.0, mu=0.4, delta=0.5, phase=lambda x, y: np.angle(x + 1j * y))
 l = 60
 w = 60
 syst = make_2d_pwave(w, l)
 energies, states, densities = calc_energies(syst, p, num_orbitals=2, num_states=10)
-kwant.plotter.map(syst, densities[:, 0], cmap=gist_heat_r_rescaled, show=False, colorbar=False)
+kwant.plotter.map(
+    syst, densities[:, 0], cmap=gist_heat_r_rescaled, show=False, colorbar=False
+)
 plt.show()
 ```
 
@@ -376,19 +402,27 @@ The wave function is not zero in the bulk between the edge and the vortex becaus
 
 
 ```python
-question = ("What happens if you add a second vortex to the superconductor? "
-            "Imagine that the vortices and edge are all very far away from each other")
+question = (
+    "What happens if you add a second vortex to the superconductor? "
+    "Imagine that the vortices and edge are all very far away from each other"
+)
 
-answers = ["The second vortex has no Majorana.",
-           "Both vortices have a Majorana, and the edge has two Majoranas.",
-           "The Majorana mode at the edge goes away, and each vortex has its own Majorana.",
-           "Vortices can only be added in pairs because Majoranas only come in pairs."]
+answers = [
+    "The second vortex has no Majorana.",
+    "Both vortices have a Majorana, and the edge has two Majoranas.",
+    "The Majorana mode at the edge goes away, and each vortex has its own Majorana.",
+    "Vortices can only be added in pairs because Majoranas only come in pairs.",
+]
 
-explanation = ("The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, "
-               "so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. "
-               "And so, of course, the second vortex must have a Majorana as well.")
+explanation = (
+    "The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, "
+    "so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. "
+    "And so, of course, the second vortex must have a Majorana as well."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Vortices in 3D topological insulator
@@ -421,41 +455,60 @@ To confirm this conclusion, below we show the result of a simulation of a 3D BHZ
 ```python
 import matplotlib.cm
 import matplotlib.colors as mcolors
+
 colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128))
 colors[:, 3] = np.linspace(0, 1, 128)
-gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list('gist_heat_r_transparent', colors)
+gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
+    "gist_heat_r_transparent", colors
+)
 l, w, h = 10, 10, 25
 syst = bhz_slab(l, w, h)
 
-p = SimpleNamespace(A1=0.5, A2=0.5, B1=0.5, B2=0.5, C=-0.2, D1=0.1, D2=0.0, M=-0.2,
-                    delta=0.15, phase=lambda x, y: np.angle(x + 1j * y))
+p = SimpleNamespace(
+    A1=0.5,
+    A2=0.5,
+    B1=0.5,
+    B2=0.5,
+    C=-0.2,
+    D1=0.1,
+    D2=0.0,
+    M=-0.2,
+    delta=0.15,
+    phase=lambda x, y: np.angle(x + 1j * y),
+)
 
 energies, states, densities = calc_energies(syst, p, num_orbitals=8, num_states=10)
 
 fig = plt.figure(figsize=(9, 3.5))
 
-ax0 = fig.add_subplot(121, projection='3d')
+ax0 = fig.add_subplot(121, projection="3d")
 kwant.plot(syst, ax=ax0, site_size=0.3)
-ax0.set_xlim(-w/2-2, w/2+2)
-ax0.set_ylim(-l/2-2, l/2+2)
+ax0.set_xlim(-w / 2 - 2, w / 2 + 2)
+ax0.set_ylim(-l / 2 - 2, l / 2 + 2)
 ax0.set_yticks([])
 ax0.set_xticks([])
 ax0.set_zlim3d([0, h])
 ax0.set_zticks([0, h])
-ax0.set_zticklabels(['$0$', '$%d$' % h])
+ax0.set_zticklabels(["$0$", "$%d$" % h])
 densities /= np.max(densities, axis=0, keepdims=True)
 
-ax1 = fig.add_subplot(122, projection='3d')
-kwant.plotter.plot(syst, site_color=densities[:, 0], ax=ax1,
-                   cmap=gist_heat_r_transparent, colorbar=False, site_lw=0)
+ax1 = fig.add_subplot(122, projection="3d")
+kwant.plotter.plot(
+    syst,
+    site_color=densities[:, 0],
+    ax=ax1,
+    cmap=gist_heat_r_transparent,
+    colorbar=False,
+    site_lw=0,
+)
 
-ax1.set_xlim(-w/2-2, w/2+2)
-ax1.set_ylim(-l/2-2, l/2+2)
+ax1.set_xlim(-w / 2 - 2, w / 2 + 2)
+ax1.set_ylim(-l / 2 - 2, l / 2 + 2)
 ax1.set_yticks([])
 ax1.set_xticks([])
 ax1.set_zlim3d([0, h])
 ax1.set_zticks([0, h])
-ax1.set_zticklabels(['$0$', '$%d$' % h])
+ax1.set_zticklabels(["$0$", "$%d$" % h])
 plt.show()
 ```
 
