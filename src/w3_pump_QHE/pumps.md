@@ -393,7 +393,7 @@ def plot_charge(mu):
     phases = np.linspace(0, 2 * np.pi, 100)
     p = SimpleNamespace(t=1, mu=mu, mu_lead=mu, A=0.6, omega=0.3)
     syst = modulated_wire(L=100).finalized()
-    rs = [kwant.smatrix(syst, energy, args=[p]).submatrix(0, 0) for p.phase in phases]
+    rs = [kwant.smatrix(syst, energy, params=dict(p=p)).submatrix(0, 0) for p.phase in phases]
     wn = -total_charge(rs)
     title = "$\mu={:.2}$".format(mu)
     kdims = [r"$t/T$", r"$q/e$"]
@@ -435,7 +435,7 @@ So there should be states crossing the bulk band gap. Let's see if it's true.
 p = SimpleNamespace(t=1, mu=0.0, mu_lead=0, A=0.6, omega=0.3, phase=None)
 syst = modulated_wire(L=110).finalized()
 phases = np.linspace(0, 2 * np.pi, 251)
-en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(args=[p])) for p.phase in phases]
+en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(params=dict(p=p))) for p.phase in phases]
 en = np.array(en)
 ticks = {"xticks": [0, 1], "yticks": [0, 0.5, 1]}
 kdims = [r"$t/T$", r"$E$"]

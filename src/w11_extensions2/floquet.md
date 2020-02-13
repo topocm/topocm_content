@@ -47,7 +47,7 @@ def evolution_operator(hamiltonians, T):
 
 
 def get_h_k(lead, p):
-    bands = kwant.physics.Bands(lead, args=[p])
+    bands = kwant.physics.Bands(lead, params=dict(p=p))
     h, t = bands.ham, bands.hop
     return lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
 ```

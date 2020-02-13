@@ -137,7 +137,7 @@ def make_scatter_sys():
 def scattering_det_pfaff(syst, p):
     def pfaffian(syst, p, ky):
         p.ky = ky
-        smat = kwant.smatrix(syst, energy=0.0, args=[p]).data
+        smat = kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data
         # since we get relatively large numerical errors we project the matrix on
         # the space of antisymmetric matrices
         smat = 0.5 * (smat - smat.T)
@@ -146,7 +146,7 @@ def scattering_det_pfaff(syst, p):
     pfaff = [pfaffian(syst, p, 0), pfaffian(syst, p, np.pi)]
 
     ks = np.linspace(0.0, np.pi, 50)
-    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, args=[p]).data) for p.ky in ks]
+    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data) for p.ky in ks]
     det = np.array(det)
 
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))

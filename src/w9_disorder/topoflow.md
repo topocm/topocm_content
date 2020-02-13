@@ -61,7 +61,7 @@ def phase_diagram(L, ms, p, num_average=100):
     for p.m in ms:
         qt = []
         for p.salt in map(str, range(num_average)):
-            s = kwant.smatrix(syst, args=[p]).data
+            s = kwant.smatrix(syst, params=dict(p=p)).data
             qt.append(((s[0, 0] / phase).real, abs(s[0, 1]) ** 2))
         qt = np.mean(qt, axis=0)
         data.append(qt)

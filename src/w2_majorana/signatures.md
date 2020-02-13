@@ -99,7 +99,7 @@ def nanowire_chain(L=None, periodic=False):
 
 def tunnel_spectroscopy(syst, p, Es):
     def Andreev_cond(E):
-        sm = kwant.smatrix(syst, energy=E, args=[p])
+        sm = kwant.smatrix(syst, energy=E, params=dict(p=p))
         # (i, j) means we call for block j of lead i in the scattering matrix.
         # The normal lead is i = 0 here, where block j = 0 corresponds to electrons
         # and block j = 1 holes.
@@ -152,7 +152,7 @@ def nanowire_spectrum(trivial=False):
 
     def energy(flux):
         p.flux = flux
-        H = syst.hamiltonian_submatrix(args=[p])
+        H = syst.hamiltonian_submatrix(params=dict(p=p))
         return np.linalg.eigvalsh(H)
 
     fluxes = np.linspace(0, 4 * np.pi, 51)

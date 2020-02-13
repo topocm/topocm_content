@@ -154,7 +154,7 @@ def bhz_slab(l, w, h):
 
 
 def calc_energies(syst, p, num_orbitals, num_states):
-    ham = syst.hamiltonian_submatrix(args=[p], sparse=True).tocsc()
+    ham = syst.hamiltonian_submatrix(params=dict(p=p), sparse=True).tocsc()
     energies, states = sl.eigsh(ham, sigma=0, k=num_states)
     densities = (
         np.linalg.norm(states.reshape(-1, num_orbitals, num_states), axis=1) ** 2

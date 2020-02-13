@@ -85,7 +85,7 @@ def bhz_scatter(L, W, H):
 def cond_mu(p, L, W, H):
     p.mu_lead = 0.7
     syst = bhz_scatter(L, W, H)
-    sys_leads_fixed = syst.finalized().precalculate(energy=0, args=[p])
+    sys_leads_fixed = syst.finalized().precalculate(energy=0, params=dict(p=p))
     mus = np.linspace(-0.4, 0.4, 40)
     cond = [
         kwant.smatrix(

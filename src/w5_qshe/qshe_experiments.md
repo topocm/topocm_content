@@ -135,7 +135,7 @@ def bhz(w=None):
 
 def G_mu_plot(p, mus, color):
     syst = two_terminal(40, 40).finalized()
-    G = [kwant.smatrix(syst, energy=0.0, args=[p]).transmission(1, 0) for p.mu in mus]
+    G = [kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0) for p.mu in mus]
     kdims = [r"$\mu$", r"G $[e^2/h]$"]
     plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label="Conductance")
     ticks = {"xticks": [-0.8, -0.4, 0, 0.4, 0.8], "yticks": [0, 2, 4, 6, 8, 10]}
@@ -145,7 +145,7 @@ def G_mu_plot(p, mus, color):
 def G_Ez_plot(p, E_zs):
     syst = two_terminal(40, 20).finalized()
     G = [
-        kwant.smatrix(syst, energy=0.0, args=[p]).transmission(1, 0) for p.ez_y in E_zs
+        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0) for p.ez_y in E_zs
     ]
     kdims = [r"$E_z$", r"G $[e^2/h]$"]
     plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label="Conductance")

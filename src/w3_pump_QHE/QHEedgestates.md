@@ -296,7 +296,7 @@ An important thing to note is that the presence of edge states does not depend i
 ```python
 p = SimpleNamespace(t=1, mu=0.6, mu_lead=0.6, B=0.15, phi=0.0)
 syst = qhe_hall_bar(L=200, W=100).finalized()
-ldos = kwant.ldos(syst, energy=0.0, args=[p])
+ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
 
 fig = plt.figure(figsize=[20, 20])
 ax = fig.add_subplot(1, 2, 1)
@@ -358,7 +358,7 @@ In this new drawing, we have also added arrows to indicate that we now know that
 W = 60
 p = SimpleNamespace(t=1, mu=0.9, mu_lead=0.9, B=0.15, phi=0.0)
 syst = qhe_corbino(2 * W, W).finalized()
-ldos = kwant.ldos(syst, energy=0.0, args=[p])
+ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
 fig = plt.figure(figsize=[15, 15])
 ax = fig.add_subplot(1, 2, 1)
 ax.axis("off")

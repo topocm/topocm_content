@@ -54,7 +54,7 @@ def projected_operators(syst, p, energy=0):
     op_x = np.diag(np.exp(1j * x))
     op_y = np.diag(np.exp(1j * y))
 
-    ham = syst.hamiltonian_submatrix(args=[p])
+    ham = syst.hamiltonian_submatrix(params=dict(p=p))
     ham -= 0 * np.identity(len(ham))
     energies, states = np.linalg.eigh(ham)
 

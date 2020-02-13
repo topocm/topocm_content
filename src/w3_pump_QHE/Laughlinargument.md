@@ -254,7 +254,7 @@ def plot_pumping(syst, p):
     p.mu_lead = p.mu
     phis = np.linspace(0, 2 * np.pi, 40)
     syst = syst.finalized()
-    rs = [kwant.smatrix(syst, energy=0.0, args=[p]).submatrix(1, 1) for p.phi in phis]
+    rs = [kwant.smatrix(syst, energy=0.0, params=dict(p=p)).submatrix(1, 1) for p.phi in phis]
     charges = -total_charge(rs)
     style = {"xticks": [0, 1], "yticks": [0, 1, 2, 3], "aspect": "square"}
     kdims = ["$\phi/2\pi$", "$q_{pump}$"]
@@ -379,7 +379,7 @@ num_leads = len(syst.leads)
 
 
 def G(syst, p):
-    smatrix = kwant.smatrix(syst, args=[p])
+    smatrix = kwant.smatrix(syst, params=dict(p=p))
     G = [
         [smatrix.transmission(i, j) for i in range(num_leads)] for j in range(num_leads)
     ]
