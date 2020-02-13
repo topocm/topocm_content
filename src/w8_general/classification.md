@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 from IPython.display import HTML
@@ -10,7 +12,7 @@ from nbconvert.filters.markdown import markdown2html_pandoc
 displaymd = lambda markdown: display_html(HTML(markdown2html_pandoc(markdown)))
 
 # Markdown tables are ugly, and Mathjax doesn't support \tabular,
-# therefore we use math mode + \array + add a command \T to make 
+# therefore we use math mode + \array + add a command \T to make
 # the \array rows less dense.
 
 table_header = r"""$$
@@ -24,26 +26,32 @@ body\\
 \end{array}
 $$"""
 
-replacements = [('{', '{{'), ('}', '}}'), ('colordefs', '{colordefs}'),
-                ('fmt', '{fmt}'), ('body', '{body}')]
+replacements = [
+    ("{", "{{"),
+    ("}", "}}"),
+    ("colordefs", "{colordefs}"),
+    ("fmt", "{fmt}"),
+    ("body", "{body}"),
+]
 for i, j in replacements:
     table_header = table_header.replace(i, j)
 
 # Symmetry classes names and their symmetry properties
 symmetry_classes = ("A", "AIII", "AI", "BDI", "D", "DIII", "AII", "CII", "C", "CI")
-chiralsym = 5 * ('', '1')
-phs = 3 * ('',) + 3 * ('1',) + ('',) + 3 * ('-1',)
-trs = 2 * ('',) + 2 * ('1',) + ('',) + 3 * ('-1',) + ('', '1')
+chiralsym = 5 * ("", "1")
+phs = 3 * ("",) + 3 * ("1",) + ("",) + 3 * ("-1",)
+trs = 2 * ("",) + 2 * ("1",) + ("",) + 3 * ("-1",) + ("", "1")
 
 # Locations of non-empty entries in the periodic table
 primary_seq = lambda n: np.arange(n) % 2
 z_descendant = lambda n: np.arange(n) % 8
-z2_descendant = lambda n: np.arange(1, n+1) % 8
-z2_descendant2 = lambda n: np.arange(2, n+2) % 8
-twoz_descendant = lambda n: np.arange(4, n+4) % 8
+z2_descendant = lambda n: np.arange(1, n + 1) % 8
+z2_descendant2 = lambda n: np.arange(2, n + 2) % 8
+twoz_descendant = lambda n: np.arange(4, n + 4) % 8
 
-line_end = '\\T\\\\\n'
-sep = ' & '
+line_end = "\\T\\\\\n"
+sep = " & "
+
 
 def make_table(n=4, show_symmetries=True, sort_order=None):
     """Create an array of entries forming the periodic table.
@@ -67,34 +75,40 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
         table to a Latex \array environment. 
     """
 
-    dimensions = np.array([[str(i) for i in range(n)]], dtype='S100')
+    dimensions = np.array([[str(i) for i in range(n)]], dtype="S100")
     if dimensions.shape[1]:
-        dimensions[0, 0] = r'd=' + dimensions[0, 0].decode('UTF-8')
+        dimensions[0, 0] = r"d=" + dimensions[0, 0].decode("UTF-8")
 
-    complex_entries = np.zeros((2, n), dtype='S100')
-    complex_entries[primary_seq(n), np.arange(n)] = r'\mathbb{Z}'
+    complex_entries = np.zeros((2, n), dtype="S100")
+    complex_entries[primary_seq(n), np.arange(n)] = r"\mathbb{Z}"
 
-    real_entries = np.zeros((8, n), dtype='S100')
-    real_entries[z_descendant(n), np.arange(n)] = r'\mathbb{Z}'
-    real_entries[z2_descendant(n), np.arange(n)] = r'\mathbb{Z}_2'
-    real_entries[z2_descendant2(n), np.arange(n)] = r'\mathbb{Z}_2'
-    real_entries[twoz_descendant(n), np.arange(n)] = r'2\mathbb{Z}'
-
+    real_entries = np.zeros((8, n), dtype="S100")
+    real_entries[z_descendant(n), np.arange(n)] = r"\mathbb{Z}"
+    real_entries[z2_descendant(n), np.arange(n)] = r"\mathbb{Z}_2"
+    real_entries[z2_descendant2(n), np.arange(n)] = r"\mathbb{Z}_2"
+    real_entries[twoz_descendant(n), np.arange(n)] = r"2\mathbb{Z}"
 
     entries = np.r_[complex_entries, real_entries]
 
-    sym_classes_rm = tuple(r'\textrm{{{}}}'.format(cl) for cl in symmetry_classes)
+    sym_classes_rm = tuple(r"\textrm{{{}}}".format(cl) for cl in symmetry_classes)
 
-    sym = np.array([sym_classes_rm] + show_symmetries * [chiralsym, phs, trs], dtype='S100').T
-    sym_header = np.array([[r'\textrm{class}'] + 
-                           show_symmetries * [r'\mathcal{C}', r'\mathcal{P}', r'\mathcal{T}']], dtype='S100')
+    sym = np.array(
+        [sym_classes_rm] + show_symmetries * [chiralsym, phs, trs], dtype="S100"
+    ).T
+    sym_header = np.array(
+        [
+            [r"\textrm{class}"]
+            + show_symmetries * [r"\mathcal{C}", r"\mathcal{P}", r"\mathcal{T}"]
+        ],
+        dtype="S100",
+    )
     header = np.c_[sym_header, dimensions]
-    
+
     table = np.c_[sym, entries]
     if sort_order is not None:
         table = table[sort_order]
 
-    format_string = 'c|' + show_symmetries * 'rrr' + n * show_symmetries * '|' + n * 'c'
+    format_string = "c|" + show_symmetries * "rrr" + n * show_symmetries * "|" + n * "c"
     return np.r_[header, table], format_string
 
 
@@ -105,22 +119,22 @@ def color_table(table, color_array):
     
     Returns the string of color definitions required for coloring the table.
     """
-    apply_color = lambda text, color: r'\color{{{}}}{{{}}}'.format(color, text)
+    apply_color = lambda text, color: r"\color{{{}}}{{{}}}".format(color, text)
 
     colors = {}
     for idx in np.indices(table.shape).reshape(2, -1).T:
         idx = tuple(idx)
         if not any(color_array[idx]):
             pass
-        color = ','.join('{:1.2}'.format(i) for i in color_array[idx])
+        color = ",".join("{:1.2}".format(i) for i in color_array[idx])
         val = str(abs(hash(color)))[:8]
         colors[color] = val
-        table[idx] = apply_color(table[idx].decode('utf-8'), val)
+        table[idx] = apply_color(table[idx].decode("utf-8"), val)
 
     defs = []
     for color, code in list(colors.items()):
-        defs.append(r'\definecolor{{{}}}{{rgb}}{{{}}}'.format(code, color))
-    return '\n'.join(defs)
+        defs.append(r"\definecolor{{{}}}{{rgb}}{{{}}}".format(code, color))
+    return "\n".join(defs)
 ```
 
 # Introduction
@@ -136,13 +150,15 @@ MoocVideo("cKzUuQyZjFo", src_location="8.1-intro")
 
 
 ```python
-full_table, format_string = make_table(show_symmetries=False, sort_order=np.argsort(symmetry_classes))
+full_table, format_string = make_table(
+    show_symmetries=False, sort_order=np.argsort(symmetry_classes)
+)
 
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in full_table]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in full_table]
 
-rows[1] = r'\hline ' + rows[1]
+rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
-colordefs='{}'
+colordefs = "{}"
 
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
@@ -157,13 +173,15 @@ This table has a lot of logic in it, but to you it most likely looks no better t
 ```python
 np.random.seed(1)
 
-full_table, format_string = make_table(show_symmetries=False, sort_order=np.random.permutation(10))
+full_table, format_string = make_table(
+    show_symmetries=False, sort_order=np.random.permutation(10)
+)
 
 color_array = np.round(np.random.rand(*(full_table.shape + (3,))), 2)
 colordefs = color_table(full_table, color_array)
 
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in full_table]
-rows[1] = r'\hline ' + rows[1]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in full_table]
+rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
@@ -233,10 +251,12 @@ Let's have another look at the 10 rows in the table, this time specifying which 
 ```python
 np.random.seed(1)
 
-full_table, format_string = make_table(n=0, show_symmetries=True, sort_order=np.argsort(symmetry_classes))
+full_table, format_string = make_table(
+    n=0, show_symmetries=True, sort_order=np.argsort(symmetry_classes)
+)
 
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in full_table]
-rows[1] = r'\hline ' + rows[1]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in full_table]
+rows[1] = r"\hline " + rows[1]
 
 block = line_end.join(rows)
 
@@ -256,7 +276,9 @@ answers = ["D", "AIII", "DIII", "None, class BDI has no Kramers degeneracy"]
 
 explanation = "Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI."
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 Finally, let us make an extra observation:
@@ -271,36 +293,45 @@ Every red entry in the table below corresponds to something which we already kno
 
 
 ```python
+tooltips = {
+    (1, 6): "Chern insulator: no symmetries, d=2",
+    (9, 5): "Majorana wire: spinful particle-hole, d=1",
+    (4, 5): "Polyacetilene/SSH chain: sublattice symmetry, d=1",
+    (3, 6): "QSHE: spinful TRS, d=2",
+    (3, 7): "3D strong TI: spinful TRS, d=3",
+    (9, 6): "p-wave superconductor: PHS, d=2",
+    (9, 4): "Superconducting quantum dot: d=0, PHS",
+    (2, 4): "Quantum dot: d=0, spinless TRS",
+    (1, 4): "Quantum dot: d=0, no symmetries",
+    (3, 4): "Quantum dot: d=0, spinful TRS and Kramers degeneracy",
+}
 
-tooltips = {(1, 6): "Chern insulator: no symmetries, d=2",
-            (9, 5): "Majorana wire: spinful particle-hole, d=1",
-            (4, 5): "Polyacetilene/SSH chain: sublattice symmetry, d=1",
-            (3, 6): "QSHE: spinful TRS, d=2",
-            (3, 7): "3D strong TI: spinful TRS, d=3",
-            (9, 6): "p-wave superconductor: PHS, d=2",
-            (9, 4): "Superconducting quantum dot: d=0, PHS",
-            (2, 4): "Quantum dot: d=0, spinless TRS",
-            (1, 4): "Quantum dot: d=0, no symmetries",
-            (3, 4): "Quantum dot: d=0, spinful TRS and Kramers degeneracy"}
+table, format_string = make_table(
+    show_symmetries=True, sort_order=np.argsort(symmetry_classes)
+)
 
-table, format_string = make_table(show_symmetries=True, sort_order=np.argsort(symmetry_classes))
-
-colors = np.zeros(shape=table.shape+(3,))
+colors = np.zeros(shape=table.shape + (3,))
 colors[1:, 4:] = [0.7, 0.7, 0.7]
 
 for pos in tooltips:
-    colors[pos] = [1., 0., 0.]
+    colors[pos] = [1.0, 0.0, 0.0]
 
 colordefs = color_table(table, colors)
 
 for pos, val in list(tooltips.items()):
-    table[pos] = r'\texttip{{{}}}{{{}}}'.format(table[pos].decode('utf-8'), val)
+    table[pos] = r"\texttip{{{}}}{{{}}}".format(table[pos].decode("utf-8"), val)
 
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in table]
-rows[1] = r'\hline ' + rows[1]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in table]
+rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
-HTML(markdown2html_pandoc(table_header.format(colordefs=('\\require{action}\n' + colordefs), fmt=format_string, body=block)))
+HTML(
+    markdown2html_pandoc(
+        table_header.format(
+            colordefs=("\\require{action}\n" + colordefs), fmt=format_string, body=block
+        )
+    )
+)
 ```
 
 As you can see, the Majorana wire and the $p$-wave superconductor are in class D, the Chern insulators in class A, and the time-reversal invariant topological insulators in class AII. These names occur quite often in the literature.
@@ -386,9 +417,9 @@ np.random.seed(5)
 n = 8
 
 periodic_table, format_string = make_table(n=8, show_symmetries=True, sort_order=None)
-colors = np.zeros(shape=periodic_table.shape+(3,))
+colors = np.zeros(shape=periodic_table.shape + (3,))
 colors[1:, 4:] = [0.9, 0.9, 0.9]
-palette = np.linspace(.6, 1.2, n).reshape(1, -1, 1) * np.random.rand(5, 1, 3)
+palette = np.linspace(0.6, 1.2, n).reshape(1, -1, 1) * np.random.rand(5, 1, 3)
 palette = np.minimum(palette, 1)
 colors[primary_seq(n) + 1, np.arange(n) + 4] = palette[0]
 colors[z_descendant(n) + 3, np.arange(n) + 4] = palette[1]
@@ -396,9 +427,9 @@ colors[z2_descendant(n) + 3, np.arange(n) + 4] = palette[2]
 colors[z2_descendant2(n) + 3, np.arange(n) + 4] = palette[3]
 colors[twoz_descendant(n) + 3, np.arange(n) + 4] = palette[4]
 colordefs = color_table(periodic_table, colors)
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in periodic_table]
-rows[1] = r'\hline ' + rows[1]
-rows[3] = r'\hline ' + rows[3]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
+rows[1] = r"\hline " + rows[1]
+rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
@@ -425,14 +456,14 @@ The higher dimensional invariants are simple generalizations of these two. Their
 n = 8
 
 periodic_table, format_string = make_table(n=n, show_symmetries=True, sort_order=None)
-colors = np.zeros(shape=periodic_table.shape+(3,))
+colors = np.zeros(shape=periodic_table.shape + (3,))
 colors[1:3, 4:] = [0.8, 0.8, 0.8]
 colors[1, 4:] = [1, 0, 0]
 colors[2, 4:] = [0, 0, 1]
 colordefs = color_table(periodic_table, colors)
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in periodic_table]
-rows[1] = r'\hline ' + rows[1]
-rows[3] = r'\hline ' + rows[3]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
+rows[1] = r"\hline " + rows[1]
+rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
@@ -447,16 +478,16 @@ np.random.seed(15)
 n = 8
 
 periodic_table, format_string = make_table(n=n, show_symmetries=True, sort_order=None)
-colors = np.zeros(shape=periodic_table.shape+(3,))
+colors = np.zeros(shape=periodic_table.shape + (3,))
 colors[1:, 4:] = [0.9, 0.9, 0.9]
-palette = np.random.rand(n, 3)**2
+palette = np.random.rand(n, 3) ** 2
 colors[primary_seq(n) + 1, np.arange(n) + 4] = 0.8 * palette
-colors[z_descendant(n) + 3, np.arange(n) + 4] = 1 - .6 * (1 - palette)
-colors[twoz_descendant(n) + 3, np.arange(n) + 4] = 1 - .6 * (1 - palette)
+colors[z_descendant(n) + 3, np.arange(n) + 4] = 1 - 0.6 * (1 - palette)
+colors[twoz_descendant(n) + 3, np.arange(n) + 4] = 1 - 0.6 * (1 - palette)
 colordefs = color_table(periodic_table, colors)
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in periodic_table]
-rows[1] = r'\hline ' + rows[1]
-rows[3] = r'\hline ' + rows[3]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
+rows[1] = r"\hline " + rows[1]
+rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
@@ -474,16 +505,16 @@ np.random.seed(4)
 n = 8
 
 periodic_table, format_string = make_table(n=8, show_symmetries=True, sort_order=None)
-colors = np.zeros(shape=periodic_table.shape+(3,))
+colors = np.zeros(shape=periodic_table.shape + (3,))
 colors[1:, 4:] = [0.9, 0.9, 0.9]
 palette = np.random.rand(n, 3)
 colors[z_descendant(n) + 3, np.arange(n) + 4] = 0.8 * palette
-colors[z2_descendant(n-1) + 3, np.arange(n-1) + 4] = 1 - .8 * (1 - palette[1:])
-colors[z2_descendant2(n-2) + 3, np.arange(n-2) + 4] = 1 - .5 * (1 - palette[2:])
+colors[z2_descendant(n - 1) + 3, np.arange(n - 1) + 4] = 1 - 0.8 * (1 - palette[1:])
+colors[z2_descendant2(n - 2) + 3, np.arange(n - 2) + 4] = 1 - 0.5 * (1 - palette[2:])
 colordefs = color_table(periodic_table, colors)
-rows = [sep.join([c.decode('utf-8') for c in line]) for line in periodic_table]
-rows[1] = r'\hline ' + rows[1]
-rows[3] = r'\hline ' + rows[3]
+rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
+rows[1] = r"\hline " + rows[1]
+rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
@@ -499,18 +530,26 @@ We can proceed further with our dimensional reduction. If we take our one dimens
 
 
 ```python
-question = ("What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
-            "like we did when making a 3D TI out of QSHE?")
+question = (
+    "What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
+    "like we did when making a 3D TI out of QSHE?"
+)
 
-answers =  ["We get another $Z_2$ topological invariant",
-            "A 4D system with the Chern number as invariant.",
-            "This construction cannot be repeated anymore.",
-            "The topological invariant stays the same."]
+answers = [
+    "We get another $Z_2$ topological invariant",
+    "A 4D system with the Chern number as invariant.",
+    "This construction cannot be repeated anymore.",
+    "The topological invariant stays the same.",
+]
 
-explanation = ("A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, "
-               "and it should be the second Chern number.")
+explanation = (
+    "A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, "
+    "and it should be the second Chern number."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Conclusions
