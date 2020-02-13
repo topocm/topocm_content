@@ -136,15 +136,15 @@ def spectrum(
         elif isinstance(yticks, int):
             ticks["yticks"] = yticks
 
-        xlims = slice(*xlims) if xlims is not None else slice(None)
-        ylims = slice(*ylims) if ylims is not None else slice(None)
+        xlims = tuple(xlims) if xlims is not None else (None, None)
+        ylims = tuple(ylims) if ylims is not None else (None, None)
 
         if callable(title):
             plot = plot.relabel(title(p))
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot[xlims, ylims].opts(plot={"Path": ticks})
+        return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(plot={"Path": ticks})
 
     elif len(variables) == 2:
         # 2D plot.
@@ -286,7 +286,8 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             A = B @ np.linalg.inv(B.T @ B)
 
             def momentum_to_lattice(k):
-                k, residuals = np.linalg.lstsq(A, k[:space_dimensionality], rcond=-1)[:2]
+                lstsq = np.linalg.lstsq(A, k[:space_dimensionality], rcond=-1)
+                k, residuals = lstsq[:2]
                 if np.any(abs(residuals) > 1e-7):
                     raise RuntimeError(
                         "Requested momentum doesn't correspond"
