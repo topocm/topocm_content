@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 ```
 
@@ -45,20 +47,28 @@ The topological robustness makes the topologically degenerate states particularl
 
 
 ```python
-question = ("How would the topological degeneracy of the ground state that comes from the loop configurations "
-            "change if we put it on a torus (donut) with two holes?")
+question = (
+    "How would the topological degeneracy of the ground state that comes from the loop configurations "
+    "change if we put it on a torus (donut) with two holes?"
+)
 
-answers = ["Since there is still an infinite number of loop configurations, the degeneracy would be infinite.",
-           "Since there is one additional hole there are two more distinct cycles. "
-           "So  the number of ground states increases by a factor of 4.",
-           "It still remains 4 since the loops is topologically forbidden from going around the extra loops.",
-           "Since there is one additional hole the loops can go around this hole an even or an odd number of time, "
-           "so the degeneracy increases from 4 to 8."]
+answers = [
+    "Since there is still an infinite number of loop configurations, the degeneracy would be infinite.",
+    "Since there is one additional hole there are two more distinct cycles. "
+    "So  the number of ground states increases by a factor of 4.",
+    "It still remains 4 since the loops is topologically forbidden from going around the extra loops.",
+    "Since there is one additional hole the loops can go around this hole an even or an odd number of time, "
+    "so the degeneracy increases from 4 to 8.",
+]
 
-explanation = ("The additional hole introduces the possibility of 2 values of parity on each extra cycle. This adds a "
-               "factor of $2 \\times 2=4$.")
+explanation = (
+    "The additional hole introduces the possibility of 2 values of parity on each extra cycle. This adds a "
+    "factor of $2 \\times 2=4$."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Particle-like excitations
