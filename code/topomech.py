@@ -229,8 +229,6 @@ def vis2d(
     fig = plt.figure(figsize=(8, 4))
     ax = fig.add_subplot(1, 1, 1, xticks=[], yticks=[])
 
-    fig.figurePatch.set_edgecolor("white")
-    fig.figurePatch.set_facecolor("white")
     ax.set_aspect("equal")
     ax.set_axis_off()
 
