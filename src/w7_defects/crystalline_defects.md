@@ -213,14 +213,14 @@ def create_edge_dislocation_system(
     return syst.finalized(), lead
 
 
-def get_densities(lead, momentum, param, model, sorting_mid=0.0):
+def get_densities(lead, momentum, p, model, sorting_mid=0.0):
     """ Calculate density of states in the lead at a given momentum. """
     coord = np.array([i.pos for i in lead.sites])
     xy = coord[coord[:, 2] == 0][:, :-1]
     indxs_xy = np.lexsort(xy.T)
     xy = xy[indxs_xy, :]
 
-    h, t = lead.cell_hamiltonian(args=[param]), lead.inter_cell_hopping(args=[param])
+    h, t = lead.cell_hamiltonian(params=dict(p=p)), lead.inter_cell_hopping(params=dict(p=p))
     h_k = lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
 
     vals, vecs = np.linalg.eigh(h_k(momentum))

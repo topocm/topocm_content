@@ -89,7 +89,7 @@ def cond_mu(p, L, W, H):
     mus = np.linspace(-0.4, 0.4, 40)
     cond = [
         kwant.smatrix(
-            sys_leads_fixed, energy=0, args=[p.update(mu_scat=mu)]
+            sys_leads_fixed, energy=0, params=dict(p=p.update(mu_scat=mu))
         ).transmission(1, 0)
         for mu in mus
     ]

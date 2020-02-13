@@ -44,7 +44,7 @@ def make_kitaev_chain(L=10):
     syst.attach_lead(lead.reversed())
     syst = syst.finalized()
     syst = syst.precalculate(
-        args=[SimpleNamespace(t=1.0, m=0.0, delta=1.0, disorder=0)]
+        params=dict(p=SimpleNamespace(t=1.0, m=0.0, delta=1.0, disorder=0))
     )
 
     return syst
@@ -55,7 +55,7 @@ def phase_diagram(L, ms, p, num_average=100):
 
     # Adjust the reflection phase such that it's 0 for trivial system.
     trivial = SimpleNamespace(m=10.0, t=1.0, delta=1.0, disorder=0, salt="")
-    phase = kwant.smatrix(syst, args=[trivial]).data[0, 0]
+    phase = kwant.smatrix(syst, params=dict(p=trivial)).data[0, 0]
     phase /= abs(phase)
     data = []
     for p.m in ms:

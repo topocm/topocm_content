@@ -232,8 +232,8 @@ p1 = SimpleNamespace(t=J / 2, mu=-1 * J, B=J, delta=2 * J, alpha=J)
 p2 = SimpleNamespace(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
 
 syst = nanowire_chain(L=20).finalized()
-H1 = syst.hamiltonian_submatrix(args=[p1])
-H2 = syst.hamiltonian_submatrix(args=[p2])
+H1 = syst.hamiltonian_submatrix(params=dict(p=p1))
+H2 = syst.hamiltonian_submatrix(params=dict(p=p2))
 
 lead = kwant.wraparound.wraparound(nanowire_chain(L=None)).finalized()
 h1_k = lambda kx: lead.hamiltonian_submatrix(args=[p1, kx])
