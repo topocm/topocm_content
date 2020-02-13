@@ -1,10 +1,13 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size=110
 from holoviews.core.options import Cycle
+
 
 def nanowire_chain():
     lat = kwant.lattice.chain()
@@ -16,7 +19,7 @@ def nanowire_chain():
     syst[lat(0)] = onsite
 
     def hop(site1, site2, p):
-        return -p.t * pauli.szs0 - .5j * p.alpha * pauli.szsx
+        return -p.t * pauli.szs0 - 0.5j * p.alpha * pauli.szsx
 
     syst[kwant.HoppingKind((1,), lat)] = hop
 
@@ -70,12 +73,15 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
 
     gaps = [gap(syst, p, alpha, B) for alpha in alphas for B in Bs]
     gaps = np.reshape(gaps, (len(alphas), -1))
-    dims = {'kdims': [r'$B$'], 'vdims': ['Band gap']}
-    B_crit = holoviews.VLine(np.sqrt(p.delta**2 + p.mu**2))
-    plot = [holoviews.Curve((Bs, gaps[i]), label=r'$\alpha={}$'.format(
-        alphas[i]), **dims) * B_crit for i, alpha in enumerate(alphas)]
-    title = r'$\Delta={:.2}$, $\mu={:.2}$'.format(p.delta, p.mu)
-    style = {'xticks': [0, 0.1, 0.2, 0.3], 'yticks': [0, 0.05, 0.1], 'fig_size': 150}
+    dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
+    B_crit = holoviews.VLine(np.sqrt(p.delta ** 2 + p.mu ** 2))
+    plot = [
+        holoviews.Curve((Bs, gaps[i]), label=r"$\alpha={}$".format(alphas[i]), **dims)
+        * B_crit
+        for i, alpha in enumerate(alphas)
+    ]
+    title = r"$\Delta={:.2}$, $\mu={:.2}$".format(p.delta, p.mu)
+    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
     plot = holoviews.Overlay(plot)
     return plot.opts(plot=style)
 
@@ -89,14 +95,17 @@ def title(p):
         title = title.format(p.mu, p.B, p.delta)
     return title
 
-style = {'k_x': np.linspace(-1, 1, 101),
-         'xdim': r'$k$',
-         'ydim': r'$E/t$',
-         'xticks': [-1, 0, 1],
-         'yticks': [-1, 0, 1],
-         'xlims': [-1, 1],
-         'ylims': [-1.5, 1.5],
-         'title': title}
+
+style = {
+    "k_x": np.linspace(-1, 1, 101),
+    "xdim": r"$k$",
+    "ydim": r"$E/t$",
+    "xticks": [-1, 0, 1],
+    "yticks": [-1, 0, 1],
+    "xlims": [-1, 1],
+    "ylims": [-1.5, 1.5],
+    "title": title,
+}
 ```
 
 # From Kitaev model to an experiment
@@ -148,8 +157,10 @@ syst = spinful_kitaev_chain()
 p1 = SimpleNamespace(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
 p2 = SimpleNamespace(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
-(spectrum(syst, p1, **style).relabel('Trivial bandstructure') +
- spectrum(syst, p2, **style).relabel('Topological bandstructure'))
+(
+    spectrum(syst, p1, **style).relabel("Trivial bandstructure")
+    + spectrum(syst, p2, **style).relabel("Topological bandstructure")
+)
 ```
 
 # The need for spin
@@ -175,7 +186,7 @@ Let's look at what happens with the dispersion as we increase the magnetic field
 syst = spinful_kitaev_chain()
 p = SimpleNamespace(t=1.0, delta=0.1, mu=0.3, B=None)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r'$B$'])
+holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r"$B$"])
 ```
 
 We now see that we resolved the first problem:
@@ -263,7 +274,7 @@ So does this now mean that we "broke" the bulk-edge correspondence? Let's look a
 syst = nanowire_chain()
 p = SimpleNamespace(t=1.0, mu=0.0, delta=0.1, alpha=0.0, B=None)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r'$B$'])
+holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r"$B$"])
 ```
 
 Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That in turn means that they cannot appear, and that means that the system cannot be gapped.
@@ -297,7 +308,9 @@ Let's now check that it does what we want, namely open the gap at a finite momen
 syst = nanowire_chain()
 p = SimpleNamespace(t=1.0, mu=0.1, delta=0.1, B=0.2, alpha=None)
 alphas = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({p.alpha: spectrum(syst, p, **style) for p.alpha in alphas}, kdims=[r'$\alpha$'])
+holoviews.HoloMap(
+    {p.alpha: spectrum(syst, p, **style) for p.alpha in alphas}, kdims=[r"$\alpha$"]
+)
 ```
 
 Yep, it does :)
@@ -336,7 +349,9 @@ Let's calculate the gap as a function of all of the relevant parameters.
 syst = nanowire_chain()
 Bs = np.linspace(0, 0.3, 71)
 mus = np.linspace(-0.05, 0.15, 5)
-holoviews.HoloMap({mu: spinorbit_band_gap(syst, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap(
+    {mu: spinorbit_band_gap(syst, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r"$\mu$"]
+)
 ```
 
 Here the vertical line denotes the critical value of the Zeeman field at which the wire becomes topological.
@@ -354,7 +369,7 @@ We finish our investigation of this model for now with a final simple picture of
 syst = nanowire_chain()
 p = SimpleNamespace(t=1.0, B=0.07, delta=0.025, alpha=0.8, mu=None)
 mus = np.linspace(-0.18, 0.22, 10)
-holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r"$\mu$"])
 ```
 
 When $\mu$ is very negative we see two split electron bands at positive energy corresponding to two spin orientations.
@@ -369,16 +384,22 @@ The non-monotonous behavior of the gap versus $B$ that we saw earlier is a conse
 
 
 ```python
-question = ("What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?")
-answers = ["Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
-           "Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.",
-           "It's impossible, because a magnetic field can only be applied along $z$.",
-           "Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes."]
-explanation = ("If both the magnetic field and the spin orbit coupling point in the $y$ direction, " +
-               "then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. " +
-               "So we are back to the problem that a gap at finite momentum does not open, " +
-               "and we do not get a topological phase supporting Majoranas.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
+answers = [
+    "Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
+    "Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.",
+    "It's impossible, because a magnetic field can only be applied along $z$.",
+    "Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes.",
+]
+explanation = (
+    "If both the magnetic field and the spin orbit coupling point in the $y$ direction, "
+    + "then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. "
+    + "So we are back to the problem that a gap at finite momentum does not open, "
+    + "and we do not get a topological phase supporting Majoranas."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Outlook
