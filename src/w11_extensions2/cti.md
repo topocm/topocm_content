@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size=150
 ```
@@ -31,16 +33,20 @@ Note however, that sometimes the mere presence of a surface can break a crystall
 
 
 ```python
-question = (r"In which case can inversion symmetry protect gapless surface states?")
+question = r"In which case can inversion symmetry protect gapless surface states?"
 
-answers = ["Never.",
-           "In the case of 2D TIs with inversion symmetry.",
-           "Only in three dimensions.",
-           "Only in combination with particle-hole or time-reversal symmetry. "]
+answers = [
+    "Never.",
+    "In the case of 2D TIs with inversion symmetry.",
+    "Only in three dimensions.",
+    "Only in combination with particle-hole or time-reversal symmetry. ",
+]
 
 explanation = "Any surface would break inversion symmetry of a crystal."
 
-MoocMultipleChoiceAssessment(question, answers, correct_answer=0, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=0, explanation=explanation
+)
 ```
 
 # Reflection symmetry
@@ -65,19 +71,27 @@ Naturally, the same recipe allows to construct a reflection symmetric topologica
 
 
 ```python
-question = ("How would you attempt to make a model of a topological"
-            " insulator with surface states protected by reflection symmetry?")
+question = (
+    "How would you attempt to make a model of a topological"
+    " insulator with surface states protected by reflection symmetry?"
+)
 
-answers = ["By using the interface of a material with reflection symmetry, and that of one without it.",
-           "By stacking many layers of a lower dimensional topological insulator, "
-           "and coupling them in a reflection-symmetric fashion.",
-           "Reflection symmetry alone cannot protect any gapless surface state.",
-           "By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero."]
+answers = [
+    "By using the interface of a material with reflection symmetry, and that of one without it.",
+    "By stacking many layers of a lower dimensional topological insulator, "
+    "and coupling them in a reflection-symmetric fashion.",
+    "Reflection symmetry alone cannot protect any gapless surface state.",
+    "By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero.",
+]
 
-explanation = ("Such a stack would have a reflection symmetry around any of the layers, "
-               "which is not broken by the presence of a surface parallel to the stacking direction.")
+explanation = (
+    "Such a stack would have a reflection symmetry around any of the layers, "
+    "which is not broken by the presence of a surface parallel to the stacking direction."
+)
 
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Examples
@@ -96,12 +110,15 @@ If we do everything right (this does require some trial and error in searching f
 
 
 ```python
-
 def nanowire_chains(length=40, n=2):
     def onsite(site, p):
         (x, y) = site.pos
-        return ((2*p.t - p.mu) * pauli.szs0 + p.delta * pauli.sxs0
-                + (y % 2 == 0) * p.B * pauli.s0sz + (y % 2 == 1) * p.B * pauli.s0sy)
+        return (
+            (2 * p.t - p.mu) * pauli.szs0
+            + p.delta * pauli.sxs0
+            + (y % 2 == 0) * p.B * pauli.s0sz
+            + (y % 2 == 1) * p.B * pauli.s0sy
+        )
 
     def hopy(site1, site2, p):
         return -p.t * pauli.szs0 + 0.5 * 1j * p.alpha * pauli.szsx
@@ -109,7 +126,7 @@ def nanowire_chains(length=40, n=2):
     def hopx(site1, site2, p):
         (x1, y1) = site1.pos
         (x2, y2) = site2.pos
-        return 1j * (-1)**((x1 + x2 - 1) % 2 == 0) * p.tx * pauli.sysx
+        return 1j * (-1) ** ((x1 + x2 - 1) % 2 == 0) * p.tx * pauli.sysx
 
     def shape(pos):
         (x, y) = pos
@@ -125,10 +142,18 @@ def nanowire_chains(length=40, n=2):
 
     return syst
 
+
 syst = nanowire_chains()
 p = SimpleNamespace(t=1.0, tx=0.2, mu=0.0, B=0.4, delta=0.15, alpha=0.3)
-spectrum(syst, p, k_x=np.linspace(-1, 1, 101), ylims=(-0.2, 0.2),
-         xticks=3, yticks=3, title='Stacked Majorana wires')
+spectrum(
+    syst,
+    p,
+    k_x=np.linspace(-1, 1, 101),
+    ylims=(-0.2, 0.2),
+    xticks=3,
+    yticks=3,
+    title="Stacked Majorana wires",
+)
 ```
 
 In a similar way, we can also construct a tight-binding model with a mirror Chern number. The only difference with the Majorana wires that we need to worry about is that Chern number is a $\mathbb{Z}$ invariant instead of $\mathbb{Z}_2$.
@@ -142,7 +167,7 @@ Once again, coupling the layers we get a familiar Dirac cone on the surface:
 def stacked_qwz(w=50):
     def shape(pos):
         (x, y, z) = pos
-        return (0 <= z < w)
+        return 0 <= z < w
 
     def hopx(site1, site2, p):
         return -0.5j * p.delta * pauli.sx - p.t * pauli.sz
@@ -152,7 +177,7 @@ def stacked_qwz(w=50):
 
     def hopz(site1, site2, p):
         (x, y, z) = site1.pos
-        return -0.5j * p.delta * pauli.sy * (-1)**(y) - p.t * pauli.sz
+        return -0.5j * p.delta * pauli.sy * (-1) ** (y) - p.t * pauli.sz
 
     def onsite(site, p):
         return pauli.sz * (4 * p.t + p.mu)
@@ -167,16 +192,23 @@ def stacked_qwz(w=50):
 
     return syst
 
+
 xticks = [(-np.pi, r"$-\pi$"), (0, r"$0$"), (np.pi, r"$\pi$")]
 yticks = [(0, r"$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
 
-p = SimpleNamespace(t=1.0, delta=1, gamma=.5, mu=-0.5)
+p = SimpleNamespace(t=1.0, delta=1, gamma=0.5, mu=-0.5)
 syst = stacked_qwz(30)
 
-spectrum(syst, p, num_bands=2, 
-         k_x=np.linspace(-np.pi, np.pi, 51), 
-         k_y=np.linspace(0, np.pi, 51),
-         xticks=xticks, yticks=yticks, title='Stacked Chern insulator')
+spectrum(
+    syst,
+    p,
+    num_bands=2,
+    k_x=np.linspace(-np.pi, np.pi, 51),
+    k_y=np.linspace(0, np.pi, 51),
+    xticks=xticks,
+    yticks=yticks,
+    title="Stacked Chern insulator",
+)
 ```
 
 Again, the dispersion of the edge states looks exactly like what we saw already because the edge state dispersion in any topological insulator is just given by the Dirac equation.
