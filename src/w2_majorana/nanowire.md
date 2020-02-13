@@ -47,13 +47,13 @@ def find_gap(syst, p, resolution=1e-4):
     """Find gap in a system by doing a binary search in energy."""
 
     # This tells us if there are modes at a certain energy.
-    if len(syst.modes(energy=0, args=[p])[0].momenta):
+    if len(syst.modes(energy=0, params=dict(p=p))[0].momenta):
         return 0
 
-    gap = step = min(abs(kwant.physics.Bands(syst, args=[p])(k=0))) / 2
+    gap = step = min(abs(kwant.physics.Bands(syst, params=dict(p=p))(k=0))) / 2
     while step > resolution:
         step /= 2
-        if len(syst.modes(gap, args=[p])[0].momenta):
+        if len(syst.modes(gap, params=dict(p=p))[0].momenta):
             gap -= step
         else:
             gap += step
