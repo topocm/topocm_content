@@ -340,9 +340,12 @@ def plot_dispersion_2D(T):
 
     title = r"$T = {:.2} \pi$".format(T / np.pi)
 
+    xs = np.linspace(-np.pi, np.pi, energies.shape[1])
+    ys = np.linspace(-np.pi, np.pi, energies.shape[0])
+
     return (
-        holoviews.Surface(energies[:, :, 0], **kwargs).opts(plot=ticks)
-        * holoviews.Surface(energies[:, :, 1], **kwargs).opts(plot=ticks)
+        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).opts(plot=ticks)
+        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).opts(plot=ticks)
     ).relabel(title)
 
 

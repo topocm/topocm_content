@@ -82,7 +82,7 @@ def plot_dets(syst, p, ks, chiral=False):
     A = B @ np.linalg.inv(B.T @ B)
 
     def momentum_to_lattice(k):
-        k, residuals = np.linalg.lstsq(A, k)[:2]
+        k, residuals = np.linalg.lstsq(A, k, rcond=-1)[:2]
         return list(k)
 
     syst = kwant.wraparound.wraparound(syst).finalized()

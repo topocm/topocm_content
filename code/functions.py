@@ -187,10 +187,13 @@ def spectrum(
             "vdims": [zdim],
         }
 
+        xs = np.linspace(*xlims, energies.shape[1])
+        ys = np.linspace(*ylims, energies.shape[0])
+
         if num_bands is None:
             plot = hv.Overlay(
                 [
-                    hv.Surface(energies[:, :, i], **kwargs).opts(plot=style)
+                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).opts(plot=style)
                     for i in range(energies.shape[-1])
                 ]
             )
@@ -199,7 +202,7 @@ def spectrum(
             num_bands //= 2
             plot = hv.Overlay(
                 [
-                    hv.Surface(energies[:, :, i], **kwargs).opts(plot=style)
+                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).opts(plot=style)
                     for i in range(mid - num_bands, mid + num_bands)
                 ]
             )
@@ -283,7 +286,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
             A = B @ np.linalg.inv(B.T @ B)
 
             def momentum_to_lattice(k):
-                k, residuals = np.linalg.lstsq(A, k[:space_dimensionality])[:2]
+                k, residuals = np.linalg.lstsq(A, k[:space_dimensionality], rcond=-1)[:2]
                 if np.any(abs(residuals) > 1e-7):
                     raise RuntimeError(
                         "Requested momentum doesn't correspond"
