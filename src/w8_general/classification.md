@@ -55,7 +55,7 @@ sep = " & "
 
 def make_table(n=4, show_symmetries=True, sort_order=None):
     """Create an array of entries forming the periodic table.
-    
+
     Parameters:
     -----------
     n : int
@@ -65,7 +65,7 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
     sort_order : int array or None
         Ordering to apply to the symmetry classes 
         (can be trivially used to discard entries).
-    
+
     Returns:
     --------
     data : np.ndarray
@@ -114,9 +114,9 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
 
 def color_table(table, color_array):
     """Apply rgb colors to table entries.
-    
+
     `color_array[i, j]` is the rgb color of the entry `(i, j)`.
-    
+
     Returns the string of color definitions required for coloring the table.
     """
     apply_color = lambda text, color: r"\color{{{}}}{{{}}}".format(color, text)

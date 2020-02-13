@@ -4,8 +4,10 @@
 # You should execute this cell at the start.
 
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 from IPython.display import HTML
@@ -150,7 +152,7 @@ The same applies to Python and the Python scientific stack (NumPy, SciPy, Matplo
 
 
 ```python
-MoocDiscussion('Software', 'Help with installation')
+MoocDiscussion("Software", "Help with installation")
 ```
 
 # Literature
