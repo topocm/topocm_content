@@ -182,7 +182,7 @@ def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
         style={"color": "k"}
     )
     ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
-    return plot[:, -0.11:0.11].opts(plot=ticks)
+    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).opts(plot=ticks)
 
 
 def plot_gse_sc_nanowire(fluxes, spectrum):
