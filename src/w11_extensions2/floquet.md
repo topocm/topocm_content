@@ -236,8 +236,8 @@ H1 = syst.hamiltonian_submatrix(params=dict(p=p1))
 H2 = syst.hamiltonian_submatrix(params=dict(p=p2))
 
 lead = kwant.wraparound.wraparound(nanowire_chain(L=None)).finalized()
-h1_k = lambda kx: lead.hamiltonian_submatrix(args=[p1, kx])
-h2_k = lambda kx: lead.hamiltonian_submatrix(args=[p2, kx])
+h1_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p1, k_x=kx))
+h2_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p2, k_x=kx))
 
 periods = np.linspace(0.2 / J, 1.6 / J, 100)
 momenta = np.linspace(-np.pi, np.pi)
@@ -308,9 +308,9 @@ def plot_dispersion_2D(T):
     syst = kwant.wraparound.wraparound(syst).finalized()
 
     def hamiltonian_k(par):
-        def f(kx, ky):
-            kx, ky = np.linalg.lstsq(A, [kx, ky])[0]
-            ham = syst.hamiltonian_submatrix(args=[par, kx, ky])
+        def f(k_x, k_y):
+            k_x, k_y = np.linalg.lstsq(A, [k_x, k_y], rcond=None)[0]
+            ham = syst.hamiltonian_submatrix(params=dict(p=par, k_x=k_x, k_y=k_y))
             return ham
 
         return f
@@ -322,14 +322,14 @@ def plot_dispersion_2D(T):
         hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=0, t4=1)),
     ]
 
-    def get_energies(kx, ky):
-        hamiltonians = [h_k(kx, ky) for h_k in hamiltonians_k]
+    def get_energies(k_x, k_y):
+        hamiltonians = [h_k(k_x, k_y) for h_k in hamiltonians_k]
         U = evolution_operator(hamiltonians, T)
         ev = np.sort(np.angle(la.eigvals(U)))
         return ev
 
     K = np.linspace(-np.pi, np.pi, 50)
-    energies = np.array([[get_energies(kx, ky) for kx in K] for ky in K])
+    energies = np.array([[get_energies(k_x, k_y) for k_x in K] for k_y in K])
 
     ticks = {"xticks": pi_ticks[::2], "yticks": pi_ticks[::2], "zticks": 3}
     kwargs = {

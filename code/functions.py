@@ -321,7 +321,8 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         pars.__dict__.update(values)
         k = [values.get("k_x", k_x), values.get("k_y", k_y), values.get("k_z", k_z)]
         k = momentum_to_lattice(k)
-        return syst.hamiltonian_submatrix(args=([pars] + k), sparse=False)
+        k = dict(zip(["k_x", "k_y", "k_z"], k))
+        return syst.hamiltonian_submatrix(params=dict(p=pars, **k), sparse=False)
 
     names, values = zip(*sorted(changing.items()))
     hamiltonians = [

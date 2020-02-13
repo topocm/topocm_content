@@ -91,7 +91,7 @@ def plot_dets(syst, p, ks, chiral=False):
     for i, kx in enumerate(ks):
         for j, ky in enumerate(ks):
             kx, ky = momentum_to_lattice([kx, ky])
-            ham = syst.hamiltonian_submatrix(args=(p, kx, ky))
+            ham = syst.hamiltonian_submatrix(params=dict(p=p, k_x=kx, k_y=ky))
             if chiral:
                 # Bring the chiral symmetric Hamiltonian in offdiagonal form
                 U = (pauli.s0 + 1j * pauli.sx) / np.sqrt(2)
