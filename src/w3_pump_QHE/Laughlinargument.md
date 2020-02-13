@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size = 150
 
@@ -19,7 +21,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     def ring(pos):
         (x, y) = pos
         rsq = x ** 2 + y ** 2
-        return (r_in ** 2 < rsq < r_out ** 2)
+        return r_in ** 2 < rsq < r_out ** 2
 
     # Onsite and hoppings
     def onsite(site, p):
@@ -52,6 +54,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
         for hop in kwant.builder.HoppingKind((1, 0), lat, lat)(syst):
             if crosses_branchcut(hop):
                 yield hop
+
     syst[hops_across_cut] = branchcut_hopping
 
     # Attaching leads
@@ -60,7 +63,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
 
     def lead_shape(pos):
         (x, y) = pos
-        return (-w_lead / 2 < y < w_lead / 2)
+        return -w_lead / 2 < y < w_lead / 2
 
     lead[lat.shape(lead_shape, (0, 0))] = lambda site, p: 4 * p.t - p.mu_lead
     lead[lat.neighbors()] = lambda site1, site2, p: -p.t
@@ -88,7 +91,7 @@ def qhe_ribbon(W, periodic=False):
 
     def ribbon_shape(pos):
         (x, y) = pos
-        return (-W / 2 <= y <= W / 2)
+        return -W / 2 <= y <= W / 2
 
     def onsite(site, p):
         (x, y) = site.pos
@@ -102,7 +105,14 @@ def qhe_ribbon(W, periodic=False):
     def hopping_periodic(site1, site2, p):
         x1, y1 = site1.pos
         x2, y2 = site2.pos
-        return -p.t * np.exp(-1j * np.pi / (W + 1) * np.round((W + 1) * p.B / (2 * np.pi)) * (x1 - x2) * (y1 + y2))
+        return -p.t * np.exp(
+            -1j
+            * np.pi
+            / (W + 1)
+            * np.round((W + 1) * p.B / (2 * np.pi))
+            * (x1 - x2)
+            * (y1 + y2)
+        )
 
     lat = kwant.lattice.square()
     sym_syst = kwant.TranslationalSymmetry((-1, 0))
@@ -112,11 +122,12 @@ def qhe_ribbon(W, periodic=False):
 
     if periodic:
         syst[lat.neighbors()] = hopping_periodic
-        syst[lat(0, - W / 2), lat(0, + W / 2)] = hopping_periodic
+        syst[lat(0, -W / 2), lat(0, +W / 2)] = hopping_periodic
     else:
         syst[lat.neighbors()] = hopping
 
     return syst
+
 
 # Quantum hall bar codes
 
@@ -159,6 +170,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
             x1, y1 = site1.pos
             x2, y2 = site2.pos
             return -p.t * np.exp(-1j * p.B * x0 * (y1 - y2))
+
         return hopping_Ay
 
     def lead_hop_vert(site1, site2, p):
@@ -177,7 +189,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
 
     def lead_shape(pos):
         (x, y) = pos
-        return (-w_lead / 2 <= y <= w_lead / 2)
+        return -w_lead / 2 <= y <= w_lead / 2
 
     lead_onsite = lambda site, p: 4 * p.t - p.mu_lead
 
@@ -187,11 +199,11 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
 
     def lead_shape_vertical1(pos):
         (x, y) = pos
-        return (-L / 4 - w_vert_lead / 2 <= x <= -L / 4 + w_vert_lead / 2)
+        return -L / 4 - w_vert_lead / 2 <= x <= -L / 4 + w_vert_lead / 2
 
     def lead_shape_vertical2(pos):
         (x, y) = pos
-        return (+L / 4 - w_vert_lead / 2 <= x <= +L / 4 + w_vert_lead / 2)
+        return +L / 4 - w_vert_lead / 2 <= x <= +L / 4 + w_vert_lead / 2
 
     lead_vertical1[lat.shape(lead_shape_vertical1, (-L / 4, 0))] = lead_onsite
     lead_vertical1[lat.neighbors()] = lead_hop_vert
@@ -233,8 +245,8 @@ def calculate_sigmas(G):
     E_x = V[1] - V[0]
     E_y = V[1] - V[3]
     # formula above
-    sigma_xx = E_x / (E_x**2 + E_y**2)
-    sigma_xy = E_y / (E_x**2 + E_y**2)
+    sigma_xx = E_x / (E_x ** 2 + E_y ** 2)
+    sigma_xy = E_y / (E_x ** 2 + E_y ** 2)
     return sigma_xx, sigma_xy
 
 
@@ -244,11 +256,14 @@ def plot_pumping(syst, p):
     syst = syst.finalized()
     rs = [kwant.smatrix(syst, energy=0.0, args=[p]).submatrix(1, 1) for p.phi in phis]
     charges = -total_charge(rs)
-    style = {'xticks': [0, 1], 'yticks': [0, 1, 2, 3], 'aspect': 'square'}
-    kdims = ['$\phi/2\pi$', '$q_{pump}$']
-    title = '$\mu = {:.2}$, $\sigma_H = {:} \cdot e^2/h$'.format(p.mu, int(round(charges[-1])))
-    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title).opts(plot=style)[:, 0:3.1]
-
+    style = {"xticks": [0, 1], "yticks": [0, 1, 2, 3], "aspect": "square"}
+    kdims = ["$\phi/2\pi$", "$q_{pump}$"]
+    title = "$\mu = {:.2}$, $\sigma_H = {:} \cdot e^2/h$".format(
+        p.mu, int(round(charges[-1]))
+    )
+    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title).opts(
+        plot=style
+    )[:, 0:3.1]
 ```
 
 # Introduction
@@ -260,7 +275,7 @@ College of Management - Academic Studies for their help in preparing the videos.
 
 
 ```python
-MoocVideo("QC3tQT7MD00", src_location='3.2-intro', res='360')
+MoocVideo("QC3tQT7MD00", src_location="3.2-intro", res="360")
 ```
 
 # The Hall effect
@@ -333,13 +348,16 @@ As you already heard from Ady Stern in the intro video, people have measured the
 
 ```python
 question = "What is the longitudinal conductance for the ideal electron gas in a magnetic field?"
-answers = ["Infinity since there are no impurities in the system.",
-           "Finite and inversely proportional to the magnetic field like the Hall conductance.",
-           "Finite and proportional to density but independent of magnetic field.",
-           "Zero since current is perpendicular to electric field."
-           ]
+answers = [
+    "Infinity since there are no impurities in the system.",
+    "Finite and inversely proportional to the magnetic field like the Hall conductance.",
+    "Finite and proportional to density but independent of magnetic field.",
+    "Zero since current is perpendicular to electric field.",
+]
 explanation = "As we saw the velocity is related to the cross-product of the electric and magnetic field."
-MoocMultipleChoiceAssessment(question, answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # The quantum Hall effect: experimental data
@@ -358,19 +376,28 @@ syst = qhe_hall_bar(L=60, W=100, w_lead=90, w_vert_lead=28).finalized()
 p = SimpleNamespace(t=1.0, mu=0.3, mu_lead=0.3, B=None)
 Bs = np.linspace(0.02, 0.15, 200)
 num_leads = len(syst.leads)
+
+
 def G(syst, p):
     smatrix = kwant.smatrix(syst, args=[p])
-    G = [[smatrix.transmission(i, j) for i in range(num_leads)] for j in range(num_leads)]
+    G = [
+        [smatrix.transmission(i, j) for i in range(num_leads)] for j in range(num_leads)
+    ]
     G -= np.diag(np.sum(G, axis=0))
     return calculate_sigmas(G)
 
+
 sigmasxx, sigmasxy = np.array([G(syst, p) for p.B in Bs]).T
 
-kdims = [r'$B^{-1} [a.u.]$', '$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$']
-plot_xx = holoviews.Path((1/Bs, sigmasxx), label=r'$\sigma_{xx}$', kdims=kdims).opts(style={'color': 'k'})
-plot_xy = holoviews.Path((1/Bs, sigmasxy), label=r'$\sigma_{xy}$', kdims=kdims).opts(style={'color': 'r'})
+kdims = [r"$B^{-1} [a.u.]$", "$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$"]
+plot_xx = holoviews.Path((1 / Bs, sigmasxx), label=r"$\sigma_{xx}$", kdims=kdims).opts(
+    style={"color": "k"}
+)
+plot_xy = holoviews.Path((1 / Bs, sigmasxy), label=r"$\sigma_{xy}$", kdims=kdims).opts(
+    style={"color": "r"}
+)
 
-(plot_xx * plot_xy).opts(plot={'xticks': 0, 'yticks': list(range(8))})
+(plot_xx * plot_xy).opts(plot={"xticks": 0, "yticks": list(range(8))})
 ```
 
 Numerical systems are so good that the longitudinal conductivity always stays low even at the transition.
@@ -428,24 +455,31 @@ Here an integer number of charges is pumped from one edge to the other as the fl
 
 ```python
 W = 20
-p = SimpleNamespace(t=1, B=2*np.pi/(W+1), phi=None, mu=None)
-syst = qhe_corbino(r_out=2*W, r_in=20, w_lead=10)
+p = SimpleNamespace(t=1, B=2 * np.pi / (W + 1), phi=None, mu=None)
+syst = qhe_corbino(r_out=2 * W, r_in=20, w_lead=10)
 mus = np.linspace(0.4, 1.4, 11)
-holoviews.HoloMap({p.mu: plot_pumping(syst, p) for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap({p.mu: plot_pumping(syst, p) for p.mu in mus}, kdims=[r"$\mu$"])
 ```
 
 
 ```python
-question = ("Experimentally the quantum Hall conductance jumps - what does this mean about the "
-            "robustness of the Laughlin pumping argument?")
-answers = ["The Laughlin argument breaks down because it assumes specific values of the magnetic field.",
-           "The Laughlin argument assumes there is no longitudinal conductivity.",
-           "The Hall conductance is not a topological invariant since it changes.",
-           "The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum."
-           ]
-explanation = ("The key ingredient in the Laughlin argument was that there is no states at the fermi level in "
-               "the bulk which is equivalent to no longitudinal conductivity")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = (
+    "Experimentally the quantum Hall conductance jumps - what does this mean about the "
+    "robustness of the Laughlin pumping argument?"
+)
+answers = [
+    "The Laughlin argument breaks down because it assumes specific values of the magnetic field.",
+    "The Laughlin argument assumes there is no longitudinal conductivity.",
+    "The Hall conductance is not a topological invariant since it changes.",
+    "The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum.",
+]
+explanation = (
+    "The key ingredient in the Laughlin argument was that there is no states at the fermi level in "
+    "the bulk which is equivalent to no longitudinal conductivity"
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Landau levels: a microscopic model for the quantum hall effect
@@ -516,42 +550,47 @@ We can now look again at the Laughlin pump, monitoring at the same time the Land
 
 
 ```python
-kwargs = {'ylims': [-1.1, 1.1],
-          'xticks': 0,
-          'yticks': [-1, 0, 1],
-          'xdim': r'$k$',
-          'ydim': r'$E$',
-          'k_x': np.linspace(-np.pi, np.pi, 101),
-          'title': lambda p: "Landau levels"}
+kwargs = {
+    "ylims": [-1.1, 1.1],
+    "xticks": 0,
+    "yticks": [-1, 0, 1],
+    "xdim": r"$k$",
+    "ydim": r"$E$",
+    "k_x": np.linspace(-np.pi, np.pi, 101),
+    "title": lambda p: "Landau levels",
+}
 W = 20
-p = SimpleNamespace(t=1, B=2*np.pi/(W+1), phi=None, mu=None)
-syst = qhe_corbino(r_out=2*W, r_in=20, w_lead=10)
+p = SimpleNamespace(t=1, B=2 * np.pi / (W + 1), phi=None, mu=None)
+syst = qhe_corbino(r_out=2 * W, r_in=20, w_lead=10)
 sys1 = qhe_ribbon(W, True)
-HLine = holoviews.HLine(0).opts(style={'linestyle': '--', 'color': 'r'})
+HLine = holoviews.HLine(0).opts(style={"linestyle": "--", "color": "r"})
 mus = np.linspace(0.4, 1.4, 11)
-hm1 = holoviews.HoloMap({p.mu: plot_pumping(syst, p) for p.mu in mus}, kdims=[r'$\mu$'])
-hm2 = holoviews.HoloMap({p.mu: spectrum(sys1, p, **kwargs) for p.mu in mus}, kdims=[r'$\mu$'])
+hm1 = holoviews.HoloMap({p.mu: plot_pumping(syst, p) for p.mu in mus}, kdims=[r"$\mu$"])
+hm2 = holoviews.HoloMap(
+    {p.mu: spectrum(sys1, p, **kwargs) for p.mu in mus}, kdims=[r"$\mu$"]
+)
 hm1 + hm2 * HLine
 ```
 
 
 ```python
-question = ("Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, "
-            "and with 2 Landau levels filled. "
-            "Approximately, how many electrons does it contain?")
-answers = ["$2.\,$",
-           "$2 W/L\,.$",
-           "$2 B WL / \Phi_0\, $.",
-           "$ B L^2/\Phi_0\,$."]
+question = (
+    "Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, "
+    "and with 2 Landau levels filled. "
+    "Approximately, how many electrons does it contain?"
+)
+answers = ["$2.\,$", "$2 W/L\,.$", "$2 B WL / \Phi_0\, $.", "$ B L^2/\Phi_0\,$."]
 explanation = "Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$."
-MoocMultipleChoiceAssessment(question, answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Summary
 
 
 ```python
-MoocVideo("2u8_2isyi7o", src_location='3.2-summary', res='360')
+MoocVideo("2u8_2isyi7o", src_location="3.2-summary", res="360")
 ```
 
 **Questions about what you learned? Ask them below**
