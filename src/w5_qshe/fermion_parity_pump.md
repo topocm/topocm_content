@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 %output size = 150
@@ -143,12 +143,12 @@ def scattering_det_pfaff(syst, p):
 
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
     kdims = ['$k_y$', 'phase']
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims)(style={'color': 'b'})
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)(style={'color': 'g'})
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={'color': 'b'})
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(style={'color': 'g'})
     xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
     ticks = {'xticks': [(0, '0'), (np.pi, '$\pi$')], 'yticks': pi_ticks}
-    return plot.relabel('Winding', depth=1)[xlims, ylims](plot=ticks)
+    return plot.relabel('Winding', depth=1)[xlims, ylims].opts(plot=ticks)
 
 
 def title(p):

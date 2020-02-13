@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 %output size=110
@@ -77,7 +77,7 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     title = r'$\Delta={:.2}$, $\mu={:.2}$'.format(p.delta, p.mu)
     style = {'xticks': [0, 0.1, 0.2, 0.3], 'yticks': [0, 0.05, 0.1], 'fig_size': 150}
     plot = holoviews.Overlay(plot)
-    return plot(plot=style)
+    return plot.opts(plot=style)
 
 
 def title(p):

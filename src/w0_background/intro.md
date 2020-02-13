@@ -4,7 +4,7 @@
 # You should execute this cell at the start.
 
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 

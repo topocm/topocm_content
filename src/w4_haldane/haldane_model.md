@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 import scipy
@@ -135,7 +135,7 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
 
     plot = {'xticks': pi_ticks, 'yticks': pi_ticks}
     style = {'clims': [-vmax, vmax]}
-    return holoviews.Image(bc, **kwargs)(plot=plot, style=style)
+    return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
 
 
 def title(p):

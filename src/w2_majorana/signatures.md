@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 
@@ -116,15 +116,15 @@ def plot_spectroscopy(Vbarrier):
     p.Ez = 0.25
     Gs_topological = tunnel_spectroscopy(syst, p, Es)
     kdims = [dims.V_bias, dims.G]
-    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label='trivial')(style={'color': 'k'})
-    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label='topological')(style={'color': 'r'})
+    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label='trivial').opts(style={'color': 'k'})
+    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label='topological').opts(style={'color': 'r'})
     style_overlay = {'xticks': [-0.1, 0.0, 0.1], 
                      'yticks': [0.0, 0.5, 1.0, 1.5, 2.0],
                      'show_legend':True, 
                      'legend_position': 'top',
                      'fig_size':150}
     style_path = {'show_legend':True}
-    return plot(plot={'Overlay': style_overlay, 'Path': style_path})
+    return plot.opts(plot={'Overlay': style_overlay, 'Path': style_path})
 
 
 def nanowire_spectrum(trivial=False):
@@ -152,11 +152,11 @@ def nanowire_spectrum(trivial=False):
 def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     N = spectrum.shape[1] // 2
     kdims = [dims.phi, '$E$']
-    plot = holoviews.Path((fluxes, spectrum), kdims=kdims)(style={'color': 'k', 'alpha': 0.4})
-    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims)(style={'color': 'r'})
-    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims)(style={'color': 'k'})
+    plot = holoviews.Path((fluxes, spectrum), kdims=kdims).opts(style={'color': 'k', 'alpha': 0.4})
+    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).opts(style={'color': 'r'})
+    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).opts(style={'color': 'k'})
     ticks = {'xticks': [(0, '0'), (2 * np.pi, '1'), (4 * np.pi, '2')]}
-    return plot[:, -0.11:0.11](plot=ticks)
+    return plot[:, -0.11:0.11].opts(plot=ticks)
 
 
 def plot_gse_sc_nanowire(fluxes, spectrum):
@@ -170,10 +170,10 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     
     ticks = {'xticks': [(0, '0'), (2 * np.pi, '1'), (4 * np.pi, '2')]}
     plot = holoviews.Path((fluxes, energy_gs), kdims=[
-                          xdim, ydim], label='Energy')(plot=ticks)
+                          xdim, ydim], label='Energy').opts(plot=ticks)
     ydim = r'$I(\Phi)$'
     plot += holoviews.Path(((fluxes[1:] + fluxes[:-1]) / 2, current),
-                           kdims=[xdim, ydim], label='Current')(plot=ticks)
+                           kdims=[xdim, ydim], label='Current').opts(plot=ticks)
     return plot
 
 ```

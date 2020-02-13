@@ -127,7 +127,7 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot[xlims, ylims](plot={'Path': ticks})
+        return plot[xlims, ylims].opts(plot={'Path': ticks})
 
     elif len(variables) == 2:
         # 2D plot.
@@ -170,12 +170,12 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
                   'vdims': [zdim]}
 
         if num_bands is None:
-            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
+            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs).opts(plot=style) 
                                for i in range(energies.shape[-1])])
         else:
             mid = energies.shape[-1] // 2
             num_bands //= 2
-            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs)(plot=style) 
+            plot = hv.Overlay([hv.Surface(energies[:, :, i], **kwargs).opts(plot=style) 
                                for i in range(mid - num_bands, mid + num_bands)])
 
         if callable(title):
@@ -183,7 +183,7 @@ def spectrum(syst, p=None, k_x=None, k_y=None, k_z=None, title=None, xdim=None,
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot(plot={'Overlay': {'fig_size': 200}})
+        return plot.opts(plot={'Overlay': {'fig_size': 200}})
 
     else:
         raise ValueError("Cannot make 4D plots yet.")

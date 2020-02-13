@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 from matplotlib import cm
@@ -96,7 +96,7 @@ def plot_dets(syst, p, ks, chiral=False):
     RGB = hsv_to_rgb(HSV)
     bounds = (ks.min(), ks.min(), ks.max(), ks.max())
     pl = holoviews.RGB(RGB, bounds=bounds, label=r'$\det(h)$', kdims=['$k_x$', '$k_y$'])
-    return pl(plot={'xticks': pi_ticks, 'yticks': pi_ticks})(style={'interpolation': None})
+    return pl.opts(plot={'xticks': pi_ticks, 'yticks': pi_ticks}).opts(style={'interpolation': None})
 
 
 def Weyl_slab(w=5):

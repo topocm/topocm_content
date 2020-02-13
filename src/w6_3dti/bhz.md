@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 
@@ -96,8 +96,8 @@ def scattering_det_pfaff(syst, p):
         det = np.array(det)
         phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
         kdims = ['$k_y$', 'phase']
-        plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label)(style={'color': col})
-        plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)(style={'color': col})
+        plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label).opts(style={'color': col})
+        plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(style={'color': col})
         return plot
     
     plot = plot_k_x(syst, p, 0, r'$k_x=0$', 'g') * plot_k_x(syst, p, np.pi, r'$k_x=\pi$', 'b')
@@ -108,7 +108,7 @@ def scattering_det_pfaff(syst, p):
                      'show_legend':True, 
                      'legend_position': 'top'}
     style_path = {'show_legend':True}
-    return plot[xlims, ylims](plot={'Overlay': style_overlay, 'Path': style_path})
+    return plot[xlims, ylims].opts(plot={'Overlay': style_overlay, 'Path': style_path})
 ```
 
 # Introduction

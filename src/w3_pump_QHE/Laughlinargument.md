@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 %output size = 150
@@ -247,7 +247,7 @@ def plot_pumping(syst, p):
     style = {'xticks': [0, 1], 'yticks': [0, 1, 2, 3], 'aspect': 'square'}
     kdims = ['$\phi/2\pi$', '$q_{pump}$']
     title = '$\mu = {:.2}$, $\sigma_H = {:} \cdot e^2/h$'.format(p.mu, int(round(charges[-1])))
-    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title)(plot=style)[:, 0:3.1]
+    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title).opts(plot=style)[:, 0:3.1]
 
 ```
 
@@ -367,10 +367,10 @@ def G(syst, p):
 sigmasxx, sigmasxy = np.array([G(syst, p) for p.B in Bs]).T
 
 kdims = [r'$B^{-1} [a.u.]$', '$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$']
-plot_xx = holoviews.Path((1/Bs, sigmasxx), label=r'$\sigma_{xx}$', kdims=kdims)(style={'color': 'k'})
-plot_xy = holoviews.Path((1/Bs, sigmasxy), label=r'$\sigma_{xy}$', kdims=kdims)(style={'color': 'r'})
+plot_xx = holoviews.Path((1/Bs, sigmasxx), label=r'$\sigma_{xx}$', kdims=kdims).opts(style={'color': 'k'})
+plot_xy = holoviews.Path((1/Bs, sigmasxy), label=r'$\sigma_{xy}$', kdims=kdims).opts(style={'color': 'r'})
 
-(plot_xx * plot_xy)(plot={'xticks': 0, 'yticks': list(range(8))})
+(plot_xx * plot_xy).opts(plot={'xticks': 0, 'yticks': list(range(8))})
 ```
 
 Numerical systems are so good that the longitudinal conductivity always stays low even at the transition.
@@ -527,7 +527,7 @@ W = 20
 p = SimpleNamespace(t=1, B=2*np.pi/(W+1), phi=None, mu=None)
 syst = qhe_corbino(r_out=2*W, r_in=20, w_lead=10)
 sys1 = qhe_ribbon(W, True)
-HLine = holoviews.HLine(0)(style={'linestyle': '--', 'color': 'r'})
+HLine = holoviews.HLine(0).opts(style={'linestyle': '--', 'color': 'r'})
 mus = np.linspace(0.4, 1.4, 11)
 hm1 = holoviews.HoloMap({p.mu: plot_pumping(syst, p) for p.mu in mus}, kdims=[r'$\mu$'])
 hm2 = holoviews.HoloMap({p.mu: spectrum(sys1, p, **kwargs) for p.mu in mus}, kdims=[r'$\mu$'])

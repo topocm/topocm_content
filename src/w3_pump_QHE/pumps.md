@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 from holoviews.core.options import Cycle
@@ -374,7 +374,7 @@ def plot_charge(mu):
     title = '$\mu={:.2}$'.format(mu)
     kdims = [r'$t/T$', r'$q/e$']
     plot = holoviews.Path((phases / (2 * np.pi), wn), kdims=kdims, label=title, group='Q')
-    return plot[:, -0.5:3.5](plot={'xticks': [0, 1], 'yticks': [0, 1, 2, 3]})
+    return plot[:, -0.5:3.5].opts(plot={'xticks': [0, 1], 'yticks': [0, 1, 2, 3]})
 
 
 kwargs = {'ylims': [-0.2, 1.3],
@@ -409,7 +409,7 @@ en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(args=[p])) for p.phase in ph
 en = np.array(en)
 ticks = {'xticks': [0, 1], 'yticks': [0, 0.5, 1]}
 kdims = [r'$t/T$', r'$E$']
-holoviews.Path((phases / (2*np.pi), en), kdims=kdims)[:, 0:1.2](plot=ticks)
+holoviews.Path((phases / (2*np.pi), en), kdims=kdims)[:, 0:1.2].opts(plot=ticks)
 ```
 
 Indeed, the levels in the bulk stay flat and have a high degeneracy, but we see that there are also single levels that get pushed across the gap. Since the bulk is homogeneous, these states have to be localized at the edge.

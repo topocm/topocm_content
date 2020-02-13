@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 
@@ -236,13 +236,13 @@ def plot(n):
 
     plot_1 = holoviews.Path((J * periods, energies),
                          kdims=[r'Driving period $(JT)$', r'Quasi-energy $(ET)$'],
-                         label='Finite system')(plot={'xticks': 5, 'yticks': pi_ticks})
+                         label='Finite system').opts(plot={'xticks': 5, 'yticks': pi_ticks})
 
-    VLine = holoviews.VLine(T)(style={'color': 'b', 'linestyle': '--'})
+    VLine = holoviews.VLine(T).opts(style={'color': 'b', 'linestyle': '--'})
 
     plot_2 = holoviews.Path((momenta, spectrum[n]),
                          kdims=['$k$', '$E_kT$'],
-                         label='Floquet bands')(plot={'xticks': pi_ticks,
+                         label='Floquet bands').opts(plot={'xticks': pi_ticks,
                                                       'yticks': pi_ticks,
                                                       'aspect': 'equal'})
     return plot_1 * VLine + plot_2
@@ -320,8 +320,8 @@ def plot_dispersion_2D(T):
 
     title = r'$T = {:.2} \pi$'.format(T / np.pi)
     
-    return (holoviews.Surface(energies[:, :, 0], **kwargs)(plot=ticks) *
-            holoviews.Surface(energies[:, :, 1], **kwargs)(plot=ticks)).relabel(title)
+    return (holoviews.Surface(energies[:, :, 0], **kwargs).opts(plot=ticks) *
+            holoviews.Surface(energies[:, :, 1], **kwargs).opts(plot=ticks)).relabel(title)
 
 Ts = np.linspace(1, 3, 11, endpoint=True)
 holoviews.HoloMap({T: plot_dispersion_2D(np.pi*T) for T in Ts}, kdims=['$T$'])
@@ -362,7 +362,7 @@ def plot(n):
     title = r'spectrum: $T={:.2} \pi$'.format(T/np.pi)
     return holoviews.Path((momenta, spectrum[n]),
                            label=title,
-                           kdims=['$k$', '$E_kT$'])(plot={'xticks': pi_ticks,
+                           kdims=['$k$', '$E_kT$']).opts(plot={'xticks': pi_ticks,
                                                           'yticks': pi_ticks,
                                                           'aspect': 3})
 

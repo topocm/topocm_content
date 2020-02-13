@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 
@@ -286,10 +286,10 @@ def winding_plot(onsite, lefthopping, righthopping):
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
     title = 'Winding number: ${}$'.format(winding)
     kdims = [r'$\operatorname{Re}(z)$', r'$\operatorname{Im}(z)$']
-    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims)(style={'color': 'k', 'linestyle': '--'})
-    pl *= holoviews.Points((singularities.real, singularities.imag))(style={'color': 'r'})
-    pl *= holoviews.Points((0, 0))(style={'color': 'b'})
-    return pl[-2:2, -2:2].relabel(title)(plot={'xticks': 3, 'yticks': 3})
+    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).opts(style={'color': 'k', 'linestyle': '--'})
+    pl *= holoviews.Points((singularities.real, singularities.imag)).opts(style={'color': 'r'})
+    pl *= holoviews.Points((0, 0)).opts(style={'color': 'b'})
+    return pl[-2:2, -2:2].relabel(title).opts(plot={'xticks': 3, 'yticks': 3})
 
 np.random.seed(30)
 onsite, lefthopping, righthopping = random_sys()
@@ -372,12 +372,12 @@ def evaluate_m(syst, p):
     y = np.append([0], ys)
     title = '$m={:.2}$, Chern number $={:1.0f}$'.format(p.mu, res)
     window_widening = (max(x) - min(x)) * 0.05
-    pl = holoviews.Path((x, y))(style={'color': 'b'})
-    pl *= holoviews.Points((x, y))(style={'color': 'b'})
+    pl = holoviews.Path((x, y)).opts(style={'color': 'b'})
+    pl *= holoviews.Points((x, y)).opts(style={'color': 'b'})
     xlim = slice(min(x) - window_widening, max(x) + window_widening)
     ylim = slice(-2 * np.pi - 0.5, 0.5)
     ticks = {'xticks': 2, 'yticks': [(-2 * np.pi, r'$-2\pi$'), (0, r'$0$')]}
-    return pl[xlim, ylim].relabel(title)(plot=ticks)
+    return pl[xlim, ylim].relabel(title).opts(plot=ticks)
 
 holoviews.HoloMap({p.mu: evaluate_m(syst, p) for p.mu in np.linspace(-0.2, 0.4, 16)}, kdims=[r'$m$'])
 ```

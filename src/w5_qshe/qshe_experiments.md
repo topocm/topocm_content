@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 %output size = 150
@@ -104,7 +104,7 @@ def G_mu_plot(p, mus, color):
     plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label='Conductance')
     ticks = {'xticks': [-0.8, -0.4, 0, 0.4, 0.8],
              'yticks': [0, 2, 4, 6, 8, 10]}
-    return plot[:, 0:10](plot=ticks, style={'color': color})
+    return plot[:, 0:10].opts(plot=ticks, style={'color': color})
 
 
 def G_Ez_plot(p, E_zs):
@@ -114,7 +114,7 @@ def G_Ez_plot(p, E_zs):
     plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label='Conductance')
     ticks = {'xticks': [0, 0.05, 0.10, 0.15],
              'yticks': [0, 0.5, 1.0, 1.5, 2.0]}
-    return plot[:, 0:2](plot=ticks)
+    return plot[:, 0:2].opts(plot=ticks)
 ```
 
 # Introduction

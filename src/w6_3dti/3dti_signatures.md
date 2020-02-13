@@ -1,6 +1,6 @@
 ```python
 import sys
-sys.path.append('../code')
+sys.path.append('../../code')
 from init_mooc_nb import *
 init_notebook()
 
@@ -82,7 +82,7 @@ def cond_mu(p, L, W, H):
 
 def plot_cond_mu(cond, mus):
     kwargs = {'kdims': [r'$\mu$', r'$G\,[e^2/h]$']}
-    plot = holoviews.Path((mus, cond), **kwargs)(plot={'xticks': 3, 'yticks': [0, 2, 4, 6, 8]},
+    plot = holoviews.Path((mus, cond), **kwargs).opts(plot={'xticks': 3, 'yticks': [0, 2, 4, 6, 8]},
                                                                 style={'color': 'r'})
     return plot[-0.4:0.4, 0:8].relabel('Conductance')
 
@@ -98,8 +98,8 @@ def plot_bands(p, L, W, H):
 
 
 def plot_cond_spect(mu, cond_plot, bands_plot):
-    return (cond_plot*holoviews.VLine(mu)(style={'color': 'b'}) +
-            bands_plot.relabel('Spectrum')*holoviews.HLine(mu)(style={'color': 'b'}))
+    return (cond_plot*holoviews.VLine(mu).opts(style={'color': 'b'}) +
+            bands_plot.relabel('Spectrum')*holoviews.HLine(mu).opts(style={'color': 'b'}))
 
 
 def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
@@ -142,9 +142,9 @@ def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
 
     # hex_cmap colormap is defined below.
     %opts Trisurface (cmap=hex_cmap linewidth=0)
-    plot = holoviews.Overlay([holoviews.Trisurface((x.flat, y.flat, energies[:, :, i].flat), **kwargs)(plot=style)
+    plot = holoviews.Overlay([holoviews.Trisurface((x.flat, y.flat, energies[:, :, i].flat), **kwargs).opts(plot=style)
                               for i in range(energies.shape[-1])])
-    return plot(plot={'Overlay': {'fig_size': 350}})
+    return plot.opts(plot={'Overlay': {'fig_size': 350}})
 
 # Custom colormap for the hexagonal warping plot
 cmap_list = [((value + 1)/4.0, colour) for value, colour in
