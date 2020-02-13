@@ -1,12 +1,16 @@
 ```python
 import sys
 import os
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 # Set the path to a folder containing data files, to work with filters as well.
-data_folder = 'data/' if os.path.exists('data') and os.path.isdir('data') else '../data/'
+data_folder = (
+    "data/" if os.path.exists("data") and os.path.isdir("data") else "../../data/"
+)
 ```
 
 # Introduction
@@ -86,14 +90,18 @@ The situation is different in $d=3$ dimensions. If the conductance $g$ is large 
 ```python
 question = "How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?"
 
-answers = ["Nothing changes.",
-           r"$\beta$ is multiplied by 10.",
-           "The scaling hypothesis doesn't apply since we don't have a 1D system anymore.",
-           r"$\beta$ is altered in some way, since we have a different disordered system now."]
+answers = [
+    "Nothing changes.",
+    r"$\beta$ is multiplied by 10.",
+    "The scaling hypothesis doesn't apply since we don't have a 1D system anymore.",
+    r"$\beta$ is altered in some way, since we have a different disordered system now.",
+]
 
 explanation = "The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same."
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=0, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=0, explanation=explanation
+)
 ```
 
 The 2D case is special: in the classical limit $g \gg 1$, the scaling flow disappears, $\beta \approx 0$. However, there remain *quantum corrections* to it. These are effects that get weaker with increasing conductance, and they depend on the symmetry class of the Hamiltonian.
@@ -118,22 +126,22 @@ In practice, this behavior can be observed at a fixed $L$ by varying one paramet
 
 
 ```python
-data = np.loadtxt(data_folder + 'data_from_doru.dat')
+data = np.loadtxt(data_folder + "data_from_doru.dat")
 
 fig, ax = plt.subplots(figsize=(6, 4))
 
-cmap = plt.get_cmap('gist_heat')
+cmap = plt.get_cmap("gist_heat")
 for i in range(3):
     x, y = data[i::3, 0], data[i::3, 2]
     error = data[i::3, 3]
     L = data[i, 1]
-    color = cmap(np.log(L-26)/np.log(243-26) * .7)
+    color = cmap(np.log(L - 26) / np.log(243 - 26) * 0.7)
     ax.errorbar(x, y, yerr=error, label="$L=%i$" % L, color=color)
-    
+
 plt.legend()
 
-plt.xlabel('$V$')
-plt.ylabel(r'$\langle G \rangle$')
+plt.xlabel("$V$")
+plt.ylabel(r"$\langle G \rangle$")
 
 evals = [5.5, 5.75, 6]
 ax.set_xticks(evals)
@@ -178,17 +186,23 @@ The length $\xi = L_0\,(V-V_c)^{-\nu}\,$ is the localization length, which diver
 ```python
 question = r"What would we see if $\beta$ crossed from positive to negative values?"
 
-answers = ["Small conductances would have a metallic phase, where $g$ grows indefinitely, "
-           "while large $g$ would lead to an insulator.",
-           "We would see a critical phase, where all conductances converge to the same value.",
-           r"This is just the same metal-insulator transition since $\beta(g_c) = 0$",
-           "This is an impossible scaling function."]
+answers = [
+    "Small conductances would have a metallic phase, where $g$ grows indefinitely, "
+    "while large $g$ would lead to an insulator.",
+    "We would see a critical phase, where all conductances converge to the same value.",
+    r"This is just the same metal-insulator transition since $\beta(g_c) = 0$",
+    "This is an impossible scaling function.",
+]
 
-explanation = ("Both larger conductances and smaller conductances flow towards the critical value, "
-               "so all systems get the same conductance when their size becomes large enough. "
-               "This is an attractive critical point.")
+explanation = (
+    "Both larger conductances and smaller conductances flow towards the critical value, "
+    "so all systems get the same conductance when their size becomes large enough. "
+    "This is an attractive critical point."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Absence of localization for topological insulators
