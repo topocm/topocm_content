@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 import scipy
@@ -10,7 +12,9 @@ from matplotlib import cm
 
 
 import warnings
+
 warnings.simplefilter("ignore", UserWarning)
+
 
 def bhz(L, W, H, system_type):
     """A cuboid region of BHZ material with two leads attached.
@@ -19,16 +23,18 @@ def bhz(L, W, H, system_type):
     """
     # Onsite and hoppings matrices used for building BHZ model
     def onsite(site, p):
-        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (p.M + 2 * p.B1 + 4 * p.B2) * pauli.s0sz
+        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (
+            p.M + 2 * p.B1 + 4 * p.B2
+        ) * pauli.s0sz
 
     def hopx(site1, site2, p):
-        return - p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
+        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
 
     def hopy(site1, site2, p):
-        return - p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
+        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
 
     def hopz(site1, site2, p):
-        return - p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
+        return -p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
 
     def shape_lead(pos):
         (x, y, z) = pos
@@ -43,28 +49,34 @@ def bhz(L, W, H, system_type):
         x2, y2, z2 = site2.pos
         return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
 
-    lat = kwant.lattice.general(np.identity(3))    
+    lat = kwant.lattice.general(np.identity(3))
 
-    if system_type == 'sys':
+    if system_type == "sys":
         syst = kwant.Builder()
-        syst[lat.shape(shape_syst, (0,0,0))] = lambda site, p: onsite(site, p) - p.mu_scat * np.eye(4)
-    elif system_type == 'lead':
+        syst[lat.shape(shape_syst, (0, 0, 0))] = lambda site, p: onsite(
+            site, p
+        ) - p.mu_scat * np.eye(4)
+    elif system_type == "lead":
         sym = kwant.TranslationalSymmetry((1, 0, 0))
         syst = kwant.Builder(sym)
-        syst[lat.shape(shape_lead, (0,0,0))] = lambda site, p: onsite(site, p) - p.mu_lead * np.eye(4)
-    elif system_type == 'infinite':
+        syst[lat.shape(shape_lead, (0, 0, 0))] = lambda site, p: onsite(
+            site, p
+        ) - p.mu_lead * np.eye(4)
+    elif system_type == "infinite":
         syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = lambda site, p: onsite(site, p) - p.mu_lead * np.eye(4)
+        syst[lat.shape(lambda pos: True, (0, 0))] = lambda site, p: onsite(
+            site, p
+        ) - p.mu_lead * np.eye(4)
 
-    syst[kwant.HoppingKind((1,0,0), lat)] = hopx_phase
-    syst[kwant.HoppingKind((0,1,0), lat)] = hopy
-    syst[kwant.HoppingKind((0,0,1), lat)] = hopz
+    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx_phase
+    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
     return syst
 
 
 def bhz_scatter(L, W, H):
-    syst = bhz(L, W, H, 'sys')
-    lead = bhz(L, W, H, 'lead')
+    syst = bhz(L, W, H, "sys")
+    lead = bhz(L, W, H, "lead")
     syst.attach_lead(lead)
     syst.attach_lead(lead.reversed())
     return syst
@@ -75,80 +87,102 @@ def cond_mu(p, L, W, H):
     syst = bhz_scatter(L, W, H)
     sys_leads_fixed = syst.finalized().precalculate(energy=0, args=[p])
     mus = np.linspace(-0.4, 0.4, 40)
-    cond = [kwant.smatrix(sys_leads_fixed, energy=0, args=[p.update(mu_scat=mu)]).transmission(1, 0)
-            for mu in mus]
+    cond = [
+        kwant.smatrix(
+            sys_leads_fixed, energy=0, args=[p.update(mu_scat=mu)]
+        ).transmission(1, 0)
+        for mu in mus
+    ]
     return np.array(cond), mus
 
 
 def plot_cond_mu(cond, mus):
-    kwargs = {'kdims': [r'$\mu$', r'$G\,[e^2/h]$']}
-    plot = holoviews.Path((mus, cond), **kwargs).opts(plot={'xticks': 3, 'yticks': [0, 2, 4, 6, 8]},
-                                                                style={'color': 'r'})
-    return plot[-0.4:0.4, 0:8].relabel('Conductance')
+    kwargs = {"kdims": [r"$\mu$", r"$G\,[e^2/h]$"]}
+    plot = holoviews.Path((mus, cond), **kwargs).opts(
+        plot={"xticks": 3, "yticks": [0, 2, 4, 6, 8]}, style={"color": "r"}
+    )
+    return plot[-0.4:0.4, 0:8].relabel("Conductance")
 
 
 def plot_bands(p, L, W, H):
-    lead = bhz(L, W, H, 'lead')
-    kwargs = {'k_x': np.linspace(-np.pi/3, np.pi/3, 101),
-              'ylims': [-1, 1],
-              'yticks': 5,
-              'xticks': [(-np.pi/3, r'$-\pi/3$'), (0, r'$0$'), (np.pi/3, r'$\pi/3$')]}
+    lead = bhz(L, W, H, "lead")
+    kwargs = {
+        "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
+        "ylims": [-1, 1],
+        "yticks": 5,
+        "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
+    }
     p.mu_lead = 0
     return spectrum(lead, p, **kwargs)
 
 
 def plot_cond_spect(mu, cond_plot, bands_plot):
-    return (cond_plot*holoviews.VLine(mu).opts(style={'color': 'b'}) +
-            bands_plot.relabel('Spectrum')*holoviews.HLine(mu).opts(style={'color': 'b'}))
+    return cond_plot * holoviews.VLine(mu).opts(
+        style={"color": "b"}
+    ) + bands_plot.relabel("Spectrum") * holoviews.HLine(mu).opts(style={"color": "b"})
 
 
 def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
-
     def evaluate_on_grid(X, Y, func):
         """ X, Y should be in np.meshgrid form. It's enough for func to work on floats. """
         data = []
         for xx, yy in zip(X, Y):
-            data.append([func(i,j) for i, j in zip(xx, yy)])
+            data.append([func(i, j) for i, j in zip(xx, yy)])
         data = np.array(data)
         return data
 
     def get_energy_function(A, B, C):
         """ Used for plotting of hexagonal warping. """
+
         def func(kx, ky):
-            matrix = (A*(kx**2+ky**2)*pauli.s0 + B*(kx * pauli.sy - ky * pauli.sx) +
-                      C* 0.5 * ( (kx+1j*ky)**3 + (kx-1j*ky)**3 ) * pauli.sz)
+            matrix = (
+                A * (kx ** 2 + ky ** 2) * pauli.s0
+                + B * (kx * pauli.sy - ky * pauli.sx)
+                + C * 0.5 * ((kx + 1j * ky) ** 3 + (kx - 1j * ky) ** 3) * pauli.sz
+            )
             return sla.eigh(matrix)[0]
+
         return func
 
     zmin, zmax = -1.0, 3.5
     xylims = (-1.2, 1.2)
     zlims = (-1.0, 3.5)
-    kdims = [r'$k_x$', r'$k_y$']
-    vdims = [r'E']
+    kdims = [r"$k_x$", r"$k_y$"]
+    vdims = [r"E"]
     # Generate a circular mesh
     N = 100
     r = np.linspace(0, Kmax, N)
-    p = np.linspace(0, 2*np.pi, N)
+    p = np.linspace(0, 2 * np.pi, N)
     r, p = np.meshgrid(r, p)
-    x, y = r*np.cos(p), r*np.sin(p)
+    x, y = r * np.cos(p), r * np.sin(p)
     energies = evaluate_on_grid(x, y, func=get_energy_function(A, B, C))
 
     xy_ticks = [-1.2, 0, 1.2]
     zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
-    style = {'xticks': xy_ticks, 'yticks': xy_ticks, 'zticks': zticks}
-    kwargs = {'extents': (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
-              'kdims': kdims,
-              'vdims': vdims}
+    style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
+    kwargs = {
+        "extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
+        "kdims": kdims,
+        "vdims": vdims,
+    }
 
     # hex_cmap colormap is defined below.
-    %opts Trisurface (cmap=hex_cmap linewidth=0)
-    plot = holoviews.Overlay([holoviews.Trisurface((x.flat, y.flat, energies[:, :, i].flat), **kwargs).opts(plot=style)
-                              for i in range(energies.shape[-1])])
-    return plot.opts(plot={'Overlay': {'fig_size': 350}})
+    plot = holoviews.Overlay(
+        [
+            holoviews.Trisurface(
+                (x.flat, y.flat, energies[:, :, i].flat), **kwargs
+            ).opts(style=dict(cmap=hex_cmap, linewidth=0), plot=style)
+            for i in range(energies.shape[-1])
+        ]
+    )
+    return plot.opts(plot={"Overlay": {"fig_size": 350}})
+
 
 # Custom colormap for the hexagonal warping plot
-cmap_list = [((value + 1)/4.0, colour) for value, colour in
-             zip([-1.0, 0.0, 3.0], ["Blue", "White", "Red"])]
+cmap_list = [
+    ((value + 1) / 4.0, colour)
+    for value, colour in zip([-1.0, 0.0, 3.0], ["Blue", "White", "Red"])
+]
 hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
 ```
 
@@ -160,7 +194,7 @@ This is an expertise that no one from the course team has, so pay close attentio
 
 
 ```python
-MoocVideo("62ZObitJ4DM",  src_location="6.2-intro")
+MoocVideo("62ZObitJ4DM", src_location="6.2-intro")
 ```
 
 In the rest of the lecture, we will instead discuss the experimental signatures of 3D topological insulators, similarly to what we did in the previous week for their 2D counterparts.
@@ -181,8 +215,9 @@ cond, mus = cond_mu(p, L, W, H)
 cond_plot = plot_cond_mu(cond, mus)
 bands_plot = plot_bands(p, L, W, H)
 mus = np.linspace(-0.4, 0.4, 11)
-holoviews.HoloMap({mu: plot_cond_spect(mu, cond_plot, bands_plot)
-                   for mu in mus}, kdims = [r'$\mu$']).collate()
+holoviews.HoloMap(
+    {mu: plot_cond_spect(mu, cond_plot, bands_plot) for mu in mus}, kdims=[r"$\mu$"]
+).collate()
 ```
 
 It is also the behavior that is observed experimentally. In the figure below, you see that the resistance of a 3D TI slab reaches a maximum and then decreases as the chemical potential difference between its top and bottom surfaces is varied.
@@ -221,18 +256,24 @@ So, even by studying the Landau levels experimentally, we do not get a topologic
 
 
 ```python
-question = ("Which control parameter can remove the 0th plateau in the QHE measurement? ")
+question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
 
-answers = ["Increasing the magnetic field.",
-           "Gate voltage difference (which controls difference in electron density) between the surfaces.",
-           "Increasing topological mass.",
-           "Adding an in-plane magnetic field."]
+answers = [
+    "Increasing the magnetic field.",
+    "Gate voltage difference (which controls difference in electron density) between the surfaces.",
+    "Increasing topological mass.",
+    "Adding an in-plane magnetic field.",
+]
 
-explanation = ("Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. "
-            "This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the "
-               " $0^{th}$ plateau to begin with so cannot eliminate it. ")
+explanation = (
+    "Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. "
+    "This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the "
+    " $0^{th}$ plateau to begin with so cannot eliminate it. "
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Spectroscopy of the surface of a 3D topological insulator
@@ -255,17 +296,23 @@ While the top panels shows where the occupied states lie in the $(k_x, k_y)$ pla
 
 
 ```python
-question = ("Why do you think ARPES observes surface states even if there is conductance through the bulk?")
+question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
 
-answers = ["ARPES can only observe occupied states and therefore bulk conductance is not an issue. ",
-           "Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.",
-           "ARPES does not measure conductance and therefore bulk electronic states are not an issue.",
-        "Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap."]
+answers = [
+    "ARPES can only observe occupied states and therefore bulk conductance is not an issue. ",
+    "Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.",
+    "ARPES does not measure conductance and therefore bulk electronic states are not an issue.",
+    "Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap.",
+]
 
-explanation = ("The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out "
-            "surface states from bulk states, which are in different energy ranges. ")
+explanation = (
+    "The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out "
+    "surface states from bulk states, which are in different energy ranges. "
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Quasiparticle interference (QPI)
@@ -343,7 +390,7 @@ David Vanderbilt will conclude this week's lectures by offering a perspective on
 
 
 ```python
-MoocVideo("WZmNeEwM1N4",  src_location="6.2-summary")
+MoocVideo("WZmNeEwM1N4", src_location="6.2-summary")
 ```
 
 
