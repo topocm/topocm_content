@@ -315,10 +315,6 @@ plt.yticks([])
 plt.show()
 ```
 
-```python
-y
-```
-
 A reverse of this procedure does the reverse of course, so it reduces the number of charges on the left and right sides.
 
 Now here comes the trick:
