@@ -119,10 +119,6 @@ def init_notebook():
     print_information()
     check_versions()
 
-    code_dir = os.path.dirname(os.path.realpath(__file__))
-    hv_css = os.path.join(code_dir, "hv_widgets_settings.css")
-    holoviews.plotting.widgets.SelectionWidget.css = hv_css
-
     holoviews.notebook_extension("matplotlib")
 
     # Enable inline plotting in the notebook
@@ -160,6 +156,7 @@ def init_notebook():
     for dimension_type in [float, np.float64, np.float32]:
         holoviews.Dimension.type_formatters[dimension_type] = pretty_fmt_complex
 
+    code_dir = os.path.dirname(os.path.realpath(__file__))
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
     np.set_printoptions(
