@@ -1,4 +1,4 @@
-image: basnijholt/topocondmat
+image: topocourse/topocourse:staging
 stages:
   - execute
   - build
