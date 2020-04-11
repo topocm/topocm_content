@@ -141,14 +141,14 @@ def init_notebook():
     options.VLine = Options("style", linestyle="--", color="r", linewidth=2)
     options.Image = Options("style", cmap="RdBu_r")
     options.Image = Options("plot", title_format="{label}")
-    options.Path = Options("style", linewidth=1.2, color="k")
+    options.Path = Options("style", linewidth=1.2, color="black")
     options.Path = Options("plot", aspect="square", title_format="{label}")
-    options.Curve = Options("style", linewidth=2, color="k")
+    options.Curve = Options("style", linewidth=2, color="black")
     options.Curve = Options("plot", aspect="square", title_format="{label}")
     options.Overlay = Options("plot", show_legend=False, title_format="{label}")
     options.Layout = Options("plot", title_format="{label}")
     options.Surface = Options(
-        "style", cmap="RdBu_r", rstride=2, cstride=2, lw=0.2, edgecolor="k"
+        "style", cmap="RdBu_r", rstride=2, cstride=2, lw=0.2, edgecolor="black"
     )
     options.Surface = Options("plot", azimuth=20, elevation=8)
 
