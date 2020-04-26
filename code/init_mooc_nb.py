@@ -154,7 +154,7 @@ def init_notebook():
 
     # Set slider label formatting
     for dimension_type in [float, np.float64, np.float32]:
-        holoviews.Dimension.type_formatters[dimension_type] = pretty_fmt_complex
+        holoviews.Dimension.type_formatters[dimension_type] = lambda x: pretty_fmt_complex(x, 4)
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
