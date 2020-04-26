@@ -3,7 +3,6 @@
 {% block header %}
 {{ super() }}
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<link rel="stylesheet" href="/static/hv_widgets_settings.css">
 <link rel="stylesheet" href="/static/notebook.css">
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
