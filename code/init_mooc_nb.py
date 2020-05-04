@@ -120,6 +120,7 @@ def init_notebook():
     check_versions()
 
     holoviews.notebook_extension("matplotlib")
+    holoviews.output(widget_location='bottom')
 
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui="inline")
