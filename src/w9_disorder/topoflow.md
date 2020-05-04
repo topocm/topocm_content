@@ -145,7 +145,7 @@ ax.set_yticklabels(["${0}$".format(i) for i in evals])
 ax.set_xlim(-0.4, 0.4)
 ax.set_ylim(-1.1, 1.1)
 
-ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles="dashed")
+ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles="dashed");
 ```
 
 (Darker color corresponds to larger $U$.)
@@ -248,7 +248,7 @@ ax.set_xticklabels(["${0}$".format(i) for i in evals])
 
 evals = [0.0, 0.25, 0.50]
 ax.set_yticks(evals)
-ax.set_yticklabels(["${0}$".format(i) for i in evals])
+ax.set_yticklabels(["${0}$".format(i) for i in evals]);
 ```
 
 The lines have a direction, which tells us how $\langle Q \rangle$ and $\langle T \rangle$ change as we increase $L$. In the plot above, $L$ is increasing in going from bright to dark colors.
