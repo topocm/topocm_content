@@ -103,7 +103,7 @@ def berry_curvature(syst, p, ks, num_filled_bands=1):
     def energy(kx, ky):
         k = np.array([kx, ky])
         kx, ky = np.linalg.solve(A, k)
-        H = syst.hamiltonian_submatrix([p, kx, ky], sparse=False)
+        H = syst.hamiltonian_submatrix(params=dict(p=p, k_x=kx, k_y=ky), sparse=False)
         return scipy.linalg.eigh(H)[1]
 
     vectors = np.array(
@@ -288,9 +288,9 @@ And when it does, chiral edge states appear! We can see this by looking at the o
 def ribbon_bandstructure(t_2, boundary):
     p = SimpleNamespace(t=1.0, t_2=t_2, m=0.2, phi=np.pi / 2)
 
-    if boundary is "zigzag":
+    if boundary == "zigzag":
         syst = haldane(w=20, boundary="zigzag")
-    elif boundary is "armchair":
+    elif boundary == "armchair":
         syst = haldane(w=20, boundary="armchair",)
 
     style = {
