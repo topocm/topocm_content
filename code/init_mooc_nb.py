@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import types
+import warnings
 
 # 2. External package imports
 import holoviews
@@ -162,4 +163,9 @@ def init_notebook():
 
     np.set_printoptions(
         precision=2, suppress=True, formatter={"complexfloat": pretty_fmt_complex}
+    )
+
+    # Silence Kwant warnings from color scale overflow
+    warnings.filterwarnings(
+        "ignore", category=RuntimeWarning, message="The plotted data contains"
     )
