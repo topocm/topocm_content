@@ -170,7 +170,7 @@ def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
     # hex_cmap colormap is defined below.
     plot = holoviews.Overlay(
         [
-            holoviews.Trisurface(
+            holoviews.TriSurface(
                 (x.flat, y.flat, energies[:, :, i].flat), **kwargs
             ).opts(style=dict(cmap=hex_cmap, linewidth=0), plot=style)
             for i in range(energies.shape[-1])
