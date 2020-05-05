@@ -2,7 +2,7 @@ name: python3
 channels:
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.8
   - pip
   - matplotlib=3.2*
   - kwant=1.4*
