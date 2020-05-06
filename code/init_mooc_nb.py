@@ -20,7 +20,7 @@ from matplotlib import pyplot as plt
 
 import edx_components
 import functions
-import pfaffian as pf
+from pfapack import pfaffian as pf
 from edx_components import *
 from functions import *
 
