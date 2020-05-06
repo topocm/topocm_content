@@ -1,4 +1,4 @@
-image: topocourse/topocourse:staging
+image: topocourse/topocourse
 stages:
   - execute
   - build
