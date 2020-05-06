@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 ```
 
@@ -50,19 +52,27 @@ $$
 
 
 ```python
-question = ("The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
-            "that must be dropped in order to understand the fractional quantum Hall effect?")
+question = (
+    "The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
+    "that must be dropped in order to understand the fractional quantum Hall effect?"
+)
 
-answers = ["Allow electrons to have fractional statistics.",
-           "Allow quasiparticles with fractional charge.",
-           "Require that the system forms an incompressible fluid.",
-           "Allow electrons to have fractional charge.",
-           "Allow quasiparticles to have fractional statistics."]
+answers = [
+    "Allow electrons to have fractional statistics.",
+    "Allow quasiparticles with fractional charge.",
+    "Require that the system forms an incompressible fluid.",
+    "Allow electrons to have fractional charge.",
+    "Allow quasiparticles to have fractional statistics.",
+]
 
-explanation = ("The key assumption in the Laughlin argument for the integer case was that the charge that was added by pumping could"
-               "only be an integer multiple of an electronic charge.")
+explanation = (
+    "The key assumption in the Laughlin argument for the integer case was that the charge that was added by pumping could"
+    "only be an integer multiple of an electronic charge."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Topological degeneracy
@@ -123,19 +133,27 @@ Thus the composite fermion theory provides an explanation for how electrons can 
 
 
 ```python
-question = ("Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
-            "postulating that:")
+question = (
+    "Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
+    "postulating that:"
+)
 
-answers = ["The quantum Hall system forms an incompressible liquid.",
-           "The fractionally charged quasiparticles bind to fluxes to reduce the filling.",
-           "The electrons become fractionally charged.",
-           "The electrons bind to fluxes and reduce the effective magnetic field."]
+answers = [
+    "The quantum Hall system forms an incompressible liquid.",
+    "The fractionally charged quasiparticles bind to fluxes to reduce the filling.",
+    "The electrons become fractionally charged.",
+    "The electrons bind to fluxes and reduce the effective magnetic field.",
+]
 
-explanation = ("Composite fermions are electrons bound to fluxes. Electrons are the fundamental particles and they cannot change "
-               "their charge. The fractional charged quasiparticles are invoked by composite fermions not explained by the theory. "
-               " The incompressible liquid is true for either integer or fractional quantum Hall.")
+explanation = (
+    "Composite fermions are electrons bound to fluxes. Electrons are the fundamental particles and they cannot change "
+    "their charge. The fractional charged quasiparticles are invoked by composite fermions not explained by the theory. "
+    " The incompressible liquid is true for either integer or fractional quantum Hall."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Classification and fractional topological insulators

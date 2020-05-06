@@ -1,31 +1,37 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 from scipy import linalg as la
 from functools import reduce
 
-pi_ticks = [(-np.pi, r"$-\pi$"),
-            (-np.pi / 2, r"$-\pi/2$"),
-            (0, r"$0$"),
-            (np.pi / 2, r"$\pi/2$"),
-            (np.pi, r"$\pi$")]
+pi_ticks = [
+    (-np.pi, r"$-\pi$"),
+    (-np.pi / 2, r"$-\pi/2$"),
+    (0, r"$0$"),
+    (np.pi / 2, r"$\pi/2$"),
+    (np.pi, r"$\pi$"),
+]
 
 
 def checkerboard(W=None):
     lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)])
     a, b = lat.sublattices
     if W:
+
         def lead_shape(pos):
             (x, y) = pos
-            return (0 <= y < W and 0 <= x < W)
+            return 0 <= y < W and 0 <= x < W
+
         syst = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
         syst[a.shape(lead_shape, (0, 0))] = 0
         syst[b.shape(lead_shape, (1, 0))] = 0
     else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))    
+        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = 0
     syst[kwant.HoppingKind((0, 0), b, a)] = lambda s1, s2, p: -p.t1
     syst[kwant.HoppingKind((-1, 1), b, a)] = lambda s1, s2, p: -p.t2
@@ -41,7 +47,7 @@ def evolution_operator(hamiltonians, T):
 
 
 def get_h_k(lead, p):
-    bands = kwant.physics.Bands(lead, args=[p])
+    bands = kwant.physics.Bands(lead, params=dict(p=p))
     h, t = bands.ham, bands.hop
     return lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
 ```
@@ -127,19 +133,27 @@ Of course, selecting a single quasi-energy as the Fermi level is arbitrary, sinc
 
 
 ```python
-question = ("But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
-            "Floquet operator. What if we chose a different one?")
+question = (
+    "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
+    "Floquet operator. What if we chose a different one?"
+)
 
-answers = ["The starting time is just an extra parameter of our system, and topology depends on it.",
-           "It doesn't matter, the wave function evolution within one period "
-           "can be neglected, since we are interested in many periods.",
-           "There's only one correct starting point in time.",
-           "It doesn't matter since the quasienergies are independent of the starting point."]
+answers = [
+    "The starting time is just an extra parameter of our system, and topology depends on it.",
+    "It doesn't matter, the wave function evolution within one period "
+    "can be neglected, since we are interested in many periods.",
+    "There's only one correct starting point in time.",
+    "It doesn't matter since the quasienergies are independent of the starting point.",
+]
 
-explanation = ("Choosing a different starting point applies a unitary transformation "
-               "to the Floquet evolution operator, and so it keeps the quasienergies the same.")
+explanation = (
+    "Choosing a different starting point applies a unitary transformation "
+    "to the Floquet evolution operator, and so it keeps the quasienergies the same."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Driven Majorana wire
@@ -168,11 +182,12 @@ with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ a
 ```python
 %%opts Path {+axiswise}
 
+
 def nanowire_chain(L=None):
     lat = kwant.lattice.chain()
 
     def onsite(site, p):
-        return (2*p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
+        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
 
     def hopping(site1, site2, p):
         return -p.t * pauli.szs0 + 0.5 * 1j * p.alpha * pauli.szsx
@@ -195,7 +210,7 @@ def calculate_finite_spectrum(periods, hamiltonians):
         U = evolution_operator(hamiltonians, T)
         phases = np.angle(la.eigvals(U))
         phases = np.sort(np.abs(phases))
-        ev = np.sort([(-1)**n * val for n, val in enumerate(phases)])
+        ev = np.sort([(-1) ** n * val for n, val in enumerate(phases)])
         energies.append(ev)
     return np.array(energies).real
 
@@ -207,22 +222,22 @@ def calculate_bands(momenta, hamiltonians_k, T):
         U = evolution_operator(hamiltonians, T)
         phases = np.angle(la.eigvals(U))
         phases = np.sort(np.abs(phases))
-        ev = np.sort([(-1)**n * val for n, val in enumerate(phases)])
+        ev = np.sort([(-1) ** n * val for n, val in enumerate(phases)])
         energies.append(ev)
     return np.array(energies).real
 
 
 J = 2.0
-p1 = SimpleNamespace(t=J/2, mu=-1*J, B=J, delta=2*J, alpha=J)
-p2 = SimpleNamespace(t=J/2, mu=-3*J, B=J, delta=2*J, alpha=J)
+p1 = SimpleNamespace(t=J / 2, mu=-1 * J, B=J, delta=2 * J, alpha=J)
+p2 = SimpleNamespace(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
 
 syst = nanowire_chain(L=20).finalized()
-H1 = syst.hamiltonian_submatrix(args=[p1])
-H2 = syst.hamiltonian_submatrix(args=[p2])
+H1 = syst.hamiltonian_submatrix(params=dict(p=p1))
+H2 = syst.hamiltonian_submatrix(params=dict(p=p2))
 
 lead = kwant.wraparound.wraparound(nanowire_chain(L=None)).finalized()
-h1_k = lambda kx: lead.hamiltonian_submatrix(args=[p1, kx])
-h2_k = lambda kx: lead.hamiltonian_submatrix(args=[p2, kx])
+h1_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p1, k_x=kx))
+h2_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p2, k_x=kx))
 
 periods = np.linspace(0.2 / J, 1.6 / J, 100)
 momenta = np.linspace(-np.pi, np.pi)
@@ -234,20 +249,21 @@ spectrum = np.array([calculate_bands(momenta, [h1_k, h2_k], T) for T in periods]
 def plot(n):
     T = J * periods[n]
 
-    plot_1 = holoviews.Path((J * periods, energies),
-                         kdims=[r'Driving period $(JT)$', r'Quasi-energy $(ET)$'],
-                         label='Finite system')(plot={'xticks': 5, 'yticks': pi_ticks})
+    plot_1 = holoviews.Path(
+        (J * periods, energies),
+        kdims=[r"Driving period $(JT)$", r"Quasi-energy $(ET)$"],
+        label="Finite system",
+    ).opts(plot={"xticks": 5, "yticks": pi_ticks})
 
-    VLine = holoviews.VLine(T)(style={'color': 'b', 'linestyle': '--'})
+    VLine = holoviews.VLine(T).opts(style={"color": "b", "linestyle": "--"})
 
-    plot_2 = holoviews.Path((momenta, spectrum[n]),
-                         kdims=['$k$', '$E_kT$'],
-                         label='Floquet bands')(plot={'xticks': pi_ticks,
-                                                      'yticks': pi_ticks,
-                                                      'aspect': 'equal'})
+    plot_2 = holoviews.Path(
+        (momenta, spectrum[n]), kdims=["$k$", "$E_kT$"], label="Floquet bands"
+    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": "equal"})
     return plot_1 * VLine + plot_2
 
-holoviews.HoloMap({n: plot(n) for n in np.arange(0, 100, 10)}, kdims=['n']).collate()
+
+holoviews.HoloMap({n: plot(n) for n in np.arange(0, 100, 10)}, kdims=["n"]).collate()
 ```
 
 On the left you see the Floquet spectrum of a finite system as a function of the driving period measured in units of the hopping strength, and on the right you see the Floquet dispersion in momentum space.
@@ -290,41 +306,51 @@ def plot_dispersion_2D(T):
     B = np.array(syst.symmetry.periods).T
     A = B @ np.linalg.inv(B.T @ B)
     syst = kwant.wraparound.wraparound(syst).finalized()
-    
+
     def hamiltonian_k(par):
-        def f(kx, ky):
-            kx, ky = np.linalg.lstsq(A, [kx, ky])[0]
-            ham = syst.hamiltonian_submatrix(args=[par, kx, ky])
+        def f(k_x, k_y):
+            k_x, k_y = np.linalg.lstsq(A, [k_x, k_y], rcond=None)[0]
+            ham = syst.hamiltonian_submatrix(params=dict(p=par, k_x=k_x, k_y=k_y))
             return ham
+
         return f
 
     hamiltonians_k = [
-        hamiltonian_k(SimpleNamespace(t1=1, t2=0, t3=0, t4=0)),    
-        hamiltonian_k(SimpleNamespace(t1=0, t2=1, t3=0, t4=0)),    
-        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=1, t4=0)),    
-        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=0, t4=1))]
+        hamiltonian_k(SimpleNamespace(t1=1, t2=0, t3=0, t4=0)),
+        hamiltonian_k(SimpleNamespace(t1=0, t2=1, t3=0, t4=0)),
+        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=1, t4=0)),
+        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=0, t4=1)),
+    ]
 
-    def get_energies(kx, ky):
-        hamiltonians = [h_k(kx, ky) for h_k in hamiltonians_k]
+    def get_energies(k_x, k_y):
+        hamiltonians = [h_k(k_x, k_y) for h_k in hamiltonians_k]
         U = evolution_operator(hamiltonians, T)
         ev = np.sort(np.angle(la.eigvals(U)))
         return ev
 
     K = np.linspace(-np.pi, np.pi, 50)
-    energies = np.array([[get_energies(kx, ky) for kx in K] for ky in K])
+    energies = np.array([[get_energies(k_x, k_y) for k_x in K] for k_y in K])
 
-    ticks = {'xticks': pi_ticks[::2], 'yticks': pi_ticks[::2], 'zticks': 3}
-    kwargs = {'extents': (-np.pi, -np.pi, -4, np.pi, np.pi, 4),
-              'kdims': ['$k_x$', '$k_y$'],
-              'vdims': ['$E$']}
+    ticks = {"xticks": pi_ticks[::2], "yticks": pi_ticks[::2], "zticks": 3}
+    kwargs = {
+        "extents": (-np.pi, -np.pi, -4, np.pi, np.pi, 4),
+        "kdims": ["$k_x$", "$k_y$"],
+        "vdims": ["$E$"],
+    }
 
-    title = r'$T = {:.2} \pi$'.format(T / np.pi)
-    
-    return (holoviews.Surface(energies[:, :, 0], **kwargs)(plot=ticks) *
-            holoviews.Surface(energies[:, :, 1], **kwargs)(plot=ticks)).relabel(title)
+    title = r"$T = {:.2} \pi$".format(T / np.pi)
+
+    xs = np.linspace(-np.pi, np.pi, energies.shape[1])
+    ys = np.linspace(-np.pi, np.pi, energies.shape[0])
+
+    return (
+        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).opts(plot=ticks)
+        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).opts(plot=ticks)
+    ).relabel(title)
+
 
 Ts = np.linspace(1, 3, 11, endpoint=True)
-holoviews.HoloMap({T: plot_dispersion_2D(np.pi*T) for T in Ts}, kdims=['$T$'])
+holoviews.HoloMap({T: plot_dispersion_2D(np.pi * T) for T in Ts}, kdims=["$T$"])
 ```
 
 Now, there isn't a Hamiltonian which is more topologically trivial than the zero Hamiltonian. We may be tempted to conclude that our system is trivial and, by bulk-boundary correspondence, has no edge states.
@@ -335,6 +361,7 @@ That's something we can also very easily verify by computing the dispersion of a
 ```python
 %%output size=200
 %%opts Path {+axiswise}
+
 
 def calculate_bands(momenta, hamiltonians_k, T):
     energies = []
@@ -351,22 +378,23 @@ hamiltonians_k = [
     get_h_k(ribbon_lead, SimpleNamespace(t1=1, t2=0, t3=0, t4=0)),
     get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=1, t3=0, t4=0)),
     get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=0, t3=1, t4=0)),
-    get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=0, t3=0, t4=1))]
+    get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=0, t3=0, t4=1)),
+]
 
-periods = np.linspace(0, 4*np.pi, 11)
+periods = np.linspace(0, 4 * np.pi, 11)
 momenta = np.linspace(-np.pi, np.pi)
 spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in periods])
 
+
 def plot(n):
     T = periods[n]
-    title = r'spectrum: $T={:.2} \pi$'.format(T/np.pi)
-    return holoviews.Path((momenta, spectrum[n]),
-                           label=title,
-                           kdims=['$k$', '$E_kT$'])(plot={'xticks': pi_ticks,
-                                                          'yticks': pi_ticks,
-                                                          'aspect': 3})
+    title = r"spectrum: $T={:.2} \pi$".format(T / np.pi)
+    return holoviews.Path(
+        (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
+    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": 3})
 
-holoviews.HoloMap({n: plot(n) for n in range(11)}, kdims=['n'])
+
+holoviews.HoloMap({n: plot(n) for n in range(11)}, kdims=["n"])
 ```
 
 We see something very different from our expectations. All the bulk states are indeed at $E=0$, but there are two branches of dispersion that are clearly propagating. These can only belong to the edges, and since the two edges look identical, these two modes have to belong to the opposite edges. We seem to conclude that even though the bulk Hamiltonian is trivial, the edges carry chiral edge states, as if there was a finite Chern number.
@@ -379,17 +407,23 @@ So what is happening with bulk-edge correspondence?
 
 
 ```python
-question = ("How can you change the chirality of the edge states in the figure above?")
+question = "How can you change the chirality of the edge states in the figure above?"
 
-answers = ["By changing the driving period.",
-           "By reversing the driving protocol sequence.",
-           "By changing the sign of the nearest neighbor hopping.",
-           "By making the electrons start from the black sublattice."]
+answers = [
+    "By changing the driving period.",
+    "By reversing the driving protocol sequence.",
+    "By changing the sign of the nearest neighbor hopping.",
+    "By making the electrons start from the black sublattice.",
+]
 
-explanation = ("Reversing the driving protocol is the same as applying time-reversal symmetry, "
-               "so it will reverse the direction of the chiral edge modes")
+explanation = (
+    "Reversing the driving protocol is the same as applying time-reversal symmetry, "
+    "so it will reverse the direction of the chiral edge modes"
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Bulk-edge correspondence in driven systems

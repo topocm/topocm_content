@@ -1,12 +1,15 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 from matplotlib import cm
 from matplotlib.colors import hsv_to_rgb
 
-pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+
 
 def d_wave(w=None, direction=None):
     """Creates a d-wave system.
@@ -19,40 +22,47 @@ def d_wave(w=None, direction=None):
         Direction of translation symmetry, if None it's an infinite
         system in x and y.
     """
+
     def hopx(site1, site2, p):
         return -p.t * pauli.sz - p.delta * pauli.sx
-    
+
     def hopy(site1, site2, p):
         return -p.t * pauli.sz + p.delta * pauli.sx
-    
+
     def onsite(site, p):
-        return (4 * p.t - p.mu) * pauli.sz 
+        return (4 * p.t - p.mu) * pauli.sz
 
     lat = kwant.lattice.square()
 
     if not w:
+
         def ribbon_shape(pos):
             (x, y) = pos
             return True
+
         sym = kwant.TranslationalSymmetry(*lat.prim_vecs)
     else:
-        if direction == 'topo':
+        if direction == "topo":
+
             def ribbon_shape(pos):
                 (x, y) = pos
-                return (0 <= y - x < w)
-            sym = kwant.TranslationalSymmetry((1, 1))  
-        elif direction == 'triv':
+                return 0 <= y - x < w
+
+            sym = kwant.TranslationalSymmetry((1, 1))
+        elif direction == "triv":
+
             def ribbon_shape(pos):
                 (x, y) = pos
-                return (0 <= y < w)
-            sym = kwant.TranslationalSymmetry((1, 0))  
+                return 0 <= y < w
+
+            sym = kwant.TranslationalSymmetry((1, 0))
 
     syst = kwant.Builder(sym)
-    
+
     syst[lat.shape(ribbon_shape, (0, 0))] = onsite
     syst[kwant.HoppingKind((1, 0), lat)] = hopx
     syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    
+
     return syst
 
 
@@ -62,25 +72,26 @@ def graphene_infinite():
     syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
     syst[lat.shape(lambda pos: True, (0, 0))] = 0
     syst[kwant.builder.HoppingKind((0, 0), a, b)] = lambda site1, site2, p: p.t_1
-    syst[kwant.builder.HoppingKind((0, 1), a, b)] = lambda site1, site2, p:  p.t_23
-    syst[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, p: p.t_23 
+    syst[kwant.builder.HoppingKind((0, 1), a, b)] = lambda site1, site2, p: p.t_23
+    syst[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, p: p.t_23
     return syst
 
 
 def plot_dets(syst, p, ks, chiral=False):
     B = np.array(syst.symmetry.periods).T
     A = B @ np.linalg.inv(B.T @ B)
+
     def momentum_to_lattice(k):
-        k, residuals = np.linalg.lstsq(A, k)[:2]
+        k, residuals = np.linalg.lstsq(A, k, rcond=-1)[:2]
         return list(k)
-    
+
     syst = kwant.wraparound.wraparound(syst).finalized()
     kys, kxs = np.meshgrid(ks, ks)
     dets = np.zeros_like(kxs, dtype=complex)
     for i, kx in enumerate(ks):
         for j, ky in enumerate(ks):
             kx, ky = momentum_to_lattice([kx, ky])
-            ham = syst.hamiltonian_submatrix(args=(p, kx, ky))
+            ham = syst.hamiltonian_submatrix(params=dict(p=p, k_x=kx, k_y=ky))
             if chiral:
                 # Bring the chiral symmetric Hamiltonian in offdiagonal form
                 U = (pauli.s0 + 1j * pauli.sx) / np.sqrt(2)
@@ -90,40 +101,42 @@ def plot_dets(syst, p, ks, chiral=False):
     V = np.abs(dets)
     H = np.mod(H, 1)
     V /= np.max(V)
-    V = 1 - V**2
+    V = 1 - V ** 2
     S = np.ones_like(H)
     HSV = np.dstack((H, S, V))
     RGB = hsv_to_rgb(HSV)
     bounds = (ks.min(), ks.min(), ks.max(), ks.max())
-    pl = holoviews.RGB(RGB, bounds=bounds, label=r'$\det(h)$', kdims=['$k_x$', '$k_y$'])
-    return pl(plot={'xticks': pi_ticks, 'yticks': pi_ticks})(style={'interpolation': None})
+    pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
+    return pl.opts(plot={"xticks": pi_ticks, "yticks": pi_ticks}).opts(
+        style={"interpolation": None}
+    )
 
 
 def Weyl_slab(w=5):
     def hopx(site1, site2, p):
         return 0.5j * p.t * pauli.sx - p.t * pauli.sz
-    
+
     def hopy(site1, site2, p):
-        return - p.t * pauli.sz
+        return -p.t * pauli.sz
 
     def hopz(site1, site2, p):
         return 0.5j * p.t * pauli.sy - p.t * pauli.sz
-    
+
     def onsite(site, p):
         return 6 * p.t * pauli.sz - p.mu * pauli.sz
 
     lat = kwant.lattice.general(np.eye(3))
     syst = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
-       
+
     def shape(pos):
         (x, y, z) = pos
-        return (0 <= z < w) 
+        return 0 <= z < w
 
     syst[lat.shape(shape, (0, 0, 0))] = onsite
     syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx
     syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
     syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
-    
+
     return syst
 ```
 
@@ -133,7 +146,7 @@ Ashvin Vishwanath from the University of California, Berkeley will introduce Wey
 
 
 ```python
-MoocVideo("MAWwa4r1qIc", src_location='10.1-intro')
+MoocVideo("MAWwa4r1qIc", src_location="10.1-intro")
 ```
 
 # Topological invariants of Fermi surfaces
@@ -179,10 +192,19 @@ To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This 
 p = SimpleNamespace(t_1=1.0, t_23=1.0)
 syst = graphene_infinite()
 ks = np.sqrt(3) * np.linspace(-np.pi, np.pi, 80)
-kwargs = dict(title=lambda p: r'Graphene, $t_1 = {:.2} \times t$'.format(p.t_1), zticks=3)
+kwargs = dict(
+    title=lambda p: r"Graphene, $t_1 = {:.2} \times t$".format(p.t_1), zticks=3
+)
 ts = np.linspace(1, 2.4, 8)
-(holoviews.HoloMap({p.t_1: spectrum(syst, p, k_x=ks, k_y=ks, **kwargs) for p.t_1 in ts}, kdims=['$t_1$']) +
- holoviews.HoloMap({p.t_1: plot_dets(syst, p, ks) for p.t_1 in ts}, kdims=['$t_1$']))
+(
+    holoviews.HoloMap(
+        {p.t_1: spectrum(syst, p, k_x=ks, k_y=ks, **kwargs) for p.t_1 in ts},
+        kdims=["$t_1$"],
+    )
+    + holoviews.HoloMap(
+        {p.t_1: plot_dets(syst, p, ks) for p.t_1 in ts}, kdims=["$t_1$"]
+    )
+)
 ```
 
 The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see 6, but this is because we plot more than one Brillouin zone). 
@@ -243,15 +265,21 @@ The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac point
 ```python
 question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
 
-answers = ["The Dirac points couple and gap out.",
-           "In 3D you cannot have a $d$-wave pairing.",
-           "There will remain isolated gapless points in the larger 3D Brillouin zone.",
-           "You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone."]
+answers = [
+    "The Dirac points couple and gap out.",
+    "In 3D you cannot have a $d$-wave pairing.",
+    "There will remain isolated gapless points in the larger 3D Brillouin zone.",
+    "You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone.",
+]
 
-explanation = (r"The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces "
-               r"in the Brillouin zone. The intersection of these two surfaces is a line.")
+explanation = (
+    r"The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces "
+    r"in the Brillouin zone. The intersection of these two surfaces is a line."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 ## Edge states
@@ -266,27 +294,35 @@ For a $d$-wave superconductor this will only happen for some crystalline orienta
 ```python
 %%opts VLine (color='k')  Curve (linestyle='--')
 p = SimpleNamespace(mu=2.0, t=1.0, delta=1.0)
-k = np.arccos(1-p.mu/p.t/4)
+k = np.arccos(1 - p.mu / p.t / 4)
 ks = np.linspace(-np.pi, np.pi, 50)
 sys0 = d_wave()
-sys1 = d_wave(50, direction='topo')
-sys2 = d_wave(50, direction='triv')
+sys1 = d_wave(50, direction="topo")
+sys2 = d_wave(50, direction="triv")
 
 det_plot = plot_dets(sys0, p, ks, chiral=True)
 
-det_plot1= (det_plot *
-             holoviews.Curve(([-np.pi, np.pi], [np.pi, -np.pi])) *
-             holoviews.Curve(([-np.pi, np.pi-2*k], [np.pi-2*k, -np.pi])) *
-             holoviews.Curve(([-np.pi+2*k, np.pi], [np.pi, -np.pi+2*k]))).relabel('$\det(h)$')
+det_plot1 = (
+    det_plot
+    * holoviews.Curve(([-np.pi, np.pi], [np.pi, -np.pi]))
+    * holoviews.Curve(([-np.pi, np.pi - 2 * k], [np.pi - 2 * k, -np.pi]))
+    * holoviews.Curve(([-np.pi + 2 * k, np.pi], [np.pi, -np.pi + 2 * k]))
+).relabel("$\det(h)$")
 
 det_plot2 = det_plot * holoviews.VLine(k) * holoviews.VLine(-k)
 
 kwargs = dict(k_x=ks, ylims=[-2, 2], xticks=pi_ticks, yticks=3)
 
-(spectrum(sys1, p, title='Ribbon with edge states', **kwargs) * holoviews.VLine(-2*k) * holoviews.VLine(2*k) +
- det_plot1 + 
- spectrum(sys2, p, title='Ribbon without edge states', **kwargs) * holoviews.VLine(-k) * holoviews.VLine(k) +
- det_plot2).cols(2)
+(
+    spectrum(sys1, p, title="Ribbon with edge states", **kwargs)
+    * holoviews.VLine(-2 * k)
+    * holoviews.VLine(2 * k)
+    + det_plot1
+    + spectrum(sys2, p, title="Ribbon without edge states", **kwargs)
+    * holoviews.VLine(-k)
+    * holoviews.VLine(k)
+    + det_plot2
+).cols(2)
 ```
 
 On the right panels you once again see $\det h$, with added lines denoting different the values of $k_{\parallel}$ crossing the Dirac points. If the sample boundary is along the $(1, 0)$ axis, the Dirac points have coinciding $k_{\parallel}$, and their windings cancel, so that no single value of $k_{\parallel}$ carries an edge state.
@@ -324,12 +360,14 @@ syst = Weyl_slab(w=10)
 p = SimpleNamespace(t=1.0, mu=None)
 mus = np.linspace(-0.4, 2, 13)
 
-kwargs = dict(k_x=np.linspace(-np.pi, 0),
-              k_y=np.linspace(-np.pi, np.pi),
-              title=lambda p: 'Weyl semimetal, $\mu = {:.2}$'.format(p.mu),
-              num_bands=4)
+kwargs = dict(
+    k_x=np.linspace(-np.pi, 0),
+    k_y=np.linspace(-np.pi, np.pi),
+    title=lambda p: "Weyl semimetal, $\mu = {:.2}$".format(p.mu),
+    num_bands=4,
+)
 
-holoviews.HoloMap({p.mu: spectrum(syst, p, **kwargs) for p.mu in mus}, kdims=[r'$\mu$'])
+holoviews.HoloMap({p.mu: spectrum(syst, p, **kwargs) for p.mu in mus}, kdims=[r"$\mu$"])
 ```
 
 Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.
@@ -358,15 +396,21 @@ At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z
 ```python
 question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
 
-answers = ["Chiral symmetry.",
-           "The energy gap in the bulk.",
-           "Absence of scattering.",
-           "The non-zero Chern number of the bulk."]
+answers = [
+    "Chiral symmetry.",
+    "The energy gap in the bulk.",
+    "Absence of scattering.",
+    "The non-zero Chern number of the bulk.",
+]
 
-explanation = (r"The bulk has gapless states due to the Weyl point. "
-               "Therefore, only momentum conservation protects surface states from going into the bulk.")
+explanation = (
+    r"The bulk has gapless states due to the Weyl point. "
+    "Therefore, only momentum conservation protects surface states from going into the bulk."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 **Questions about what you just learned? Ask them below!**

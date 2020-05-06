@@ -1,26 +1,31 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
-def bhz(X=None, Y=None, Z=None, system_type='infinite'):
+
+def bhz(X=None, Y=None, Z=None, system_type="infinite"):
     """A cuboid region of BZZ material with two leads attached.
 
     parameters for leads and scattering region can be defined separately
     """
     # Onsite and hoppings matrices used for building BZZ model
     def onsite(site, p):
-        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (p.M + 2 * p.B1 + 4 * p.B2) * pauli.s0sz
+        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (
+            p.M + 2 * p.B1 + 4 * p.B2
+        ) * pauli.s0sz
 
     def hopx(site1, site2, p):
-        return - p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
+        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
 
     def hopy(site1, site2, p):
-        return - p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
+        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
 
     def hopz(site1, site2, p):
-        return - p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
+        return -p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
 
     def hopx_phase(site1, site2, p):
         x1, y1, z1 = site1.pos
@@ -29,8 +34,8 @@ def bhz(X=None, Y=None, Z=None, system_type='infinite'):
 
     def shape_slab(pos):
         (x, y, z) = pos
-        return (0 <= z < Z)
-    
+        return 0 <= z < Z
+
     def shape_lead(pos):
         (x, y, z) = pos
         return (0 <= y < Y) and (0 <= z < Z)
@@ -38,19 +43,19 @@ def bhz(X=None, Y=None, Z=None, system_type='infinite'):
     def shape_cube(pos):
         (x, y, z) = pos
         return (0 <= x < X) and (0 <= y < Y) and (0 <= z < Z)
-    
+
     lat = kwant.lattice.general(np.identity(3), norbs=4)
 
-    if system_type == 'slab':
+    if system_type == "slab":
         syst = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
         syst[lat.shape(shape_slab, (0, 0, 0))] = onsite
-    if system_type == 'lead':
+    if system_type == "lead":
         syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
         syst[lat.shape(shape_lead, (0, 0, 0))] = onsite
-    elif system_type == 'cuboid':
+    elif system_type == "cuboid":
         syst = kwant.Builder()
         syst[lat.shape(shape_cube, (0, 0, 0))] = onsite
-    elif system_type == 'infinite':
+    elif system_type == "infinite":
         syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0, 0))] = onsite
 
@@ -61,20 +66,21 @@ def bhz(X=None, Y=None, Z=None, system_type='infinite'):
 
 
 def title(p):
-    return r'$M={:.3}$'.format(p.M)
+    return r"$M={:.3}$".format(p.M)
 
 
 def make_lead():
     lat = kwant.lattice.general(np.identity(3), norbs=4)
-    syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0, 0)),
-                         time_reversal=1j*pauli.sys0)
+    syst = kwant.Builder(
+        kwant.TranslationalSymmetry((-1, 0, 0)), time_reversal=1j * pauli.sys0
+    )
     syst[lat(0, 0, 0)] = 1.5 * pauli.s0sz
     syst[kwant.HoppingKind((-1, 0, 0), lat)] = -1 * pauli.s0sz
     return syst
 
 
 def make_scatter_sys():
-    syst = kwant.wraparound.wraparound(bhz(Z=1, system_type='slab'))
+    syst = kwant.wraparound.wraparound(bhz(Z=1, system_type="slab"))
     syst.attach_lead(make_lead())
     syst.attach_lead(kwant.wraparound.wraparound(bhz(), keep=0))
     syst = syst.finalized()
@@ -83,32 +89,53 @@ def make_scatter_sys():
 
 def scattering_det_pfaff(syst, p):
     def pfaffian(syst, p, k_x, k_y):
-        smat = kwant.smatrix(syst, energy=0.0, args=[p, k_x, k_y]).data
+        smat = kwant.smatrix(
+            syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
+        ).data
         # since we get relatively large numerical errors we project the matrix on
         # the space of antisymmetric matrices
         smat = 0.5 * (smat - smat.T)
         return pf.pfaffian(smat)
 
+    xdim, ydim = "$k_y$", "phase"
+
     def plot_k_x(syst, p, k_x, label, col):
         pfaff = [pfaffian(syst, p, k_x, 0), pfaffian(syst, p, k_x, np.pi)]
         ks = np.linspace(0.0, np.pi, 50)
-        det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, args=[p, k_x, k_y]).data) for k_y in ks]
+        det = [
+            np.linalg.det(
+                kwant.smatrix(
+                    syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
+                ).data
+            )
+            for k_y in ks
+        ]
         det = np.array(det)
         phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-        kdims = ['$k_y$', 'phase']
-        plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label)(style={'color': col})
-        plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)(style={'color': col})
+        kdims = [xdim, ydim]
+        plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label).opts(
+            style={"color": col}
+        )
+        plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
+            style={"color": col}
+        )
         return plot
-    
-    plot = plot_k_x(syst, p, 0, r'$k_x=0$', 'g') * plot_k_x(syst, p, np.pi, r'$k_x=\pi$', 'b')
-    xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
-    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
-    style_overlay = {'xticks': [(0, '0'), (np.pi, '$\pi$')], 
-                     'yticks': pi_ticks,
-                     'show_legend':True, 
-                     'legend_position': 'top'}
-    style_path = {'show_legend':True}
-    return plot[xlims, ylims](plot={'Overlay': style_overlay, 'Path': style_path})
+
+    plot = plot_k_x(syst, p, 0, r"$k_x=0$", "g") * plot_k_x(
+        syst, p, np.pi, r"$k_x=\pi$", "b"
+    )
+    xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.2, np.pi + 0.2)
+    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+    style_overlay = {
+        "xticks": [(0, "0"), (np.pi, "$\pi$")],
+        "yticks": pi_ticks,
+        "show_legend": True,
+        "legend_position": "top",
+    }
+    style_path = {"show_legend": True}
+    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
+        plot={"Overlay": style_overlay, "Path": style_path}
+    )
 ```
 
 # Introduction
@@ -213,10 +240,16 @@ Let's have a quick look at it to get a more concrete understanding:
 ```python
 %%output fig='png'
 p = SimpleNamespace(A1=1, A2=1.5, B1=1, B2=1, C=0, D1=0, D2=0, M=None, Bz=0)
-syst = bhz(Z=5, system_type='slab')
+syst = bhz(Z=5, system_type="slab")
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-1, 1, 5)
-holoviews.HoloMap({p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2) for p.M in Ms}, kdims=[r'$M$'])
+holoviews.HoloMap(
+    {
+        p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2)
+        for p.M in Ms
+    },
+    kdims=[r"$M$"],
+)
 ```
 
 What you see here is the dispersion of the two lowest energy bands of a thin slice of a 3D BHZ model.
@@ -249,13 +282,20 @@ We determine the topological invariant in the same way as for QSHE: we see if th
 ```python
 %%output fig='png'
 p = SimpleNamespace(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.1, D2=0, M=None, Bz=0)
-syst = bhz(Z=15, system_type='slab')
+syst = bhz(Z=15, system_type="slab")
 fsyst = make_scatter_sys()
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-2.75, 0.75, 11)
-hm1 = holoviews.HoloMap({p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2) 
-                         for p.M in Ms}, kdims=[r'$M$'])
-hm2 = holoviews.HoloMap({p.M: scattering_det_pfaff(fsyst, p) for p.M in Ms}, kdims=[r'$M$'])
+hm1 = holoviews.HoloMap(
+    {
+        p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2)
+        for p.M in Ms
+    },
+    kdims=[r"$M$"],
+)
+hm2 = holoviews.HoloMap(
+    {p.M: scattering_det_pfaff(fsyst, p) for p.M in Ms}, kdims=[r"$M$"]
+)
 hm1 + hm2
 ```
 
@@ -268,17 +308,23 @@ We see the values of the invariants change several times:
 
 
 ```python
-question = ("Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?")
+question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
 
-answers = ["There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
-           "There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.",
-           "There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.",
-           "There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$."]
+answers = [
+    "There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
+    "There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.",
+    "There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.",
+    "There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
+]
 
-explanation = ("We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. "
-               "The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd.")
+explanation = (
+    "We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. "
+    "The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Quantum Hall conductance and the magneto-electric effect
@@ -299,10 +345,9 @@ Finally, let's look at the dispersion of the Landau levels and edge states:
 ```python
 %%output size=150
 p = SimpleNamespace(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
-lead = bhz(Y=20, Z=10, system_type='lead')
+lead = bhz(Y=20, Z=10, system_type="lead")
 k = np.linspace(-3.5, 1.5)
-kwargs = {'ylims': [-0.8, 0.8],
-          'yticks': 5}
+kwargs = {"ylims": [-0.8, 0.8], "yticks": 5}
 spectrum(lead, p, k_x=k, **kwargs)
 ```
 
@@ -310,21 +355,29 @@ We see that the Landau levels come in pairs. In each such pair, one level comes 
 
 
 ```python
-question = ("Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
-            "a very thick Corbino disk. "
-            "You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top "
-            "and bottom surfaces. "
-            "What happens if you throw an additional flux quantum through the inner hole of the disk?")
+question = (
+    "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
+    "a very thick Corbino disk. "
+    "You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top "
+    "and bottom surfaces. "
+    "What happens if you throw an additional flux quantum through the inner hole of the disk?"
+)
 
-answers = ["A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-           "An integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-           "An integer number of charges is transferred from the top to the bottom surface of the disk.",
-           "The bulk gap closes."]
+answers = [
+    "A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.",
+    "An integer number of electron charges is transferred from the inner to the outer surface of the disk.",
+    "An integer number of charges is transferred from the top to the bottom surface of the disk.",
+    "The bulk gap closes.",
+]
 
-explanation = ("The top and bottom surfaces combined form an integer quantum Hall state. "
-               "Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case.")
+explanation = (
+    "The top and bottom surfaces combined form an integer quantum Hall state. "
+    "Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Conclusion: integers, half-integers, and two types of electromagnetic response
@@ -332,9 +385,8 @@ MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
 
-```python
-MoocVideo("s7H6oLighOM", src_location="6.1-summary")
-```
+
+#### MoocVideo("s7H6oLighOM", src_location="6.1-summary")
 
 
 ```python

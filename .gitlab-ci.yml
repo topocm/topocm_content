@@ -68,7 +68,6 @@ pelican website:
   script:
     - python scripts/converter_pelican.py
     - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
-    - cp -r generated/with_output ${DEST}/notebooks
   artifacts:
     paths:
       - generated/html
@@ -94,6 +93,7 @@ ocw website:
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
   script:
+    - cp -r generated/with_output generated/html/notebooks
     - "rsync -ravz --delete generated/html/* $USER@tnw-tn1.tudelft.net:"
     - "rsync -ravz --delete website_assets/static $USER@tnw-tn1.tudelft.net:"
   after_script:

@@ -1,10 +1,13 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size=150
-pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
+
 
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
     """Create a hall bar system. 
@@ -43,6 +46,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
             xt, yt = site1.pos
             xs, ys = site2.pos
             return -p.t * np.exp(-1j * p.B * x0 * (yt - ys))
+
         return hopping_Ay
 
     def lead_hop_vert(site1, site2, p):
@@ -61,7 +65,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
 
     def lead_shape(pos):
         (x, y) = pos
-        return (-w_lead / 2 <= y <= w_lead / 2)
+        return -w_lead / 2 <= y <= w_lead / 2
 
     lead_onsite = lambda site, p: 4 * p.t - p.mu_lead
 
@@ -71,11 +75,11 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
 
     def lead_shape_vertical1(pos):
         (x, y) = pos
-        return (-L / 4 - w_vert_lead / 2 <= x <= -L / 4 + w_vert_lead / 2)
+        return -L / 4 - w_vert_lead / 2 <= x <= -L / 4 + w_vert_lead / 2
 
     def lead_shape_vertical2(pos):
         (x, y) = pos
-        return (+L / 4 - w_vert_lead / 2 <= x <= +L / 4 + w_vert_lead / 2)
+        return +L / 4 - w_vert_lead / 2 <= x <= +L / 4 + w_vert_lead / 2
 
     lead_vertical1[lat.shape(lead_shape_vertical1, (-L / 4, 0))] = lead_onsite
     lead_vertical1[lat.neighbors()] = lead_hop_vert
@@ -112,7 +116,7 @@ def qhe_ribbon(W, periodic=False):
 
     def ribbon_shape(pos):
         (x, y) = pos
-        return (-W / 2 <= y <= W / 2)
+        return -W / 2 <= y <= W / 2
 
     def onsite(site, p):
         (x, y) = site.pos
@@ -126,7 +130,9 @@ def qhe_ribbon(W, periodic=False):
     def hopping_periodic(site1, site2, p):
         xt, yt = site1.pos
         xs, ys = site2.pos
-        return -p.t * np.exp(-0.5j * int(p.B) * 2 * np.pi / (W + 1) * (xt - xs) * (yt + ys))
+        return -p.t * np.exp(
+            -0.5j * int(p.B) * 2 * np.pi / (W + 1) * (xt - xs) * (yt + ys)
+        )
 
     lat = kwant.lattice.square()
     sym_syst = kwant.TranslationalSymmetry((-1, 0))
@@ -136,7 +142,7 @@ def qhe_ribbon(W, periodic=False):
 
     if periodic:
         syst[lat.neighbors()] = hopping_periodic
-        syst[lat(0, - W / 2), lat(0, + W / 2)] = hopping_periodic
+        syst[lat(0, -W / 2), lat(0, +W / 2)] = hopping_periodic
     else:
         syst[lat.neighbors()] = hopping
 
@@ -156,7 +162,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     def ring(pos):
         (x, y) = pos
         rsq = x ** 2 + y ** 2
-        return (r_in ** 2 < rsq < r_out ** 2)
+        return r_in ** 2 < rsq < r_out ** 2
 
     # Onsite and hoppings
     def onsite(site, p):
@@ -189,6 +195,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
         for hop in kwant.builder.HoppingKind((1, 0), lat, lat)(syst):
             if crosses_branchcut(hop):
                 yield hop
+
     syst[hops_across_cut] = branchcut_hopping
 
     # Attaching leads
@@ -197,7 +204,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
 
     def lead_shape(pos):
         (x, y) = pos
-        return (-w_lead / 2 < y < w_lead / 2)
+        return -w_lead / 2 < y < w_lead / 2
 
     lead[lat.shape(lead_shape, (0, 0))] = lambda site, p: 4 * p.t - p.mu_lead
     lead[lat.neighbors()] = lambda site1, site2, p: -p.t
@@ -257,13 +264,15 @@ Because $y_0$ is proportional to $k$, this means the states close to the edge wi
 p = SimpleNamespace(t=1, mu=0.5, B=0.15)
 syst = qhe_ribbon(W=20)
 
-kwargs = {'k_x': np.linspace(-np.pi, np.pi, 101),
-         'xdim': r'$k$',
-         'ydim': r'$E$',
-         'xticks': pi_ticks,
-         'yticks': 3,
-         'ylims': [-0.5, 0.5]}
-    
+kwargs = {
+    "k_x": np.linspace(-np.pi, np.pi, 101),
+    "xdim": r"$k$",
+    "ydim": r"$E$",
+    "xticks": pi_ticks,
+    "yticks": 3,
+    "ylims": [-0.5, 0.5],
+}
+
 spectrum(syst, p, **kwargs) * holoviews.HLine(0)
 ```
 
@@ -285,29 +294,35 @@ An important thing to note is that the presence of edge states does not depend i
 
 
 ```python
-p = SimpleNamespace(t=1, mu = 0.6, mu_lead=0.6, B=0.15, phi=0.0)
+p = SimpleNamespace(t=1, mu=0.6, mu_lead=0.6, B=0.15, phi=0.0)
 syst = qhe_hall_bar(L=200, W=100).finalized()
-ldos = kwant.ldos(syst, energy=0.0, args=[p])
+ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
 
-fig = plt.figure(figsize=[20,20])
-ax = fig.add_subplot(1,2,1)
-ax.axis('off')
-kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax);
+fig = plt.figure(figsize=[20, 20])
+ax = fig.add_subplot(1, 2, 1)
+ax.axis("off")
+kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 ```
 
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
 
 ```python
-question = ("In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?")
-answers = ["They go at the same velocity.",
-           "The one more towards the bulk, because it is not slowed by the confining potential.",
-           "The one closer to the edge, because the local electric field there is stronger.",
-           "One cannot tell, because it depends on microscopic details."]
-explanation = ("The drift velocity is given by the ratio of the local electric field and the magnetic field. "
-               "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
-               "is stronger there.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=2, explanation=explanation)
+question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
+answers = [
+    "They go at the same velocity.",
+    "The one more towards the bulk, because it is not slowed by the confining potential.",
+    "The one closer to the edge, because the local electric field there is stronger.",
+    "One cannot tell, because it depends on microscopic details.",
+]
+explanation = (
+    "The drift velocity is given by the ratio of the local electric field and the magnetic field. "
+    "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
+    "is stronger there."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # The harmless anomaly of the chiral edges
@@ -342,11 +357,11 @@ In this new drawing, we have also added arrows to indicate that we now know that
 ```python
 W = 60
 p = SimpleNamespace(t=1, mu=0.9, mu_lead=0.9, B=0.15, phi=0.0)
-syst = qhe_corbino(2*W, W).finalized()
-ldos = kwant.ldos(syst, energy=0.0, args=[p])
+syst = qhe_corbino(2 * W, W).finalized()
+ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
 fig = plt.figure(figsize=[15, 15])
-ax = fig.add_subplot(1,2,1)
-ax.axis('off')
+ax = fig.add_subplot(1, 2, 1)
+ax.axis("off")
 kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 ```
 
@@ -373,15 +388,21 @@ $$I_\circlearrowleft = n \,\frac{e^2}{h} V\,.$$
 
 
 ```python
-question = ("At which energy did we set the Fermi level in the density of states plot for the Corbino disk?")
-answers = ["It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
-           "Exactly at the same energy as the third Landau level.",
-           "Between the second and the third Landau levels.",
-           "Between the third and the fourth Landau levels."]
-explanation = ("There are three edge states visible in the figure. "
-               "Hence there are three filled Landau levels in the bulk, " 
-               "so the Fermi level lies somewhere above the third, but below the fourth Landau level.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=3, explanation=explanation)
+question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
+answers = [
+    "It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
+    "Exactly at the same energy as the third Landau level.",
+    "Between the second and the third Landau levels.",
+    "Between the third and the fourth Landau levels.",
+]
+explanation = (
+    "There are three edge states visible in the figure. "
+    "Hence there are three filled Landau levels in the bulk, "
+    "so the Fermi level lies somewhere above the third, but below the fourth Landau level."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Important things to know about edge states
@@ -392,7 +413,7 @@ In the summary video of this week, Bert Halperin from Harvard University will di
 
 
 ```python
-MoocVideo("rQs12c-SieE", src_location='3.3-summary')
+MoocVideo("rQs12c-SieE", src_location="3.3-summary")
 ```
 
 **Questions about what you just learned? Ask them below!**

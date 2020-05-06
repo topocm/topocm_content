@@ -1,20 +1,25 @@
 ```python
 import sys
 import os
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap, BoundaryNorm
 import scipy.linalg as la
 
 # Set the path to a folder containing data files, to work with filters as well.
-data_folder = 'data/' if os.path.exists('data') and os.path.isdir('data') else '../data/'
+data_folder = (
+    "data/" if os.path.exists("data") and os.path.isdir("data") else "../../data/"
+)
+
 
 def make_kitaev_chain(L=10):
     lat = kwant.lattice.chain()
     syst = kwant.Builder()
-    
+
     def onsite(site, p):
         if not p.disorder:
             return (p.m + 2 * p.t) * pauli.sz
@@ -24,22 +29,24 @@ def make_kitaev_chain(L=10):
 
     def hop(site1, site2, p):
         return -p.t * pauli.sz - 1j * p.delta * pauli.sy
-    
+
     syst[(lat(i) for i in range(L))] = onsite
     syst[kwant.HoppingKind((1,), lat)] = hop
-    
+
     sym = kwant.TranslationalSymmetry((1,))
     lead = kwant.Builder(sym)
 
     # The leads are precalculated.
     lead[lat(0)] = onsite
     lead[kwant.HoppingKind((1,), lat)] = hop
-    
+
     syst.attach_lead(lead)
     syst.attach_lead(lead.reversed())
     syst = syst.finalized()
-    syst = syst.precalculate(args=[SimpleNamespace(t=1.0, m=0.0, delta=1.0, disorder=0)])
-    
+    syst = syst.precalculate(
+        params=dict(p=SimpleNamespace(t=1.0, m=0.0, delta=1.0, disorder=0))
+    )
+
     return syst
 
 
@@ -47,15 +54,15 @@ def phase_diagram(L, ms, p, num_average=100):
     syst = make_kitaev_chain(L)
 
     # Adjust the reflection phase such that it's 0 for trivial system.
-    trivial = SimpleNamespace(m=10., t=1.0, delta=1.0, disorder=0, salt='')
-    phase = kwant.smatrix(syst, args=[trivial]).data[0, 0]
+    trivial = SimpleNamespace(m=10.0, t=1.0, delta=1.0, disorder=0, salt="")
+    phase = kwant.smatrix(syst, params=dict(p=trivial)).data[0, 0]
     phase /= abs(phase)
     data = []
     for p.m in ms:
         qt = []
         for p.salt in map(str, range(num_average)):
-            s = kwant.smatrix(syst, args=[p]).data
-            qt.append(((s[0, 0] / phase).real, abs(s[0, 1])**2))
+            s = kwant.smatrix(syst, params=dict(p=p)).data
+            qt.append(((s[0, 0] / phase).real, abs(s[0, 1]) ** 2))
         qt = np.mean(qt, axis=0)
         data.append(qt)
 
@@ -105,38 +112,40 @@ So below we see $\mathcal{Q}$ averaged over 100 different realizations in a diso
 
 
 ```python
-if os.path.exists(data_folder + 'first_plot_data_ms.dat') and os.path.exists(data_folder + 'first_plot_data_qs.dat'):
-    ms = np.loadtxt(data_folder + 'first_plot_data_ms.dat')
-    qs = np.loadtxt(data_folder + 'first_plot_data_qs.dat')
+if os.path.exists(data_folder + "first_plot_data_ms.dat") and os.path.exists(
+    data_folder + "first_plot_data_qs.dat"
+):
+    ms = np.loadtxt(data_folder + "first_plot_data_ms.dat")
+    qs = np.loadtxt(data_folder + "first_plot_data_qs.dat")
 else:
     # This cell generates data
     p = SimpleNamespace(t=1.0, delta=1.0)
-    ms = np.linspace(-.5, .5, 50)
-    qs = [phase_diagram(30, ms, p)[0] for p.disorder in np.linspace(0, .8, 10)]
-    np.savetxt(data_folder + 'first_plot_data_ms.dat', ms)
-    np.savetxt(data_folder + 'first_plot_data_qs.dat', qs) 
+    ms = np.linspace(-0.5, 0.5, 50)
+    qs = [phase_diagram(30, ms, p)[0] for p.disorder in np.linspace(0, 0.8, 10)]
+    np.savetxt(data_folder + "first_plot_data_ms.dat", ms)
+    np.savetxt(data_folder + "first_plot_data_qs.dat", qs)
 
 fig, ax = plt.subplots(figsize=(6, 4))
-ax.set_prop_cycle('alpha', np.linspace(0, 1, len(qs)))
+ax.set_prop_cycle("alpha", np.linspace(0, 1, len(qs)))
 
 for q in qs:
     ax.plot(ms, q)
-    
-ax.set_xlabel('$m$')
-ax.set_ylabel(r'$\langle Q \rangle$')
+
+ax.set_xlabel("$m$")
+ax.set_ylabel(r"$\langle Q \rangle$")
 
 evals = [-0.4, 0, 0.4]
 ax.set_xticks(evals)
-ax.set_xticklabels(["${0}$".format(i) for i in evals]);
+ax.set_xticklabels(["${0}$".format(i) for i in evals])
 
 evals = [-1, 0, 1]
 ax.set_yticks(evals)
-ax.set_yticklabels(["${0}$".format(i) for i in evals]);
+ax.set_yticklabels(["${0}$".format(i) for i in evals])
 
-ax.set_xlim(-.4, .4)
+ax.set_xlim(-0.4, 0.4)
 ax.set_ylim(-1.1, 1.1)
 
-ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles='dashed');
+ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles="dashed");
 ```
 
 (Darker color corresponds to larger $U$.)
@@ -153,17 +162,25 @@ Since this phenomenon appears with disorder, it was initially dubbed "topologica
 
 
 ```python
-question = (r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?")
-answers = ["We would get a step function instead of a smooth curve.",
-           r"Not well-defined because $\det r$ becomes complex.",
-           "The $Q=\pm 1$ plateaus cancel and give $Q=0$.",
-           "The curve is qualitatively the same."]
+question = (
+    r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
+)
+answers = [
+    "We would get a step function instead of a smooth curve.",
+    r"Not well-defined because $\det r$ becomes complex.",
+    "The $Q=\pm 1$ plateaus cancel and give $Q=0$.",
+    "The curve is qualitatively the same.",
+]
 
-explanation = (r"Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect "
-               "the invariant for most disorder realizations. The intermediate values result from averaging over different "
-               "realizations.")
+explanation = (
+    r"Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect "
+    "the invariant for most disorder realizations. The intermediate values result from averaging over different "
+    "realizations."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Two parameter scaling in one dimension
@@ -190,41 +207,44 @@ Here's what we get:
 
 
 ```python
-if os.path.exists(data_folder + 'scaling_data_qs.dat') and os.path.exists(data_folder + 'scaling_data_ts.dat'):
-    qs = np.loadtxt(data_folder + 'scaling_data_qs.dat')
-    ts = np.loadtxt(data_folder + 'scaling_data_ts.dat')
+if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
+    data_folder + "scaling_data_ts.dat"
+):
+    qs = np.loadtxt(data_folder + "scaling_data_qs.dat")
+    ts = np.loadtxt(data_folder + "scaling_data_ts.dat")
 else:
     p = SimpleNamespace(t=1.0, delta=1.0, disorder=0.8)
     Ls = np.array(np.logspace(np.log10(10), np.log10(180), 6), dtype=int)
-    ms = [np.sign(x) * x**2 + 0.2 for x in np.linspace(-1, 1, 40)]
+    ms = [np.sign(x) * x ** 2 + 0.2 for x in np.linspace(-1, 1, 40)]
     qs, ts = zip(*[phase_diagram(int(L), ms, p, num_average=1000) for L in Ls])
-    np.savetxt(data_folder + 'scaling_data_qs.dat', qs)
-    np.savetxt(data_folder + 'scaling_data_ts.dat', ts)
+    np.savetxt(data_folder + "scaling_data_qs.dat", qs)
+    np.savetxt(data_folder + "scaling_data_ts.dat", ts)
 
 fig, ax = plt.subplots(figsize=(6, 4))
 
 npoints = qs.shape[0]
 X, Y = qs.T, ts.T
 
-for x,y in zip(X,Y):
+for x, y in zip(X, Y):
     points = np.array([x, y]).T.reshape(-1, 1, 2)
-    
+
     segments = np.concatenate([points[:-1], points[1:]], axis=1)
-    lc = LineCollection(segments, cmap='gist_heat_r', 
-                        norm=matplotlib.colors.Normalize(0, npoints+1))
-    lc.set_array(np.array(list(range(1,npoints+1))))
+    lc = LineCollection(
+        segments, cmap="gist_heat_r", norm=matplotlib.colors.Normalize(0, npoints + 1)
+    )
+    lc.set_array(np.array(list(range(1, npoints + 1))))
     ax.add_collection(lc)
 
-    
+
 ax.set_xlim(-1, 1)
 ax.set_ylim(0, 0.5)
 
-ax.set_xlabel(r'$\langle Q \rangle$')
-ax.set_ylabel(r'$\langle T \rangle$')
+ax.set_xlabel(r"$\langle Q \rangle$")
+ax.set_ylabel(r"$\langle T \rangle$")
 
 evals = [-1, -0.5, 0, 0.5, 1]
 ax.set_xticks(evals)
-ax.set_xticklabels(["${0}$".format(i) for i in evals]);
+ax.set_xticklabels(["${0}$".format(i) for i in evals])
 
 evals = [0.0, 0.25, 0.50]
 ax.set_yticks(evals)
@@ -249,15 +269,23 @@ It is important to notice that one important result of the standard scaling theo
 
 
 ```python
-question = ("What does the 2 parameter flow diagram predict about the infinite size limit?")
-answers = ["Always topological for all parameters.",
-           "There's a localized topological and non-topological phase separated by a transition point.",
-           "Always localized for every parameter.",
-           "Almost always conducting except at a transition point."]
-explanation = ("The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small T"
-               "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
-               "except near $Q=0$ has a slower decay.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = (
+    "What does the 2 parameter flow diagram predict about the infinite size limit?"
+)
+answers = [
+    "Always topological for all parameters.",
+    "There's a localized topological and non-topological phase separated by a transition point.",
+    "Always localized for every parameter.",
+    "Almost always conducting except at a transition point.",
+]
+explanation = (
+    "The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small T"
+    "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
+    "except near $Q=0$ has a slower decay."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Critical point

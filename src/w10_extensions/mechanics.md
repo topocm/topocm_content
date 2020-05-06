@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 import topomech
 ```
@@ -90,14 +92,16 @@ where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates
 ```python
 question = r"What happens to the kink width $w_0$ when the gap closes?"
 
-answers = ["It goes to zero.",
-           "It does not vary.",
-           "It diverges."]
+answers = ["It goes to zero.", "It does not vary.", "It diverges."]
 
-explanation = (r"We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. "
-               r"This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$.")
+explanation = (
+    r"We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. "
+    r"This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Non-linear dynamics
@@ -182,18 +186,21 @@ As a simple test of your knowledge, consider the following question whose answer
 
 
 ```python
-question = (r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
-            "where all nodes have the same number of bonds (neglecting boundaries)?")
+question = (
+    r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
+    "where all nodes have the same number of bonds (neglecting boundaries)?"
+)
 
-answers = [r"$z_c=d$.",
-           r"$z_c=2d$.",
-           r"$z_c=d(d-1)$.",
-           r"$z_c=d^2$."]
+answers = [r"$z_c=d$.", r"$z_c=2d$.", r"$z_c=d(d-1)$.", r"$z_c=d^2$."]
 
-explanation = ("In an isostatic structure we have equal number of degrees of freedom and number of constraints. "
-               "This gives the equation $d N = z N /2$, because each bond is shared by two sites.")
+explanation = (
+    "In an isostatic structure we have equal number of degrees of freedom and number of constraints. "
+    "This gives the equation $d N = z N /2$, because each bond is shared by two sites."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 Why do we call redundant constraints with the name *states of self stress*?
@@ -280,20 +287,23 @@ A similar interplay dictates the existence of localized electronic modes at disl
 
 
 ```python
-question = ("Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
-            r"are of equal length and have an angle $\pi/2$ between them, "
-            r"$P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. "
-            r"What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?")
+question = (
+    "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
+    r"are of equal length and have an angle $\pi/2$ between them, "
+    r"$P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. "
+    r"What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?"
+)
 
-answers = [r"$(1,-1)$.",
-           r"$(-1,1)$.",
-           r"$(2,-2)$.",
-           r"$(-2,2)$."]
+answers = [r"$(1,-1)$.", r"$(-1,1)$.", r"$(2,-2)$.", r"$(-2,2)$."]
 
-explanation = (r"$P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. "
-               r"The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$.")
+explanation = (
+    r"$P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. "
+    r"The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 ![](figures/square.png)
@@ -306,18 +316,19 @@ The unit cell chosen on the outside has topological polarization zero, while the
 
 
 ```python
-from holoviews import Element2D
+from holoviews.core.element import Element2D
 from holoviews.plotting.mpl import ElementPlot
+
 
 class Figure(Element2D):
     pass
 
-class FigurePlot(ElementPlot):
 
+class FigurePlot(ElementPlot):
     def initialize_plot(self, ranges=None):
         element = self.hmap.last
-        self.handles['fig'] = element.data
-        return self.handles['fig']
+        self.handles["fig"] = element.data
+        return self.handles["fig"]
 
     def _init_axis(self, fig, ax):
         """Override this method to avoid creating a useless figure."""
@@ -325,10 +336,12 @@ class FigurePlot(ElementPlot):
 
     def update_frame(self, key, ranges=None, element=None):
         element = self._get_frame(key)
-        self.handles['fig'] = element.data
-        return self.handles['fig']
+        self.handles["fig"] = element.data
+        return self.handles["fig"]
 
-holoviews.Store.register({Figure: FigurePlot}, 'matplotlib')
+
+holoviews.Store.register({Figure: FigurePlot}, "matplotlib")
+
 
 def get_figure(x):
     x1 = (0.1, 0.1, 0.1)
@@ -338,7 +351,8 @@ def get_figure(x):
     plt.close(fig)
     return fig
 
-holoviews.HoloMap({i: Figure(get_figure(i)) for i in np.linspace(-.1, .1, 21)})
+
+holoviews.HoloMap({i: Figure(get_figure(i)) for i in np.linspace(-0.1, 0.1, 21)})
 ```
 
 (We thank Jayson Paulose for providing the simulation.)

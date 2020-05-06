@@ -1,19 +1,25 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
-dims = SimpleNamespace(G=holoviews.Dimension(r'$G/G_0$'),
-                       V_bias=holoviews.Dimension('$V_{bias}$'),
-                       phi=holoviews.Dimension(r'$\Phi/\Phi_0$'))
+dims = SimpleNamespace(
+    G=holoviews.Dimension(r"$G/G_0$"),
+    V_bias=holoviews.Dimension("$V_{bias}$"),
+    phi=holoviews.Dimension(r"$\Phi/\Phi_0$"),
+)
 
 
 def make_system_spectroscopy():
 
     # We apply a magnetic field in all parts of the system
     def onsite_sc(site, p):
-        return (2 * p.t - p.mu_sc) * pauli.s0sz + p.Ez * pauli.sxs0 + p.delta * pauli.s0sx
+        return (
+            (2 * p.t - p.mu_sc) * pauli.s0sz + p.Ez * pauli.sxs0 + p.delta * pauli.s0sx
+        )
 
     def onsite_normal(site, p):
         return (2 * p.t - p.mu_l) * pauli.s0sz + p.Ez * pauli.sxs0
@@ -35,7 +41,9 @@ def make_system_spectroscopy():
 
     # The second subsystem is a normal lead
     # The translational symmetry makes it semi-infinite.
-    lead1 = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs), conservation_law=-pauli.s0sz) 
+    lead1 = kwant.Builder(
+        kwant.TranslationalSymmetry(*lat.prim_vecs), conservation_law=-pauli.s0sz
+    )
     # Define a unit cell (in this case the unit cell consists of a single site)
     lead1[lat(0)] = onsite_normal
     # Define the hopping between unitcells
@@ -43,7 +51,7 @@ def make_system_spectroscopy():
 
     # The third subsystem is a superconducting lead. A Majorana bound state
     # can arise at the edge of this system.
-    lead2 = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs)) 
+    lead2 = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
     # Again: Define a unit cell
     lead2[lat(0)] = onsite_sc
     # Again define hopping between unit cells
@@ -75,7 +83,7 @@ def nanowire_chain(L=None, periodic=False):
         syst[lat(x)] = onsite
 
     def hop(site1, site2, p):
-        return -p.t * pauli.szs0 - .5j * p.alpha * pauli.szsx
+        return -p.t * pauli.szs0 - 0.5j * p.alpha * pauli.szsx
 
     def hopping_with_flux(site1, site2, p):
         phase = np.exp(1j * p.flux / 2)
@@ -91,13 +99,16 @@ def nanowire_chain(L=None, periodic=False):
 
 def tunnel_spectroscopy(syst, p, Es):
     def Andreev_cond(E):
-        sm = kwant.smatrix(syst, energy=E, args=[p])
+        sm = kwant.smatrix(syst, energy=E, params=dict(p=p))
         # (i, j) means we call for block j of lead i in the scattering matrix.
         # The normal lead is i = 0 here, where block j = 0 corresponds to electrons
         # and block j = 1 holes.
-        return (sm.submatrix((0, 0), (0, 0)).shape[0] -
-                sm.transmission((0, 0), (0, 0)) +
-                sm.transmission((0, 1), (0, 0)))
+        return (
+            sm.submatrix((0, 0), (0, 0)).shape[0]
+            - sm.transmission((0, 0), (0, 0))
+            + sm.transmission((0, 1), (0, 0))
+        )
+
     Gs = [Andreev_cond(E) for E in Es]
     return np.array(Gs)
 
@@ -105,8 +116,9 @@ def tunnel_spectroscopy(syst, p, Es):
 def plot_spectroscopy(Vbarrier):
     syst = make_system_spectroscopy()
     Es = np.linspace(-0.15, 0.15, 101)
-    p = SimpleNamespace(t=1, mu_l=0.5, mu_sc=0, alpha=0.15,
-                        delta=0.1, Vbarrier=Vbarrier)
+    p = SimpleNamespace(
+        t=1, mu_l=0.5, mu_sc=0, alpha=0.15, delta=0.1, Vbarrier=Vbarrier
+    )
 
     # Trivial, because the magnetic field is zero (third argument)
     p.Ez = 0
@@ -116,15 +128,21 @@ def plot_spectroscopy(Vbarrier):
     p.Ez = 0.25
     Gs_topological = tunnel_spectroscopy(syst, p, Es)
     kdims = [dims.V_bias, dims.G]
-    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label='trivial')(style={'color': 'k'})
-    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label='topological')(style={'color': 'r'})
-    style_overlay = {'xticks': [-0.1, 0.0, 0.1], 
-                     'yticks': [0.0, 0.5, 1.0, 1.5, 2.0],
-                     'show_legend':True, 
-                     'legend_position': 'top',
-                     'fig_size':150}
-    style_path = {'show_legend':True}
-    return plot(plot={'Overlay': style_overlay, 'Path': style_path})
+    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label="trivial").opts(
+        style={"color": "k"}
+    )
+    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label="topological").opts(
+        style={"color": "r"}
+    )
+    style_overlay = {
+        "xticks": [-0.1, 0.0, 0.1],
+        "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
+        "show_legend": True,
+        "legend_position": "top",
+        "fig_size": 150,
+    }
+    style_path = {"show_legend": True}
+    return plot.opts(plot={"Overlay": style_overlay, "Path": style_path})
 
 
 def nanowire_spectrum(trivial=False):
@@ -134,7 +152,7 @@ def nanowire_spectrum(trivial=False):
 
     def energy(flux):
         p.flux = flux
-        H = syst.hamiltonian_submatrix(args=[p])
+        H = syst.hamiltonian_submatrix(params=dict(p=p))
         return np.linalg.eigvalsh(H)
 
     fluxes = np.linspace(0, 4 * np.pi, 51)
@@ -144,19 +162,27 @@ def nanowire_spectrum(trivial=False):
     if not trivial:
         N = spectrum.shape[1] // 2
         non_trivial = np.where((fluxes > np.pi) & (fluxes < 3 * np.pi))
-        spectrum[non_trivial, N - 1: N + 1] = spectrum[non_trivial, N: N - 2: -1].copy()
+        spectrum[non_trivial, N - 1 : N + 1] = spectrum[
+            non_trivial, N : N - 2 : -1
+        ].copy()
 
     return fluxes, spectrum
 
 
 def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     N = spectrum.shape[1] // 2
-    kdims = [dims.phi, '$E$']
-    plot = holoviews.Path((fluxes, spectrum), kdims=kdims)(style={'color': 'k', 'alpha': 0.4})
-    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims)(style={'color': 'r'})
-    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims)(style={'color': 'k'})
-    ticks = {'xticks': [(0, '0'), (2 * np.pi, '1'), (4 * np.pi, '2')]}
-    return plot[:, -0.11:0.11](plot=ticks)
+    kdims = [dims.phi, "$E$"]
+    plot = holoviews.Path((fluxes, spectrum), kdims=kdims).opts(
+        style={"color": "k", "alpha": 0.4}
+    )
+    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).opts(
+        style={"color": "r"}
+    )
+    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).opts(
+        style={"color": "k"}
+    )
+    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
+    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).opts(plot=ticks)
 
 
 def plot_gse_sc_nanowire(fluxes, spectrum):
@@ -166,16 +192,17 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     current = np.diff(energy_gs) * len(energy_gs)
 
     xdim = dims.phi
-    ydim = r'$E_{tot}(\Phi)$'
-    
-    ticks = {'xticks': [(0, '0'), (2 * np.pi, '1'), (4 * np.pi, '2')]}
-    plot = holoviews.Path((fluxes, energy_gs), kdims=[
-                          xdim, ydim], label='Energy')(plot=ticks)
-    ydim = r'$I(\Phi)$'
-    plot += holoviews.Path(((fluxes[1:] + fluxes[:-1]) / 2, current),
-                           kdims=[xdim, ydim], label='Current')(plot=ticks)
-    return plot
+    ydim = r"$E_{tot}(\Phi)$"
 
+    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
+    plot = holoviews.Path((fluxes, energy_gs), kdims=[xdim, ydim], label="Energy").opts(
+        plot=ticks
+    )
+    ydim = r"$I(\Phi)$"
+    plot += holoviews.Path(
+        ((fluxes[1:] + fluxes[:-1]) / 2, current), kdims=[xdim, ydim], label="Current"
+    ).opts(plot=ticks)
+    return plot
 ```
 
 # How to detect Majoranas
@@ -253,7 +280,10 @@ Let's just look at what happens if we compare conductance of an NS interface in 
 
 
 ```python
-holoviews.HoloMap({V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)}, kdims=[r'$V_{barrier}$'])
+holoviews.HoloMap(
+    {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
+    kdims=[r"$V_{barrier}$"],
+)
 ```
 
 We see a very robust and persistent characteristic:
@@ -319,19 +349,27 @@ We already saw that unitarity requires that $|r_{ee}|^2+|r_{eh}|^2=1$. There are
 
 
 ```python
-question = ("Imagine we replace the superconducting electrode with an insulating material, "
-            "and imagine that at the interface with the normal metal there is a bound state. "
-            "How is the current through the interface different with respect "
-            "to that through an NS interface with a Majorana?")
-answers = ["It is not quantized but still non-zero.",
-           "It is zero because there cannot be Andreev reflection without a superconductor.",
-           "It is not symmetric in voltage but it is still non-zero.",
-           "It has a resonance peak whose width is independent of the barrier strength."]
-explanation = ("A current requires an exit path for the charge. "
-               "No current can flow through the insulator, since there are no excitations at the Fermi level in an insulator. "
-               "A superconductor is also gapped with respect to excitations, but is different than a normal insulator. "
-               "It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = (
+    "Imagine we replace the superconducting electrode with an insulating material, "
+    "and imagine that at the interface with the normal metal there is a bound state. "
+    "How is the current through the interface different with respect "
+    "to that through an NS interface with a Majorana?"
+)
+answers = [
+    "It is not quantized but still non-zero.",
+    "It is zero because there cannot be Andreev reflection without a superconductor.",
+    "It is not symmetric in voltage but it is still non-zero.",
+    "It has a resonance peak whose width is independent of the barrier strength.",
+]
+explanation = (
+    "A current requires an exit path for the charge. "
+    "No current can flow through the insulator, since there are no excitations at the Fermi level in an insulator. "
+    "A superconductor is also gapped with respect to excitations, but is different than a normal insulator. "
+    "It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Flux-induced fermion parity switch in topological superconductors
@@ -412,17 +450,25 @@ At this point, you might be a little worried about how the topological supercond
 
 
 ```python
-question = ("Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
-            "into a reservoir very quickly, making the junction always relax to the ground state. "
-            "How would this affect the periodicity of the Josephson effect?")
-answers = ["It would make the periodicity random because of the quasiparticles jumping around randomly.",
-           "If the system can always relax to the ground state, the current would have a period of $\Phi_0$ (hence $2\pi)$.",
-           "Since the Josephson effect is topologically protected, these processes have no effect on the periodicity.",
-           "The period becomes $\Phi_0/2$ because it is easier for the quasiparticles to jump out at this value of the flux."]
-explanation = ("A particle tunneling out means that the fermion parity of the ground state changes. "
-              "Hence the lowest between the red and black energy levels is always occupied, and both energy and current "
-              "turn out to have a period $\Phi_0$.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=1, explanation=explanation)
+question = (
+    "Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
+    "into a reservoir very quickly, making the junction always relax to the ground state. "
+    "How would this affect the periodicity of the Josephson effect?"
+)
+answers = [
+    "It would make the periodicity random because of the quasiparticles jumping around randomly.",
+    "If the system can always relax to the ground state, the current would have a period of $\Phi_0$ (hence $2\pi)$.",
+    "Since the Josephson effect is topologically protected, these processes have no effect on the periodicity.",
+    "The period becomes $\Phi_0/2$ because it is easier for the quasiparticles to jump out at this value of the flux.",
+]
+explanation = (
+    "A particle tunneling out means that the fermion parity of the ground state changes. "
+    "Hence the lowest between the red and black energy levels is always occupied, and both energy and current "
+    "turn out to have a period $\Phi_0$."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Summary
@@ -434,5 +480,5 @@ MoocVideo("sSacO5RpW5A", src_location="2.2-summary")
 
 
 ```python
-MoocDiscussion('Questions', 'Signatures of Majorana modes')
+MoocDiscussion("Questions", "Signatures of Majorana modes")
 ```

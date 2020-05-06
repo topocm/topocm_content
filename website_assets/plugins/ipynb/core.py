@@ -1,12 +1,16 @@
 """
 Core module that handles the conversion from notebook to HTML plus some utilities
 """
-from __future__ import absolute_import, print_function, division
 
-import re
 import os
+import re
 
 import IPython
+import nbformat
+from nbconvert.exporters import HTMLExporter
+from nbconvert.preprocessors import Preprocessor
+from pygments.formatters import HtmlFormatter
+
 try:
     # Jupyter
     from traitlets.config import Config
@@ -21,17 +25,13 @@ except ImportError:
     # IPython < 4.0
     import IPython.nbconvert as nbconvert
 
-from nbconvert.exporters import HTMLExporter
+
 try:
     from nbconvert.filters.highlight import _pygment_highlight
 except ImportError:
     # IPython < 2.0
     from nbconvert.filters.highlight import _pygments_highlight
 
-from pygments.formatters import HtmlFormatter
-
-import nbformat
-from nbconvert.preprocessors import Preprocessor
 
 LATEX_CUSTOM_SCRIPT = """
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
@@ -64,12 +64,10 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
-
 class HtmlLinksPreprocessor(Preprocessor):
-
     def preprocess_cell(self, cell, resources, index):
-        if cell['cell_type'] == 'markdown':
-            cell['source'] = cell['source'].replace('.ipynb', '.html')
+        if cell["cell_type"] == "markdown":
+            cell["source"] = cell["source"].replace(".ipynb", ".html")
         return cell, resources
 
 
@@ -77,24 +75,26 @@ def get_html_from_filepath(filepath):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
-    config = Config({
-        'CSSHTMLHeaderTransformer': {
-            'enabled': True,
-            'highlight_class': '.highlight-ipynb',
-        },
-    })
+    config = Config(
+        {
+            "CSSHTMLHeaderTransformer": {
+                "enabled": True,
+                "highlight_class": ".highlight-ipynb",
+            },
+        }
+    )
 
     config.HTMLExporter.preprocessors = [HtmlLinksPreprocessor]
     config.HTMLExporter.exclude_input = True
     config.HTMLExporter.exclude_output_prompt = True
-    config.HtmlLinksPreprocessor['enabled'] = True
+    config.HtmlLinksPreprocessor["enabled"] = True
 
     path = os.path.dirname(os.path.realpath(__file__))
     exporter = HTMLExporter(
         config=config,
-        template_file='no_code',
-        template_path=['.', path + '/../../../scripts/'],
-        filters={'highlight2html': custom_highlighter}
+        template_file="no_code",
+        template_path=[".", path + "/../../../scripts/"],
+        filters={"highlight2html": custom_highlighter},
     )
     content, info = exporter.from_filename(filepath)
 
@@ -105,33 +105,36 @@ def fix_css(content, info, ignore_css=False):
     """
     General fixes for the notebook generated html
     """
+
     def filter_css(style_text):
         """
         HACK: IPython returns a lot of CSS including its own bootstrap.
         Get only the IPython Notebook CSS styles.
         """
-        index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
+        index = style_text.find("/*!\n*\n* IPython notebook\n*\n*/")
         if index > 0:
             style_text = style_text[index:]
-        index = style_text.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
+        index = style_text.find("/*!\n*\n* IPython notebook webapp\n*\n*/")
         if index > 0:
             style_text = style_text[:index]
 
-        style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
+        style_text = re.sub(r"color\:\#0+(;)?", "", style_text)
         style_text = re.sub(
-            r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
-        return '<style type=\"text/css\">{0} </style>'.format(style_text)
+            r"\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}", "", style_text
+        )
+        return f'<style type="text/css">{style_text} </style>'
 
     if ignore_css:
         content = content + LATEX_CUSTOM_SCRIPT
     else:
-        ipython_css = '\n'.join(filter_css(css_style)
-                                for css_style in info['inlining']['css'])
+        ipython_css = "\n".join(
+            filter_css(css_style) for css_style in info["inlining"]["css"]
+        )
         content = ipython_css + content + LATEX_CUSTOM_SCRIPT
     return content
 
 
-def custom_highlighter(source, language='python', metadata=None):
+def custom_highlighter(source, language="python", metadata=None):
     """
     Makes the syntax highlighting from pygments have prefix(`highlight-ipynb`)
     So it doesn't break the theme pygments
@@ -141,9 +144,9 @@ def custom_highlighter(source, language='python', metadata=None):
     Returns new html content
     """
     if not language:
-        language = 'python'
+        language = "python"
 
-    formatter = HtmlFormatter(cssclass='highlight-ipynb')
+    formatter = HtmlFormatter(cssclass="highlight-ipynb")
     output = _pygments_highlight(source, formatter, language, metadata)
-    output = output.replace('<pre>', '<pre class="ipynb">')
+    output = output.replace("<pre>", '<pre class="ipynb">')
     return output

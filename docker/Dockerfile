@@ -48,9 +48,9 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh && \
-    /bin/bash Miniconda3-4.5.11-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-4.5.11-Linux-x86_64.sh
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.2-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-py37_4.8.2-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-py37_4.8.2-Linux-x86_64.sh
 
 # Add environment file
 COPY python3.yaml .

@@ -1,16 +1,22 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 import itertools
 import warnings
+
 warnings.simplefilter("ignore", UserWarning)
 
 # Onsite and hoppings terms for BHZ and QAH model
 def onsite_BHZ(site, p):
-    return ((p.M - 4 * p.B) * pauli.s0sz - 4 * p.D * pauli.s0s0
-            + p.field * site.pos[1] * pauli.s0s0)
+    return (
+        (p.M - 4 * p.B) * pauli.s0sz
+        - 4 * p.D * pauli.s0s0
+        + p.field * site.pos[1] * pauli.s0s0
+    )
 
 
 def hopx_BHZ(site1, site2, p):
@@ -40,8 +46,9 @@ def hopy_QAH(site1, site2, p):
 def weak_hopping_QAH(site1, site2, p):
     return p.t_inter * np.eye(2)
 
+
 # Systems
-def create_screw_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model='BHZ'):
+def create_screw_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model="BHZ"):
     """ Create system with screw dislocation.
 
     Function creates system with a screw dislocation. 
@@ -51,10 +58,20 @@ def create_screw_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model='BHZ
 
     xs, ys, ye describes where disloaction is placed.
     """
-    if model == 'BHZ':
-        onsite, hopx, hopy, weak_hopping = onsite_BHZ, hopx_BHZ,  hopy_BHZ, weak_hopping_BHZ
-    elif model == 'QAH':
-        onsite, hopx, hopy, weak_hopping = onsite_QAH, hopx_QAH,  hopy_QAH, weak_hopping_QAH
+    if model == "BHZ":
+        onsite, hopx, hopy, weak_hopping = (
+            onsite_BHZ,
+            hopx_BHZ,
+            hopy_BHZ,
+            weak_hopping_BHZ,
+        )
+    elif model == "QAH":
+        onsite, hopx, hopy, weak_hopping = (
+            onsite_QAH,
+            hopx_QAH,
+            hopy_QAH,
+            weak_hopping_QAH,
+        )
 
     def shape(pos):
         (x, y, z) = pos
@@ -113,7 +130,9 @@ def create_screw_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model='BHZ
     return syst.finalized(), lead
 
 
-def create_edge_dislocation_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model='BHZ'):
+def create_edge_dislocation_system(
+    L, W, H, xs=None, ys=None, ye=None, pbc=True, model="BHZ"
+):
     """ Create system with edge dislocation.
 
     Function creates system with an edge dislocation. 
@@ -123,10 +142,20 @@ def create_edge_dislocation_system(L, W, H, xs=None, ys=None, ye=None, pbc=True,
 
     xs, ys, ye describes where disloaction is placed.
     """
-    if model == 'BHZ':
-        onsite, hopx, hopy, weak_hopping = onsite_BHZ, hopx_BHZ,  hopy_BHZ, weak_hopping_BHZ
-    elif model == 'QAH':
-        onsite, hopx, hopy, weak_hopping = onsite_QAH, hopx_QAH,  hopy_QAH, weak_hopping_QAH
+    if model == "BHZ":
+        onsite, hopx, hopy, weak_hopping = (
+            onsite_BHZ,
+            hopx_BHZ,
+            hopy_BHZ,
+            weak_hopping_BHZ,
+        )
+    elif model == "QAH":
+        onsite, hopx, hopy, weak_hopping = (
+            onsite_QAH,
+            hopx_QAH,
+            hopy_QAH,
+            weak_hopping_QAH,
+        )
 
     def shape(pos):
         (x, y, z) = pos
@@ -184,25 +213,24 @@ def create_edge_dislocation_system(L, W, H, xs=None, ys=None, ye=None, pbc=True,
     return syst.finalized(), lead
 
 
-def get_densities(lead, momentum, param, model, sorting_mid=0.0):
+def get_densities(lead, momentum, p, model, sorting_mid=0.0):
     """ Calculate density of states in the lead at a given momentum. """
     coord = np.array([i.pos for i in lead.sites])
     xy = coord[coord[:, 2] == 0][:, :-1]
     indxs_xy = np.lexsort(xy.T)
     xy = xy[indxs_xy, :]
 
-    h, t = lead.cell_hamiltonian(
-        args=[param]), lead.inter_cell_hopping(args=[param])
+    h, t = lead.cell_hamiltonian(params=dict(p=p)), lead.inter_cell_hopping(params=dict(p=p))
     h_k = lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
 
     vals, vecs = np.linalg.eigh(h_k(momentum))
 
-    if model == 'BHZ':
+    if model == "BHZ":
         num_orbital = 4
-    if model == 'QAH':
+    if model == "QAH":
         num_orbital = 2
 
-    densities = np.linalg.norm(vecs.reshape(-1, num_orbital, len(vecs)), axis=1)**2
+    densities = np.linalg.norm(vecs.reshape(-1, num_orbital, len(vecs)), axis=1) ** 2
 
     indxs = np.argsort(abs(vals - sorting_mid))
     vals = vals[indxs]
@@ -228,27 +256,34 @@ def get_spectrum_and_densities(sys_func, p, model, momentum, kwargs):
 
 def create_hm(sys_func, momentum, kwargs):
     parameters = {
-        'BHZ': {'A': 1.0, 'B': 1.0, 'D': 0.0, 'M': 0.8},
-        'QAH': {'A': 1.0, 'B': 1.0, 'D': 0.0, 'mu': 0.8}}
+        "BHZ": {"A": 1.0, "B": 1.0, "D": 0.0, "M": 0.8},
+        "QAH": {"A": 1.0, "B": 1.0, "D": 0.0, "mu": 0.8},
+    }
 
-    p_BHZ = SimpleNamespace(field=.005, t_inter=-.1, **parameters['BHZ'])
-    p_QAH = SimpleNamespace(field=.01, t_inter=-.1, **parameters['QAH'])
+    p_BHZ = SimpleNamespace(field=0.005, t_inter=-0.1, **parameters["BHZ"])
+    p_QAH = SimpleNamespace(field=0.01, t_inter=-0.1, **parameters["QAH"])
 
-    spectrum_QAH, densities_QAH = get_spectrum_and_densities(sys_func, p_QAH, 'QAH', momentum, kwargs)
-    spectrum_BHZ, densities_BHZ = get_spectrum_and_densities(sys_func, p_BHZ, 'BHZ', momentum, kwargs)
+    spectrum_QAH, densities_QAH = get_spectrum_and_densities(
+        sys_func, p_QAH, "QAH", momentum, kwargs
+    )
+    spectrum_BHZ, densities_BHZ = get_spectrum_and_densities(
+        sys_func, p_BHZ, "BHZ", momentum, kwargs
+    )
 
     hm_dict = {}
     for n in range(7):
-        for model, density, spect in zip(['BHZ', 'QAH'], 
-                                            [densities_BHZ, densities_QAH], 
-                                            [spectrum_BHZ, spectrum_QAH]):
-            hm_dict[n, model] = ((spect * 
-                                 holoviews.Points((momentum, density[1][n])) * 
-                                 holoviews.VLine(momentum)).relabel('Bandstructure') + 
-                                 holoviews.Raster(density[0][:, :, n], label=r'$\left|\psi\right|^2$'))
+        for model, density, spect in zip(
+            ["BHZ", "QAH"], [densities_BHZ, densities_QAH], [spectrum_BHZ, spectrum_QAH]
+        ):
+            hm_dict[n, model] = (
+                spect
+                * holoviews.Points((momentum, density[1][n]))
+                * holoviews.VLine(momentum)
+            ).relabel("Bandstructure") + holoviews.Raster(
+                density[0][:, :, n], label=r"$\left|\psi\right|^2$"
+            )
 
-
-    return holoviews.HoloMap(hm_dict, kdims=['n', 'model'])
+    return holoviews.HoloMap(hm_dict, kdims=["n", "model"])
 ```
 
 # Introduction: weak topological phases
@@ -344,16 +379,18 @@ L = 6
 W = 7
 ws = 3
 xs = 2
-syst, lead = create_screw_system(L, W, 2, xs=xs, ys=0, ye=W-ws, pbc=False, model='BHZ')
+syst, lead = create_screw_system(
+    L, W, 2, xs=xs, ys=0, ye=W - ws, pbc=False, model="BHZ"
+)
 
 fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(1, 1, 1, projection='3d')
-kwant.plot(syst, site_size=0.0, site_lw=0.01, hop_lw=0.025, ax=ax, num_lead_cells=0);
+ax = fig.add_subplot(1, 1, 1, projection="3d")
+kwant.plot(syst, site_size=0.0, site_lw=0.01, hop_lw=0.025, ax=ax, num_lead_cells=0)
 
 ax.set_xticks(())
 ax.set_yticks(())
 ax.set_zticks(())
-ax.view_init(50,-110)
+ax.view_init(50, -110)
 ```
 
 The Burgers' vector is parallel to $z$ and has unit length - the dislocation connects neighboring layers.
@@ -367,10 +404,16 @@ Let's look at the band structure along the $z$ direction, and the wave functions
 %opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
 %opts Points(s=50)
 
-kwargs = {'k_x': np.linspace(np.pi - np.pi / 4, np.pi + np.pi / 4, 51),
-          'ylims': [-0.6, 0.95],
-          'yticks': [-0.5, 0, 0.5],
-          'xticks': [(np.pi - np.pi / 4, r'$\pi-\pi/4$'), (np.pi, r'$\pi$'), (np.pi + np.pi / 4, r'$\pi+\pi/4$')]}
+kwargs = {
+    "k_x": np.linspace(np.pi - np.pi / 4, np.pi + np.pi / 4, 51),
+    "ylims": [-0.6, 0.95],
+    "yticks": [-0.5, 0, 0.5],
+    "xticks": [
+        (np.pi - np.pi / 4, r"$\pi-\pi/4$"),
+        (np.pi, r"$\pi$"),
+        (np.pi + np.pi / 4, r"$\pi+\pi/4$"),
+    ],
+}
 
 create_hm(create_screw_system, momentum=np.pi + 0.1, kwargs=kwargs).collate()
 ```
@@ -390,11 +433,13 @@ L = 7
 W = 7
 ws = 3
 xs = 3
-syst, lead = create_edge_dislocation_system(L, W, 2, xs=xs, ys=0, ye=W - ws, pbc=False, model='BHZ')
+syst, lead = create_edge_dislocation_system(
+    L, W, 2, xs=xs, ys=0, ye=W - ws, pbc=False, model="BHZ"
+)
 
 
 fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(1, 1, 1, projection='3d')
+ax = fig.add_subplot(1, 1, 1, projection="3d")
 
 kwant.plot(syst, site_size=0.0, site_lw=0.01, hop_lw=0.025, ax=ax, num_lead_cells=0)
 
@@ -411,28 +456,38 @@ The Burgers vector is now along the $y$ direction, and it still has unit length.
 %opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
 %opts Points(s=50)
 
-kwargs = {'k_x': np.linspace(-np.pi / 4, np.pi / 4, 51),
-          'ylims': [-0.6, 0.95],
-          'yticks': [-0.5, 0, 0.5],
-          'xticks': [(-np.pi / 4, r'$-\pi/4$'), (0, r'$0$'), (np.pi / 4, r'$\pi/4$')]}
+kwargs = {
+    "k_x": np.linspace(-np.pi / 4, np.pi / 4, 51),
+    "ylims": [-0.6, 0.95],
+    "yticks": [-0.5, 0, 0.5],
+    "xticks": [(-np.pi / 4, r"$-\pi/4$"), (0, r"$0$"), (np.pi / 4, r"$\pi/4$")],
+}
 
 create_hm(create_edge_dislocation_system, momentum=0.1, kwargs=kwargs).collate()
 ```
 
 
 ```python
-question = ("What would happen in both simulations above if we changed the dislocation, "
-            "making the Burgers vector twice as long?")
+question = (
+    "What would happen in both simulations above if we changed the dislocation, "
+    "making the Burgers vector twice as long?"
+)
 
-answers = ["The wave function would just spread out a bit more because the dislocation is larger.",
-           "The number of gapless states would double for both models.",
-           "The gapless states would be gapped out for both models.",
-           "The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model."]
+answers = [
+    "The wave function would just spread out a bit more because the dislocation is larger.",
+    "The number of gapless states would double for both models.",
+    "The gapless states would be gapped out for both models.",
+    "The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model.",
+]
 
-explanation = ("Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
-               "and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case.")
+explanation = (
+    "Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
+    "and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=3, explanation=explanation
+)
 ```
 
 # Conclusions

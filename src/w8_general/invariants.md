@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 
 import scipy
@@ -9,6 +11,7 @@ from time import time
 import scipy.linalg as sla
 
 randn = np.random.randn
+
 
 def chern_torus(W=5, L=5):
 
@@ -36,9 +39,10 @@ def chern_torus(W=5, L=5):
     syst[lat.shape(shape, (0, 0))] = onsite
     syst[kwant.HoppingKind((1, 0), lat)] = hopx
     syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    syst[kwant.HoppingKind((-W+1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, -L+1), lat)] = hopy
+    syst[kwant.HoppingKind((-W + 1, 0), lat)] = hopx
+    syst[kwant.HoppingKind((0, -L + 1), lat)] = hopy
     return syst.finalized()
+
 
 def projected_operators(syst, p, energy=0):
     x, y = np.array([i.pos for i in syst.sites]).T
@@ -50,7 +54,7 @@ def projected_operators(syst, p, energy=0):
     op_x = np.diag(np.exp(1j * x))
     op_y = np.diag(np.exp(1j * y))
 
-    ham = syst.hamiltonian_submatrix(args=[p])
+    ham = syst.hamiltonian_submatrix(params=dict(p=p))
     ham -= 0 * np.identity(len(ham))
     energies, states = np.linalg.eigh(ham)
 
@@ -66,11 +70,11 @@ def two_terminal(L, W):
 
     def shape(pos):
         (x, y) = pos
-        return (0 <= y < W and 0 <= x < L)
+        return 0 <= y < W and 0 <= x < L
 
     def lead_shape(pos):
         (x, y) = pos
-        return (0 <= y < W)
+        return 0 <= y < W
 
     lat = kwant.lattice.square()
     syst = kwant.Builder()
@@ -171,15 +175,15 @@ smat_times = [smat_time(N) for N in Ns_smat]
 
 
 ```python
-plt.plot(Ns_diag, diag_times, '-o', label='diagonalization')
-plt.plot(Ns_smat, smat_times, '-o', label='scattering matrix')
+plt.plot(Ns_diag, diag_times, "-o", label="diagonalization")
+plt.plot(Ns_smat, smat_times, "-o", label="scattering matrix")
 
-plt.xscale('log')
-plt.yscale('log')
+plt.xscale("log")
+plt.yscale("log")
 
-plt.xlabel('$N$')
-plt.ylabel('$t [s]$')
-plt.ylim(10**-3,10**6)
+plt.xlabel("$N$")
+plt.ylabel("$t [s]$")
+plt.ylim(10 ** -3, 10 ** 6)
 plt.yticks([1e-3, 1, 1e3, 1e6])
 plt.legend()
 plt.show()
@@ -260,44 +264,53 @@ So by finding all the eigenvalues $z$ we get all the zeros of $h(z)$ inside the 
 
 
 ```python
-def random_sys(N=4):    
+def random_sys(N=4):
     onsite = randn(N, N) + 1j * randn(N, N)
     lefthopping = randn(N, N) + 1j * randn(N, N)
     righthopping = randn(N, N) + 1j * randn(N, N)
-    
+
     return onsite, lefthopping, righthopping
 
+
 def find_singularities(onsite, lefthopping, righthopping):
-    # We will have a generalized eigenvalue problem. The two matrices alone do not have much of a physical meaning, 
-    # so their names are also meaningless: A, B. 
+    # We will have a generalized eigenvalue problem. The two matrices alone do not have much of a physical meaning,
+    # so their names are also meaningless: A, B.
     n = len(onsite)
-    
-    A = np.bmat([[-righthopping, np.zeros((n, n))],
-                    [np.zeros((n, n)), np.eye(n)]])
-    
-    B = np.bmat([[onsite, lefthopping],
-                    [np.eye(n), np.zeros((n, n))]])
-    
+
+    A = np.bmat([[-righthopping, np.zeros((n, n))], [np.zeros((n, n)), np.eye(n)]])
+
+    B = np.bmat([[onsite, lefthopping], [np.eye(n), np.zeros((n, n))]])
+
     return scipy.linalg.eigvals(A, B)
+
 
 def winding_plot(onsite, lefthopping, righthopping):
     singularities = find_singularities(onsite, lefthopping, righthopping)
     winding = sum(abs(singularities) < 1) - len(onsite)
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
-    title = 'Winding number: ${}$'.format(winding)
-    kdims = [r'$\operatorname{Re}(z)$', r'$\operatorname{Im}(z)$']
-    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims)(style={'color': 'k', 'linestyle': '--'})
-    pl *= holoviews.Points((singularities.real, singularities.imag))(style={'color': 'r'})
-    pl *= holoviews.Points((0, 0))(style={'color': 'b'})
-    return pl[-2:2, -2:2].relabel(title)(plot={'xticks': 3, 'yticks': 3})
+    title = "Winding number: ${}$".format(winding)
+    kdims = [r"$\operatorname{Re}(z)$", r"$\operatorname{Im}(z)$"]
+    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).opts(
+        style={"color": "k", "linestyle": "--"}
+    )
+    pl *= holoviews.Points((singularities.real, singularities.imag)).opts(
+        style={"color": "r"}
+    )
+    pl *= holoviews.Points((0, 0)).opts(style={"color": "b"})
+    return pl[-2:2, -2:2].relabel(title).opts(plot={"xticks": 3, "yticks": 3})
+
 
 np.random.seed(30)
 onsite, lefthopping, righthopping = random_sys()
-winding_scale = lambda scale: winding_plot(4 * onsite * 1.2**-abs(scale),
-                                           lefthopping * 1.2**scale,
-                                           righthopping * 1.2**-scale)
+winding_scale = lambda scale: winding_plot(
+    4 * onsite * 1.2 ** -abs(scale),
+    lefthopping * 1.2 ** scale,
+    righthopping * 1.2 ** -scale,
+)
 
-holoviews.HoloMap({scale: winding_scale(scale) for scale in range(-10, 10)}, kdims=[r'$\alpha$'])
+holoviews.HoloMap(
+    {scale: winding_scale(scale) for scale in range(-10, 10)}, kdims=[r"$\alpha$"]
+)
 ```
 
 In the graph above, we see the zeros (red) and poles (blue) of $h(z)$ for some randomly generated system, while we tune a parameter $\alpha$ that gradually changes the topology of the system.
@@ -352,6 +365,7 @@ To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $
 p = SimpleNamespace(t=1.0, mu=0.1, delta=0.1, disorder=0.5)
 syst = chern_torus(12, 12)
 
+
 def evaluate_m(syst, p):
     op_x, op_y = projected_operators(syst, p, energy=0.01)
     temp = op_x @ op_y @ op_x.T.conj() @ op_y.T.conj()
@@ -359,27 +373,30 @@ def evaluate_m(syst, p):
     # get rid of the four zero eigenvalues
     res = np.sum(np.log(eigs))
     res = res.imag / (2 * np.pi)
-    #This calculation is only correct to numerical accuracy.
-    #When the Chern number is zero the result might be a very small negative number. 
-    #We make them positive so that the out put is never -0, because that does not look nice.
+    # This calculation is only correct to numerical accuracy.
+    # When the Chern number is zero the result might be a very small negative number.
+    # We make them positive so that the out put is never -0, because that does not look nice.
     if abs(res) < 0.5:
         res = abs(res)
-    
+
     xs = np.cumsum(np.log(eigs)).real
     ys = np.cumsum(np.log(eigs)).imag
-    
+
     x = np.append([0], xs)
     y = np.append([0], ys)
-    title = '$m={:.2}$, Chern number $={:1.0f}$'.format(p.mu, res)
+    title = "$m={:.2}$, Chern number $={:1.0f}$".format(p.mu, res)
     window_widening = (max(x) - min(x)) * 0.05
-    pl = holoviews.Path((x, y))(style={'color': 'b'})
-    pl *= holoviews.Points((x, y))(style={'color': 'b'})
+    pl = holoviews.Path((x, y)).opts(style={"color": "b"})
+    pl *= holoviews.Points((x, y)).opts(style={"color": "b"})
     xlim = slice(min(x) - window_widening, max(x) + window_widening)
     ylim = slice(-2 * np.pi - 0.5, 0.5)
-    ticks = {'xticks': 2, 'yticks': [(-2 * np.pi, r'$-2\pi$'), (0, r'$0$')]}
-    return pl[xlim, ylim].relabel(title)(plot=ticks)
+    ticks = {"xticks": 2, "yticks": [(-2 * np.pi, r"$-2\pi$"), (0, r"$0$")]}
+    return pl[xlim, ylim].relabel(title).opts(plot=ticks)
 
-holoviews.HoloMap({p.mu: evaluate_m(syst, p) for p.mu in np.linspace(-0.2, 0.4, 16)}, kdims=[r'$m$'])
+
+holoviews.HoloMap(
+    {p.mu: evaluate_m(syst, p) for p.mu in np.linspace(-0.2, 0.4, 16)}, kdims=[r"$m$"]
+)
 ```
 
 # Conclusions

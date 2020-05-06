@@ -1,64 +1,98 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size = 150
 
 import warnings
+
 warnings.simplefilter("ignore", UserWarning)
 
 bhz_parameters = {
-    'topo': {'A': 0.5, 'B': 1.00, 'D': 0.0, 'M': 0.2},
-    'topo2': {'A': 0.5, 'B': 1.00, 'D': 0.0, 'M': 1.0},
-    'triv': {'A': 0.5, 'B': 1.00, 'D': 0.0, 'M': -0.2},
-    'lead': {'A_lead': 1.5, 'B_lead': 1.00, 'D_lead': 0.0, 'M_lead': 0.0}}
+    "topo": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 0.2},
+    "topo2": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 1.0},
+    "triv": {"A": 0.5, "B": 1.00, "D": 0.0, "M": -0.2},
+    "lead": {"A_lead": 1.5, "B_lead": 1.00, "D_lead": 0.0, "M_lead": 0.0},
+}
 
 # Onsite and hopping functions for the BHZ model.
 # Sometimes, we use different BHZ parameters in the
 # scattering region and leads, so we treat them
 # separately.
-def onsite(site, p, is_lead=False):
+def _onsite(site, p, is_lead=False):
     if is_lead:
         B, D, M = p.B_lead, p.D_lead, p.M_lead
     else:
         B, D, M = p.B, p.D, p.M
-    return (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 \
-            + p.ez_y * np.kron(pauli.sy, (pauli.s0 + pauli.sz) / 2) 
-    
-def hopx(site1, site2, p, is_lead=False):
+    return (
+        (M - 4 * B) * pauli.s0sz
+        - 4 * D * pauli.s0s0
+        + p.ez_y * np.kron(pauli.sy, (pauli.s0 + pauli.sz) / 2)
+    )
+
+
+def onsite(site, p):
+    return _onsite(site, p, is_lead=False)
+
+
+def onsite_lead(site, p):
+    return _onsite(site, p, is_lead=True)
+
+
+def _hopx(site1, site2, p, is_lead=False):
     if is_lead:
         A, B, D = p.A_lead, p.B_lead, p.D_lead
     else:
         A, B, D = p.A, p.B, p.D
     return B * pauli.s0sz + D * pauli.s0s0 + 1j * A * pauli.szsx
 
-def hopy(site1, site2, p, is_lead=False):
+
+def hopx(site1, site2, p):
+    return _hopx(site1, site2, p, is_lead=False)
+
+
+def hopx_lead(site1, site2, p):
+    return _hopx(site1, site2, p, is_lead=True)
+
+
+def _hopy(site1, site2, p, is_lead=False):
     if is_lead:
         A, B, D = p.A_lead, p.B_lead, p.D_lead
     else:
         A, B, D = p.A, p.B, p.D
-    return B * pauli.s0sz + D * pauli.s0s0 - 1j * A * pauli.s0sy 
+    return B * pauli.s0sz + D * pauli.s0s0 - 1j * A * pauli.s0sy
+
+
+def hopy(site1, site2, p):
+    return _hopy(site1, site2, p, is_lead=False)
+
+
+def hopy_lead(site1, site2, p):
+    return _hopy(site1, site2, p, is_lead=True)
 
 
 def two_terminal(L, w):
     """ Make a two terminal system with the BHZ model. """
+
     def shape(pos):
         (x, y) = pos
-        return (0 <= y < w and 0 <= x < L)
+        return 0 <= y < w and 0 <= x < L
 
     def lead_shape(pos):
         (x, y) = pos
-        return (0 <= y < w)
+        return 0 <= y < w
 
     lat = kwant.lattice.square()
     syst = kwant.Builder()
 
-    def onsite_two_term(site, p, is_lead=False):
-        if is_lead:
-            return onsite(site, p, is_lead) - p.mu_lead * np.eye(4)
-        else:
-            return onsite(site, p, is_lead) - p.mu * np.eye(4)
+    def onsite_two_term(site, p):
+        return onsite(site, p) - p.mu * np.eye(4)
+
+    def onsite_two_term_lead(site, p):
+        return onsite_lead(site, p) - p.mu_lead * np.eye(4)
 
     # Scattering region
     syst[lat.shape(shape, (0, 0))] = onsite_two_term
@@ -67,9 +101,9 @@ def two_terminal(L, w):
 
     # Leads
     lead = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
-    lead[lat.shape(lead_shape, (0, 0))] = lambda site, p: onsite_two_term(site, p, is_lead=True)
-    lead[kwant.HoppingKind((1, 0), lat)] = lambda site1, site2, p: hopx(site1, site2, p, is_lead=True)
-    lead[kwant.HoppingKind((0, 1), lat)] = lambda site1, site2, p: hopy(site1, site2, p, is_lead=True)
+    lead[lat.shape(lead_shape, (0, 0))] = onsite_two_term_lead
+    lead[kwant.HoppingKind((1, 0), lat)] = hopx_lead
+    lead[kwant.HoppingKind((0, 1), lat)] = hopy_lead
 
     # Attach leads
     syst.attach_lead(lead)
@@ -85,9 +119,11 @@ def bhz(w=None):
         syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = onsite
     else:
+
         def ribbon_shape(pos):
             (x, y) = pos
-            return (0 <= y < w)
+            return 0 <= y < w
+
         sym = kwant.TranslationalSymmetry((1, 0))
         syst = kwant.Builder(sym)
         syst[lat.shape(ribbon_shape, (0, 0))] = onsite
@@ -99,29 +135,35 @@ def bhz(w=None):
 
 def G_mu_plot(p, mus, color):
     syst = two_terminal(40, 40).finalized()
-    G = [kwant.smatrix(syst, energy=0.0, args=[p]).transmission(1, 0) for p.mu in mus]
-    kdims = [r'$\mu$', r'G $[e^2/h]$']
-    plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label='Conductance')
-    ticks = {'xticks': [-0.8, -0.4, 0, 0.4, 0.8],
-             'yticks': [0, 2, 4, 6, 8, 10]}
-    return plot[:, 0:10](plot=ticks, style={'color': color})
+    G = [
+        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
+        for p.mu in mus
+    ]
+    ydim = r"G $[e^2/h]$"
+    kdims = [r"$\mu$", ydim]
+    plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label="Conductance")
+    ticks = {"xticks": [-0.8, -0.4, 0, 0.4, 0.8], "yticks": [0, 2, 4, 6, 8, 10]}
+    return plot.redim.range(**{ydim: (0, 10)}).opts(plot=ticks, style={"color": color})
 
 
 def G_Ez_plot(p, E_zs):
     syst = two_terminal(40, 20).finalized()
-    G = [kwant.smatrix(syst, energy=0.0, args=[p]).transmission(1, 0) for p.ez_y in E_zs]
-    kdims = [r'$E_z$', r'G $[e^2/h]$']
-    plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label='Conductance')
-    ticks = {'xticks': [0, 0.05, 0.10, 0.15],
-             'yticks': [0, 0.5, 1.0, 1.5, 2.0]}
-    return plot[:, 0:2](plot=ticks)
+    G = [
+        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
+        for p.ez_y in E_zs
+    ]
+    ydim = r"G $[e^2/h]$"
+    kdims = [r"$E_z$", ydim]
+    plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label="Conductance")
+    ticks = {"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]}
+    return plot.redim.range(**{ydim: (0, 2)}).opts(plot=ticks)
 ```
 
 # Introduction
 
 
 ```python
-MoocVideo("-HRBuCgOUvs", src_location='5.2-intro')
+MoocVideo("-HRBuCgOUvs", src_location="5.2-intro")
 ```
 
 This topic is special, since in order to meaningfully discuss experimental progress we need to do something we didn't do before in the course: we will show you the measurements and compare them with the *simple* theoretical expectations. Like this we will see what agrees and what doesn't.
@@ -157,9 +199,11 @@ So below we see a qualitative band structure of one of the QSHE insulators, HgTe
 p_triv = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=0.0, A=0.5, B=1.0, D=-0.1, M=-0.2)
 p_topo = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=0.0, A=0.5, B=1.0, D=-0.1, M=1.5)
 syst = bhz()
-kwargs = {'zticks': [-8, -4, 0, 4, 8]}
-(spectrum(syst, p_triv, **kwargs).relabel('Trivial') +
- spectrum(syst, p_topo, **kwargs).relabel('Topological'))
+kwargs = {"zticks": [-8, -4, 0, 4, 8]}
+(
+    spectrum(syst, p_triv, **kwargs).relabel("Trivial")
+    + spectrum(syst, p_topo, **kwargs).relabel("Topological")
+)
 ```
 
 In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$. 
@@ -180,22 +224,35 @@ We end up with this situation:
 
 
 ```python
-p_topo = SimpleNamespace(mu=None, ez_y=0.0, mu_lead=1.5, A=0.5, B=1.0, D=0.0, M=0.2, **bhz_parameters['lead'])
-p_triv = SimpleNamespace(mu=None, ez_y=0.0, mu_lead=1.5, A=0.5, B=1.0, D=0.0, M=-0.2, **bhz_parameters['lead'])
+p_topo = SimpleNamespace(
+    mu=None, ez_y=0.0, mu_lead=1.5, A=0.5, B=1.0, D=0.0, M=0.2, **bhz_parameters["lead"]
+)
+p_triv = SimpleNamespace(
+    mu=None,
+    ez_y=0.0,
+    mu_lead=1.5,
+    A=0.5,
+    B=1.0,
+    D=0.0,
+    M=-0.2,
+    **bhz_parameters["lead"]
+)
 
-kwargs = {'k_x': np.linspace(-np.pi / 3, np.pi / 3, 51),
-          'xticks': [(-np.pi / 3, r'$-\pi/3$'), (0, '0'), (np.pi / 3, r'$\pi/3$')],
-          'yticks': [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
-          'ylims': (-1.5, 1.5)}
+kwargs = {
+    "k_x": np.linspace(-np.pi / 3, np.pi / 3, 51),
+    "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, "0"), (np.pi / 3, r"$\pi/3$")],
+    "yticks": [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
+    "ylims": (-1.5, 1.5),
+}
 
 syst = bhz(w=20)
-spec_topo = spectrum(syst, p_topo, **kwargs).relabel('spectrum (topo)')
-spec_triv = spectrum(syst, p_triv, **kwargs).relabel('spectrum (triv)')
+spec_topo = spectrum(syst, p_topo, **kwargs).relabel("spectrum (topo)")
+spec_triv = spectrum(syst, p_triv, **kwargs).relabel("spectrum (triv)")
 mus = np.linspace(-0.8, 0.8, 50)
-HLines = holoviews.HoloMap({mu: holoviews.HLine(mu) for mu in mus}, kdims=[r'$\mu$'])
-VLines = holoviews.HoloMap({mu: holoviews.VLine(mu) for mu in mus}, kdims=[r'$\mu$'])
-G_triv = G_mu_plot(p_triv, mus, 'b')
-G_topo = G_mu_plot(p_topo, mus, 'r')
+HLines = holoviews.HoloMap({mu: holoviews.HLine(mu) for mu in mus}, kdims=[r"$\mu$"])
+VLines = holoviews.HoloMap({mu: holoviews.VLine(mu) for mu in mus}, kdims=[r"$\mu$"])
+G_triv = G_mu_plot(p_triv, mus, "b")
+G_topo = G_mu_plot(p_topo, mus, "r")
 
 (G_triv * (G_topo * VLines) + spec_topo * HLines + spec_triv * HLines)
 ```
@@ -272,23 +329,29 @@ We can very easily calculate that this is the case if we plot the conductance of
 
 
 ```python
-p = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=1.5, **bhz_parameters['topo2'])
+p = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=1.5, **bhz_parameters["topo2"])
 
-for key, value in bhz_parameters['topo2'].items():
+for key, value in bhz_parameters["topo2"].items():
     # setting the parameters for the lead the same as the scattering system
-    p.__dict__[key+'_lead'] = value
+    p.__dict__[key + "_lead"] = value
 
 syst = bhz(w=20)
 
-kwargs = {'k_x': np.linspace(-np.pi / 3, np.pi / 3, 51),
-          'ylims': (-1.5, 1.5),
-          'xticks': [(-np.pi / 3, r'$-\pi/3$'), (0, r'$0$'), (np.pi / 3, r'$\pi/3$')],
-          'yticks': [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
-          'title': lambda p: 'Band structure'}
+kwargs = {
+    "k_x": np.linspace(-np.pi / 3, np.pi / 3, 51),
+    "ylims": (-1.5, 1.5),
+    "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
+    "yticks": [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
+    "title": lambda p: "Band structure",
+}
 
 E_zs = np.linspace(0, 0.15, 50)
-VLines = holoviews.HoloMap({ez_y: holoviews.VLine(ez_y) for ez_y in E_zs}, kdims=[r'$E_z$'])
-spectra = holoviews.HoloMap({p.ez_y: spectrum(syst, p, **kwargs) for p.ez_y in E_zs}, kdims=[r'$E_z$'])
+VLines = holoviews.HoloMap(
+    {ez_y: holoviews.VLine(ez_y) for ez_y in E_zs}, kdims=[r"$E_z$"]
+)
+spectra = holoviews.HoloMap(
+    {p.ez_y: spectrum(syst, p, **kwargs) for p.ez_y in E_zs}, kdims=[r"$E_z$"]
+)
 G_Ez_plot(p, E_zs) * VLines + spectra * holoviews.HLine(0)
 ```
 
@@ -312,26 +375,34 @@ Localization of QSHE edge states by magnetic field is relatively poorly understo
 
 
 ```python
-question = ("Why did we not see a similar suppression of conductance with magnetic field in the case of  "
-            "the quantum Hall effect in week 3?")
+question = (
+    "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
+    "the quantum Hall effect in week 3?"
+)
 
-answers = ["The quantum Hall effect appeared in much higher quality samples.",
-           "There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.",
-           "The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin "
-           "Hall edges.",
-           "The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case."]
+answers = [
+    "The quantum Hall effect appeared in much higher quality samples.",
+    "There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.",
+    "The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin "
+    "Hall edges.",
+    "The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case.",
+]
 
-explanation = ("The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  "
-               "required for the protection of edge states in the quantum spin Hall effect. ")
+explanation = (
+    "The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  "
+    "required for the protection of edge states in the quantum spin Hall effect. "
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Summary
 
 
 ```python
-MoocVideo('Kop4zXWQ1Zc', src_location='5.2-summary')
+MoocVideo("Kop4zXWQ1Zc", src_location="5.2-summary")
 ```
 
 **Questions about what you just learned? Ask them below!**

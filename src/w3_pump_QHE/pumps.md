@@ -1,11 +1,14 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 from holoviews.core.options import Cycle
+
 %output size=120
-pi_ticks = [(-np.pi, r'$-\pi$'), (0, '0'), (np.pi, r'$\pi$')]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 
 def ts_modulated_wire(L=50):
@@ -52,6 +55,7 @@ def modulated_wire(L=50, dL=10):
     Arguments required in onsite/hoppings: 
         t, mu, mu_lead, A, omega, phase
     """
+
     def onsite(site, p):
         x = site.pos[0]
         return 2 * p.t - p.mu + p.A * (np.cos(p.omega * x + p.phase) + 1)
@@ -84,7 +88,6 @@ def total_charge(value_array):
     charge = np.cumsum(np.angle(np.roll(determinants, -1) / determinants))
     charge = charge - charge[0]
     return charge / (2 * np.pi)
-
 ```
 
 # Thouless pumps
@@ -93,7 +96,7 @@ Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
 
 
 ```python
-MoocVideo("gKZK9IGY9wo", src_location='3.1-intro', res='360')
+MoocVideo("gKZK9IGY9wo", src_location="3.1-intro", res="360")
 ```
 
 # Hamiltonians with parameters
@@ -158,23 +161,25 @@ def f(x):
     if x > L:
         return mu_lead
 
+
 x = np.linspace(-5, 15, 1000)
 y = [f(i) for i in x]
 
 plt.figure(figsize=(6, 4))
-plt.plot(x, y, 'k', lw=1.2)
+plt.plot(x, y, "k", lw=1.2)
 
 plt.xlim(-2.5, 12.5)
 plt.ylim(-2, 2)
 
 y = [i if i <= 0 else 0 for i in y]
-plt.fill_between(x, y, 0, color='r', where=np.array(y) <
-                 0.0, alpha=0.5, edgecolor='k', lw='1.5')
+plt.fill_between(
+    x, y, 0, color="r", where=np.array(y) < 0.0, alpha=0.5, edgecolor="k", lw=1.5
+)
 
-plt.arrow(2.0, 1.25, 5, 0, head_width=0.15, head_length=1.0, fc='k', ec='k')
+plt.arrow(2.0, 1.25, 5, 0, head_width=0.15, head_length=1.0, fc="k", ec="k")
 
-plt.xlabel('$x$')
-plt.ylabel('$U(x)$')
+plt.xlabel("$x$")
+plt.ylabel("$U(x)$")
 plt.xticks([])
 plt.yticks([])
 plt.show()
@@ -197,19 +202,26 @@ We can quickly check how continuous bands in the wire become discrete evenly spa
 p = SimpleNamespace(t=1, mu=0.0, phase=0.0, A=None)
 syst = ts_modulated_wire(L=17)
 
+
 def title(p):
     return "Band structure, $A={:.2}$".format(p.A)
 
-kwargs = {'ylims': [-0.2, 1.3],
-          'xticks': pi_ticks,
-          'yticks': [0, 0.5, 1.0],
-          'xdim': r'$k$',
-          'ydim': r'$E$',
-          'k_x': np.linspace(-np.pi, np.pi, 101),
-          'title': title}
+
+kwargs = {
+    "ylims": [-0.2, 1.3],
+    "xticks": pi_ticks,
+    "yticks": [0, 0.5, 1.0],
+    "xdim": r"$k$",
+    "ydim": r"$E$",
+    "k_x": np.linspace(-np.pi, np.pi, 101),
+    "title": title,
+}
 
 
-holoviews.HoloMap({p.A: spectrum(syst, p, **kwargs) for p.A in np.linspace(0, 0.8, 10)}, kdims=[r'$A$'])
+holoviews.HoloMap(
+    {p.A: spectrum(syst, p, **kwargs) for p.A in np.linspace(0, 0.8, 10)},
+    kdims=[r"$A$"],
+)
 ```
 
 So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an integer number of electrons $N$.
@@ -219,15 +231,21 @@ Electron wave functions from neighboring potential minima do not overlap, so whe
 
 ```python
 question = "Why are some levels in the band structure flat while some are not?"
-answers = ["The flat levels are the ones whose energies are not sensitive to the offset of confining potential.",
-           "Destructive interference of the wave functions in neighboring minima suppresses the dispersion.",
-           "The flat levels are localized deep in the potential minima, "
-           "so the bandwidth is exponentially small.",
-           "The flat levels correspond to filled states, and the rest to empty states."]
-explanation = ("The dispersion of the bands in a perodic potential appears "
-               "when the wave functions from neighboring minima overlap.")
+answers = [
+    "The flat levels are the ones whose energies are not sensitive to the offset of confining potential.",
+    "Destructive interference of the wave functions in neighboring minima suppresses the dispersion.",
+    "The flat levels are localized deep in the potential minima, "
+    "so the bandwidth is exponentially small.",
+    "The flat levels correspond to filled states, and the rest to empty states.",
+]
+explanation = (
+    "The dispersion of the bands in a perodic potential appears "
+    "when the wave functions from neighboring minima overlap."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Quantization of pumped charge
@@ -281,16 +299,17 @@ x = np.linspace(-5, 15, 1000)
 y = [f(i) for i in x]
 
 plt.figure(figsize=(6, 4))
-plt.plot(x, y, 'k', lw=1.2)
+plt.plot(x, y, "k", lw=1.2)
 plt.xlim(-2.5, 12.5)
 plt.ylim(-2, 2)
 y = [i if i <= 0 else 0 for i in y]
-plt.fill_between(x, y, 0, color='r', where=np.array(y) <
-                 0.0, alpha=0.5, edgecolor='k', lw='1.5')
-plt.arrow(a, 1.05, -1, 0, head_width=0.1, head_length=0.4, fc='k', ec='k')
-plt.arrow(b, 1.05, +1, 0, head_width=0.1, head_length=0.4, fc='k', ec='k')
-plt.xlabel('$x$')
-plt.ylabel('$U(x)$')
+plt.fill_between(
+    x, y, 0, color="r", where=np.array(y) < 0.0, alpha=0.5, edgecolor="k", lw=1.5,
+)
+plt.arrow(a, 1.05, -1, 0, head_width=0.1, head_length=0.4, fc="k", ec="k")
+plt.arrow(b, 1.05, +1, 0, head_width=0.1, head_length=0.4, fc="k", ec="k")
+plt.xlabel("$x$")
+plt.ylabel("$U(x)$")
 plt.xticks([])
 plt.yticks([])
 plt.show()
@@ -364,32 +383,44 @@ The scattering problem in 1D can be solved quickly, so let's calculate the pumpe
 %%opts Path.Q (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts HLine (color=Cycle(values=['r', 'g', 'b', 'y']) linestyle='--')
 
+
 def plot_charge(mu):
     energy = 0.0
-    phases = np.linspace(0, 2*np.pi, 100)
-    p = SimpleNamespace(t=1, mu=mu, mu_lead=mu, A=0.6, omega= .3)
+    phases = np.linspace(0, 2 * np.pi, 100)
+    p = SimpleNamespace(t=1, mu=mu, mu_lead=mu, A=0.6, omega=0.3)
     syst = modulated_wire(L=100).finalized()
-    rs = [kwant.smatrix(syst, energy, args=[p]).submatrix(0, 0) for p.phase in phases]
+    rs = [
+        kwant.smatrix(syst, energy, params=dict(p=p)).submatrix(0, 0)
+        for p.phase in phases
+    ]
     wn = -total_charge(rs)
-    title = '$\mu={:.2}$'.format(mu)
-    kdims = [r'$t/T$', r'$q/e$']
-    plot = holoviews.Path((phases / (2 * np.pi), wn), kdims=kdims, label=title, group='Q')
-    return plot[:, -0.5:3.5](plot={'xticks': [0, 1], 'yticks': [0, 1, 2, 3]})
+    title = "$\mu={:.2}$".format(mu)
+    kdims = [r"$t/T$", r"$q/e$"]
+    plot = holoviews.Path(
+        (phases / (2 * np.pi), wn), kdims=kdims, label=title, group="Q"
+    )
+    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).opts(
+        plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3]}
+    )
 
 
-kwargs = {'ylims': [-0.2, 1.3],
-          'xticks': pi_ticks,
-          'yticks': [0, 0.5, 1.0],
-          'xdim': r'$k$',
-          'ydim': r'$E$',
-          'k_x': np.linspace(-np.pi, np.pi, 101),
-          'title': lambda p: "Band structure, $A={:.2}$".format(p.A)}
+kwargs = {
+    "ylims": [-0.2, 1.3],
+    "xticks": pi_ticks,
+    "yticks": [0, 0.5, 1.0],
+    "xdim": r"$k$",
+    "ydim": r"$E$",
+    "k_x": np.linspace(-np.pi, np.pi, 101),
+    "title": lambda p: "Band structure, $A={:.2}$".format(p.A),
+}
 
 p = SimpleNamespace(t=1, mu=0.0, phase=0.0, A=0.6)
 syst = ts_modulated_wire(L=17)
 mus = [0.1, 0.3, 0.6, 0.9]
 HLines = holoviews.Overlay([holoviews.HLine(mu) for mu in mus])
-spectrum(syst, p, **kwargs) * HLines + holoviews.Overlay([plot_charge(mu) for mu in mus]).relabel('Pumped charge')
+spectrum(syst, p, **kwargs) * HLines + holoviews.Overlay(
+    [plot_charge(mu) for mu in mus]
+).relabel("Pumped charge")
 ```
 
 In the left plot, we show the band structure, where the different colors correspond to different chemical potentials. The right plot shows the corresponding pumped charge. During the pumping cycle the charge may change, and the relation between the offset $\phi$ of the potential isn't always linear. However we see that after a full cycle, the pumped charge exactly matches the number of filled levels in a single potential well.
@@ -404,12 +435,12 @@ So there should be states crossing the bulk band gap. Let's see if it's true.
 ```python
 p = SimpleNamespace(t=1, mu=0.0, mu_lead=0, A=0.6, omega=0.3, phase=None)
 syst = modulated_wire(L=110).finalized()
-phases = np.linspace(0, 2*np.pi, 251)
-en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(args=[p])) for p.phase in phases]
+phases = np.linspace(0, 2 * np.pi, 251)
+en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(params=dict(p=p))) for p.phase in phases]
 en = np.array(en)
-ticks = {'xticks': [0, 1], 'yticks': [0, 0.5, 1]}
-kdims = [r'$t/T$', r'$E$']
-holoviews.Path((phases / (2*np.pi), en), kdims=kdims)[:, 0:1.2](plot=ticks)
+ticks = {"xticks": [0, 1], "yticks": [0, 0.5, 1]}
+kdims = [r"$t/T$", r"$E$"]
+holoviews.Path((phases / (2 * np.pi), en), kdims=kdims)[:, 0:1.2].opts(plot=ticks)
 ```
 
 Indeed, the levels in the bulk stay flat and have a high degeneracy, but we see that there are also single levels that get pushed across the gap. Since the bulk is homogeneous, these states have to be localized at the edge.
@@ -418,31 +449,39 @@ Of course, since we have a finite system, the charge cannot be pumped forever fr
 
 
 ```python
-question = ("What happens to the dependence of the reflection phase shift on time if we "
-            "remove one of the reservoirs and leave the other one?")
-answers = ["It becomes constant.",
-           "For most of the cycle it stays the same, but there appear "
-           "sharp jumps such that the total winding becomes zero.",
-           "Nothing changes, since the two ends of the pump are "
-           "far apart from each other, and the pump is not conducting.",
-           "The reflection phase gets a new time dependence with zero winding, unrelated to the original one."]
-explanation = ("The total pumped charge must become equal to zero since there's nowhere to place the charge, but "
-               "since the pump is insulating, the phase cannot change "
-               "for most of the cycle unless a sharp resonance appears")
+question = (
+    "What happens to the dependence of the reflection phase shift on time if we "
+    "remove one of the reservoirs and leave the other one?"
+)
+answers = [
+    "It becomes constant.",
+    "For most of the cycle it stays the same, but there appear "
+    "sharp jumps such that the total winding becomes zero.",
+    "Nothing changes, since the two ends of the pump are "
+    "far apart from each other, and the pump is not conducting.",
+    "The reflection phase gets a new time dependence with zero winding, unrelated to the original one.",
+]
+explanation = (
+    "The total pumped charge must become equal to zero since there's nowhere to place the charge, but "
+    "since the pump is insulating, the phase cannot change "
+    "for most of the cycle unless a sharp resonance appears"
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Quantized charge and scattering invariant
 
 
 ```python
-MoocVideo("6lXRAZ7hv7E", src_location='3.1-summary', res='360')
+MoocVideo("6lXRAZ7hv7E", src_location="3.1-summary", res="360")
 ```
 
 **Questions about what you learned? Ask them below**
 
 
 ```python
-MoocDiscussion('Questions', 'Quantum pumps')
+MoocDiscussion("Questions", "Quantum pumps")
 ```

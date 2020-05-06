@@ -1,7 +1,9 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 ```
 
@@ -88,17 +90,25 @@ This consideration only applies to closed systems. It does not apply if we are c
 
 
 ```python
-question = ("Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. "
-            "What is the ground state degeneracy of the system?")
-answers = ["Trick question - it is not possible to get N=7 pairs of Majorana modes with even parity.",
-           "2^7.",
-           "2^6.",
-           "14",
-           "The system has an energy gap, so it cannot be degenerate."]
-explanation = ("7 pairs of Majoranas means a Hilbert space with dimension 2^7, "
-               "out of which half have even total parity and half have odd total parity. "
-               "So the degeneracy at fixed even parity is 2^6.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=2, explanation=explanation)
+question = (
+    "Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. "
+    "What is the ground state degeneracy of the system?"
+)
+answers = [
+    "Trick question - it is not possible to get N=7 pairs of Majorana modes with even parity.",
+    "2^7.",
+    "2^6.",
+    "14",
+    "The system has an energy gap, so it cannot be degenerate.",
+]
+explanation = (
+    "7 pairs of Majoranas means a Hilbert space with dimension 2^7, "
+    "out of which half have even total parity and half have odd total parity. "
+    "So the degeneracy at fixed even parity is 2^6."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Non-Abelian statistics of Majoranas
@@ -183,16 +193,24 @@ Finally, you might object to the fact that the network of nanowires drawn in the
 
 
 ```python
-question = ("Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. "
-            "What happens when we exchange the pair of Majorana modes, starting from a given fermion parity eigenstate?")
-answers = ["The fermion parity of the state flips.",
-           "Nothing happens.",
-           "The system wave-function picks up a phase that depends on the fermion parity.",
-           "You end up in a superposition of the two states."]
-explanation = ("The total fermion parity cannot change, "
-               "but the two states can pick up a different phase. "
-               "This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity.")
-MoocMultipleChoiceAssessment(question, answers, correct_answer=2, explanation=explanation)
+question = (
+    "Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. "
+    "What happens when we exchange the pair of Majorana modes, starting from a given fermion parity eigenstate?"
+)
+answers = [
+    "The fermion parity of the state flips.",
+    "Nothing happens.",
+    "The system wave-function picks up a phase that depends on the fermion parity.",
+    "You end up in a superposition of the two states.",
+]
+explanation = (
+    "The total fermion parity cannot change, "
+    "but the two states can pick up a different phase. "
+    "This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity."
+)
+MoocMultipleChoiceAssessment(
+    question, answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # Majoranas and quantum computation: basic ideas
@@ -224,5 +242,5 @@ MoocVideo("V3e9r4S8GHs", src_location="2.3-summary")
 
 
 ```python
-MoocDiscussion('Questions', 'Non-Abelian statistics of Majorana modes')
+MoocDiscussion("Questions", "Non-Abelian statistics of Majorana modes")
 ```

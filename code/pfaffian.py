@@ -1,11 +1,12 @@
 """A package for computing Pfaffians"""
 
 
+import cmath
+import math
+
 import numpy as np
 import scipy.linalg as la
 import scipy.sparse as sp
-import math
-import cmath
 
 
 def householder_real(x):
@@ -24,7 +25,7 @@ def householder_real(x):
     if sigma == 0:
         return (np.zeros(x.shape[0]), 0, x[0])
     else:
-        norm_x = math.sqrt(x[0]**2+sigma)
+        norm_x = math.sqrt(x[0] ** 2 + sigma)
 
         v = x.copy()
 
@@ -57,17 +58,17 @@ def householder_complex(x):
     if sigma == 0:
         return (np.zeros(x.shape[0]), 0, x[0])
     else:
-        norm_x = cmath.sqrt(x[0].conjugate()*x[0]+sigma)
+        norm_x = cmath.sqrt(x[0].conjugate() * x[0] + sigma)
 
         v = x.copy()
 
-        phase = cmath.exp(1j*math.atan2(x[0].imag, x[0].real))
+        phase = cmath.exp(1j * math.atan2(x[0].imag, x[0].real))
 
-        v[0] += phase*norm_x
+        v[0] += phase * norm_x
 
         v /= np.linalg.norm(v)
 
-    return (v, 2, -phase*norm_x)
+    return (v, 2, -phase * norm_x)
 
 
 def skew_tridiagonalize(A, overwrite_a=False, calc_q=True):
@@ -90,7 +91,7 @@ def skew_tridiagonalize(A, overwrite_a=False, calc_q=True):
     # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
     # Check if it's skew-symmetric
-    assert abs((A+A.T).max()) < 1e-14
+    assert abs((A + A.T).max()) < 1e-14
 
     n = A.shape[0]
     A = np.asarray(A)  # the slice views work only properly for arrays
@@ -109,24 +110,24 @@ def skew_tridiagonalize(A, overwrite_a=False, calc_q=True):
     if calc_q:
         Q = np.eye(A.shape[0], dtype=A.dtype)
 
-    for i in range(A.shape[0]-2):
+    for i in range(A.shape[0] - 2):
         # Find a Householder vector to eliminate the i-th column
-        v, tau, alpha = householder(A[i+1:, i])
-        A[i+1, i] = alpha
-        A[i, i+1] = -alpha
-        A[i+2:, i] = 0
-        A[i, i+2:] = 0
+        v, tau, alpha = householder(A[i + 1 :, i])
+        A[i + 1, i] = alpha
+        A[i, i + 1] = -alpha
+        A[i + 2 :, i] = 0
+        A[i, i + 2 :] = 0
 
         # Update the matrix block A(i+1:N,i+1:N)
-        w = tau * A[i+1:, i+1:] @ v.conj()
-        A[i+1:, i+1:] += np.outer(v, w)-np.outer(w, v)
+        w = tau * A[i + 1 :, i + 1 :] @ v.conj()
+        A[i + 1 :, i + 1 :] += np.outer(v, w) - np.outer(w, v)
 
         if calc_q:
             # Accumulate the individual Householder reflections
             # Accumulate them in the form P_1*P_2*..., which is
             # (..*P_2*P_1)^dagger
-            y = tau * Q[:, i+1:] @ v
-            Q[:, i+1:] -= np.outer(y, v.conj())
+            y = tau * Q[:, i + 1 :] @ v
+            Q[:, i + 1 :] -= np.outer(y, v.conj())
 
     if calc_q:
         return (np.asmatrix(A), np.asmatrix(Q))
@@ -150,7 +151,7 @@ def skew_LTL(A, overwrite_a=False, calc_L=True, calc_P=True):
     # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
     # Check if it's skew-symmetric
-    assert abs((A+A.T).max()) < 1e-14
+    assert abs((A + A.T).max()) < 1e-14
 
     n = A.shape[0]
     A = np.asarray(A)  # the slice views work only properly for arrays
@@ -164,50 +165,50 @@ def skew_LTL(A, overwrite_a=False, calc_L=True, calc_P=True):
     if calc_P:
         Pv = np.arange(n)
 
-    for k in range(n-2):
+    for k in range(n - 2):
         # First, find the largest entry in A[k+1:,k] and
         # permute it to A[k+1,k]
-        kp = k+1+np.abs(A[k+1:, k]).argmax()
+        kp = k + 1 + np.abs(A[k + 1 :, k]).argmax()
 
         # Check if we need to pivot
-        if kp != k+1:
+        if kp != k + 1:
             # interchange rows k+1 and kp
-            temp = A[k+1, k:].copy()
-            A[k+1, k:] = A[kp, k:]
+            temp = A[k + 1, k:].copy()
+            A[k + 1, k:] = A[kp, k:]
             A[kp, k:] = temp
 
             # Then interchange columns k+1 and kp
-            temp = A[k:, k+1].copy()
-            A[k:, k+1] = A[k:, kp]
+            temp = A[k:, k + 1].copy()
+            A[k:, k + 1] = A[k:, kp]
             A[k:, kp] = temp
 
             if calc_L:
                 # permute L accordingly
-                temp = L[k+1, 1:k+1].copy()
-                L[k+1, 1:k+1] = L[kp, 1:k+1]
-                L[kp, 1:k+1] = temp
+                temp = L[k + 1, 1 : k + 1].copy()
+                L[k + 1, 1 : k + 1] = L[kp, 1 : k + 1]
+                L[kp, 1 : k + 1] = temp
 
             if calc_P:
                 # accumulate the permutation matrix
-                temp = Pv[k+1]
-                Pv[k+1] = Pv[kp]
+                temp = Pv[k + 1]
+                Pv[k + 1] = Pv[kp]
                 Pv[kp] = temp
 
         # Now form the Gauss vector
-        if A[k+1, k] != 0.0:
-            tau = A[k+2:, k].copy()
-            tau /= A[k+1, k]
+        if A[k + 1, k] != 0.0:
+            tau = A[k + 2 :, k].copy()
+            tau /= A[k + 1, k]
 
             # clear eliminated row and column
-            A[k+2:, k] = 0.0
-            A[k, k+2:] = 0.0
+            A[k + 2 :, k] = 0.0
+            A[k, k + 2 :] = 0.0
 
             # Update the matrix block A(k+2:,k+2)
-            A[k+2:, k+2:] += np.outer(tau, A[k+2:, k+1])
-            A[k+2:, k+2:] -= np.outer(A[k+2:, k+1], tau)
+            A[k + 2 :, k + 2 :] += np.outer(tau, A[k + 2 :, k + 1])
+            A[k + 2 :, k + 2 :] -= np.outer(A[k + 2 :, k + 1], tau)
 
             if calc_L:
-                L[k+2:, k+1] = tau
+                L[k + 2 :, k + 1] = tau
 
     if calc_P:
         # form the permutation matrix as a sparse matrix
@@ -225,7 +226,7 @@ def skew_LTL(A, overwrite_a=False, calc_L=True, calc_P=True):
             return np.asmatrix(A)
 
 
-def pfaffian(A, overwrite_a=False, method='P'):
+def pfaffian(A, overwrite_a=False, method="P"):
     """ pfaffian(A, overwrite_a=False, method='P')
 
     Compute the Pfaffian of a real or complex skew-symmetric
@@ -237,11 +238,11 @@ def pfaffian(A, overwrite_a=False, method='P'):
     # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
     # Check if it's skew-symmetric
-    assert abs((A+A.T).max()) < 1e-14, abs((A+A.T).max())
+    assert abs((A + A.T).max()) < 1e-14, abs((A + A.T).max())
     # Check that the method variable is appropriately set
-    assert method == 'P' or method == 'H'
+    assert method == "P" or method == "H"
 
-    if method == 'P':
+    if method == "P":
         return pfaffian_LTL(A, overwrite_a)
     else:
         return pfaffian_householder(A, overwrite_a)
@@ -258,7 +259,7 @@ def pfaffian_LTL(A, overwrite_a=False):
     # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
     # Check if it's skew-symmetric
-    assert abs((A+A.T).max()) < 1e-14
+    assert abs((A + A.T).max()) < 1e-14
 
     n = A.shape[0]
     A = np.asarray(A)  # the slice views work only properly for arrays
@@ -272,37 +273,37 @@ def pfaffian_LTL(A, overwrite_a=False):
 
     pfaffian_val = 1.0
 
-    for k in range(0, n-1, 2):
+    for k in range(0, n - 1, 2):
         # First, find the largest entry in A[k+1:,k] and
         # permute it to A[k+1,k]
-        kp = k+1+np.abs(A[k+1:, k]).argmax()
+        kp = k + 1 + np.abs(A[k + 1 :, k]).argmax()
 
         # Check if we need to pivot
-        if kp != k+1:
+        if kp != k + 1:
             # interchange rows k+1 and kp
-            temp = A[k+1, k:].copy()
-            A[k+1, k:] = A[kp, k:]
+            temp = A[k + 1, k:].copy()
+            A[k + 1, k:] = A[kp, k:]
             A[kp, k:] = temp
 
             # Then interchange columns k+1 and kp
-            temp = A[k:, k+1].copy()
-            A[k:, k+1] = A[k:, kp]
+            temp = A[k:, k + 1].copy()
+            A[k:, k + 1] = A[k:, kp]
             A[k:, kp] = temp
 
             # every interchange corresponds to a "-" in det(P)
             pfaffian_val *= -1
 
         # Now form the Gauss vector
-        if A[k+1, k] != 0.0:
-            tau = A[k, k+2:].copy()
-            tau /= A[k, k+1]
+        if A[k + 1, k] != 0.0:
+            tau = A[k, k + 2 :].copy()
+            tau /= A[k, k + 1]
 
-            pfaffian_val *= A[k, k+1]
+            pfaffian_val *= A[k, k + 1]
 
-            if k+2 < n:
+            if k + 2 < n:
                 # Update the matrix block A(k+2:,k+2)
-                A[k+2:, k+2:] += np.outer(tau, A[k+2:, k+1])
-                A[k+2:, k+2:] -= np.outer(A[k+2:, k+1], tau)
+                A[k + 2 :, k + 2 :] += np.outer(tau, A[k + 2 :, k + 1])
+                A[k + 2 :, k + 2 :] -= np.outer(A[k + 2 :, k + 1], tau)
         else:
             # if we encounter a zero on the super/subdiagonal, the
             # Pfaffian is 0
@@ -327,7 +328,7 @@ def pfaffian_householder(A, overwrite_a=False):
     # Check if matrix is square
     assert A.shape[0] == A.shape[1] > 0
     # Check if it's skew-symmetric
-    assert abs((A+A.T).max()) < 1e-14
+    assert abs((A + A.T).max()) < 1e-14
 
     n = A.shape[0]
 
@@ -348,26 +349,26 @@ def pfaffian_householder(A, overwrite_a=False):
     if not overwrite_a:
         A = A.copy()
 
-    pfaffian_val = 1.
+    pfaffian_val = 1.0
 
-    for i in range(A.shape[0]-2):
+    for i in range(A.shape[0] - 2):
         # Find a Householder vector to eliminate the i-th column
-        v, tau, alpha = householder(A[i+1:, i])
-        A[i+1, i] = alpha
-        A[i, i+1] = -alpha
-        A[i+2:, i] = 0
-        A[i, i+2:] = 0
+        v, tau, alpha = householder(A[i + 1 :, i])
+        A[i + 1, i] = alpha
+        A[i, i + 1] = -alpha
+        A[i + 2 :, i] = 0
+        A[i, i + 2 :] = 0
 
         # Update the matrix block A(i+1:N,i+1:N)
-        w = tau * A[i+1:, i+1:] @ v.conj()
-        A[i+1:, i+1:] += np.outer(v, w) - np.outer(w, v)
+        w = tau * A[i + 1 :, i + 1 :] @ v.conj()
+        A[i + 1 :, i + 1 :] += np.outer(v, w) - np.outer(w, v)
 
         if tau != 0:
-            pfaffian_val *= 1-tau
+            pfaffian_val *= 1 - tau
         if i % 2 == 0:
             pfaffian_val *= -alpha
 
-    pfaffian_val *= A[n-2, n-1]
+    pfaffian_val *= A[n - 2, n - 1]
 
     return pfaffian_val
 
@@ -384,7 +385,8 @@ def pfaffian_schur(A, overwrite_a=False):
     """
 
     assert np.issubdtype(A.dtype, np.number) and not np.issubdtype(
-        A.dtype, np.complexfloating)
+        A.dtype, np.complexfloating
+    )
 
     assert A.shape[0] == A.shape[1] > 0
 
@@ -394,6 +396,6 @@ def pfaffian_schur(A, overwrite_a=False):
     if A.shape[0] % 2 == 1:
         return 0
 
-    (t, z) = la.schur(A, output='real', overwrite_a=overwrite_a)
+    (t, z) = la.schur(A, output="real", overwrite_a=overwrite_a)
     l = np.diag(t, 1)
     return np.prod(l[::2]) * la.det(z)

@@ -1,19 +1,23 @@
 ```python
 import sys
-sys.path.append('../code')
+
+sys.path.append("../../code")
 from init_mooc_nb import *
+
 init_notebook()
 %output size = 150
 import scipy
 from matplotlib import cm
 
 bhz_parameters = {
-    'topo': {'A': 0.5, 'B': 1.00, 'D': 0.0, 'M': 1.0,  'del_z': 0.0},
-    'triv': {'A': 0.5, 'B': 1.00, 'D': 0.0, 'M': -1.0,  'del_z': 0.0},
-    'topo2': {'A': 0.5, 'B': 1.00, 'D': 0.3, 'M': 1.0,  'del_z': 0.0},
-    'slowed': {'A': 0.05, 'B': 0.08, 'D': 0.15, 'M': -0.3,  'del_z': 0.5}}
+    "topo": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 1.0, "del_z": 0.0},
+    "triv": {"A": 0.5, "B": 1.00, "D": 0.0, "M": -1.0, "del_z": 0.0},
+    "topo2": {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0},
+    "slowed": {"A": 0.05, "B": 0.08, "D": 0.15, "M": -0.3, "del_z": 0.5},
+}
 
 # Onsite and hoppings for bhz model
+
 
 def onsite(site, p):
     return (p.M - 4 * p.B) * pauli.s0sz - 4 * p.D * pauli.s0s0 + p.del_z * pauli.sysy
@@ -39,7 +43,7 @@ def bhz(w=20):
         x2, y2 = site2.pos
         return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
 
-    slowed_par = SimpleNamespace(Bz=0, **bhz_parameters['slowed'])
+    slowed_par = SimpleNamespace(Bz=0, **bhz_parameters["slowed"])
     if w is None:
         syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
         syst[lat.shape(lambda pos: True, (0, 0))] = onsite
@@ -52,11 +56,15 @@ def bhz(w=20):
         syst[kwant.HoppingKind((0, 1), lat)] = hopy
 
         syst[lat(0, -1)] = lambda site, p: onsite(site, slowed_par)
-        syst[lat(1, -1), lat(0, -1)] = lambda site1, site2, p: hopping_x(site1, site2, slowed_par)
+        syst[lat(1, -1), lat(0, -1)] = lambda site1, site2, p: hopping_x(
+            site1, site2, slowed_par
+        )
         syst[lat(0, 0), lat(0, -1)] = hopy
 
         syst[lat(0, w)] = lambda site, p: onsite(site, slowed_par)
-        syst[lat(1, w), lat(0, w)] = lambda site1, site2, p: hopping_x(site1, site2, slowed_par)
+        syst[lat(1, w), lat(0, w)] = lambda site1, site2, p: hopping_x(
+            site1, site2, slowed_par
+        )
         syst[lat(0, w), lat(0, w - 1)] = hopy
 
     return syst
@@ -64,9 +72,10 @@ def bhz(w=20):
 
 def bhz_cylinder(w=3):
     """ Make cylinder system with bhz model. """
+
     def ribbon_shape(pos):
         (x, y) = pos
-        return (0 <= y < w)
+        return 0 <= y < w
 
     lat = kwant.lattice.square(norbs=4)
     sym = kwant.TranslationalSymmetry((1, 0))
@@ -96,11 +105,11 @@ def bhz_cylinder(w=3):
 def make_lead(t, trs=None):
     def ribbon_shape(pos):
         (x, y) = pos
-        return (0 <= y < 2)
+        return 0 <= y < 2
 
     lat = kwant.lattice.square(norbs=4)
     sym = kwant.TranslationalSymmetry((1, 0))
-    syst = kwant.Builder(sym, time_reversal=1j*pauli.sys0)
+    syst = kwant.Builder(sym, time_reversal=1j * pauli.sys0)
 
     syst[lat.shape(ribbon_shape, (0, 0))] = 1.8 * t * pauli.s0sz
     syst[kwant.HoppingKind((1, 0), lat)] = -t * pauli.s0sz
@@ -126,10 +135,9 @@ def make_scatter_sys():
 
 
 def scattering_det_pfaff(syst, p):
-
     def pfaffian(syst, p, ky):
         p.ky = ky
-        smat = kwant.smatrix(syst, energy=0.0, args=[p]).data
+        smat = kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data
         # since we get relatively large numerical errors we project the matrix on
         # the space of antisymmetric matrices
         smat = 0.5 * (smat - smat.T)
@@ -138,23 +146,24 @@ def scattering_det_pfaff(syst, p):
     pfaff = [pfaffian(syst, p, 0), pfaffian(syst, p, np.pi)]
 
     ks = np.linspace(0.0, np.pi, 50)
-    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, args=[p]).data) for p.ky in ks]
+    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data) for p.ky in ks]
     det = np.array(det)
 
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    kdims = ['$k_y$', 'phase']
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims)(style={'color': 'b'})
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)(style={'color': 'g'})
+    kdims = ["$k_y$", "phase"]
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={"color": "b"})
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
+        style={"color": "g"}
+    )
     xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
-    pi_ticks = [(-np.pi, r'$-\pi$'), (0, '$0$'), (np.pi, r'$\pi$')]
-    ticks = {'xticks': [(0, '0'), (np.pi, '$\pi$')], 'yticks': pi_ticks}
-    return plot.relabel('Winding', depth=1)[xlims, ylims](plot=ticks)
+    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+    ticks = {"xticks": [(0, "0"), (np.pi, "$\pi$")], "yticks": pi_ticks}
+    return plot.relabel("Winding", depth=1)[xlims, ylims].opts(plot=ticks)
 
 
 def title(p):
-    title = r'$A={:.2}$, $B={:.2}$, $D={:.2}$, $M={:.2}$'
+    title = r"$A={:.2}$, $B={:.2}$, $D={:.2}$, $M={:.2}$"
     return title.format(p.A, p.B, p.D, p.M)
-
 ```
 
 # Introduction
@@ -163,7 +172,7 @@ Charles Kane from the University of Pennsylvania will introduce today's lecture 
 
 
 ```python
-MoocVideo("n5oUQvvsYd0", src_location='5.1-intro', res='360')
+MoocVideo("n5oUQvvsYd0", src_location="5.1-intro", res="360")
 ```
 
 # Adding symmetry to a topological insulator
@@ -296,7 +305,7 @@ This is the discovery that Charles Kane described in the introductory video. We 
 ```python
 N = 3
 np.random.seed(12)
-S = kwant.rmt.circular(N*2, sym='AII')
+S = kwant.rmt.circular(N * 2, sym="AII")
 
 pprint_matrix(S)
 ```
@@ -306,11 +315,11 @@ and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
 
 ```python
 r = S[:N, :N]
-print('Reflection eigenvalues')
+print("Reflection eigenvalues")
 pprint_matrix(np.linalg.eigvalsh(r @ r.T.conj()))
 
 t = S[:N, N:]
-print('Transmission eigenvalues')
+print("Transmission eigenvalues")
 pprint_matrix(np.linalg.eigvalsh(t @ t.T.conj())[::-1])
 ```
 
@@ -350,19 +359,27 @@ However, the quantized spin Hall current is not a general property of a quantum 
 
 
 ```python
-question = ("Consider the simple case where spin is conserved. "
-            "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
-            "you manage to apply a *spin-polarized* current between terminals 1 and 2?")
+question = (
+    "Consider the simple case where spin is conserved. "
+    "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
+    "you manage to apply a *spin-polarized* current between terminals 1 and 2?"
+)
 
-answers = ["The system will develop an opposite spin-polarized current to compensate the effect.",
-           "A spin-polarized current will develop between terminals 3 and 4.",
-           "A voltage difference will develop between terminals 3 and 4.",
-           "It is impossible to apply such a current unless the bulk gap closes."]
+answers = [
+    "The system will develop an opposite spin-polarized current to compensate the effect.",
+    "A spin-polarized current will develop between terminals 3 and 4.",
+    "A voltage difference will develop between terminals 3 and 4.",
+    "It is impossible to apply such a current unless the bulk gap closes.",
+]
 
-explanation = ("The spin-polarized current will create an electron population imbalance between terminals 3 and 4. "
-               "Hence, similar to the Hall effect, a voltage will develop orthogonal to the current.")
+explanation = (
+    "The spin-polarized current will create an electron population imbalance between terminals 3 and 4. "
+    "Hence, similar to the Hall effect, a voltage will develop orthogonal to the current."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=2, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=2, explanation=explanation
+)
 ```
 
 # A model for the quantum spin Hall insulator
@@ -391,12 +408,12 @@ By changing the sign of $M$ from negative to positive, you get a gap closing at 
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(Bz=0.0, **bhz_parameters['topo2'])
+p = SimpleNamespace(Bz=0.0, **bhz_parameters["topo2"])
 syst = bhz(w=None)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
-kwargs = {'k_x': k, 'k_y': k, 'title': title}
+kwargs = {"k_x": k, "k_y": k, "title": title}
 Ms = np.linspace(-1, 1, 11)
-holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r'$M$'])
+holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r"$M$"])
 ```
 
 This gap closing turns your trivial insulator into a topologically non-trivial quantum spin Hall insulator.
@@ -425,22 +442,26 @@ So let's look at the energy spectrum of a cylinder as a function of $k$ (or equi
 
 
 ```python
-half_pi_ticks = [(0, '$0$'), (np.pi/2, r'$\pi/2$'), (np.pi, r'$\pi$')]
-style = {'k_x': np.linspace(0, np.pi, 101),
-         'xdim': r'$k$',
-         'ydim': r'$E$',
-         'xticks': half_pi_ticks,
-         'yticks': np.linspace(-2, 2, 9),
-         'xlims': [0, np.pi],
-         'ylims': [-2, 2],
-         'title': title}
+half_pi_ticks = [(0, "$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
+style = {
+    "k_x": np.linspace(0, np.pi, 101),
+    "xdim": r"$k$",
+    "ydim": r"$E$",
+    "xticks": half_pi_ticks,
+    "yticks": np.linspace(-2, 2, 9),
+    "xlims": [0, np.pi],
+    "ylims": [-2, 2],
+    "title": title,
+}
 
 syst = bhz(20)
-p1 = SimpleNamespace(Bz=0, **bhz_parameters['topo'])
-p2 = SimpleNamespace(Bz=0, **bhz_parameters['triv'])
+p1 = SimpleNamespace(Bz=0, **bhz_parameters["topo"])
+p2 = SimpleNamespace(Bz=0, **bhz_parameters["triv"])
 
-(spectrum(syst, p1, **style).relabel('Topological') * holoviews.HLine(0) +
- spectrum(syst, p2, **style).relabel('Trivial') * holoviews.HLine(0))
+(
+    spectrum(syst, p1, **style).relabel("Topological") * holoviews.HLine(0)
+    + spectrum(syst, p2, **style).relabel("Trivial") * holoviews.HLine(0)
+)
 ```
 
 In both cases you see that at $k=0$ there are isolated pairs of states with degenerate energies, between the valence and conduction bands. The Fermi energy is set at $E=0$, in the middle of the gap between conduction and valence bands. These states are the Kramers pairs at the edges - one pair for the topological case, two for the trivial case.
@@ -487,14 +508,18 @@ In the plot below, we show how this trajectory changes for our cylinder geometry
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(a=1.0, Bz=0.0, ky=None, **bhz_parameters['topo2'])
+p = SimpleNamespace(a=1.0, Bz=0.0, ky=None, **bhz_parameters["topo2"])
 syst = bhz(w=None)
 scat_syst = make_scatter_sys()
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
-kwargs = {'k_x': k, 'k_y': k, 'title': title}
+kwargs = {"k_x": k, "k_y": k, "title": title}
 Ms = np.linspace(-1, 1, 11)
-(holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r'$M$'])+
- holoviews.HoloMap({p.M: scattering_det_pfaff(scat_syst, p) for p.M in Ms}, kdims=[r'$M$']))
+(
+    holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r"$M$"])
+    + holoviews.HoloMap(
+        {p.M: scattering_det_pfaff(scat_syst, p) for p.M in Ms}, kdims=[r"$M$"]
+    )
+)
 ```
 
 We now have a quantity equal to $\pm 1$, which cannot change continuously unless there's a gap closing (when there's a gap closing, $\det r$ becomes equal to $0$). It is relatively hard to prove that this invariant counts the pumping of fermion parity, but if you're interested, check out this paper:
@@ -579,27 +604,35 @@ Such a band inversion is not impossible to achieve in real materials, and can be
 
 
 ```python
-question = ("What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
-            "in the topological phase (i.e., both with $Q=-1$)?")
+question = (
+    "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
+    "in the topological phase (i.e., both with $Q=-1$)?"
+)
 
-answers = ["The system has edge states and is therefore topologically non-trivial.",
-           "The total number of odd parity occupied orbitals must be even, so you get $Q=1$.",
-           "It depends on whether the helical states in the two layers have same "
-           "or opposite spin for a given direction.",
-           "The invariant depends on the number of edge Dirac points at $k$ away from 0."]
+answers = [
+    "The system has edge states and is therefore topologically non-trivial.",
+    "The total number of odd parity occupied orbitals must be even, so you get $Q=1$.",
+    "It depends on whether the helical states in the two layers have same "
+    "or opposite spin for a given direction.",
+    "The invariant depends on the number of edge Dirac points at $k$ away from 0.",
+]
 
-explanation = ("Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  "
-               "we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be "
-               "$Q=1$.")
+explanation = (
+    "Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  "
+    "we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be "
+    "$Q=1$."
+)
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=1, explanation=explanation)
+MoocMultipleChoiceAssessment(
+    question=question, answers=answers, correct_answer=1, explanation=explanation
+)
 ```
 
 # Summary
 
 
 ```python
-MoocVideo("ft9ppqqLhH4", src_location='5.1-summary', res='360')
+MoocVideo("ft9ppqqLhH4", src_location="5.1-summary", res="360")
 ```
 
 **Questions about what you just learned? Ask them below!**
