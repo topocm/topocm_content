@@ -62,7 +62,7 @@ def spectrum(
     -----------
     syst : kwant.Builder object
         The un-finalized (in)finite system.
-    p : SimpleNamespace object
+    p : SimpleNamespace object or a dictionary
         A container used to store Hamiltonian parameters. The parameters that
         are sequences are used as plot axes.
     k_x, k_y, k_z : floats or sequences of floats
@@ -224,14 +224,14 @@ def h_k(syst, p, momentum):
     return hamiltonian_array(syst, p, momentum)[0]
 
 
-def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
+def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     """Evaluate the Hamiltonian of a system over a grid of parameters.
 
     Parameters:
     -----------
     syst : kwant.Builder object
         The un-finalized kwant system whose Hamiltonian is calculated.
-    p : SimpleNamespace object
+    params : SimpleNamespace or dictionary
         A container of Hamiltonian parameters. The parameters that are
         sequences are used to loop over.
     k_x, k_y, k_z : floats or sequences of floats
@@ -259,14 +259,23 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
     ...                   np.linspace(-np.pi, np.pi))
 
     """
-    if p is None:
-        p = SimpleNamespace()
+    if params is None:
+        params = SimpleNamespace()
+
+    compat = isinstance(params, SimpleNamespace)
+
+    # Prevent accidental mutation of input
+    params = copy(params)
+
+    if compat:
+        params = params.__dict__
+
     try:
         space_dimensionality = syst.symmetry.periods.shape[-1]
     except AttributeError:
         space_dimensionality = 0
     dimensionality = syst.symmetry.num_directions
-    pars = copy(p)
+
     if dimensionality == 0:
         syst = syst.finalized()
 
@@ -298,7 +307,7 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         syst = kwant.wraparound.wraparound(syst).finalized()
 
     changing = dict()
-    for key, value in pars.__dict__.items():
+    for key, value in params.items():
         if isinstance(value, collections.Iterable):
             changing[key] = value
 
@@ -312,24 +321,24 @@ def hamiltonian_array(syst, p=None, k_x=0, k_y=0, k_z=0, return_grid=False):
         if isinstance(value, collections.Iterable):
             changing[key] = value
 
-    if not changing:
-        hamiltonians = syst.hamiltonian_submatrix(
-            params=dict(p=pars, **momentum_to_lattice([k_x, k_y, k_z])), sparse=False
-        )[None, ...]
-        if return_grid:
-            return hamiltonians, []
-        else:
-            return hamiltonians
 
     def hamiltonian(**values):
-        pars.__dict__.update(values)
-        k = [values.get("k_x", k_x), values.get("k_y", k_y), values.get("k_z", k_z)]
+        k = [values.pop("k_x", k_x), values.pop("k_y", k_y), values.pop("k_z", k_z)]
+        params.update(values)
         k = momentum_to_lattice(k)
-        return syst.hamiltonian_submatrix(params=dict(p=pars, **k), sparse=False)
+        if not compat:
+            system_params = {**params, **k}
+        else:
+            system_params = {"p": SimpleNamespace(**params), **k}
+        return syst.hamiltonian_submatrix(params=system_params, sparse=False)
 
     names, values = zip(*sorted(changing.items()))
+
+
     hamiltonians = [
         hamiltonian(**dict(zip(names, value))) for value in itertools.product(*values)
+    ] if changing else [
+        hamiltonian(k_x=k_x, k_y=k_y, k_z=k_z)
     ]
     size = list(hamiltonians[0].shape)
 

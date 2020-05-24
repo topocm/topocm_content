@@ -148,7 +148,7 @@ def init_notebook():
     options.Curve = Options("style", linewidth=2, color="black")
     options.Curve = Options("plot", padding=0, aspect="square", title="{label}")
     options.Overlay = Options("plot", padding=0, show_legend=False, title="{label}")
-    options.Layout = Options("plot", title="{label}")
+    options.Layout = Options("plot", title="{label}", tight=True)
     options.Surface = Options(
         "style", cmap="RdBu_r", rstride=2, cstride=2, lw=0.2, edgecolor="black"
     )
