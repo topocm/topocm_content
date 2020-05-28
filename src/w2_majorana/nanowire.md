@@ -8,94 +8,6 @@ init_notebook()
 %output size=110
 from holoviews.core.options import Cycle
 
-
-def nanowire_chain():
-    lat = kwant.lattice.chain()
-    syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-
-    def onsite(onsite, p):
-        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
-
-    syst[lat(0)] = onsite
-
-    def hop(site1, site2, p):
-        return -p.t * pauli.szs0 - 0.5j * p.alpha * pauli.szsx
-
-    syst[kwant.HoppingKind((1,), lat)] = hop
-
-    return syst
-
-
-def spinful_kitaev_chain():
-    lat = kwant.lattice.chain()
-    syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-
-    def onsite(site, p):
-        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.szsz
-
-    syst[lat(0)] = onsite
-
-    def hop(site1, site2, p):
-        return -p.t * pauli.szs0 - 1j * p.delta * pauli.sys0
-
-    syst[kwant.HoppingKind((1,), lat)] = hop
-
-    return syst
-
-
-def find_gap(syst, p, resolution=1e-4):
-    """Find gap in a system by doing a binary search in energy."""
-
-    # This tells us if there are modes at a certain energy.
-    if len(syst.modes(energy=0, params=dict(p=p))[0].momenta):
-        return 0
-
-    gap = step = min(abs(kwant.physics.Bands(syst, params=dict(p=p))(k=0))) / 2
-    while step > resolution:
-        step /= 2
-        if len(syst.modes(gap, params=dict(p=p))[0].momenta):
-            gap -= step
-        else:
-            gap += step
-
-    return gap
-
-
-def spinorbit_band_gap(syst, mu, t, delta, Bs):
-    syst = syst.finalized()
-    alphas = [0.0, 0.1, 0.2, 0.3]
-    p = SimpleNamespace(mu=mu, t=t, delta=delta)
-
-    def gap(syst, p, alpha, B):
-        p.alpha = alpha
-        p.B = B
-        return find_gap(syst, p)
-
-    gaps = [gap(syst, p, alpha, B) for alpha in alphas for B in Bs]
-    gaps = np.reshape(gaps, (len(alphas), -1))
-    dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
-    B_crit = holoviews.VLine(np.sqrt(p.delta ** 2 + p.mu ** 2))
-    plot = [
-        holoviews.Curve((Bs, gaps[i]), label=r"$\alpha={}$".format(alphas[i]), **dims)
-        * B_crit
-        for i, alpha in enumerate(alphas)
-    ]
-    title = r"$\Delta={:.2}$, $\mu={:.2}$".format(p.delta, p.mu)
-    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
-    plot = holoviews.Overlay(plot)
-    return plot.opts(plot=style)
-
-
-def title(p):
-    try:
-        title = r"$\alpha={:.2}$, $\mu={:.2}$, $B={:.2}$, $\Delta={:.2}$"
-        title = title.format(p.alpha, p.mu, p.B, p.delta)
-    except AttributeError:
-        title = r"$\mu={:.2}$, $B={:.2}$, $\Delta={:.2}$"
-        title = title.format(p.mu, p.B, p.delta)
-    return title
-
-
 style = {
     "k_x": np.linspace(-1, 1, 101),
     "xdim": r"$k$",
@@ -104,7 +16,6 @@ style = {
     "yticks": [-1, 0, 1],
     "xlims": [-1, 1],
     "ylims": [-1.5, 1.5],
-    "title": title,
 }
 ```
 
@@ -153,13 +64,26 @@ The effective electron mass $m$ is just the coefficient of the expansion. Let's 
 
 
 ```python
-syst = spinful_kitaev_chain()
-p1 = SimpleNamespace(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
-p2 = SimpleNamespace(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
+lat = kwant.lattice.chain(norbs=4)
+spinful_kitaev_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
+def onsite(site, t, mu, B):
+    return (2 * t - mu) * pauli.szs0 + B * pauli.szsz
+
+spinful_kitaev_chain[lat(0)] = onsite
+
+def hop(site1, site2, t, delta):
+    return -t * pauli.szs0 - 1j * delta * pauli.sys0
+
+spinful_kitaev_chain[kwant.HoppingKind((1,), lat)] = hop
+
+
+params_trivial = dict(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
+params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
 (
-    spectrum(syst, p1, **style).relabel("Trivial bandstructure")
-    + spectrum(syst, p2, **style).relabel("Topological bandstructure")
+    spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Trivial bandstructure")
+    + spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Topological bandstructure")
 )
 ```
 
@@ -183,10 +107,18 @@ Let's look at what happens with the dispersion as we increase the magnetic field
 
 
 ```python
-syst = spinful_kitaev_chain()
-p = SimpleNamespace(t=1.0, delta=0.1, mu=0.3, B=None)
+def title(params):
+    return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+
+params = dict(t=1.0, delta=0.1, mu=0.3, B=None)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r"$B$"])
+holoviews.HoloMap(
+    {
+        params["B"]: spectrum(spinful_kitaev_chain, params, title=title, **style)
+        for params["B"] in Bs
+    },
+    kdims=[r"$B$"]
+)
 ```
 
 We now see that we resolved the first problem:
@@ -271,10 +203,24 @@ So does this now mean that we "broke" the bulk-edge correspondence? Let's look a
 
 
 ```python
-syst = nanowire_chain()
-p = SimpleNamespace(t=1.0, mu=0.0, delta=0.1, alpha=0.0, B=None)
+nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
+def onsite(onsite, t, mu, B, delta):
+    return (2 * t - mu) * pauli.szs0 + B * pauli.s0sz + delta * pauli.sxs0
+
+nanowire_chain[lat(0)] = onsite
+
+def hop(site1, site2, t, alpha):
+    return -t * pauli.szs0 - 0.5j * alpha * pauli.szsx
+
+nanowire_chain[kwant.HoppingKind((1,), lat)] = hop
+
+def title(p):
+    return r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**p)
+
+params = dict(t=1.0, mu=0.0, delta=0.1, alpha=0.0)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({p.B: spectrum(syst, p, **style) for p.B in Bs}, kdims=[r"$B$"])
+holoviews.HoloMap({params["B"]: spectrum(nanowire_chain, params, **style, title=title) for params["B"] in Bs}, kdims=[r"$B$"])
 ```
 
 Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That in turn means that they cannot appear, and that means that the system cannot be gapped.
@@ -305,11 +251,14 @@ Let's now check that it does what we want, namely open the gap at a finite momen
 
 
 ```python
-syst = nanowire_chain()
-p = SimpleNamespace(t=1.0, mu=0.1, delta=0.1, B=0.2, alpha=None)
+params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
 holoviews.HoloMap(
-    {p.alpha: spectrum(syst, p, **style) for p.alpha in alphas}, kdims=[r"$\alpha$"]
+    {
+        params["alpha"]: spectrum(nanowire_chain, params, **style, title=title)
+        for params["alpha"] in alphas
+    },
+    kdims=[r"$\alpha$"]
 )
 ```
 
@@ -346,11 +295,61 @@ Let's calculate the gap as a function of all of the relevant parameters.
 %%opts Curve (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts Overlay [show_legend=True legend_position='top']
 
-syst = nanowire_chain()
+
+def find_gap(syst, params, resolution=1e-4):
+    """
+    Find gap in an infinite system by doing a binary search in energy.
+    
+    This function assumes that the system has particle-hole symmetry,
+    and only searches through positive energies.
+    """
+    
+    def has_modes(energy):
+        return bool(len(syst.modes(energy, params=params)[0].momenta))
+
+    # Check if there are modes at the Fermi energy
+    if has_modes(0):
+        return 0
+
+    gap = step = min(abs(kwant.physics.Bands(syst, params=params)(k=0))) / 2
+    while step > resolution:
+        step /= 2
+        if has_modes(gap):
+            gap -= step
+        else:
+            gap += step
+
+    return gap
+
+
+def spinorbit_band_gap(syst, mu, t, delta, Bs):
+    syst = syst.finalized()
+    alphas = [0.0, 0.1, 0.2, 0.3]
+    params = dict(mu=mu, t=t, delta=delta)
+
+    gaps = np.array(
+        [
+            [find_gap(syst, params) for params["B"] in Bs]
+            for params["alpha"] in alphas
+        ]
+    )
+    dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
+    B_crit = holoviews.VLine(np.sqrt(delta**2 + mu**2))
+    plot = [
+        holoviews.Curve((Bs, gap), label=fr"$\{alpha=}$", **dims)
+        * B_crit
+        for gap, alpha in zip(gaps, alphas)
+    ]
+    title = r"$\Delta={:.2}$, $\mu={:.2}$".format(delta, mu)
+    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
+    plot = holoviews.Overlay(plot)
+    return plot.opts(plot=style)
+
+
 Bs = np.linspace(0, 0.3, 71)
 mus = np.linspace(-0.05, 0.15, 5)
 holoviews.HoloMap(
-    {mu: spinorbit_band_gap(syst, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r"$\mu$"]
+    {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r"$\mu$"]
 )
 ```
 
@@ -366,10 +365,9 @@ We finish our investigation of this model for now with a final simple picture of
 
 
 ```python
-syst = nanowire_chain()
-p = SimpleNamespace(t=1.0, B=0.07, delta=0.025, alpha=0.8, mu=None)
+params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
-holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r"$\mu$"])
+holoviews.HoloMap({params["mu"]: spectrum(nanowire_chain, params, **style, title=title) for params["mu"] in mus}, kdims=[r"$\mu$"])
 ```
 
 When $\mu$ is very negative we see two split electron bands at positive energy corresponding to two spin orientations.

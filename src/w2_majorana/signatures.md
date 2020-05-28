@@ -11,198 +11,6 @@ dims = SimpleNamespace(
     V_bias=holoviews.Dimension("$V_{bias}$"),
     phi=holoviews.Dimension(r"$\Phi/\Phi_0$"),
 )
-
-
-def make_system_spectroscopy():
-
-    # We apply a magnetic field in all parts of the system
-    def onsite_sc(site, p):
-        return (
-            (2 * p.t - p.mu_sc) * pauli.s0sz + p.Ez * pauli.sxs0 + p.delta * pauli.s0sx
-        )
-
-    def onsite_normal(site, p):
-        return (2 * p.t - p.mu_l) * pauli.s0sz + p.Ez * pauli.sxs0
-
-    def onsite_barrier(site, p):
-        return (2 * p.t - p.mu_l + p.Vbarrier) * pauli.s0sz + p.Ez * pauli.sxs0
-
-    # The hopping is the same in all subsystems. There is normal hopping and
-    # spin orbit interaction.
-    def hop(site1, site2, p):
-        return -p.t * pauli.s0sz + 1j * p.alpha * pauli.sysz
-
-    lat = kwant.lattice.chain(norbs=4)
-    syst = kwant.Builder()
-
-    # The first subsystem just consists of the tunnel barrier (one site with a
-    # potential)
-    syst[lat(0)] = onsite_barrier
-
-    # The second subsystem is a normal lead
-    # The translational symmetry makes it semi-infinite.
-    lead1 = kwant.Builder(
-        kwant.TranslationalSymmetry(*lat.prim_vecs), conservation_law=-pauli.s0sz
-    )
-    # Define a unit cell (in this case the unit cell consists of a single site)
-    lead1[lat(0)] = onsite_normal
-    # Define the hopping between unitcells
-    lead1[lat(1), lat(0)] = hop
-
-    # The third subsystem is a superconducting lead. A Majorana bound state
-    # can arise at the edge of this system.
-    lead2 = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-    # Again: Define a unit cell
-    lead2[lat(0)] = onsite_sc
-    # Again define hopping between unit cells
-    lead2[lat(1), lat(0)] = hop
-
-    # Create a connection between the first subsystem (the tunnel barrier, system name: syst)
-    # and the other two subsystems (the normal and the superconducting lead)
-    syst.attach_lead(lead1)
-    syst.attach_lead(lead2)
-
-    syst = syst.finalized()
-
-    return syst
-
-
-def nanowire_chain(L=None, periodic=False):
-    lat = kwant.lattice.chain()
-
-    if L is None:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        L = 1
-    else:
-        syst = kwant.Builder()
-
-    def onsite(onsite, p):
-        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
-
-    for x in range(L):
-        syst[lat(x)] = onsite
-
-    def hop(site1, site2, p):
-        return -p.t * pauli.szs0 - 0.5j * p.alpha * pauli.szsx
-
-    def hopping_with_flux(site1, site2, p):
-        phase = np.exp(1j * p.flux / 2)
-        phase_factors = np.kron(np.diag([phase, phase.conj()]), pauli.s0)
-        return 0.7 * phase_factors @ hop(site1, site1, p)
-
-    syst[kwant.HoppingKind((1,), lat)] = hop
-
-    if periodic:
-        syst[lat(0), lat(L - 1)] = hopping_with_flux
-    return syst
-
-
-def tunnel_spectroscopy(syst, p, Es):
-    def Andreev_cond(E):
-        sm = kwant.smatrix(syst, energy=E, params=dict(p=p))
-        # (i, j) means we call for block j of lead i in the scattering matrix.
-        # The normal lead is i = 0 here, where block j = 0 corresponds to electrons
-        # and block j = 1 holes.
-        return (
-            sm.submatrix((0, 0), (0, 0)).shape[0]
-            - sm.transmission((0, 0), (0, 0))
-            + sm.transmission((0, 1), (0, 0))
-        )
-
-    Gs = [Andreev_cond(E) for E in Es]
-    return np.array(Gs)
-
-
-def plot_spectroscopy(Vbarrier):
-    syst = make_system_spectroscopy()
-    Es = np.linspace(-0.15, 0.15, 101)
-    p = SimpleNamespace(
-        t=1, mu_l=0.5, mu_sc=0, alpha=0.15, delta=0.1, Vbarrier=Vbarrier
-    )
-
-    # Trivial, because the magnetic field is zero (third argument)
-    p.Ez = 0
-    Gs_trivial = tunnel_spectroscopy(syst, p, Es)
-
-    # Non-trivial
-    p.Ez = 0.25
-    Gs_topological = tunnel_spectroscopy(syst, p, Es)
-    kdims = [dims.V_bias, dims.G]
-    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label="trivial").opts(
-        style={"color": "k"}
-    )
-    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label="topological").opts(
-        style={"color": "r"}
-    )
-    style_overlay = {
-        "xticks": [-0.1, 0.0, 0.1],
-        "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
-        "show_legend": True,
-        "legend_position": "top",
-        "fig_size": 150,
-    }
-    style_path = {"show_legend": True}
-    return plot.opts(plot={"Overlay": style_overlay, "Path": style_path})
-
-
-def nanowire_spectrum(trivial=False):
-    B = 0.2 if trivial else 1.0
-    p = SimpleNamespace(mu=0.4, t=1.0, alpha=0.2, delta=0.1, B=B)
-    syst = nanowire_chain(L=100, periodic=True).finalized()
-
-    def energy(flux):
-        p.flux = flux
-        H = syst.hamiltonian_submatrix(params=dict(p=p))
-        return np.linalg.eigvalsh(H)
-
-    fluxes = np.linspace(0, 4 * np.pi, 51)
-    spectrum = np.array([energy(flux) for flux in fluxes])
-
-    # Find the two subgap states.
-    if not trivial:
-        N = spectrum.shape[1] // 2
-        non_trivial = np.where((fluxes > np.pi) & (fluxes < 3 * np.pi))
-        spectrum[non_trivial, N - 1 : N + 1] = spectrum[
-            non_trivial, N : N - 2 : -1
-        ].copy()
-
-    return fluxes, spectrum
-
-
-def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
-    N = spectrum.shape[1] // 2
-    kdims = [dims.phi, "$E$"]
-    plot = holoviews.Path((fluxes, spectrum), kdims=kdims).opts(
-        style={"color": "k", "alpha": 0.4}
-    )
-    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).opts(
-        style={"color": "r"}
-    )
-    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).opts(
-        style={"color": "k"}
-    )
-    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
-    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).opts(plot=ticks)
-
-
-def plot_gse_sc_nanowire(fluxes, spectrum):
-    N = spectrum.shape[1] // 2
-    energy_gs = np.sum(spectrum[:, :N], axis=1)
-    energy_gs -= np.max(energy_gs)
-    current = np.diff(energy_gs) * len(energy_gs)
-
-    xdim = dims.phi
-    ydim = r"$E_{tot}(\Phi)$"
-
-    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
-    plot = holoviews.Path((fluxes, energy_gs), kdims=[xdim, ydim], label="Energy").opts(
-        plot=ticks
-    )
-    ydim = r"$I(\Phi)$"
-    plot += holoviews.Path(
-        ((fluxes[1:] + fluxes[:-1]) / 2, current), kdims=[xdim, ydim], label="Current"
-    ).opts(plot=ticks)
-    return plot
 ```
 
 # How to detect Majoranas
@@ -280,6 +88,183 @@ Let's just look at what happens if we compare conductance of an NS interface in 
 
 
 ```python
+def nanowire_chain(L=None, periodic=False):
+    lat = kwant.lattice.chain()
+
+    if L is None:
+        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+        L = 1
+    else:
+        syst = kwant.Builder()
+
+    def onsite(onsite, p):
+        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
+
+    for x in range(L):
+        syst[lat(x)] = onsite
+
+    def hop(site1, site2, p):
+        return -p.t * pauli.szs0 - 0.5j * p.alpha * pauli.szsx
+
+    def hopping_with_flux(site1, site2, p):
+        phase = np.exp(1j * p.flux / 2)
+        phase_factors = np.kron(np.diag([phase, phase.conj()]), pauli.s0)
+        return 0.7 * phase_factors @ hop(site1, site1, p)
+
+    syst[kwant.HoppingKind((1,), lat)] = hop
+
+    if periodic:
+        syst[lat(0), lat(L - 1)] = hopping_with_flux
+    return syst
+
+
+def nanowire_spectrum(trivial=False):
+    B = 0.2 if trivial else 1.0
+    p = SimpleNamespace(mu=0.4, t=1.0, alpha=0.2, delta=0.1, B=B)
+    syst = nanowire_chain(L=100, periodic=True).finalized()
+
+    def energy(flux):
+        p.flux = flux
+        H = syst.hamiltonian_submatrix(params=dict(p=p))
+        return np.linalg.eigvalsh(H)
+
+    fluxes = np.linspace(0, 4 * np.pi, 51)
+    spectrum = np.array([energy(flux) for flux in fluxes])
+
+    # Find the two subgap states.
+    if not trivial:
+        N = spectrum.shape[1] // 2
+        non_trivial = np.where((fluxes > np.pi) & (fluxes < 3 * np.pi))
+        spectrum[non_trivial, N - 1 : N + 1] = spectrum[
+            non_trivial, N : N - 2 : -1
+        ].copy()
+
+    return fluxes, spectrum
+
+
+def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
+    N = spectrum.shape[1] // 2
+    kdims = [dims.phi, "$E$"]
+    plot = holoviews.Path((fluxes, spectrum), kdims=kdims).opts(
+        style={"color": "k", "alpha": 0.4}
+    )
+    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).opts(
+        style={"color": "r"}
+    )
+    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).opts(
+        style={"color": "k"}
+    )
+    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
+    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).opts(plot=ticks)
+
+
+def plot_gse_sc_nanowire(fluxes, spectrum):
+    N = spectrum.shape[1] // 2
+    energy_gs = np.sum(spectrum[:, :N], axis=1)
+    energy_gs -= np.max(energy_gs)
+    current = np.diff(energy_gs) * len(energy_gs)
+
+    xdim = dims.phi
+    ydim = r"$E_{tot}(\Phi)$"
+
+    ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}
+    plot = holoviews.Path((fluxes, energy_gs), kdims=[xdim, ydim], label="Energy").opts(
+        plot=ticks
+    )
+    ydim = r"$I(\Phi)$"
+    plot += holoviews.Path(
+        ((fluxes[1:] + fluxes[:-1]) / 2, current), kdims=[xdim, ydim], label="Current"
+    ).opts(plot=ticks)
+    return plot
+```
+
+```python
+lat = kwant.lattice.chain(norb=4)
+
+# The scattering region: one site with a tunnel barrier
+tunnel_spectroscopy_device = kwant.Builder()
+
+def onsite_barrier(site, t, mu_n, V_barrier, Ez):
+    return (2 * t - mu_n + V_barrier) * pauli.s0sz + Ez * pauli.sxs0
+
+tunnel_spectroscopy_device[lat(0)] = onsite_barrier
+
+# Normal lead: charge conservation and no gap
+normal_lead = kwant.Builder(
+    kwant.TranslationalSymmetry((*lat.prim_vecs)),
+    conservation_law=-pauli.s0sz,
+)
+
+def onsite_normal(site, t, mu_n, Ez):
+    return (2 * t - mu_n) * pauli.s0sz + Ez * pauli.sxs0
+
+normal_lead[lat(0)] = onsite_normal
+
+# Superconductor has a gap.
+superconductor=kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
+def onsite_sc(site, t, mu, Ez, delta):
+    return (2 * t - mu_sc) * pauli.s0sz + Ez * pauli.sxs0 + delta * pauli.s0sx
+
+superconductor[lat(0)] = onsite_sc
+
+# Hopping
+def hop(site1, site2, p):
+    return -p.t * pauli.s0sz + 1j * p.alpha * pauli.sysz
+
+normal_lead[lat(1), lat(0)] = superconducting_lead[lat(1), lat(0)] = hop
+
+# Attach leads to the scattering region
+tunnel_spectroscopy_device.attach_lead(normal_lead)
+tunnel_spectroscopy_device.attach_lead(superconducting_lead.reversed())
+
+tunnel_spectroscopy_device = tunnel_spectroscopy_device.finalized()
+
+
+def Andreev_conductance(syst, params, energy=0):
+    smatrix = kwant.smatrix(syst, energy=energy, params=params, in_leads=[0], out_leads=[0])
+    n_modes = smatrix.lead_info[0].block_nmodes[0]
+    return (
+        n_modes
+        - smatrix.transmission((0, 0), (0, 0))
+        + smatrix.transmission((0, 1), (0, 0))
+    )
+
+
+def plot_spectroscopy(Vbarrier):
+    energies = np.linspace(-0.15, 0.15, 101)
+    params = dict(
+        t=1, mu_l=0.5, mu_sc=0, alpha=0.15, delta=0.1, Vbarrier=Vbarrier
+    )
+
+    # Trivial, because the magnetic field is zero (third argument)
+    p.Ez = 0
+    Gs_trivial = [
+        Andreev_conductance(tunnel_spectroscopy_device, params, energy)
+        for energy in energies
+    ]
+
+    # Non-trivial
+    p.Ez = 0.25
+    Gs_topological = tunnel_spectroscopy(tunnel_spectroscopy_device, p, Es)
+    kdims = [dims.V_bias, dims.G]
+    plot = holoviews.Path((Es, Gs_trivial), kdims=kdims, label="trivial").opts(
+        style={"color": "k"}
+    )
+    plot *= holoviews.Path((Es, Gs_topological), kdims=kdims, label="topological").opts(
+        style={"color": "r"}
+    )
+    style_overlay = {
+        "xticks": [-0.1, 0.0, 0.1],
+        "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
+        "show_legend": True,
+        "legend_position": "top",
+        "fig_size": 150,
+    }
+    style_path = {"show_legend": True}
+    return plot.opts(plot={"Overlay": style_overlay, "Path": style_path})
+
+
 holoviews.HoloMap(
     {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
     kdims=[r"$V_{barrier}$"],
