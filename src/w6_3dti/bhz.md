@@ -385,9 +385,9 @@ MoocMultipleChoiceAssessment(
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
 
-
-#### MoocVideo("s7H6oLighOM", src_location="6.1-summary")
-
+```python
+MoocVideo("s7H6oLighOM", src_location="6.1-summary")
+```
 
 ```python
 MoocDiscussion("Questions", "3DTI invariants")
