@@ -9,3 +9,4 @@ dependencies:
   - texlive-core
   - feedparser
   - jupytext
+  - pfapack
