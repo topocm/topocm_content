@@ -29,7 +29,7 @@ As you can see in the figure below, $\Box$ refers to the spins on the bonds that
 ![](figures/toric_layout.svg)
 
 Since $H$ is a sum of commuting terms, we can calculate the ground state as the simultaneous ground state for all the terms. 
-Let us first look at the vertex terms proportional to $A$. If we draw a red line through bond connecting neighboring spins with $\sigma_z=-1$ on our lattice (as shown below), then we find that each vertex in the ground state configuration has an even number of red lines coming in. Thus, we can think of the red  lines forming loops that can never be open ended. This allows us to view the ground state of the toric code as a loop gas. 
+Let us first look at the vertex terms proportional to $A$. If we draw a red line through each bond with a spin pointing downwards ($\sigma_z=-1$) on our lattice (as shown below), then we find that each vertex in the ground state configuration has an even number of red lines coming in. Thus, we can think of the red  lines forming loops that can never be open ended. This allows us to view the ground state of the toric code as a loop gas. 
 
 ![](figures/loops.svg)
 
