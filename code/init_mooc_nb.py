@@ -131,7 +131,7 @@ def init_notebook():
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams["text.usetex"] = False
 
-    latex_packs = [r"\usepackage{amsmath}", r"\usepackage{amssymb}" r"\usepackage{bm}"]
+    latex_packs = "\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage{bm}"
 
     holoviews.plotting.mpl.MPLPlot.fig_rcparams["text.latex.preamble"] = latex_packs
 
