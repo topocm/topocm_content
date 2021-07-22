@@ -169,3 +169,8 @@ def init_notebook():
     warnings.filterwarnings(
         "ignore", category=RuntimeWarning, message="The plotted data contains"
     )
+    # Silence fixed numpy deprecation
+    warnings.filterwarnings(
+        "ignore", category=np.VisibleDeprecationWarning,
+        message="Creating an ndarray from ragged"
+    )
