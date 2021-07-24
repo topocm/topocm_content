@@ -215,8 +215,8 @@ def hop(site1, site2, t, alpha):
 
 nanowire_chain[kwant.HoppingKind((1,), lat)] = hop
 
-def title(p):
-    return r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**p)
+def title(params):
+    return r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
 
 params = dict(t=1.0, mu=0.0, delta=0.1, alpha=0.0)
 Bs = np.linspace(0, 0.4, 10)
