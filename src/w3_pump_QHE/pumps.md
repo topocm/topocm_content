@@ -189,7 +189,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-.format(p["A"])# Quantization of pumped charge
+# Quantization of pumped charge
 
 As we already learned, integers are important, and they could indicate that something topological is happening.
 
@@ -359,7 +359,7 @@ def plot_charge(syst, p, energy):
     charge = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
     charge -= charge[0]
 
-    title = "$\mu={:.2}$".format(mu)
+    title = f"$\mu={mu:.2}$"
     kdims = [r"$t/T$", r"$q/e$"]
     plot = holoviews.Path(
         (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"

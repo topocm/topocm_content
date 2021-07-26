@@ -477,11 +477,6 @@ We can now look again at the Laughlin pump, monitoring at the same time the Land
 
 ```python
 def qhe_cylinder(W):
-    """ Creates ribbon system
-
-    If we have periodic boundary conditions, the flux through a single 
-    unit cell is quantized.
-    """
     lat = kwant.lattice.square()
     syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
 

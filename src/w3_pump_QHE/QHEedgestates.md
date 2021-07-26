@@ -7,213 +7,6 @@ from init_mooc_nb import *
 init_notebook()
 %output size=150
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-
-
-def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
-    """Create a hall bar system. 
-
-    Square lattice, one orbital per site.
-    Returns finalized kwant system.
-
-    Arguments required in onsite/hoppings: 
-        t, mu, mu_lead
-    """
-    L = 2 * (L // 2)
-    W = 2 * (W // 2)
-    w_lead = 2 * (w_lead // 2)
-    if w_vert_lead is None:
-        w_vert_lead = w_lead
-    else:
-        w_vert_lead = 2 * (w_vert_lead // 2)
-
-    # bar shape
-    def bar(pos):
-        (x, y) = pos
-        return (x >= -L / 2 and x <= L / 2) and (y >= -W / 2 and y <= W / 2)
-
-    # Onsite and hoppings
-    def onsite(site, p):
-        (x, y) = site.pos
-        return 4 * p.t - p.mu
-
-    def hopping_Ax(site1, site2, p):
-        xt, yt = site1.pos
-        xs, ys = site2.pos
-        return -p.t * np.exp(-0.5j * p.B * (xt + xs) * (yt - ys))
-
-    def make_lead_hop_y(x0):
-        def hopping_Ay(site1, site2, p):
-            xt, yt = site1.pos
-            xs, ys = site2.pos
-            return -p.t * np.exp(-1j * p.B * x0 * (yt - ys))
-
-        return hopping_Ay
-
-    def lead_hop_vert(site1, site2, p):
-        return -p.t
-
-    # Building system
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-
-    syst[lat.shape(bar, (0, 0))] = onsite
-    syst[lat.neighbors()] = hopping_Ax
-
-    # Attaching leads
-    sym_lead = kwant.TranslationalSymmetry((-1, 0))
-    lead = kwant.Builder(sym_lead)
-
-    def lead_shape(pos):
-        (x, y) = pos
-        return -w_lead / 2 <= y <= w_lead / 2
-
-    lead_onsite = lambda site, p: 4 * p.t - p.mu_lead
-
-    sym_lead_vertical = kwant.TranslationalSymmetry((0, 1))
-    lead_vertical1 = kwant.Builder(sym_lead_vertical)
-    lead_vertical2 = kwant.Builder(sym_lead_vertical)
-
-    def lead_shape_vertical1(pos):
-        (x, y) = pos
-        return -L / 4 - w_vert_lead / 2 <= x <= -L / 4 + w_vert_lead / 2
-
-    def lead_shape_vertical2(pos):
-        (x, y) = pos
-        return +L / 4 - w_vert_lead / 2 <= x <= +L / 4 + w_vert_lead / 2
-
-    lead_vertical1[lat.shape(lead_shape_vertical1, (-L / 4, 0))] = lead_onsite
-    lead_vertical1[lat.neighbors()] = lead_hop_vert
-    lead_vertical2[lat.shape(lead_shape_vertical2, (L / 4, 0))] = lead_onsite
-    lead_vertical2[lat.neighbors()] = lead_hop_vert
-
-    syst.attach_lead(lead_vertical1)
-    syst.attach_lead(lead_vertical2)
-
-    syst.attach_lead(lead_vertical1.reversed())
-    syst.attach_lead(lead_vertical2.reversed())
-
-    lead[lat.shape(lead_shape, (-1, 0))] = lead_onsite
-    lead[lat.neighbors()] = make_lead_hop_y(-L / 2)
-
-    syst.attach_lead(lead)
-
-    lead = kwant.Builder(sym_lead)
-    lead[lat.shape(lead_shape, (-1, 0))] = lead_onsite
-    lead[lat.neighbors()] = make_lead_hop_y(L / 2)
-
-    syst.attach_lead(lead.reversed())
-
-    return syst
-
-
-def qhe_ribbon(W, periodic=False):
-    """ Creates a ribbon with magnetic field through it.
-
-    If we have periodic boundary conditions, the flux through a single 
-    unit cell is quantized.
-    """
-    W = 2 * (W // 2)
-
-    def ribbon_shape(pos):
-        (x, y) = pos
-        return -W / 2 <= y <= W / 2
-
-    def onsite(site, p):
-        (x, y) = site.pos
-        return 4 * p.t - p.mu
-
-    def hopping(site1, site2, p):
-        xt, yt = site1.pos
-        xs, ys = site2.pos
-        return -p.t * np.exp(-0.5j * p.B * (xt - xs) * (yt + ys))
-
-    def hopping_periodic(site1, site2, p):
-        xt, yt = site1.pos
-        xs, ys = site2.pos
-        return -p.t * np.exp(
-            -0.5j * int(p.B) * 2 * np.pi / (W + 1) * (xt - xs) * (yt + ys)
-        )
-
-    lat = kwant.lattice.square()
-    sym_syst = kwant.TranslationalSymmetry((-1, 0))
-    syst = kwant.Builder(sym_syst)
-
-    syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-
-    if periodic:
-        syst[lat.neighbors()] = hopping_periodic
-        syst[lat(0, -W / 2), lat(0, +W / 2)] = hopping_periodic
-    else:
-        syst[lat.neighbors()] = hopping
-
-    return syst
-
-
-def qhe_corbino(r_out=100, r_in=65, w_lead=10):
-    """Create corbino disk. 
-
-    Square lattice, one orbital per site.
-    Returns kwant system.
-
-    Arguments required in onsite/hoppings: 
-        t, mu, mu_lead, B, phi
-    """
-    # ring shape
-    def ring(pos):
-        (x, y) = pos
-        rsq = x ** 2 + y ** 2
-        return r_in ** 2 < rsq < r_out ** 2
-
-    # Onsite and hoppings
-    def onsite(site, p):
-        (x, y) = site.pos
-        return 4 * p.t - p.mu
-
-    def crosses_branchcut(hop):
-        xt, yt = hop[0].pos
-        xs, ys = hop[1].pos
-        return yt < 0 and xt > 0.5 and xs < 0.5
-
-    def hopping(site1, site2, p):
-        xt, yt = site1.pos
-        xs, ys = site2.pos
-        # Check for correctness!
-        return -p.t * np.exp(-0.5j * p.B * (xt - xs) * (yt + ys))
-
-    def branchcut_hopping(site1, site2, p):
-        return hopping(site1, site2, p) * np.exp(1j * p.phi)
-
-    # Building system
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-
-    syst[lat.shape(ring, (0, r_in + 1))] = onsite
-    syst[lat.neighbors()] = hopping
-
-    # adding special hoppings
-    def hops_across_cut(syst):
-        for hop in kwant.builder.HoppingKind((1, 0), lat, lat)(syst):
-            if crosses_branchcut(hop):
-                yield hop
-
-    syst[hops_across_cut] = branchcut_hopping
-
-    # Attaching leads
-    sym_lead = kwant.TranslationalSymmetry((-1, 0))
-    lead = kwant.Builder(sym_lead)
-
-    def lead_shape(pos):
-        (x, y) = pos
-        return -w_lead / 2 < y < w_lead / 2
-
-    lead[lat.shape(lead_shape, (0, 0))] = lambda site, p: 4 * p.t - p.mu_lead
-    lead[lat.neighbors()] = lambda site1, site2, p: -p.t
-
-    # Attach the leads and return the system.
-    syst.attach_lead(lead)
-    syst.attach_lead(lead, origin=lat(0, 0))
-
-    return syst
 ```
 
 # Where do the pumped electrons come from and go to?
@@ -261,7 +54,40 @@ Because $y_0$ is proportional to $k$, this means the states close to the edge wi
 
 
 ```python
-p = SimpleNamespace(t=1, mu=0.5, B=0.15)
+def onsite(site, t, mu):
+    return 4 * t - mu
+
+
+def lead_onsite(site, t, mu_lead):
+    return 4 * t - mu_lead
+
+
+def hopping(site1, site2, t, B):
+    x1, y1 = site1.pos
+    x2, y2 = site2.pos
+    return -t * np.exp(-0.5j * B * (x1 - x2) * (y1 + y2))
+
+
+def make_lead_hop_y(x0):
+    def hopping_Ay(site1, site2, t, B):
+        y1 = site1.pos[1]
+        y2 = site2.pos[1]
+        return -t * np.exp(-1j * B * x0 * (y1 - y2))
+
+    return hopping_Ay
+
+
+def qhe_ribbon(W):
+    lat = kwant.lattice.square()
+    syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
+
+    syst[lat.shape((lambda pos: -W//2 <= pos[1] < W - W//2), (0, 0))] = onsite
+    syst[lat.neighbors()] = hopping
+
+    return syst
+
+
+p = dict(t=1, mu=0.5, B=0.15)
 syst = qhe_ribbon(W=20)
 
 kwargs = {
@@ -294,9 +120,89 @@ An important thing to note is that the presence of edge states does not depend i
 
 
 ```python
-p = SimpleNamespace(t=1, mu=0.6, mu_lead=0.6, B=0.15, phi=0.0)
+def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
+    """Create a hall bar system. 
+
+    Square lattice, one orbital per site.
+    Returns kwant system.
+
+    Arguments required in onsite/hoppings: 
+        t, mu, mu_lead
+    """
+
+    L = 2 * (L // 2)
+    W = 2 * (W // 2)
+    w_lead = 2 * (w_lead // 2)
+    if w_vert_lead is None:
+        w_vert_lead = w_lead
+    else:
+        w_vert_lead = 2 * (w_vert_lead // 2)
+
+    # bar shape
+    def bar(pos):
+        (x, y) = pos
+        return (x >= -L / 2 and x <= L / 2) and (y >= -W / 2 and y <= W / 2)
+
+    # Onsite and hoppings
+
+    def hopping_Ax(site1, site2, t, B):
+        x1, y1 = site1.pos
+        x2, y2 = site2.pos
+        return -t * np.exp(-0.5j * B * (x1 + x2) * (y1 - y2))
+
+    # Building system
+    lat = kwant.lattice.square()
+    syst = kwant.Builder()
+
+    syst[lat.shape(bar, (0, 0))] = onsite
+    syst[lat.neighbors()] = hopping_Ax
+
+    # Attaching leads
+    sym_lead = kwant.TranslationalSymmetry((-1, 0))
+    lead = kwant.Builder(sym_lead)
+
+    def lead_shape(pos):
+        (x, y) = pos
+        return -w_lead / 2 <= y <= w_lead / 2
+
+    sym_lead_vertical = kwant.TranslationalSymmetry((0, 1))
+    lead_vertical1 = kwant.Builder(sym_lead_vertical)
+    lead_vertical2 = kwant.Builder(sym_lead_vertical)
+
+    def lead_shape_vertical1(pos):
+        return -L / 4 - w_vert_lead / 2 <= pos[0] <= -L / 4 + w_vert_lead / 2
+
+    def lead_shape_vertical2(pos):
+        return +L / 4 - w_vert_lead / 2 <= pos[0] <= +L / 4 + w_vert_lead / 2
+
+    lead_vertical1[lat.shape(lead_shape_vertical1, (-L / 4, 0))] = lead_onsite
+    lead_vertical1[lat.neighbors()] = make_lead_hop_y(0)
+    lead_vertical2[lat.shape(lead_shape_vertical2, (L / 4, 0))] = lead_onsite
+    lead_vertical2[lat.neighbors()] = make_lead_hop_y(0)
+
+    syst.attach_lead(lead_vertical1)
+    syst.attach_lead(lead_vertical2)
+
+    syst.attach_lead(lead_vertical1.reversed())
+    syst.attach_lead(lead_vertical2.reversed())
+
+    lead[lat.shape(lead_shape, (-1, 0))] = lead_onsite
+    lead[lat.neighbors()] = make_lead_hop_y(-L / 2)
+
+    syst.attach_lead(lead)
+
+    lead = kwant.Builder(sym_lead)
+    lead[lat.shape(lead_shape, (-1, 0))] = lead_onsite
+    lead[lat.neighbors()] = make_lead_hop_y(L / 2)
+
+    syst.attach_lead(lead.reversed())
+
+    return syst
+
+
+p = dict(t=1, mu=0.6, mu_lead=0.6, B=0.15, phi=0.0)
 syst = qhe_hall_bar(L=200, W=100).finalized()
-ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
+ldos = kwant.ldos(syst, energy=0.0, params=p)
 
 fig = plt.figure(figsize=[20, 20])
 ax = fig.add_subplot(1, 2, 1)
@@ -355,10 +261,67 @@ In this new drawing, we have also added arrows to indicate that we now know that
 
 
 ```python
+def qhe_corbino(r_out=100, r_in=65, w_lead=10):
+    """Create corbino disk.
+
+    Square lattice, one orbital per site.
+    Returns kwant system.
+
+    Arguments required in onsite/hoppings: 
+        t, mu, mu_lead, B, phi
+    """
+    # ring shape
+    def ring(pos):
+        (x, y) = pos
+        rsq = x ** 2 + y ** 2
+        return r_in ** 2 < rsq < r_out ** 2
+
+    # Onsite and hoppings
+
+    def crosses_branchcut(hop):
+        x1, y1 = hop[0].pos
+        x2, y2 = hop[1].pos
+        return y1 < 0 and x1 > 0.5 and x2 < 0.5
+
+    def branchcut_hopping(site1, site2, t, B, phi):
+        return hopping(site1, site2, t, B) * np.exp(1j * phi)
+
+    # Building system
+    lat = kwant.lattice.square()
+    syst = kwant.Builder()
+
+    syst[lat.shape(ring, (0, r_in + 1))] = onsite
+    syst[lat.neighbors()] = hopping
+
+    # adding special hoppings
+    def hops_across_cut(syst):
+        for hop in kwant.builder.HoppingKind((1, 0), lat, lat)(syst):
+            if crosses_branchcut(hop):
+                yield hop
+
+    syst[hops_across_cut] = branchcut_hopping
+
+    # Attaching leads
+    sym_lead = kwant.TranslationalSymmetry((-1, 0))
+    lead = kwant.Builder(sym_lead)
+
+    def lead_shape(pos):
+        (x, y) = pos
+        return -w_lead / 2 < y < w_lead / 2
+
+    lead[lat.shape(lead_shape, (0, 0))] = lead_onsite
+    lead[lat.neighbors()] = lambda site1, site2, t: -t
+
+    syst.attach_lead(lead)
+    syst.attach_lead(lead, origin=lat(0, 0))
+
+    return syst
+
+
 W = 60
-p = SimpleNamespace(t=1, mu=0.9, mu_lead=0.9, B=0.15, phi=0.0)
+p = dict(t=1, mu=0.9, mu_lead=0.9, B=0.15, phi=0.0)
 syst = qhe_corbino(2 * W, W).finalized()
-ldos = kwant.ldos(syst, energy=0.0, params=dict(p=p))
+ldos = kwant.ldos(syst, energy=0.0, params=p)
 fig = plt.figure(figsize=[15, 15])
 ax = fig.add_subplot(1, 2, 1)
 ax.axis("off")
