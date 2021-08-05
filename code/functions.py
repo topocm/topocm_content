@@ -62,7 +62,7 @@ def spectrum(
     -----------
     syst : kwant.Builder object
         The un-finalized (in)finite system.
-    p : SimpleNamespace object or a dictionary
+    p : dictionary
         A container used to store Hamiltonian parameters. The parameters that
         are sequences are used as plot axes.
     k_x, k_y, k_z : floats or sequences of floats
@@ -92,7 +92,7 @@ def spectrum(
     """
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
     if p is None:
-        p = SimpleNamespace()
+        p = dict()
     dimensionality = syst.symmetry.num_directions
     k = [k_x, k_y, k_z]
     k = [(np.linspace(-np.pi, np.pi, 101) if i is None else i) for i in k]
@@ -231,7 +231,7 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
     -----------
     syst : kwant.Builder object
         The un-finalized kwant system whose Hamiltonian is calculated.
-    params : SimpleNamespace or dictionary
+    params : dictionary
         A container of Hamiltonian parameters. The parameters that are
         sequences are used to loop over.
     k_x, k_y, k_z : floats or sequences of floats
@@ -253,22 +253,14 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
 
     Examples:
     ---------
-    >>> hamiltonian_array(syst, SimpleNamespace(t=1, mu=np.linspace(-2, 2)),
+    >>> hamiltonian_array(syst, dict(t=1, mu=np.linspace(-2, 2)),
     ...                   k_x=np.linspace(-np.pi, np.pi))
     >>> hamiltonian_array(sys_2d, p, np.linspace(-np.pi, np.pi),
     ...                   np.linspace(-np.pi, np.pi))
 
     """
-    if params is None:
-        params = SimpleNamespace()
-
-    compat = isinstance(params, SimpleNamespace)
-
     # Prevent accidental mutation of input
     params = copy(params)
-
-    if compat:
-        params = params.__dict__
 
     try:
         space_dimensionality = syst.symmetry.periods.shape[-1]
@@ -326,10 +318,7 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
         k = [values.pop("k_x", k_x), values.pop("k_y", k_y), values.pop("k_z", k_z)]
         params.update(values)
         k = momentum_to_lattice(k)
-        if not compat:
-            system_params = {**params, **k}
-        else:
-            system_params = {"p": SimpleNamespace(**params), **k}
+        system_params = {**params, **k}
         return syst.hamiltonian_submatrix(params=system_params, sparse=False)
 
     names, values = zip(*sorted(changing.items()))
