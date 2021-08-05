@@ -160,9 +160,8 @@ for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
 
 fig = plt.figure(figsize=(9, 3.5))
 
-axes = fig.subplot_mosaic([["Normal", "Superconducting"]])
-for axis, energy, density in zip(["Normal", "Superconducting"], energies, densities):
-    ax = axes[axis]
+axes = fig.subplots(1, 2)
+for ax, axis, energy, density in zip(axes, ["Normal", "Superconducting"], energies, densities):
     kwant.plotter.density(qshe_circle, density, ax=ax, colorbar=False)
     for spine in "left right top bottom".split():
         ax.spines[spine].set_visible(False)
@@ -171,7 +170,7 @@ for axis, energy, density in zip(["Normal", "Superconducting"], energies, densit
     ax.set_title(f"{axis}, $E_{{min}} =$ {scientific_number(abs(energy))}")
     ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"))
 
-sc_plot = axes["Superconducting"]
+sc_plot = axes[1]
 R = 31
 x = np.linspace(-R, R)
 y = np.sqrt(31**2 - x**2)

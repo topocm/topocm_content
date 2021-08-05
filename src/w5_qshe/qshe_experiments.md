@@ -151,7 +151,7 @@ conductance_plots = [
         kdims=[r"$\mu$", ydim], label=label)
             .opts(
                 plot={
-                    "xticks": np.linspace(-0.8, 0.8, 5),
+                    "xticks": list(np.linspace(-0.8, 0.8, 5)),
                 },
                 style={"color": color}
             )
