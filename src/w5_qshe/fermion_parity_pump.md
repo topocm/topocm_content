@@ -8,162 +8,6 @@ init_notebook()
 %output size = 150
 import scipy
 from matplotlib import cm
-
-bhz_parameters = {
-    "topo": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 1.0, "del_z": 0.0},
-    "triv": {"A": 0.5, "B": 1.00, "D": 0.0, "M": -1.0, "del_z": 0.0},
-    "topo2": {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0},
-    "slowed": {"A": 0.05, "B": 0.08, "D": 0.15, "M": -0.3, "del_z": 0.5},
-}
-
-# Onsite and hoppings for bhz model
-
-
-def onsite(site, p):
-    return (p.M - 4 * p.B) * pauli.s0sz - 4 * p.D * pauli.s0s0 + p.del_z * pauli.sysy
-
-
-def hopx(site1, site2, p):
-    return p.B * pauli.s0sz + p.D * pauli.s0s0 + 1j * p.A * pauli.szsx
-
-
-def hopy(site1, site2, p):
-    return p.B * pauli.s0sz + p.D * pauli.s0s0 - 1j * p.A * pauli.s0sy
-
-
-def bhz(w=20):
-    """ Make ribbon system with bhz model.
-
-    slowed parameters are used on the edge for finite size system.
-    """
-    lat = kwant.lattice.square()
-
-    def hopping_x(site1, site2, p):
-        x1, y1 = site1.pos
-        x2, y2 = site2.pos
-        return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
-
-    slowed_par = SimpleNamespace(Bz=0, **bhz_parameters["slowed"])
-    if w is None:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-        syst[kwant.HoppingKind((1, 0), lat)] = hopping_x
-        syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
-        syst[(lat(0, i) for i in range(w))] = onsite
-        syst[kwant.HoppingKind((1, 0), lat)] = hopping_x
-        syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-        syst[lat(0, -1)] = lambda site, p: onsite(site, slowed_par)
-        syst[lat(1, -1), lat(0, -1)] = lambda site1, site2, p: hopping_x(
-            site1, site2, slowed_par
-        )
-        syst[lat(0, 0), lat(0, -1)] = hopy
-
-        syst[lat(0, w)] = lambda site, p: onsite(site, slowed_par)
-        syst[lat(1, w), lat(0, w)] = lambda site1, site2, p: hopping_x(
-            site1, site2, slowed_par
-        )
-        syst[lat(0, w), lat(0, w - 1)] = hopy
-
-    return syst
-
-
-def bhz_cylinder(w=3):
-    """ Make cylinder system with bhz model. """
-
-    def ribbon_shape(pos):
-        (x, y) = pos
-        return 0 <= y < w
-
-    lat = kwant.lattice.square(norbs=4)
-    sym = kwant.TranslationalSymmetry((1, 0))
-    syst = kwant.Builder(sym)
-
-    def hopping_x(site1, site2, p):
-        x1, y1 = site1.pos
-        x2, y2 = site2.pos
-        return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
-
-    def hopy_phase(site1, site2, p):
-        x1, y1 = site1.pos
-        x2, y2 = site2.pos
-        return hopy(site1, site2, p) * np.exp(1j * p.ky)
-
-    syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopping_x
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    syst[kwant.HoppingKind((0, -w + 1), lat)] = hopy_phase
-
-    syst[lat(0, 0)] = onsite
-    syst[lat(0, w - 1)] = onsite
-
-    return syst
-
-
-def make_lead(t, trs=None):
-    def ribbon_shape(pos):
-        (x, y) = pos
-        return 0 <= y < 2
-
-    lat = kwant.lattice.square(norbs=4)
-    sym = kwant.TranslationalSymmetry((1, 0))
-    syst = kwant.Builder(sym, time_reversal=1j * pauli.sys0)
-
-    syst[lat.shape(ribbon_shape, (0, 0))] = 1.8 * t * pauli.s0sz
-    syst[kwant.HoppingKind((1, 0), lat)] = -t * pauli.s0sz
-    return syst
-
-
-def make_scatter_sys():
-    def shape(pos):
-        x, y = pos
-        return (x == 0) * (0 <= y < 3)
-
-    lat = kwant.lattice.square(norbs=4)
-    syst = kwant.Builder()
-    syst[lat.shape(shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    lead_cylinder = bhz_cylinder()
-    lead = make_lead(1.0)
-    syst.attach_lead(lead.reversed())
-    syst.attach_lead(lead_cylinder)
-    syst = syst.finalized()
-    return syst
-
-
-def scattering_det_pfaff(syst, p):
-    def pfaffian(syst, p, ky):
-        p.ky = ky
-        smat = kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data
-        # since we get relatively large numerical errors we project the matrix on
-        # the space of antisymmetric matrices
-        smat = 0.5 * (smat - smat.T)
-        return pf.pfaffian(smat)
-
-    pfaff = [pfaffian(syst, p, 0), pfaffian(syst, p, np.pi)]
-
-    ks = np.linspace(0.0, np.pi, 50)
-    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=dict(p=p)).data) for p.ky in ks]
-    det = np.array(det)
-
-    phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    kdims = ["$k_y$", "phase"]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={"color": "b"})
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
-        style={"color": "g"}
-    )
-    xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
-    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    ticks = {"xticks": [(0, "0"), (np.pi, "$\pi$")], "yticks": pi_ticks}
-    return plot.relabel("Winding", depth=1)[xlims, ylims].opts(plot=ticks)
-
-
-def title(p):
-    title = r"$A={:.2}$, $B={:.2}$, $D={:.2}$, $M={:.2}$"
-    return title.format(p.A, p.B, p.D, p.M)
 ```
 
 # Introduction
@@ -407,13 +251,43 @@ By changing the sign of $M$ from negative to positive, you get a gap closing at 
 
 
 ```python
-%%output fig='png'
-p = SimpleNamespace(Bz=0.0, **bhz_parameters["topo2"])
-syst = bhz(w=None)
+# Onsite and hoppings for bhz model
+def onsite(site, M, B, D, del_z):
+    return (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 + del_z * pauli.sysy
+
+
+def hopx(site1, site2, B, D, A):
+    return B * pauli.s0sz + D * pauli.s0s0 + 1j * A * pauli.szsx
+
+
+def hopy(site1, site2, B, D, A):
+    return B * pauli.s0sz + D * pauli.s0s0 - 1j * A * pauli.s0sy
+
+
+def title(p):
+    return fr"$A={p['A']:.2}$, $B={p['B']:.2}$, $D={p['D']:.2}$, $M={p['M']:.2}$"
+
+
+lat = kwant.lattice.square(norbs=4)
+bhz_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+bhz_infinite[lat.shape(lambda pos: True, (0, 0))] = onsite
+bhz_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
+bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
+
+
+bhz_parameters = {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0}
+
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
-Ms = np.linspace(-1, 1, 11)
-holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r"$M$"])
+Ms = np.linspace(-1, 1, 12)
+dispersion_plots = holoviews.HoloMap(
+    {
+        bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
+        for bhz_parameters["M"] in Ms
+    },
+    kdims=[r"$M$"]
+)
+dispersion_plots
 ```
 
 This gap closing turns your trivial insulator into a topologically non-trivial quantum spin Hall insulator.
@@ -442,6 +316,17 @@ So let's look at the energy spectrum of a cylinder as a function of $k$ (or equi
 
 
 ```python
+W = 20
+
+bhz_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
+bhz_ribbon.fill(bhz_infinite, (lambda site: 0 <= site.pos[1] < W), (0, 0))
+# Add sites with reduced dispersion to produce slowly dispersing trivial modes
+bhz_slowed = bhz_infinite.substituted(
+    **{orig: orig + "_slowed" for orig in bhz_parameters}
+)
+bhz_ribbon.fill(bhz_slowed, (lambda site: site.pos[1] == -1), (0, -1))
+bhz_ribbon.fill(bhz_slowed, (lambda site: site.pos[1] == W), (0, W))
+
 half_pi_ticks = [(0, "$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
 style = {
     "k_x": np.linspace(0, np.pi, 101),
@@ -454,13 +339,21 @@ style = {
     "title": title,
 }
 
-syst = bhz(20)
-p1 = SimpleNamespace(Bz=0, **bhz_parameters["topo"])
-p2 = SimpleNamespace(Bz=0, **bhz_parameters["triv"])
+
+ribbon_parameters = {
+    "A_slowed": 0.05, "B_slowed": -0.2, "D_slowed": 0.15,
+    "M_slowed": -0.3, "del_z_slowed": 0.5,
+    **bhz_parameters
+}
+
 
 (
-    spectrum(syst, p1, **style).relabel("Topological") * holoviews.HLine(0)
-    + spectrum(syst, p2, **style).relabel("Trivial") * holoviews.HLine(0)
+    spectrum(
+        bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style
+    ).relabel("Topological") * holoviews.HLine(0)
+    + spectrum(
+        bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style
+    ).relabel("Trivial") * holoviews.HLine(0)
 )
 ```
 
@@ -508,16 +401,56 @@ In the plot below, we show how this trajectory changes for our cylinder geometry
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(a=1.0, Bz=0.0, ky=None, **bhz_parameters["topo2"])
-syst = bhz(w=None)
-scat_syst = make_scatter_sys()
-k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
-kwargs = {"k_x": k, "k_y": k, "title": title}
-Ms = np.linspace(-1, 1, 11)
+
+cylinder_W = 3
+infinite_cylinder = kwant.Builder(kwant.TranslationalSymmetry((1, 0), (0, cylinder_W)))
+infinite_cylinder.fill(bhz_infinite, shape=(lambda site: True), start=(0, 0))
+infinite_cylinder = kwant.wraparound.wraparound(infinite_cylinder, keep=0)
+
+top_invariant_probe = kwant.Builder(kwant.TranslationalSymmetry((0, cylinder_W)))
+top_invariant_probe.fill(bhz_infinite, shape=(lambda site: site.pos[0]==0), start=(0, 0))
+top_invariant_probe = kwant.wraparound.wraparound(top_invariant_probe, coordinate_names='yxz')
+
+# Prepare a "probe" lead which is never gapped and respects time-reversal symmetry.
+probe_lead = kwant.Builder(
+    kwant.TranslationalSymmetry((-1, 0)),
+    time_reversal=1j * pauli.sys0
+)
+probe_lead[lat.shape((lambda pos: 0 <= pos[1] < cylinder_W), (0, 0))] = 0 * pauli.s0s0
+probe_lead[kwant.HoppingKind((1, 0), lat)] = pauli.s0s0
+top_invariant_probe.attach_lead(probe_lead)
+top_invariant_probe.attach_lead(infinite_cylinder)
+top_invariant_probe = top_invariant_probe.finalized()
+
+def scattering_det_pfaff(syst, p):
+    pfaffians = []
+    for p["k_y"] in (0, np.pi):
+        s = kwant.smatrix(syst, energy=0.0, params=p).data
+        # Pfapack requires a strictly antisymmetric matrix, ours has a slight error.
+        pfaffians.append(pf.pfaffian(s - s.T))
+
+    ks = np.linspace(0.0, np.pi, 50)
+    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=p).data) for p["k_y"] in ks]
+    det = np.array(det)
+
+    phase = np.angle(pfaffians[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
+    kdims = ["$k_y$", "phase"]
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={"color": "b"})
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).opts(
+        style={"color": "g"}
+    )
+    xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
+    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+    ticks = {"xticks": [(0, "0"), (np.pi, "$\pi$")], "yticks": pi_ticks}
+    return plot.relabel("Winding", depth=1)[xlims, ylims].opts(plot=ticks)
+
 (
-    holoviews.HoloMap({p.M: spectrum(syst, p, **kwargs) for p.M in Ms}, kdims=[r"$M$"])
+    dispersion_plots
     + holoviews.HoloMap(
-        {p.M: scattering_det_pfaff(scat_syst, p) for p.M in Ms}, kdims=[r"$M$"]
+        {
+            bhz_parameters["M"]: scattering_det_pfaff(top_invariant_probe, bhz_parameters)
+            for bhz_parameters["M"] in Ms
+        }, kdims=[r"$M$"]
     )
 )
 ```

@@ -5,137 +5,6 @@ sys.path.append("../../code")
 from init_mooc_nb import *
 
 init_notebook()
-
-
-def bhz(X=None, Y=None, Z=None, system_type="infinite"):
-    """A cuboid region of BZZ material with two leads attached.
-
-    parameters for leads and scattering region can be defined separately
-    """
-    # Onsite and hoppings matrices used for building BZZ model
-    def onsite(site, p):
-        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (
-            p.M + 2 * p.B1 + 4 * p.B2
-        ) * pauli.s0sz
-
-    def hopx(site1, site2, p):
-        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
-
-    def hopy(site1, site2, p):
-        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
-
-    def hopz(site1, site2, p):
-        return -p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
-
-    def hopx_phase(site1, site2, p):
-        x1, y1, z1 = site1.pos
-        x2, y2, z2 = site2.pos
-        return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
-
-    def shape_slab(pos):
-        (x, y, z) = pos
-        return 0 <= z < Z
-
-    def shape_lead(pos):
-        (x, y, z) = pos
-        return (0 <= y < Y) and (0 <= z < Z)
-
-    def shape_cube(pos):
-        (x, y, z) = pos
-        return (0 <= x < X) and (0 <= y < Y) and (0 <= z < Z)
-
-    lat = kwant.lattice.general(np.identity(3), norbs=4)
-
-    if system_type == "slab":
-        syst = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
-        syst[lat.shape(shape_slab, (0, 0, 0))] = onsite
-    if system_type == "lead":
-        syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
-        syst[lat.shape(shape_lead, (0, 0, 0))] = onsite
-    elif system_type == "cuboid":
-        syst = kwant.Builder()
-        syst[lat.shape(shape_cube, (0, 0, 0))] = onsite
-    elif system_type == "infinite":
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0, 0))] = onsite
-
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx_phase
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
-    return syst
-
-
-def title(p):
-    return r"$M={:.3}$".format(p.M)
-
-
-def make_lead():
-    lat = kwant.lattice.general(np.identity(3), norbs=4)
-    syst = kwant.Builder(
-        kwant.TranslationalSymmetry((-1, 0, 0)), time_reversal=1j * pauli.sys0
-    )
-    syst[lat(0, 0, 0)] = 1.5 * pauli.s0sz
-    syst[kwant.HoppingKind((-1, 0, 0), lat)] = -1 * pauli.s0sz
-    return syst
-
-
-def make_scatter_sys():
-    syst = kwant.wraparound.wraparound(bhz(Z=1, system_type="slab"))
-    syst.attach_lead(make_lead())
-    syst.attach_lead(kwant.wraparound.wraparound(bhz(), keep=0))
-    syst = syst.finalized()
-    return syst
-
-
-def scattering_det_pfaff(syst, p):
-    def pfaffian(syst, p, k_x, k_y):
-        smat = kwant.smatrix(
-            syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
-        ).data
-        # since we get relatively large numerical errors we project the matrix on
-        # the space of antisymmetric matrices
-        smat = 0.5 * (smat - smat.T)
-        return pf.pfaffian(smat)
-
-    xdim, ydim = "$k_y$", "phase"
-
-    def plot_k_x(syst, p, k_x, label, col):
-        pfaff = [pfaffian(syst, p, k_x, 0), pfaffian(syst, p, k_x, np.pi)]
-        ks = np.linspace(0.0, np.pi, 50)
-        det = [
-            np.linalg.det(
-                kwant.smatrix(
-                    syst, energy=0.0, params=dict(p=p, k_x=k_x, k_y=k_y, k_z=0)
-                ).data
-            )
-            for k_y in ks
-        ]
-        det = np.array(det)
-        phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-        kdims = [xdim, ydim]
-        plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=label).opts(
-            style={"color": col}
-        )
-        plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
-            style={"color": col}
-        )
-        return plot
-
-    plot = plot_k_x(syst, p, 0, r"$k_x=0$", "g") * plot_k_x(
-        syst, p, np.pi, r"$k_x=\pi$", "b"
-    )
-    xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.2, np.pi + 0.2)
-    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    style_overlay = {
-        "xticks": [(0, "0"), (np.pi, "$\pi$")],
-        "yticks": pi_ticks,
-        "show_legend": True,
-        "legend_position": "top",
-    }
-    style_path = {"show_legend": True}
-    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
-        plot={"Overlay": style_overlay, "Path": style_path}
-    )
 ```
 
 # Introduction
@@ -239,14 +108,54 @@ Let's have a quick look at it to get a more concrete understanding:
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(A1=1, A2=1.5, B1=1, B2=1, C=0, D1=0, D2=0, M=None, Bz=0)
-syst = bhz(Z=5, system_type="slab")
+
+def onsite(site, C, D1, D2, M, B1, B2):
+    return (
+        (C + 2 * D1 + 4 * D2) * pauli.s0s0
+        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
+    )
+
+
+def hopx(site1, site2, D2, B2, A2, Bz):
+    x1, y1, z1 = site1.pos
+    x2, y2, z2 = site2.pos
+    return (
+        -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx
+    ) * np.exp(-0.5j * Bz * (x1 - x2) * (y1 + y2))
+
+
+def hopy(site1, site2, D2, B2, A2):
+    return -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sysx
+
+
+def hopz(site1, site2, D1, B1, A1):
+    return -D1 * pauli.s0s0 - B1 * pauli.s0sz + A1 * 0.5j * pauli.szsx
+
+
+lat = kwant.lattice.cubic(norbs=4)
+bhz_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+bhz_infinite[lat(0, 0, 0)] = onsite
+bhz_infinite[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+bhz_infinite[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+bhz_infinite[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+
+
+def make_slab(W):
+    syst = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
+    syst.fill(bhz_infinite, shape=(lambda site: 0 <= site.pos[2] < W), start=(0, 0, 0))
+    return syst
+
+
+slab = make_slab(5)
+p = dict(A1=1, A2=1.5, B1=1, B2=1, C=0, D1=0, D2=0, M=None, Bz=0)
+
+
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-1, 1, 5)
 holoviews.HoloMap(
     {
-        p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2)
-        for p.M in Ms
+        p["M"]: spectrum(slab, p, k_x=k, k_y=k, title=f"$M={p['M']:.3}$", num_bands=2)
+        for p["M"] in Ms
     },
     kdims=[r"$M$"],
 )
@@ -281,22 +190,98 @@ We determine the topological invariant in the same way as for QSHE: we see if th
 
 ```python
 %%output fig='png'
-p = SimpleNamespace(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.1, D2=0, M=None, Bz=0)
-syst = bhz(Z=15, system_type="slab")
-fsyst = make_scatter_sys()
+
+# A system for computing the topological invariant
+probe_lead = kwant.Builder(
+    kwant.TranslationalSymmetry((-1, 0, 0)), time_reversal=1j * pauli.sys0
+)
+probe_lead[lat(0, 0, 0)] = 0 * pauli.s0s0
+probe_lead[kwant.HoppingKind((-1, 0, 0), lat)] = -1 * pauli.s0s0
+
+top_invariant_syst = kwant.Builder()
+top_invariant_syst[lat(0, 0, 0)] = 0 * pauli.s0s0
+
+top_invariant_syst.attach_lead(probe_lead)
+top_invariant_syst.attach_lead(
+    kwant.wraparound.wraparound(bhz_infinite, keep=0, coordinate_names="zxy")
+)
+
+top_invariant_syst = top_invariant_syst.finalized()
+
+
+def pfaffian_phase(p, k_x, k_y):
+    if not np.allclose(np.array([k_x, k_y]) % np.pi, 0):
+        raise ValueError("Pfaffian is only defined at a TRI momentum.")
+    smat = kwant.smatrix(
+        top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
+    ).data
+    # since we get relatively large numerical errors we project the matrix on
+    # the space of antisymmetric matrices
+    smat = 0.5 * (smat - smat.T)
+    return np.angle(pf.pfaffian(smat))
+
+
+def invariant_at_k_x(p, k_x, k_x_label, col):
+    pfaff = [pfaffian_phase(p, k_x, k_y) for k_y in (0, np.pi)]
+    ks = np.linspace(0.0, np.pi, 50)
+    det = np.array([
+        np.linalg.det(
+            kwant.smatrix(
+                top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
+            ).data
+        )
+        for k_y in ks
+    ])
+    phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
+    xdim, ydim = "$k_y$", "phase"
+    kdims = [xdim, ydim]
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=f"$k_x={k_x_label}$").opts(
+        style={"color": col}
+    )
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
+        style={"color": col}
+    )
+    return plot
+
+
+def plot_invariant(p):
+    xdim, ydim = "$k_y$", "phase"
+
+    plot = (
+        invariant_at_k_x(p, 0, "0", "g")
+        * invariant_at_k_x(p, np.pi, r"\pi", "b")
+    )
+    xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.3, np.pi + 0.3)
+    pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+    style_overlay = {
+        "xticks": [(0, "0"), (np.pi, "$\pi$")],
+        "yticks": pi_ticks,
+        "show_legend": True,
+        "legend_position": "top",
+    }
+    style_path = {"show_legend": True}
+    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
+        plot={"Overlay": style_overlay, "Path": style_path}
+    )
+
+
+p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)
+
+slab = make_slab(15)
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-2.75, 0.75, 11)
-hm1 = holoviews.HoloMap(
+spectra = holoviews.HoloMap(
     {
-        p.M: spectrum(syst, p, k_x=k, k_y=k, k_z=0, title=title, num_bands=2)
-        for p.M in Ms
+        p["M"]: spectrum(slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2)
+        for p["M"] in Ms
     },
-    kdims=[r"$M$"],
+    kdims=["$M$"],
 )
-hm2 = holoviews.HoloMap(
-    {p.M: scattering_det_pfaff(fsyst, p) for p.M in Ms}, kdims=[r"$M$"]
+
+invariant_plots = holoviews.HoloMap(
+    {p["M"]: plot_invariant(p) for p["M"] in Ms}, kdims=[r"$M$"]
 )
-hm1 + hm2
+spectra + invariant_plots
 ```
 
 We see the values of the invariants change several times:
@@ -344,11 +329,17 @@ Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```python
 %%output size=150
-p = SimpleNamespace(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
-lead = bhz(Y=20, Z=10, system_type="lead")
+p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
+
+wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
+wire.fill(
+    bhz_infinite,
+    shape=(lambda site: 0 <= site.pos[1] < 20 and 0 <= site.pos[2] < 10),
+    start=(0, 0, 0)
+)
 k = np.linspace(-3.5, 1.5)
 kwargs = {"ylims": [-0.8, 0.8], "yticks": 5}
-spectrum(lead, p, k_x=k, **kwargs)
+spectrum(wire, p, k_x=k, **kwargs)
 ```
 
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.

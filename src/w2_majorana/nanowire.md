@@ -340,7 +340,7 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
         * B_crit
         for gap, alpha in zip(gaps, alphas)
     ]
-    title = r"$\Delta={:.2}$, $\mu={:.2}$".format(delta, mu)
+    title = fr"$\Delta={delta:.2}$, $\mu={mu:.2}$"
     style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
     plot = holoviews.Overlay(plot)
     return plot.opts(plot=style)

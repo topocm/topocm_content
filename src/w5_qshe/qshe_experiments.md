@@ -8,155 +8,7 @@ init_notebook()
 %output size = 150
 
 import warnings
-
 warnings.simplefilter("ignore", UserWarning)
-
-bhz_parameters = {
-    "topo": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 0.2},
-    "topo2": {"A": 0.5, "B": 1.00, "D": 0.0, "M": 1.0},
-    "triv": {"A": 0.5, "B": 1.00, "D": 0.0, "M": -0.2},
-    "lead": {"A_lead": 1.5, "B_lead": 1.00, "D_lead": 0.0, "M_lead": 0.0},
-}
-
-# Onsite and hopping functions for the BHZ model.
-# Sometimes, we use different BHZ parameters in the
-# scattering region and leads, so we treat them
-# separately.
-def _onsite(site, p, is_lead=False):
-    if is_lead:
-        B, D, M = p.B_lead, p.D_lead, p.M_lead
-    else:
-        B, D, M = p.B, p.D, p.M
-    return (
-        (M - 4 * B) * pauli.s0sz
-        - 4 * D * pauli.s0s0
-        + p.ez_y * np.kron(pauli.sy, (pauli.s0 + pauli.sz) / 2)
-    )
-
-
-def onsite(site, p):
-    return _onsite(site, p, is_lead=False)
-
-
-def onsite_lead(site, p):
-    return _onsite(site, p, is_lead=True)
-
-
-def _hopx(site1, site2, p, is_lead=False):
-    if is_lead:
-        A, B, D = p.A_lead, p.B_lead, p.D_lead
-    else:
-        A, B, D = p.A, p.B, p.D
-    return B * pauli.s0sz + D * pauli.s0s0 + 1j * A * pauli.szsx
-
-
-def hopx(site1, site2, p):
-    return _hopx(site1, site2, p, is_lead=False)
-
-
-def hopx_lead(site1, site2, p):
-    return _hopx(site1, site2, p, is_lead=True)
-
-
-def _hopy(site1, site2, p, is_lead=False):
-    if is_lead:
-        A, B, D = p.A_lead, p.B_lead, p.D_lead
-    else:
-        A, B, D = p.A, p.B, p.D
-    return B * pauli.s0sz + D * pauli.s0s0 - 1j * A * pauli.s0sy
-
-
-def hopy(site1, site2, p):
-    return _hopy(site1, site2, p, is_lead=False)
-
-
-def hopy_lead(site1, site2, p):
-    return _hopy(site1, site2, p, is_lead=True)
-
-
-def two_terminal(L, w):
-    """ Make a two terminal system with the BHZ model. """
-
-    def shape(pos):
-        (x, y) = pos
-        return 0 <= y < w and 0 <= x < L
-
-    def lead_shape(pos):
-        (x, y) = pos
-        return 0 <= y < w
-
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-
-    def onsite_two_term(site, p):
-        return onsite(site, p) - p.mu * np.eye(4)
-
-    def onsite_two_term_lead(site, p):
-        return onsite_lead(site, p) - p.mu_lead * np.eye(4)
-
-    # Scattering region
-    syst[lat.shape(shape, (0, 0))] = onsite_two_term
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    # Leads
-    lead = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
-    lead[lat.shape(lead_shape, (0, 0))] = onsite_two_term_lead
-    lead[kwant.HoppingKind((1, 0), lat)] = hopx_lead
-    lead[kwant.HoppingKind((0, 1), lat)] = hopy_lead
-
-    # Attach leads
-    syst.attach_lead(lead)
-    syst.attach_lead(lead.reversed())
-
-    return syst
-
-
-def bhz(w=None):
-    """Translationally invariant BHZ system with a infinite or fixed width w."""
-    lat = kwant.lattice.square()
-    if w is None:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-    else:
-
-        def ribbon_shape(pos):
-            (x, y) = pos
-            return 0 <= y < w
-
-        sym = kwant.TranslationalSymmetry((1, 0))
-        syst = kwant.Builder(sym)
-        syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    return syst
-
-
-def G_mu_plot(p, mus, color):
-    syst = two_terminal(40, 40).finalized()
-    G = [
-        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
-        for p.mu in mus
-    ]
-    ydim = r"G $[e^2/h]$"
-    kdims = [r"$\mu$", ydim]
-    plot = holoviews.Path((mus, np.array(G)), kdims=kdims, label="Conductance")
-    ticks = {"xticks": [-0.8, -0.4, 0, 0.4, 0.8], "yticks": [0, 2, 4, 6, 8, 10]}
-    return plot.redim.range(**{ydim: (0, 10)}).opts(plot=ticks, style={"color": color})
-
-
-def G_Ez_plot(p, E_zs):
-    syst = two_terminal(40, 20).finalized()
-    G = [
-        kwant.smatrix(syst, energy=0.0, params=dict(p=p)).transmission(1, 0)
-        for p.ez_y in E_zs
-    ]
-    ydim = r"G $[e^2/h]$"
-    kdims = [r"$E_z$", ydim]
-    plot = holoviews.Path((E_zs, np.array(G)), kdims=kdims, label="Conductance")
-    ticks = {"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]}
-    return plot.redim.range(**{ydim: (0, 2)}).opts(plot=ticks)
 ```
 
 # Introduction
@@ -196,13 +48,34 @@ So below we see a qualitative band structure of one of the QSHE insulators, HgTe
 
 
 ```python
-p_triv = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=0.0, A=0.5, B=1.0, D=-0.1, M=-0.2)
-p_topo = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=0.0, A=0.5, B=1.0, D=-0.1, M=1.5)
-syst = bhz()
-kwargs = {"zticks": [-8, -4, 0, 4, 8]}
+def onsite(site, mu, B, D, M, ez_y):
+    return (
+        (M - 4 * B) * pauli.s0sz
+        + (mu - 4 * D) * pauli.s0s0
+        + ez_y * np.kron(pauli.sy, (pauli.s0 + pauli.sz) / 2)
+    )
+
+
+def hopx(site1, site2, A, B, D):
+    return B * pauli.s0sz + D * pauli.s0s0 + 1j * A * pauli.szsx
+
+
+def hopy(site1, site2, A, B, D):
+    return B * pauli.s0sz + D * pauli.s0s0 - 1j * A * pauli.s0sy
+
+
+lat = kwant.lattice.square(norbs=4)
+bhz_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+bhz_infinite[lat(0, 0)] = onsite
+bhz_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
+bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
+
+
+p = dict(mu=0, ez_y=0.0, A=0.5, B=1.0, D=-0.1)
+zticks = [-8, -4, 0, 4, 8]
 (
-    spectrum(syst, p_triv, **kwargs).relabel("Trivial")
-    + spectrum(syst, p_topo, **kwargs).relabel("Topological")
+    spectrum(bhz_infinite, dict(M=0.2, **p), zticks=zticks).relabel("HgTe/CdTe")
+    + spectrum(bhz_infinite, dict(M=1.5, **p), zticks=zticks).relabel("InAs/GaSb")
 )
 ```
 
@@ -224,19 +97,27 @@ We end up with this situation:
 
 
 ```python
-p_topo = SimpleNamespace(
-    mu=None, ez_y=0.0, mu_lead=1.5, A=0.5, B=1.0, D=0.0, M=0.2, **bhz_parameters["lead"]
-)
-p_triv = SimpleNamespace(
-    mu=None,
-    ez_y=0.0,
-    mu_lead=1.5,
-    A=0.5,
-    B=1.0,
-    D=0.0,
-    M=-0.2,
-    **bhz_parameters["lead"]
-)
+def bhz_ribbon(W):
+    """Translationally invariant BHZ system with a fixed width W."""
+    syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
+    syst.fill(bhz_infinite, (lambda site: 0 <= site.pos[1] < W), (0, 0))
+    return syst
+
+
+def two_terminal(L, W):
+    """ Make a two terminal system with the BHZ model."""
+    ribbon = bhz_ribbon(W)
+
+    syst = kwant.Builder()
+    syst.fill(ribbon, (lambda site: 0 <= site.pos[0] < L), (0, 0))
+    lead = ribbon.substituted(mu="mu_lead")
+    syst.attach_lead(lead)
+    syst.attach_lead(lead.reversed())
+
+    return syst
+
+
+p = dict(ez_y=0.0, mu_lead=1.5, A=0.5, B=1.0, D=0.0)
 
 kwargs = {
     "k_x": np.linspace(-np.pi / 3, np.pi / 3, 51),
@@ -245,16 +126,42 @@ kwargs = {
     "ylims": (-1.5, 1.5),
 }
 
-syst = bhz(w=20)
-spec_topo = spectrum(syst, p_topo, **kwargs).relabel("spectrum (topo)")
-spec_triv = spectrum(syst, p_triv, **kwargs).relabel("spectrum (triv)")
-mus = np.linspace(-0.8, 0.8, 50)
-HLines = holoviews.HoloMap({mu: holoviews.HLine(mu) for mu in mus}, kdims=[r"$\mu$"])
-VLines = holoviews.HoloMap({mu: holoviews.VLine(mu) for mu in mus}, kdims=[r"$\mu$"])
-G_triv = G_mu_plot(p_triv, mus, "b")
-G_topo = G_mu_plot(p_topo, mus, "r")
+ribbon = bhz_ribbon(W=20)
+syst = two_terminal(40, 40).finalized()
 
-(G_triv * (G_topo * VLines) + spec_topo * HLines + spec_triv * HLines)
+masses = [-0.2, 0.2]
+mus = np.linspace(-0.8, 0.8, 50)
+
+spectra = [
+    spectrum(ribbon, dict(mu=0, **p), **kwargs).relabel(title)
+    for p["M"], title
+    in zip(masses, ("trivial spectrum", "topological spectrum"))
+]
+
+ydim = r"$G[e^2/h]$"
+conductance_plots = [
+    holoviews.Path(
+        (
+            mus,
+            [
+                kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
+                for p["mu"] in mus
+            ]
+        ),
+        kdims=[r"$\mu$", ydim], label=label)
+            .opts(
+                plot={
+                    "xticks": np.linspace(-0.8, 0.8, 5),
+                },
+                style={"color": color}
+            )
+    for p["M"], color, label
+    in [(-0.2, "teal", "trivial"), (0.2, "orange", "topological")]
+]
+
+G_triv, G_topo = conductance_plots
+
+(G_triv * G_topo).relabel("Conductance") + spectra[0] + spectra[1]
 ```
 
 Here on the left we see a comparison between the conductances of a trivial (blue curve) and a topological (red curve) insulator as a function of chemical potential. The other two panels show the spectra of a quantum spin Hall insulator in the topological and trivial phases. As we expected, conductance is quantized when the chemical potential is inside the band gap of a topological system.
@@ -329,13 +236,19 @@ We can very easily calculate that this is the case if we plot the conductance of
 
 
 ```python
-p = SimpleNamespace(mu=0, ez_y=0.0, mu_lead=1.5, **bhz_parameters["topo2"])
+E_zs = np.linspace(0, 0.15, 50)
+p["mu"] = 0
+p["M"] = 1
 
-for key, value in bhz_parameters["topo2"].items():
-    # setting the parameters for the lead the same as the scattering system
-    p.__dict__[key + "_lead"] = value
-
-syst = bhz(w=20)
+G = [
+    kwant.smatrix(syst, params=p).transmission(1, 0)
+    for p["ez_y"] in E_zs
+]
+ez_conductances = (
+    holoviews.Path((E_zs, np.array(G)), kdims=["$E_z$", ydim], label="Conductance")
+    .redim.range(**{ydim: (0, 2)})
+    .opts(plot={"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]})
+)
 
 kwargs = {
     "k_x": np.linspace(-np.pi / 3, np.pi / 3, 51),
@@ -345,14 +258,13 @@ kwargs = {
     "title": lambda p: "Band structure",
 }
 
-E_zs = np.linspace(0, 0.15, 50)
 VLines = holoviews.HoloMap(
     {ez_y: holoviews.VLine(ez_y) for ez_y in E_zs}, kdims=[r"$E_z$"]
 )
 spectra = holoviews.HoloMap(
-    {p.ez_y: spectrum(syst, p, **kwargs) for p.ez_y in E_zs}, kdims=[r"$E_z$"]
+    {p["ez_y"]: spectrum(ribbon, p, **kwargs) for p["ez_y"] in E_zs}, kdims=[r"$E_z$"]
 )
-G_Ez_plot(p, E_zs) * VLines + spectra * holoviews.HLine(0)
+ez_conductances * VLines + spectra * holoviews.HLine(0)
 ```
 
 However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers. 
