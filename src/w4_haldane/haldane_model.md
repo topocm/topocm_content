@@ -9,149 +9,6 @@ import scipy
 
 %output size=150 fig='png'
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-
-
-def haldane(w=20, boundary="zigzag"):
-    def ribbon_shape_zigzag(pos):
-        return -0.5 / np.sqrt(3) - 0.1 <= pos[1] < np.sqrt(3) * w / 2 + 0.01
-
-    def ribbon_shape_armchair(pos):
-        return -1 <= pos[0] < w
-
-    def onsite(site, p):
-        if site.family == a:
-            return p.m
-        else:
-            return -p.m
-
-    def nn_hopping(site1, site2, p):
-        return p.t
-
-    def nnn_hopping(site1, site2, p):
-        return 1j * p.t_2
-
-    lat = kwant.lattice.honeycomb()
-    a, b = lat.sublattices
-    nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
-    nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
-
-    if boundary == "zigzag":
-        syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
-        syst[lat.shape(ribbon_shape_zigzag, (0, 0))] = onsite
-    elif boundary == "armchair":
-        syst = kwant.Builder(kwant.TranslationalSymmetry((0, np.sqrt(3))))
-        syst[lat.shape(ribbon_shape_armchair, (0, 0))] = onsite
-    else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-
-    syst[lat.neighbors()] = nn_hopping
-    syst[
-        [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_a]
-    ] = nnn_hopping
-    syst[
-        [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_b]
-    ] = nnn_hopping
-
-    return syst
-
-
-def Qi_Wu_Zhang():
-    def onsite(site, p):
-        return -p.mu * pauli.sz
-
-    def hopx(site1, site2, p):
-        return -0.5j * p.delta * pauli.sy - p.t * pauli.sz
-
-    def hopy(site1, site2, p):
-        return -1j * p.gamma * pauli.sx - p.gamma * pauli.sz
-
-    lat = kwant.lattice.square()
-
-    syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-    syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    return syst
-
-
-def berry_curvature(syst, p, ks, num_filled_bands=1):
-    """Berry curvature of a system.
-    
-    Parameters:
-    -----------
-    sys : kwant.Builder
-        A 2D infinite system.
-    p : SimpleNamespace
-        The arguments expected by the system.
-    ks : 1D array-like
-        Values of momentum grid to be used for Berry curvature calculation.
-    num_filled_bands : int
-        The number of filled bands.
-
-    Returns:
-    --------
-    bc : 2D array
-        Berry curvature on each square in a `ks x ks` grid.
-    """
-    # Calculate an array of eigenvectors.
-    B = np.array(syst.symmetry.periods).T
-    A = B @ np.linalg.inv(B.T @ B)
-
-    syst = kwant.wraparound.wraparound(syst).finalized()
-
-    def energy(kx, ky):
-        k = np.array([kx, ky])
-        kx, ky = np.linalg.solve(A, k)
-        H = syst.hamiltonian_submatrix(params=dict(p=p, k_x=kx, k_y=ky), sparse=False)
-        return scipy.linalg.eigh(H)[1]
-
-    vectors = np.array(
-        [[energy(kx, ky)[:, :num_filled_bands] for kx in ks] for ky in ks]
-    )
-
-    # The actual Berry curvature calculation
-    vectors_x = np.roll(vectors, 1, 0)
-    vectors_xy = np.roll(vectors_x, 1, 1)
-    vectors_y = np.roll(vectors, 1, 1)
-
-    shifted_vecs = [vectors, vectors_x, vectors_xy, vectors_y]
-
-    v_shape = vectors.shape
-
-    shifted_vecs = [i.reshape(-1, v_shape[-2], v_shape[-1]) for i in shifted_vecs]
-
-    dets = np.ones(len(shifted_vecs[0]), dtype=complex)
-    for vec, shifted in zip(shifted_vecs, np.roll(shifted_vecs, 1, 0)):
-        dets *= [np.linalg.det(a.T.conj() @ b) for a, b in zip(vec, shifted)]
-    bc = np.angle(dets).reshape(int(np.sqrt(len(dets))), -1)
-
-    bc = (bc + np.pi / 2) % (np.pi) - np.pi / 2
-
-    return bc
-
-
-def plot_berry_curvature(syst, p, ks=None, title=None):
-    if ks is None:
-        ks = np.linspace(-np.pi, np.pi, 150, endpoint=False)
-    bc = berry_curvature(syst, p, ks)[1:-1, 1:-1]
-    vmax = max(np.abs(bc).min(), np.abs(bc).max())
-    kwargs = {
-        "bounds": (ks.min(), ks.min(), ks.max(), ks.max()),
-        "kdims": [r"$k_x$", r"$k_y$"],
-    }
-
-    if callable(title):
-        kwargs["label"] = title(p)
-
-    plot = {"xticks": pi_ticks, "yticks": pi_ticks}
-    style = {"clims": [-vmax, vmax]}
-    return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
-
-
-def title(p):
-    title = r"$t={:.2}$, $t_2={:.2}$, $M={:.2}$"
-    return title.format(p.t, p.t_2, p.m)
 ```
 
 # Intro
@@ -193,10 +50,41 @@ The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives ris
 
 
 ```python
-p = SimpleNamespace(t=1.0, t_2=0.0, m=0.0, phi=np.pi / 2)
-syst = haldane(boundary="infinite")
+honeycomb = kwant.lattice.honeycomb()
+a, b = honeycomb.sublattices
+nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
+nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
+
+
+def title(p):
+    return fr"$t={p['t']:.2}$, $t_2={p['t_2']:.2}$, $M={p['M']:.2}$"
+
+
+def onsite(site, M):
+    return M if site.family == a else -M
+
+
+def nn_hopping(site1, site2, t):
+    return t
+
+
+def nnn_hopping(site1, site2, t_2):
+    return 1j * t_2
+
+
+haldane_infinite = kwant.Builder(kwant.TranslationalSymmetry(*honeycomb.prim_vecs))
+haldane_infinite[honeycomb.shape(lambda pos: True, (0, 0))] = onsite
+haldane_infinite[honeycomb.neighbors()] = nn_hopping
+haldane_infinite[
+    [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_a]
+] = nnn_hopping
+haldane_infinite[
+    [kwant.builder.HoppingKind(*hopping) for hopping in nnn_hoppings_b]
+] = nnn_hopping
+
+p = dict(t=1.0, t_2=0.0, M=0.0, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 150)
-spectrum(syst, p, k_x=k, k_y=k, title=title)
+spectrum(haldane_infinite, p, k_x=k, k_y=k, title=title)
 ```
 
 Only two of these six Dirac cones are really distinct, the ones at $\mathbf{K}=(2\pi/3, 2\pi/3\sqrt{3})$ and $\mathbf{K}'=(2\pi/3, -2\pi/3\sqrt{3})$. All the others can be obtained by adding some reciprocal lattice vector to $\mathbf{K}$ and $\mathbf{K}'$.
@@ -266,13 +154,12 @@ Let's see what happens to the system when these special second neighbor hoppings
 
 
 ```python
-p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi / 2, t_2=None)
-syst = haldane(boundary="infinite")
+p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
 t_2s = np.linspace(0, 0.10, 11)
 holoviews.HoloMap(
-    {p.t_2: spectrum(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r"$t_2$"]
+    {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s}, kdims=[r"$t_2$"]
 )
 ```
 
@@ -282,36 +169,42 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
-
 ```python
 %%output fig='svg'
-def ribbon_bandstructure(t_2, boundary):
-    p = SimpleNamespace(t=1.0, t_2=t_2, m=0.2, phi=np.pi / 2)
 
-    if boundary == "zigzag":
-        syst = haldane(w=20, boundary="zigzag")
-    elif boundary == "armchair":
-        syst = haldane(w=20, boundary="armchair",)
+W = 20
 
-    style = {
-        "k_x": np.linspace(-np.pi, np.pi, 101),
-        "xdim": r"$k$",
-        "ydim": r"$E/t$",
-        "xticks": pi_ticks,
-        "yticks": [-3, 0, 3],
-        "ylims": [-3.2, 3.2],
-        "title": title,
-    }
-
-    return spectrum(syst, p, **style)
+def ribbon_shape_zigzag(site):
+    return -0.5 / np.sqrt(3) - 0.1 <= site.pos[1] < np.sqrt(3) * W / 2 + 0.01
 
 
+zigzag_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
+zigzag_ribbon.fill(haldane_infinite, ribbon_shape_zigzag, (0, 0))
+
+
+def ribbon_shape_armchair(site):
+    return -1 <= site.pos[0] < W
+
+
+armchair_ribbon = kwant.Builder(kwant.TranslationalSymmetry((0, np.sqrt(3))))
+armchair_ribbon.fill(haldane_infinite, ribbon_shape_armchair, (0, 0))
+
+
+p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
+style = {
+    "k_x": np.linspace(-np.pi, np.pi, 101),
+    "xdim": r"$k$",
+    "ydim": r"$E/t$",
+    "xticks": pi_ticks,
+    "yticks": [-3, 0, 3],
+    "ylims": [-3.2, 3.2],
+    "title": title,
+}
 t_2s = np.linspace(0, 0.5, 20)
-boundaries = ["zigzag", "armchair"]
 plots = {
-    (t_2, boundary): ribbon_bandstructure(t_2, boundary)
-    for t_2 in t_2s
-    for boundary in boundaries
+    (p["t_2"], boundary): spectrum(ribbon, p, **style)
+    for p["t_2"] in t_2s
+    for boundary, ribbon in [("zigzag", zigzag_ribbon), ("armchair", armchair_ribbon)]
 }
 holoviews.HoloMap(plots, kdims=[r"$t_2$", "Boundary"])
 ```
@@ -442,12 +335,95 @@ To see this more clearly, we can compute the Berry curvature numerically and plo
 
 
 ```python
-p = SimpleNamespace(t=1.0, m=0.2, phi=np.pi / 2, t_2=None)
-syst = haldane(boundary="infinite")
-kwargs = {"title": title, "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)}
+def berry_curvature(syst, p, ks, num_filled_bands=1):
+    """Berry curvature of a system.
+
+    Parameters:
+    -----------
+    sys : kwant.Builder
+        A 2D infinite system.
+    p : dict
+        The arguments expected by the system.
+    ks : 1D array-like
+        Values of momentum grid to be used for Berry curvature calculation.
+    num_filled_bands : int
+        The number of filled bands.
+
+    Returns:
+    --------
+    bc : 2D array
+        Berry curvature on each square in a `ks x ks` grid.
+    """
+    # Calculate an array of eigenvectors.
+    B = np.array(syst.symmetry.periods).T
+    A = B @ np.linalg.inv(B.T @ B)
+
+    syst = kwant.wraparound.wraparound(syst).finalized()
+
+    def filled_states(kx, ky):
+        k = np.array([kx, ky])
+        kx, ky = np.linalg.solve(A, k)
+        p.update(k_x=kx, k_y=ky)
+        H = syst.hamiltonian_submatrix(params=p, sparse=False)
+        return scipy.linalg.eigh(H)[1][:, :num_filled_bands]
+
+    vectors = np.array(
+        [[filled_states(kx, ky) for kx in ks] for ky in ks]
+    )
+
+    # The actual Berry curvature calculation
+    vectors_x = np.roll(vectors, 1, 0)
+    vectors_xy = np.roll(vectors_x, 1, 1)
+    vectors_y = np.roll(vectors, 1, 1)
+
+    shifted_vecs = [vectors, vectors_x, vectors_xy, vectors_y]
+
+    v_shape = vectors.shape
+
+    shifted_vecs = [i.reshape(-1, v_shape[-2], v_shape[-1]) for i in shifted_vecs]
+
+    dets = np.ones(len(shifted_vecs[0]), dtype=complex)
+    for vec, shifted in zip(shifted_vecs, np.roll(shifted_vecs, 1, 0)):
+        dets *= [np.linalg.det(a.T.conj() @ b) for a, b in zip(vec, shifted)]
+    bc = np.angle(dets).reshape(int(np.sqrt(len(dets))), -1)
+
+    bc = (bc + np.pi / 2) % (np.pi) - np.pi / 2
+
+    return bc
+
+
+def plot_berry_curvature(syst, p, ks=None, title=None):
+    if ks is None:
+        ks = np.linspace(-np.pi, np.pi, 150, endpoint=False)
+    bc = berry_curvature(syst, p, ks)[1:-1, 1:-1]
+    vmax = max(np.abs(bc).min(), np.abs(bc).max())
+    kwargs = {
+        "bounds": (ks.min(), ks.min(), ks.max(), ks.max()),
+        "kdims": [r"$k_x$", r"$k_y$"],
+    }
+
+    if callable(title):
+        kwargs["label"] = title(p)
+
+    plot = {"xticks": pi_ticks, "yticks": pi_ticks}
+    style = {"clims": [-vmax, vmax]}
+    return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
+```
+
+
+```python
+p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
+kwargs = {
+    "title": title,
+    "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)
+}
 t_2s = np.linspace(-0.1, 0.1, 11)
 holoviews.HoloMap(
-    {p.t_2: plot_berry_curvature(syst, p, **kwargs) for p.t_2 in t_2s}, kdims=[r"$t_2$"]
+    {
+        p["t_2"]: plot_berry_curvature(haldane_infinite, p, **kwargs)
+        for p["t_2"] in t_2s
+    },
+    kdims=[r"$t_2$"],
 )
 ```
 
@@ -476,19 +452,41 @@ For instance, here is a slider plot for the Berry curvature for the quantum Hall
 
 
 ```python
-p = SimpleNamespace(t=1.0, delta=1.0, gamma=-0.5, mu=None)
-syst = Qi_Wu_Zhang()
+lat = kwant.lattice.square()
+QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 
-def title_Qi(p):
-    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
-    return title.format(p.t, p.mu, p.delta, p.gamma)
+def onsite(site, mu):
+    return -mu * pauli.sz
 
 
-kwargs = {"title": title_Qi}
+def hopx(site1, site2, delta, t):
+    return -0.5j * delta * pauli.sy - t * pauli.sz
+
+
+def hopy(site1, site2, gamma):
+    return -1j * gamma * pauli.sx - gamma * pauli.sz
+
+
+QWZ_infinite[lat(0, 0)] = onsite
+QWZ_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
+QWZ_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
+
+
+p = dict(t=1.0, delta=1.0, gamma=-0.5, mu=None)
+
+
+def title_QWZ(p):
+    return (
+        fr"$t={p['t']:.2}$, $\mu={p['mu']:.2}$, "
+        fr"$\Delta={p['delta']:.2}$, $\gamma={p['gamma']:.2}$"
+    )
+
+
+kwargs = {"title": title_QWZ}
 mus = np.linspace(-2, 0, 11)
 holoviews.HoloMap(
-    {p.mu: plot_berry_curvature(syst, p, **kwargs) for p.mu in mus}, kdims=[r"$\mu$"]
+    {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
 )
 ```
 

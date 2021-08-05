@@ -9,281 +9,6 @@ import itertools
 import warnings
 
 warnings.simplefilter("ignore", UserWarning)
-
-# Onsite and hoppings terms for BHZ and QAH model
-def onsite_BHZ(site, p):
-    return (
-        (p.M - 4 * p.B) * pauli.s0sz
-        - 4 * p.D * pauli.s0s0
-        + p.field * site.pos[1] * pauli.s0s0
-    )
-
-
-def hopx_BHZ(site1, site2, p):
-    return p.B * pauli.s0sz + p.D * pauli.s0s0 + 0.5j * p.A * pauli.szsx
-
-
-def hopy_BHZ(site1, site2, p):
-    return p.B * pauli.s0sz + p.D * pauli.s0s0 - 0.5j * p.A * pauli.s0sy
-
-
-def weak_hopping_BHZ(site1, site2, p):
-    return p.t_inter * np.eye(4)
-
-
-def onsite_QAH(site, p):
-    return (p.mu - 4 * p.B) * pauli.sz + p.field * site.pos[1] * pauli.s0
-
-
-def hopx_QAH(site1, site2, p):
-    return p.B * pauli.sz + 0.5j * p.A * pauli.sx
-
-
-def hopy_QAH(site1, site2, p):
-    return p.B * pauli.sz + 0.5j * p.A * pauli.sy
-
-
-def weak_hopping_QAH(site1, site2, p):
-    return p.t_inter * np.eye(2)
-
-
-# Systems
-def create_screw_system(L, W, H, xs=None, ys=None, ye=None, pbc=True, model="BHZ"):
-    """ Create system with screw dislocation.
-
-    Function creates system with a screw dislocation. 
-    L, W, H are dimension of scattering region.
-    L, W are dimension of cross section. 
-    Leads are attached from top and bottom (0,0,1) direction.
-
-    xs, ys, ye describes where disloaction is placed.
-    """
-    if model == "BHZ":
-        onsite, hopx, hopy, weak_hopping = (
-            onsite_BHZ,
-            hopx_BHZ,
-            hopy_BHZ,
-            weak_hopping_BHZ,
-        )
-    elif model == "QAH":
-        onsite, hopx, hopy, weak_hopping = (
-            onsite_QAH,
-            hopx_QAH,
-            hopy_QAH,
-            weak_hopping_QAH,
-        )
-
-    def shape(pos):
-        (x, y, z) = pos
-        return (0 <= x < L) and (0 <= y < W) and (0 <= z < H)
-
-    def lead_shape(pos):
-        (x, y, z) = pos
-        return (0 <= x < L) and (0 <= y < W)
-
-    # calling kwant
-    lat = kwant.lattice.general(np.identity(3))
-    syst = kwant.Builder()
-
-    sym = kwant.TranslationalSymmetry((0, 0, 1))
-    lead = kwant.Builder(sym)
-
-    # scattering system
-    syst[lat.shape(shape, (0, 0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = weak_hopping
-
-    # lead system
-    lead[lat.shape(lead_shape, (0, 0, 0))] = onsite
-    lead[kwant.HoppingKind((1, 0, 0), lat)] = hopx
-    lead[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    lead[kwant.HoppingKind((0, 0, 1), lat)] = weak_hopping
-
-    # defining dislocation
-    if xs is not None:
-        for y in range(ys, ye):
-            for z in range(H):
-                del syst[lat(xs + 1, y, z), lat(xs, y, z)]
-
-            del lead[lat(xs + 1, y, 0), lat(xs, y, 0)]
-            lead[lat(xs + 1, y, z + 1), lat(xs, y, z)] = hopx
-
-        for y, z in itertools.product(range(ys, ye), range(H - 1)):
-            syst[lat(xs + 1, y, z + 1), lat(xs, y, z)] = hopx
-
-    # adding periodic boundary conditions
-    if pbc:
-        for x in range(L):
-            lead[lat(x, 0, 0), lat(x, W - 1, 0)] = hopy
-            for z in range(H):
-                syst[lat(x, 0, z), lat(x, W - 1, z)] = hopy
-
-        for y in range(W):
-            lead[lat(0, y, 0), lat(L - 1, y, 0)] = hopx
-            for z in range(H):
-                syst[lat(0, y, z), lat(L - 1, y, z)] = hopx
-
-    syst.attach_lead(lead)
-    syst.attach_lead(lead.reversed())
-
-    return syst.finalized(), lead
-
-
-def create_edge_dislocation_system(
-    L, W, H, xs=None, ys=None, ye=None, pbc=True, model="BHZ"
-):
-    """ Create system with edge dislocation.
-
-    Function creates system with an edge dislocation. 
-    L, W, H are dimension of scattering region.
-    L, W are dimension of cross section. 
-    Leads are attached from top and bottom (0,0,1) direction.
-
-    xs, ys, ye describes where disloaction is placed.
-    """
-    if model == "BHZ":
-        onsite, hopx, hopy, weak_hopping = (
-            onsite_BHZ,
-            hopx_BHZ,
-            hopy_BHZ,
-            weak_hopping_BHZ,
-        )
-    elif model == "QAH":
-        onsite, hopx, hopy, weak_hopping = (
-            onsite_QAH,
-            hopx_QAH,
-            hopy_QAH,
-            weak_hopping_QAH,
-        )
-
-    def shape(pos):
-        (x, y, z) = pos
-        return (0 <= x < L) and (0 <= y < W) and (0 <= z < H)
-
-    def lead_shape(pos):
-        (x, y, z) = pos
-        return (0 <= x < L) and (0 <= y < W)
-
-    # Calling kwant
-    lat = kwant.lattice.general(np.identity(3))
-    syst = kwant.Builder()
-
-    sym = kwant.TranslationalSymmetry((0, 0, 1))
-    lead = kwant.Builder(sym)
-
-    # scattering system
-    syst[lat.shape(shape, (0, 0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = weak_hopping
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopx
-
-    # lead system
-    lead[lat.shape(lead_shape, (0, 0, 0))] = onsite
-    lead[kwant.HoppingKind((1, 0, 0), lat)] = weak_hopping
-    lead[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    lead[kwant.HoppingKind((0, 0, 1), lat)] = hopx
-
-    # defining disclocation
-    if xs != None:
-        for y in range(ys, ye):
-            del lead[lat(xs, y, 0)]
-            lead[lat(xs + 1, y, 0), lat(xs - 1, y, 0)] = weak_hopping
-
-            for z in range(H):
-                del syst[lat(xs, y, z)]
-                syst[lat(xs + 1, y, z), lat(xs - 1, y, z)] = weak_hopping
-
-    # periodic boundary conditions
-    if pbc:
-        for x in range(L):
-            lead[lat(x, 0, 0), lat(x, W - 1, 0)] = hopy
-            for z in range(H):
-                syst[lat(x, 0, z), lat(x, W - 1, z)] = hopy
-
-        for y in range(W):
-            lead[lat(0, y, 0), lat(L - 1, y, 0)] = weak_hopping
-            for z in range(H):
-                syst[lat(0, y, z), lat(L - 1, y, z)] = weak_hopping
-
-    # attaching leads
-    syst.attach_lead(lead)
-    syst.attach_lead(lead.reversed())
-
-    return syst.finalized(), lead
-
-
-def get_densities(lead, momentum, p, model, sorting_mid=0.0):
-    """ Calculate density of states in the lead at a given momentum. """
-    coord = np.array([i.pos for i in lead.sites])
-    xy = coord[coord[:, 2] == 0][:, :-1]
-    indxs_xy = np.lexsort(xy.T)
-    xy = xy[indxs_xy, :]
-
-    h, t = lead.cell_hamiltonian(params=dict(p=p)), lead.inter_cell_hopping(params=dict(p=p))
-    h_k = lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
-
-    vals, vecs = np.linalg.eigh(h_k(momentum))
-
-    if model == "BHZ":
-        num_orbital = 4
-    if model == "QAH":
-        num_orbital = 2
-
-    densities = np.linalg.norm(vecs.reshape(-1, num_orbital, len(vecs)), axis=1) ** 2
-
-    indxs = np.argsort(abs(vals - sorting_mid))
-    vals = vals[indxs]
-    densities = densities[:, indxs]
-    densities = densities[indxs_xy, :]
-
-    L, W = int(np.max(xy[:, 0]) + 1), int(np.max(xy[:, 1]) + 1)
-    twod_densities = np.zeros((W, L, densities.shape[1]))
-
-    for coord, val in zip(xy, densities):
-        i, j = np.array(coord, dtype=int)
-        twod_densities[j, i, :] = val
-
-    return twod_densities, vals
-
-
-def get_spectrum_and_densities(sys_func, p, model, momentum, kwargs):
-    syst, lead = sys_func(L=11, W=21, H=5, xs=4, ys=5, ye=16, model=model)
-    spect = spectrum(lead, p, **kwargs)
-    densities = get_densities(syst.leads[0], momentum, p, model)
-    return spect, densities
-
-
-def create_hm(sys_func, momentum, kwargs):
-    parameters = {
-        "BHZ": {"A": 1.0, "B": 1.0, "D": 0.0, "M": 0.8},
-        "QAH": {"A": 1.0, "B": 1.0, "D": 0.0, "mu": 0.8},
-    }
-
-    p_BHZ = SimpleNamespace(field=0.005, t_inter=-0.1, **parameters["BHZ"])
-    p_QAH = SimpleNamespace(field=0.01, t_inter=-0.1, **parameters["QAH"])
-
-    spectrum_QAH, densities_QAH = get_spectrum_and_densities(
-        sys_func, p_QAH, "QAH", momentum, kwargs
-    )
-    spectrum_BHZ, densities_BHZ = get_spectrum_and_densities(
-        sys_func, p_BHZ, "BHZ", momentum, kwargs
-    )
-
-    hm_dict = {}
-    for n in range(7):
-        for model, density, spect in zip(
-            ["BHZ", "QAH"], [densities_BHZ, densities_QAH], [spectrum_BHZ, spectrum_QAH]
-        ):
-            hm_dict[n, model] = (
-                spect
-                * holoviews.Points((momentum, density[1][n]))
-                * holoviews.VLine(momentum)
-            ).relabel("Bandstructure") + holoviews.Raster(
-                density[0][:, :, n], label=r"$\left|\psi\right|^2$"
-            )
-
-    return holoviews.HoloMap(hm_dict, kdims=["n", "model"])
 ```
 
 # Introduction: weak topological phases
@@ -374,39 +99,126 @@ Let's start with a screw dislocation connecting two layers. The system looks lik
 
 
 ```python
-# System parameters
-L = 6
-W = 7
-ws = 3
-xs = 2
-syst, lead = create_screw_system(
-    L, W, 2, xs=xs, ys=0, ye=W - ws, pbc=False, model="BHZ"
+# Layered BHZ and QAH models
+
+def onsite(site, M, B, D, field):
+    return (
+        (M - 4 * B) * pauli.s0sz
+        - 4 * D * pauli.s0s0
+        + field * site.pos[1] * pauli.s0s0
+    )
+
+
+def hopx(site1, site2, B, D, A):
+    return B * pauli.s0sz + D * pauli.s0s0 + 0.5j * A * pauli.szsx
+
+
+def hopy(site1, site2, B, D, A):
+    return B * pauli.s0sz + D * pauli.s0s0 - 0.5j * A * pauli.s0sy
+
+
+def hopz(site1, site2, t_inter):
+    return t_inter * np.eye(4)
+
+
+lat = kwant.lattice.cubic(norbs=4)
+layered_bhz_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+layered_bhz_infinite[lat(0, 0, 0)] = onsite
+layered_bhz_infinite[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+layered_bhz_infinite[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+layered_bhz_infinite[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+
+
+def onsite(site, mu, B, field):
+    return (mu - 4 * B) * pauli.sz + field * site.pos[1] * pauli.s0
+
+
+def hopx(site1, site2, B, A):
+    return B * pauli.sz + 0.5j * A * pauli.sx
+
+
+def hopy(site1, site2, B, A):
+    return B * pauli.sz + 0.5j * A * pauli.sy
+
+
+def hopz(site1, site2, t_inter):
+    return t_inter * pauli.s0
+
+
+lat = kwant.lattice.cubic(norbs=2)
+layered_qah_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+layered_qah_infinite[lat(0, 0, 0)] = onsite
+layered_qah_infinite[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+layered_qah_infinite[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+layered_qah_infinite[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+
+
+def screw_dislocation(model, L=10, W=15):
+    syst = kwant.Builder(
+        kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1))
+    )
+    syst.fill(
+        model,
+        shape=(
+            lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W
+        ),
+        start=(0, 0, 0)
+    )
+
+    def crosses_branch_cut(hop):
+        x1, y1, _ = hop[0].pos
+        x2, *_ = hop[1].pos
+        return (x1 - L//2 + .5) * (x2 - L//2 + .5) < 0 and W//4 < y1 < 3*W//4
+
+    to_delete = [tuple(sorted(hop)) for hop in syst.hoppings() if crosses_branch_cut(hop)]
+    hopping_values = [syst[hop] for hop in to_delete]
+    del syst[to_delete]
+    diagonal_hops = [
+        (hop[0].family(*(hop[0].tag - [0, 0, 1])), hop[1])
+        for hop in to_delete
+    ]
+    for hop, value in zip(diagonal_hops, hopping_values):
+        syst[hop] = value
+
+    return syst
+
+
+L, W = 10, 15
+x0, y0, y1 = L//2 - 0.5, W//4 + 0.5, 3*W//4 - 0.5
+
+bzh_screw_dislocation = screw_dislocation(layered_bhz_infinite, L, W)
+def displacement(x, y):
+    x -= x0
+    return -np.angle(np.sqrt((y - y0 - 1j*x) * (y - y1 + 1j*x))) / (np.pi)
+
+fig = kwant.plot(
+    bzh_screw_dislocation,
+    site_size=.02, hop_lw=.05, fig_size=(9, 9), show=False,
+    pos_transform=(
+        lambda pos: [pos[0], pos[1], pos[2] + displacement(pos[0], pos[1])]
+    )
 )
-
-fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(1, 1, 1, projection="3d")
-kwant.plot(syst, site_size=0.0, site_lw=0.01, hop_lw=0.025, ax=ax, num_lead_cells=0)
-
-ax.set_xticks(())
-ax.set_yticks(())
-ax.set_zticks(())
-ax.view_init(50, -110)
+ax = fig.axes[0]
+ax.view_init(elev=40, azim=60)
+ax.plot(
+    [x0, x0, np.nan, x0, x0], [y0, y0, np.nan, y1, y1], [-2, 2, np.nan, -2, 2],
+    lw=3, linestyle=":"
+)
+ax.axis("off");
 ```
 
-The Burgers' vector is parallel to $z$ and has unit length - the dislocation connects neighboring layers.
+The figure above shows a single unit cell in the $z$-direction that is infinitely repeated to obtain the dispersion relation. Along the $x$ and $y$ directions the system has periodic boundary conditions.
 
-The figure above only shows two layers, but we imagine that the system is repeated identically along the $z$ direction. Along the $x$ and $y$ directions it has periodic boundary conditions. Above we only show half of the dislocation.
+The Burgers' vector is parallel to the $z$-axis and has unit length (the dislocation connects neighboring layers). The dotted lines are the dislocation cores.
 
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
-
 ```python
-%opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
-%opts Points(s=50)
-
 kwargs = {
-    "k_x": np.linspace(np.pi - np.pi / 4, np.pi + np.pi / 4, 51),
-    "ylims": [-0.6, 0.95],
+    "k_x": 0,
+    "k_y": 0,
+    "k_z": np.linspace(np.pi - np.pi / 4, np.pi + np.pi / 4, 51),
+    "ylims": [-0.6, 1.01],
     "yticks": [-0.5, 0, 0.5],
     "xticks": [
         (np.pi - np.pi / 4, r"$\pi-\pi/4$"),
@@ -415,7 +227,58 @@ kwargs = {
     ],
 }
 
-create_hm(create_screw_system, momentum=np.pi + 0.1, kwargs=kwargs).collate()
+screw_dislocations = dict(
+    BHZ=screw_dislocation(layered_bhz_infinite, L, W),
+    QAH=screw_dislocation(layered_qah_infinite, L, W)
+)
+parameters = dict(
+    BHZ=dict(A=1.0, B=1.0, D=0.0, M=0.8, field=0.01, t_inter=-.1),
+    QAH=dict(A=1.0, B=1.0, mu=0.8, field=0.005, t_inter=-0.1)
+)
+
+screw_dislocation_spectra = {
+    name: spectrum(syst, p=parameters[name], **kwargs).relabel(f"Band structure, {name}")
+    for name, syst in screw_dislocations.items()
+}
+
+def density_array(syst, psi):
+    """Convert a wave function into a 2D array suitable for plotting."""
+    density = kwant.operator.Density(syst)(psi)
+    all_coords = np.array([site.tag for site in syst.sites])[:, :2]
+    r_min = np.min(all_coords, axis=0) + 1
+    data = np.zeros(np.ptp(all_coords, axis=0))
+    data[tuple(all_coords.T - r_min.reshape(-1, 1))] = density
+    return data
+
+
+k_z = np.pi + 0.1
+energies, densities = {}, {}
+for name, syst in screw_dislocations.items():
+    syst = kwant.wraparound.wraparound(syst).finalized()
+    H = syst.hamiltonian_submatrix(params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name]))
+    vals, vecs = np.linalg.eigh(H)
+    # Select the energies close to the middle of the spectrum
+    indices = slice(len(vals)//2 - 3, len(vals)//2 + 3)
+    energies[name] = vals[indices]
+    densities[name] = [density_array(syst, psi) for psi in vecs.T[indices]]
+
+
+# %opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
+
+holoviews.HoloMap({
+    (n, name): (
+        (
+            spectrum
+            * holoviews.Points((k_z, energy)).opts(s=50)
+            * holoviews.VLine(k_z)
+        )
+        + holoviews.Raster(density.T, label=r"$\left|\psi\right|^2$").opts(
+            cmap='gist_heat_r', interpolation=None
+        )
+    )
+    for name, spectrum in screw_dislocation_spectra.items()
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
+}, kdims=["n", "model"]).collate()
 ```
 
 You see that the band structure is gapless: because of the presence of the dislocation, there are states dispersing below the bulk gap along the $z$ direction.
@@ -428,44 +291,116 @@ We can also look at an edge dislocation:
 
 
 ```python
-# System parameters
-L = 7
-W = 7
-ws = 3
-xs = 3
-syst, lead = create_edge_dislocation_system(
-    L, W, 2, xs=xs, ys=0, ye=W - ws, pbc=False, model="BHZ"
+def edge_dislocation(model, L=10, W=15):
+    syst = kwant.Builder(
+        kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1))
+    )
+
+    # Interchange x- and z- hopping
+    lat = list(model.sites())[0].family
+    rotated = kwant.Builder(model.symmetry)
+    rotated[lat(0, 0, 0)] = model[lat(0, 0, 0)]
+    rotated[kwant.HoppingKind((1, 0, 0), lat)] = model[next(kwant.HoppingKind((0, 0, 1), lat)(model))]
+    rotated[kwant.HoppingKind((0, 1, 0), lat)] = model[next(kwant.HoppingKind((0, 1, 0), lat)(model))]
+    rotated[kwant.HoppingKind((0, 0, 1), lat)] = model[next(kwant.HoppingKind((1, 0, 0), lat)(model))]
+    syst.fill(
+        rotated,
+        shape=(
+            lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W
+        ),
+        start=(0, 0, 0)
+    )
+
+    def removed_layer(site):
+        x, y, _ = site.pos
+        return x == L//2 and W//4 < y < 3*W//4
+
+    to_delete = [site for site in syst.sites() if removed_layer(site)]
+    for site in to_delete:
+        syst[
+            site.family(*(site.tag - (1, 0, 0))),
+            site.family(*(site.tag + (1, 0, 0)))
+        ] = syst[
+            site, site.family(*(site.tag + (1, 0, 0)))
+        ]
+    del syst[to_delete]
+
+    return syst
+
+L, W = 10, 15
+x0, y0, y1 = L//2, W//4 + 0.5, 3*W//4 - 0.5
+
+bzh_edge_dislocation = edge_dislocation(layered_bhz_infinite, L, W)
+def displacement(x, y):
+    x -= x0
+    return -np.angle(np.sqrt((y - y0 - 1j*x) * (y - y1 + 1j*x))) / (np.pi)
+
+fig = kwant.plot(
+    bzh_edge_dislocation,
+    site_size=.02, hop_lw=.05, fig_size=(9, 9), show=False,
+    pos_transform=(
+        lambda pos: [pos[0] + displacement(pos[0], pos[1]), pos[1], pos[2]]
+    )
 )
-
-
-fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(1, 1, 1, projection="3d")
-
-kwant.plot(syst, site_size=0.0, site_lw=0.01, hop_lw=0.025, ax=ax, num_lead_cells=0)
-
-ax.set_xticks(())
-ax.set_yticks(())
-ax.set_zticks(())
-ax.view_init(50, -110)
+ax = fig.axes[0]
+ax.view_init(elev=40, azim=60)
+ax.plot(
+    [x0, x0, np.nan, x0, x0], [y0, y0, np.nan, y1, y1], [-2, 2, np.nan, -2, 2],
+    lw=3, linestyle=":"
+)
+ax.axis("off");
 ```
 
-The Burgers vector is now along the $y$ direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
+The Burgers vector is now along the $y$-direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
 
 
 ```python
-%opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
-%opts Points(s=50)
-
 kwargs = {
-    "k_x": np.linspace(-np.pi / 4, np.pi / 4, 51),
+    "k_x": 0,
+    "k_y": 0,
+    "k_z": np.linspace(-np.pi / 4, np.pi / 4, 51),
     "ylims": [-0.6, 0.95],
     "yticks": [-0.5, 0, 0.5],
     "xticks": [(-np.pi / 4, r"$-\pi/4$"), (0, r"$0$"), (np.pi / 4, r"$\pi/4$")],
 }
 
-create_hm(create_edge_dislocation_system, momentum=0.1, kwargs=kwargs).collate()
-```
+edge_dislocations = dict(
+    BHZ=edge_dislocation(layered_bhz_infinite, L, W),
+    QAH=edge_dislocation(layered_qah_infinite, L, W)
+)
 
+edge_dislocation_spectra = {
+    name: spectrum(syst, p=parameters[name], **kwargs).relabel(f"Band structure, {name}")
+    for name, syst in edge_dislocations.items()
+}
+
+k_z = 0.1
+energies, densities = {}, {}
+for name, syst in edge_dislocations.items():
+    syst = kwant.wraparound.wraparound(syst).finalized()
+    H = syst.hamiltonian_submatrix(params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name]))
+    vals, vecs = np.linalg.eigh(H)
+    # Select the energies close to the middle of the spectrum
+    indices = slice(len(vals)//2 - 3, len(vals)//2 + 3)
+    energies[name] = vals[indices]
+    densities[name] = [density_array(syst, psi).T for psi in vecs.T[indices]]
+
+
+holoviews.HoloMap({
+    (n, name): (
+        (
+            spectrum
+            * holoviews.Points((k_z, energy)).opts(s=50)
+            * holoviews.VLine(k_z)
+        )
+        + holoviews.Raster(density, label=r"$\left|\psi\right|^2$").opts(
+            cmap='gist_heat_r', interpolation=None
+        )
+    )
+    for name, spectrum in edge_dislocation_spectra.items()
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
+}, kdims=["n", "model"]).collate()
+```
 
 ```python
 question = (
@@ -481,8 +416,8 @@ answers = [
 ]
 
 explanation = (
-    "Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
-    "and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
+    r"Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
+    r"and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
 )
 
 MoocMultipleChoiceAssessment(

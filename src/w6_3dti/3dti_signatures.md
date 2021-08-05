@@ -14,177 +14,6 @@ from matplotlib import cm
 import warnings
 
 warnings.simplefilter("ignore", UserWarning)
-
-
-def bhz(L, W, H, system_type):
-    """A cuboid region of BHZ material with two leads attached.
-
-    parameters for leads and scattering region can be defined separately
-    """
-    # Onsite and hoppings matrices used for building BHZ model
-    def onsite(site, p):
-        return (p.C + 2 * p.D1 + 4 * p.D2) * pauli.s0s0 + (
-            p.M + 2 * p.B1 + 4 * p.B2
-        ) * pauli.s0sz
-
-    def hopx(site1, site2, p):
-        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sxsx
-
-    def hopy(site1, site2, p):
-        return -p.D2 * pauli.s0s0 - p.B2 * pauli.s0sz + p.A2 * 0.5j * pauli.sysx
-
-    def hopz(site1, site2, p):
-        return -p.D1 * pauli.s0s0 - p.B1 * pauli.s0sz + p.A1 * 0.5j * pauli.szsx
-
-    def shape_lead(pos):
-        (x, y, z) = pos
-        return (0 <= z < H) and (0 <= y < W)
-
-    def shape_syst(pos):
-        (x, y, z) = pos
-        return (0 <= z < H) and (0 <= y < W) and (0 <= x < L)
-
-    def hopx_phase(site1, site2, p):
-        x1, y1, z1 = site1.pos
-        x2, y2, z2 = site2.pos
-        return hopx(site1, site2, p) * np.exp(-0.5j * p.Bz * (x1 - x2) * (y1 + y2))
-
-    lat = kwant.lattice.general(np.identity(3))
-
-    if system_type == "sys":
-        syst = kwant.Builder()
-        syst[lat.shape(shape_syst, (0, 0, 0))] = lambda site, p: onsite(
-            site, p
-        ) - p.mu_scat * np.eye(4)
-    elif system_type == "lead":
-        sym = kwant.TranslationalSymmetry((1, 0, 0))
-        syst = kwant.Builder(sym)
-        syst[lat.shape(shape_lead, (0, 0, 0))] = lambda site, p: onsite(
-            site, p
-        ) - p.mu_lead * np.eye(4)
-    elif system_type == "infinite":
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = lambda site, p: onsite(
-            site, p
-        ) - p.mu_lead * np.eye(4)
-
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx_phase
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
-    return syst
-
-
-def bhz_scatter(L, W, H):
-    syst = bhz(L, W, H, "sys")
-    lead = bhz(L, W, H, "lead")
-    syst.attach_lead(lead)
-    syst.attach_lead(lead.reversed())
-    return syst
-
-
-def cond_mu(p, L, W, H):
-    p.mu_lead = 0.7
-    syst = bhz_scatter(L, W, H)
-    sys_leads_fixed = syst.finalized().precalculate(energy=0, params=dict(p=p))
-    mus = np.linspace(-0.4, 0.4, 40)
-    cond = [
-        kwant.smatrix(
-            sys_leads_fixed, energy=0, params=dict(p=p.update(mu_scat=mu))
-        ).transmission(1, 0)
-        for mu in mus
-    ]
-    return np.array(cond), mus
-
-
-def plot_cond_mu(cond, mus):
-    xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
-    kwargs = {"kdims": [xdim, ydim]}
-    plot = holoviews.Path((mus, cond), **kwargs).opts(
-        plot={"xticks": 3, "yticks": [0, 2, 4, 6, 8]}, style={"color": "r"}
-    )
-    return plot.redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)}).relabel("Conductance")
-
-
-def plot_bands(p, L, W, H):
-    lead = bhz(L, W, H, "lead")
-    kwargs = {
-        "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
-        "ylims": [-1, 1],
-        "yticks": 5,
-        "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
-    }
-    p.mu_lead = 0
-    return spectrum(lead, p, **kwargs)
-
-
-def plot_cond_spect(mu, cond_plot, bands_plot):
-    return cond_plot * holoviews.VLine(mu).opts(
-        style={"color": "b"}
-    ) + bands_plot.relabel("Spectrum") * holoviews.HLine(mu).opts(style={"color": "b"})
-
-
-def plot_warping(A=1.2, B=1.8, C=1.5, Kmax=1.0):
-    def evaluate_on_grid(X, Y, func):
-        """ X, Y should be in np.meshgrid form. It's enough for func to work on floats. """
-        data = []
-        for xx, yy in zip(X, Y):
-            data.append([func(i, j) for i, j in zip(xx, yy)])
-        data = np.array(data)
-        return data
-
-    def get_energy_function(A, B, C):
-        """ Used for plotting of hexagonal warping. """
-
-        def func(kx, ky):
-            matrix = (
-                A * (kx ** 2 + ky ** 2) * pauli.s0
-                + B * (kx * pauli.sy - ky * pauli.sx)
-                + C * 0.5 * ((kx + 1j * ky) ** 3 + (kx - 1j * ky) ** 3) * pauli.sz
-            )
-            return sla.eigh(matrix)[0]
-
-        return func
-
-    zmin, zmax = -1.0, 3.5
-    xylims = (-1.2, 1.2)
-    zlims = (-1.0, 3.5)
-    kdims = [r"$k_x$", r"$k_y$"]
-    vdims = [r"E"]
-    # Generate a circular mesh
-    N = 100
-    r = np.linspace(0, Kmax, N)
-    p = np.linspace(0, 2 * np.pi, N)
-    r, p = np.meshgrid(r, p)
-    x, y = r * np.cos(p), r * np.sin(p)
-    energies = evaluate_on_grid(x, y, func=get_energy_function(A, B, C))
-
-    xy_ticks = [-1.2, 0, 1.2]
-    zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
-    style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
-    kwargs = {
-        "extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
-        "kdims": kdims,
-        "vdims": vdims,
-    }
-
-    # hex_cmap colormap is defined below.
-    plot = holoviews.Overlay(
-        [
-            holoviews.TriSurface(
-                (x.flat, y.flat, energies[:, :, i].flat), **kwargs
-            ).opts(style=dict(cmap=hex_cmap, linewidth=0), plot=style)
-            for i in range(energies.shape[-1])
-        ]
-    )
-    return plot.opts(plot={"Overlay": {"fig_size": 350}})
-
-
-# Custom colormap for the hexagonal warping plot
-cmap_list = [
-    ((value + 1) / 4.0, colour)
-    for value, colour in zip([-1.0, 0.0, 3.0], ["Blue", "White", "Red"])
-]
-hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
 ```
 
 # Introduction: searching the periodic table for topological materials
@@ -210,15 +39,87 @@ The 3D topological insulators do not posses similar striking conductance propert
 
 
 ```python
-p = SimpleNamespace(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0, mu_scat=0)
+# BHZ model
+def onsite(site, mu, D1, D2, M, B1, B2):
+    return (
+        (2 * D1 + 4 * D2 - mu) * pauli.s0s0
+        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
+    )
+
+
+def hopx(site1, site2, D2, B2, A2):
+    return -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx
+
+
+def hopy(site1, site2, D2, B2, A2):
+    return -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sysx
+
+
+def hopz(site1, site2, D1, B1, A1):
+    return -D1 * pauli.s0s0 - B1 * pauli.s0sz + A1 * 0.5j * pauli.szsx
+
+
+lat = kwant.lattice.cubic(norbs=4)
+bhz_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+bhz_infinite[lat(0, 0, 0)] = onsite
+bhz_infinite[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+bhz_infinite[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+bhz_infinite[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+
 L, W, H = 10, 30, 6
-cond, mus = cond_mu(p, L, W, H)
-cond_plot = plot_cond_mu(cond, mus)
-bands_plot = plot_bands(p, L, W, H)
-mus = np.linspace(-0.4, 0.4, 11)
-holoviews.HoloMap(
-    {mu: plot_cond_spect(mu, cond_plot, bands_plot) for mu in mus}, kdims=[r"$\mu$"]
-).collate()
+
+
+def scattering_region_shape(site):
+    x, y, z = site.pos
+    return (0 <= x < L) and (0 <= y < W) and (0 <= z < H)
+
+
+finite_ti = kwant.Builder()
+finite_ti.fill(
+    bhz_infinite,
+    shape=scattering_region_shape,
+    start=(0, 0, 0)
+)
+
+
+def wire_shape(site):
+    _, y, z = site.pos
+    return (0 <= y < W) and (0 <= z < H)
+
+
+wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
+wire.fill(
+    bhz_infinite.substituted(mu="mu_lead"),
+    shape=wire_shape,
+    start=(0, 0, 0)
+)
+finite_ti.attach_lead(wire)
+finite_ti.attach_lead(wire.reversed())
+finite_ti = finite_ti.finalized()
+
+p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0, mu_lead=0.7)
+mus = np.linspace(-0.4, 0.4, 40)
+
+# Precalculate lead modes
+finite_ti = finite_ti.precalculate(energy=0, params=p)
+conductances = [
+    kwant.smatrix(finite_ti, params={**p, "mu": mu}).transmission(1, 0)
+    for mu in mus
+]
+
+xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
+conductance_plot = holoviews.Path((mus, conductances), kdims=[xdim, ydim]).opts(
+    plot={"xticks": 3, "yticks": [0, 2, 4, 6, 8]}
+).redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)}).relabel("Conductance")
+
+kwargs = {
+    "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
+    "ylims": [-1, 1],
+    "yticks": 5,
+    "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
+}
+
+conductance_plot + spectrum(wire, {**p, "mu_lead": 0}, **kwargs).relabel("Spectrum")
 ```
 
 It is also the behavior that is observed experimentally. In the figure below, you see that the resistance of a 3D TI slab reaches a maximum and then decreases as the chemical potential difference between its top and bottom surfaces is varied.
@@ -378,7 +279,64 @@ Let's plot the spectrum of this extended effective Hamiltonian:
 ```python
 %%output fig='png'
 
-plot_warping()
+A = 1.2
+B = 1.8
+C = 1.5
+
+Kmax = 1.0
+N = 50
+
+r = np.linspace(0, Kmax, N)
+p = np.linspace(0, 2 * np.pi, N)
+r, p = np.meshgrid(r, p)
+k_x, k_y = r * np.cos(p), r * np.sin(p)
+
+k_x = k_x[..., np.newaxis, np.newaxis]
+k_y = k_y[..., np.newaxis, np.newaxis]
+s0, sx, sy, sz = (
+    i.reshape(1, 1, 2, 2) for i in
+    (pauli.s0, pauli.sx, pauli.sy, pauli.sz)
+)
+H = (
+    A * (k_x ** 2 + k_y ** 2) * s0
+    + B * (k_x * sy - k_y * sx)
+    + C * 0.5 * ((k_x + 1j * k_y) ** 3 + (k_x - 1j * k_y) ** 3) * sz
+)
+
+energies = np.moveaxis(np.linalg.eigvalsh(H), 2, 0)
+
+zmin, zmax = -1.0, 3.5
+xylims = (-1.2, 1.2)
+zlims = (-1.0, 3.5)
+kdims = [r"$k_x$", r"$k_y$"]
+vdims = [r"E"]
+# Generate a circular mesh
+
+xy_ticks = [-1.2, 0, 1.2]
+zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
+style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
+kwargs = {
+    "extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
+    "kdims": kdims,
+    "vdims": vdims,
+}
+
+# Custom colormap for the hexagonal warping plot
+cmap_list = [
+    ((value + 1) / 4.0, colour)
+    for value, colour in zip([-1.0, 0.0, 3.0], ["Blue", "White", "Red"])
+]
+hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
+
+# hex_cmap colormap is defined below.
+holoviews.Overlay(
+    [
+        holoviews.TriSurface(
+            (k_x.flat, k_y.flat, band.flat), **kwargs
+        ).opts(style=dict(cmap=hex_cmap, linewidth=0), plot=style)
+        for band in energies
+    ]
+).opts(plot={"Overlay": {"fig_size": 350}})
 ```
 
 This Hamiltonian reproduces correctly the *hexagonal warping* of the Fermi surface. In particular, independently of the parameters $\lambda$ and $\alpha$, the vertices of the hexagon are always aligned with the $x$ crystal axis, as is observed experimentally.

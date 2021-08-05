@@ -3,163 +3,9 @@ import sys
 
 sys.path.append("../../code")
 from init_mooc_nb import *
-
-init_notebook()
 import scipy.sparse.linalg as sl
 
-my = 0.5 * (pauli.sys0 + pauli.sysz)
-s0s0sz = np.kron(pauli.s0s0, pauli.sz)
-s0szsz = np.kron(pauli.s0sz, pauli.sz)
-mys0 = np.kron(my, pauli.s0)
-s0s0sx = np.kron(pauli.s0s0, pauli.sx)
-s0s0sy = np.kron(pauli.s0s0, pauli.sy)
-szsxsz = np.kron(pauli.szsx, pauli.sz)
-s0sysz = np.kron(pauli.s0sy, pauli.sz)
-sxsxsz = np.kron(pauli.sxsx, pauli.sz)
-sysxsz = np.kron(pauli.sysx, pauli.sz)
-
-
-def make_qshe_sc(l=40, w=10, lead=False):
-    def shape(pos):
-        (x, y) = pos
-        return (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
-
-    def onsite(site, p):
-        (x, y) = site.pos
-        return (
-            (p.M - 4 * p.B) * s0szsz
-            - 4 * p.D * s0s0sz
-            + p.gaps(x, y)[1] * mys0
-            + p.gaps(x, y)[0] * s0s0sx
-        )
-
-    def hopx(site1, site2, p):
-        return p.B * s0szsz + p.D * s0s0sz + 0.5j * p.A * szsxsz
-
-    def hopy(site1, site2, p):
-        return p.B * s0szsz + p.D * s0s0sz - 0.5j * p.A * s0sysz
-
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-    syst[lat.shape(shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    if lead:
-        sym = kwant.TranslationalSymmetry((0, 1))
-        lead = kwant.Builder(sym)
-        lead[lat(0, 0)] = 1.5 * p.B * s0szsz
-        lead[kwant.HoppingKind((0, 1), lat)] = -p.B * s0szsz
-        syst.attach_lead(lead)
-        syst.attach_lead(lead.reversed())
-    return syst.finalized()
-
-
-def make_qshe_sc_ribbon(w=3):
-    def ribbon_shape(pos):
-        (x, y) = pos
-        return 0 <= x < w
-
-    def onsite(site, p):
-        (x, y) = site.pos
-        return (
-            (p.M - 4 * p.B) * s0szsz
-            - 4 * p.D * s0s0sz
-            + p.gaps(x, y)[1] * mys0
-            + p.gaps(x, y)[0] * s0s0sx
-        )
-
-    def hopx(site1, site2, p):
-        return p.B * s0szsz + p.D * s0s0sz + 0.5j * p.A * szsxsz
-
-    def hopy(site1, site2, p):
-        return p.B * s0szsz + p.D * s0s0sz - 0.5j * p.A * s0sysz
-
-    lat = kwant.lattice.square()
-    sym = kwant.TranslationalSymmetry((0, 1))
-    syst = kwant.Builder(sym)
-
-    syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    return syst.finalized()
-
-
-def make_2d_pwave(w, l):
-    def shape(pos):
-        (x, y) = pos
-        return (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
-
-    def hopx(site1, site2, p):
-        (x1, y1) = site1.pos
-        (x2, y2) = site2.pos
-        phi = p.phase(0.5 * (x1 + x2), 0.5 * (y1 + y2))
-        return -p.t * pauli.sz + 1j * p.delta * (
-            np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
-        )
-
-    def hopy(site1, site2, p):
-        (x1, y1) = site1.pos
-        (x2, y2) = site2.pos
-        phi = p.phase(0.5 * (x1 + x2), 0.5 * (y1 + y2))
-        return -p.t * pauli.sz - 1j * p.delta * (
-            np.cos(np.pi / 2 + phi) * pauli.sx + np.sin(np.pi / 2 + phi) * pauli.sy
-        )
-
-    def onsite(site1, p):
-        return (4 * p.t - p.mu) * pauli.sz
-
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-    syst[lat.shape(shape, (w / 2 - 1, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    return syst.finalized()
-
-
-def bhz_slab(l, w, h):
-    lat = kwant.lattice.general(np.identity(3))
-    syst = kwant.Builder()
-
-    def shape(pos):
-        (x, y, z) = pos
-        return (0 <= z < h) and (1.0 * y ** 2 / l ** 2 + 1.0 * x ** 2 / w ** 2) <= 0.25
-
-    def onsite(site, p):
-        (x, y, z) = site.pos
-        phi = p.phase(x, y)
-        return (
-            (p.C + 2 * p.D1 + 4 * p.D2) * s0s0sz
-            + (p.M + 2 * p.B1 + 4 * p.B2) * s0szsz
-            + p.delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
-        )
-
-    def hopx(site1, site2, p):
-        return -p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sxsxsz
-
-    def hopy(site1, site2, p):
-        return -p.D2 * s0s0sz - p.B2 * s0szsz + p.A2 * 0.5j * sysxsz
-
-    def hopz(site1, site2, p):
-        return -p.D1 * s0s0sz - p.B1 * s0szsz + p.A1 * 0.5j * szsxsz
-
-    syst[lat.shape(shape, (0, 0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
-
-    return syst.finalized()
-
-
-def calc_energies(syst, p, num_orbitals, num_states):
-    ham = syst.hamiltonian_submatrix(params=dict(p=p), sparse=True).tocsc()
-    energies, states = sl.eigsh(ham, sigma=0, k=num_states)
-    densities = (
-        np.linalg.norm(states.reshape(-1, num_orbitals, num_states), axis=1) ** 2
-    )
-    return energies, states, densities
+init_notebook()
 ```
 
 # Introduction
@@ -259,46 +105,80 @@ This is shown below in a numerical simulation of a quantum spin-Hall disk. The l
 
 
 ```python
-l = 60
-w = 60
-sys2 = make_qshe_sc(l, w)
+my = 0.5 * (pauli.sys0 + pauli.sysz)
+s0s0sz = np.kron(pauli.s0s0, pauli.sz)
+s0szsz = np.kron(pauli.s0sz, pauli.sz)
+mys0 = np.kron(my, pauli.s0)
+s0s0sx = np.kron(pauli.s0s0, pauli.sx)
+s0s0sy = np.kron(pauli.s0s0, pauli.sy)
+szsxsz = np.kron(pauli.szsx, pauli.sz)
+s0sysz = np.kron(pauli.s0sy, pauli.sz)
+sxsxsz = np.kron(pauli.sxsx, pauli.sz)
+sysxsz = np.kron(pauli.sysx, pauli.sz)
 
-p = SimpleNamespace(A=0.5, B=1.00, D=0.1, M=0.5)
-p.gaps = lambda x, y: [(y < 0) * 0.0, (y >= 0) * 0.0]
-energies0, states0, densities0 = calc_energies(sys2, p, num_orbitals=8, num_states=10)
-p.gaps = lambda x, y: [(y < 0) * 0.2, (y >= 0) * 0.3]
-energies, states, densities = calc_energies(sys2, p, num_orbitals=8, num_states=10)
 
-phi = np.linspace(-np.pi, np.pi, 51)
-x = (w + 0.5) / 2 * np.cos(phi)
-y = (l + 0.5) / 2 * np.sin(phi)
+def circle(pos, radius=30):
+    return np.linalg.norm(pos) <= radius
+
+
+def onsite(site, M, B, D, Ez, Delta):
+    (x, y) = site.pos
+    return (
+        (M - 4 * B) * s0szsz
+        - 4 * D * s0s0sz
+        + Ez * (y > 0) * mys0
+        + Delta * (y <= 0) * s0s0sx
+    )
+
+
+def hopx(site1, site2, B, D, A):
+    return B * s0szsz + D * s0s0sz + 0.5j * A * szsxsz
+
+
+def hopy(site1, site2, B, D, A):
+    return B * s0szsz + D * s0s0sz - 0.5j * A * s0sysz
+
+
+lat = kwant.lattice.square(norbs=8)
+qshe_circle = kwant.Builder()
+qshe_circle[lat.shape(circle, (0, 0))] = onsite
+qshe_circle[kwant.HoppingKind((1, 0), lat)] = hopx
+qshe_circle[kwant.HoppingKind((0, 1), lat)] = hopy
+qshe_circle = qshe_circle.finalized()
+density = kwant.operator.Density(qshe_circle)
+
+p = dict(A=0.5, B=1.00, D=0.1, M=0.5)
+energies = []
+densities = []
+for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
+    vals, vecs = sl.eigsh(
+        qshe_circle.hamiltonian_submatrix(params={**p, **gaps}, sparse=True),
+        sigma=0, k=1, ncv=20
+    )
+    energies.append(vals[0])
+    densities.append(density(vecs[:, 0]))
 
 fig = plt.figure(figsize=(9, 3.5))
-ax1 = fig.add_subplot(122)
-gap_B = ax1.fill_between(x[:26], 0, y[:26], facecolor="gold", alpha=0.1)
-gap_Sc = ax1.fill_between(x[26:], 0, y[26:], facecolor="blue", alpha=0.1)
-kwant.plotter.map(sys2, densities[:, 0], colorbar=False, ax=ax1, cmap="gist_heat_r")
-plt.plot(x, y, "k-", lw=2)
-text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor="black", lw=0))
-plt.annotate("$E_Z$", xytext=(-w / 20, l / 5), xy=(0, l / 3), **text_style)
-plt.annotate("$\Delta$", xytext=(-w / 20, -l / 4), xy=(0, -l / 3), **text_style)
-ax1.set_yticks([])
-ax1.set_xticks([])
-ax1.set_ylim(-l / 2 - 3, l / 2 + 3)
-ax1.set_xlim(-w / 2 - 3, w / 2 + 3)
-pot = np.log(abs(energies0[0])) // np.log(10.0) - 1
-fac = abs(energies0[0]) * 10 ** (-pot)
-ax1.set_title("Majoranas, $E = $" + scientific_number(abs(energies[0])))
 
-ax0 = fig.add_subplot(121)
-kwant.plotter.map(sys2, densities0[:, 0], colorbar=False, ax=ax0, cmap="gist_heat_r")
-ax0.set_yticks([])
-ax0.set_xticks([])
-ax0.set_ylim(-l / 2 - 3, l / 2 + 3)
-ax0.set_xlim(-w / 2 - 3, w / 2 + 3)
-ax0.set_title("Edge state, $E = $" + scientific_number(abs(energies0[0])))
-plt.plot(x, y, "k-", lw=2)
-plt.show()
+axes = fig.subplots(1, 2)
+for ax, axis, energy, density in zip(axes, ["Normal", "Superconducting"], energies, densities):
+    kwant.plotter.density(qshe_circle, density, ax=ax, colorbar=False)
+    for spine in "left right top bottom".split():
+        ax.spines[spine].set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_title(f"{axis}, $E_{{min}} =$ {scientific_number(abs(energy))}")
+    ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"))
+
+sc_plot = axes[1]
+R = 31
+x = np.linspace(-R, R)
+y = np.sqrt(31**2 - x**2)
+gap_B = sc_plot.fill_between(x, 0, y, facecolor="gold", alpha=0.1)
+gap_Sc = sc_plot.fill_between(x, 0, -y, facecolor="blue", alpha=0.1)
+text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor="black", lw=0))
+ax.text(0, R/3, "$E_Z$", ha="center", fontsize=16)
+ax.text(0, -R/3, r"$\Delta$", ha="center", fontsize=16);
 ```
 
 The density of states plot of the lowest energy state reveals one Majorana mode at each of the two interfaces between the magnet and the superconductor.
@@ -379,23 +259,51 @@ Below, we plot the wave function of the lowest energy state in a $p$-wave disk w
 
 
 ```python
-import matplotlib.cm
-import matplotlib.colors as mcolors
+def onsite(site1, t, mu):
+    return (4 * t - mu) * pauli.sz
 
-colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128) ** 0.25)
-gist_heat_r_rescaled = mcolors.LinearSegmentedColormap.from_list(
-    "gist_heat_r_rescaled", colors
+
+def hopx(site1, site2, t, delta):
+    (x1, y1) = site1.pos
+    (x2, y2) = site2.pos
+    phi = np.arctan2(x1+x2, y1+y2)
+    return -t * pauli.sz + 1j * delta * (
+        np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
+    )
+
+
+def hopy(site1, site2, t, delta):
+    (x1, y1) = site1.pos
+    (x2, y2) = site2.pos
+    phi = np.arctan2(x1+x2, y1+y2) + np.pi/2
+    return -t * pauli.sz - 1j * delta * (
+        np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
+    )
+
+lat = kwant.lattice.square(norbs=2)
+p_wave = kwant.Builder()
+p_wave[lat.shape(circle, (0, 0))] = onsite
+p_wave[kwant.HoppingKind((1, 0), lat)] = hopx
+p_wave[kwant.HoppingKind((0, 1), lat)] = hopy
+p_wave = p_wave.finalized()
+
+p = dict(t=1.0, mu=0.4, delta=0.5)
+[energy], vecs = sl.eigsh(
+    p_wave.hamiltonian_submatrix(params=p, sparse=True),
+    sigma=0, k=1, ncv=20
 )
 
-p = SimpleNamespace(t=1.0, mu=0.4, delta=0.5, phase=lambda x, y: np.angle(x + 1j * y))
-l = 60
-w = 60
-syst = make_2d_pwave(w, l)
-energies, states, densities = calc_energies(syst, p, num_orbitals=2, num_states=10)
-kwant.plotter.map(
-    syst, densities[:, 0], cmap=gist_heat_r_rescaled, show=False, colorbar=False
+
+fig = kwant.plotter.density(
+    p_wave, kwant.operator.Density(p_wave)(vecs[:, 0])**(.5), show=False, colorbar=False
 )
-plt.show()
+ax = fig.axes[0]
+for spine in "left right top bottom".split():
+    ax.spines[spine].set_visible(False)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.set_title(f"P-wave, $E_{{min}} =$ {scientific_number(abs(energy))}")
+ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 ```
 
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
@@ -461,10 +369,42 @@ colors[:, 3] = np.linspace(0, 1, 128)
 gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
     "gist_heat_r_transparent", colors
 )
-l, w, h = 10, 10, 25
-syst = bhz_slab(l, w, h)
+```
 
-p = SimpleNamespace(
+```python
+lat = kwant.lattice.cubic(norbs=8)
+
+
+def cylinder(pos, h=25, r=5):
+    (x, y, z) = pos
+    return (0 <= z < h) and (y**2 + x**2) <= r**2
+
+def onsite(site, C, D1, D2, M, B1, B2, delta):
+    (x, y, z) = site.pos
+    phi = np.arctan2(x, y)
+    return (
+        (C + 2 * D1 + 4 * D2) * s0s0sz
+        + (M + 2 * B1 + 4 * B2) * s0szsz
+        + delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
+    )
+
+def hopx(site1, site2, D2, B2, A2):
+    return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sxsxsz
+
+def hopy(site1, site2, D2, B2, A2):
+    return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sysxsz
+
+def hopz(site1, site2, D1, B1, A1):
+    return -D1 * s0s0sz - B1 * s0szsz + A1 * 0.5j * szsxsz
+
+bhz_wire = kwant.Builder()
+bhz_wire[lat.shape(cylinder, (0, 0, 0))] = onsite
+bhz_wire[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+bhz_wire[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+bhz_wire[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+bhz_wire = bhz_wire.finalized()
+
+p = dict(
     A1=0.5,
     A2=0.5,
     B1=0.5,
@@ -474,41 +414,41 @@ p = SimpleNamespace(
     D2=0.0,
     M=-0.2,
     delta=0.15,
-    phase=lambda x, y: np.angle(x + 1j * y),
 )
 
-energies, states, densities = calc_energies(syst, p, num_orbitals=8, num_states=10)
+[energy], vecs = sl.eigsh(
+    bhz_wire.hamiltonian_submatrix(params=p, sparse=True),
+    sigma=0, k=1, ncv=20
+)
 
 fig = plt.figure(figsize=(9, 3.5))
 
 ax0 = fig.add_subplot(121, projection="3d")
-kwant.plot(syst, ax=ax0, site_size=0.3)
-ax0.set_xlim(-w / 2 - 2, w / 2 + 2)
-ax0.set_ylim(-l / 2 - 2, l / 2 + 2)
+kwant.plot(
+    bhz_wire, ax=ax0, site_size=0.3, site_lw=0.01,
+    site_color="#2267f5cc", hop_lw=0.1
+)
+ax0.set_xlim(-6, 6)
+ax0.set_ylim(-6, 6)
 ax0.set_yticks([])
 ax0.set_xticks([])
-ax0.set_zlim3d([0, h])
-ax0.set_zticks([0, h])
-ax0.set_zticklabels(["$0$", "$%d$" % h])
-densities /= np.max(densities, axis=0, keepdims=True)
+ax0.set_zticks([])
 
 ax1 = fig.add_subplot(122, projection="3d")
 kwant.plotter.plot(
-    syst,
-    site_color=densities[:, 0],
+    bhz_wire,
+    site_color=kwant.operator.Density(bhz_wire)(vecs[:, 0]),
     ax=ax1,
     cmap=gist_heat_r_transparent,
     colorbar=False,
-    site_lw=0,
+    site_lw=0
 )
 
-ax1.set_xlim(-w / 2 - 2, w / 2 + 2)
-ax1.set_ylim(-l / 2 - 2, l / 2 + 2)
+ax1.set_xlim(-6, 6)
+ax1.set_ylim(-6, 6)
 ax1.set_yticks([])
 ax1.set_xticks([])
-ax1.set_zlim3d([0, h])
-ax1.set_zticks([0, h])
-ax1.set_zticklabels(["$0$", "$%d$" % h])
+ax1.set_zticks([])
 plt.show()
 ```
 

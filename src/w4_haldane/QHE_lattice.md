@@ -7,41 +7,6 @@ from init_mooc_nb import *
 init_notebook()
 %output size=150
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-
-
-def Qi_Wu_Zhang(w=None):
-    def onsite(site, p):
-        return -p.mu * pauli.sz
-
-    def hopx(site1, site2, p):
-        return -0.5j * p.delta * pauli.sy - p.t * pauli.sz
-
-    def hopy(site1, site2, p):
-        return -1j * p.gamma * pauli.sx - p.gamma * pauli.sz
-
-    lat = kwant.lattice.square()
-
-    if w == None:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = onsite
-    else:
-
-        def ribbon_shape(pos):
-            return 0 <= pos[1] < w
-
-        sym = kwant.TranslationalSymmetry((1, 0))
-        syst = kwant.Builder(sym)
-        syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    return syst
-
-
-def title(p):
-    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
-    title = title.format(p.t, p.mu, p.delta, p.gamma)
-    return title
 ```
 
 # Introduction: stacking wires
@@ -160,22 +125,49 @@ Aside from special points, this spectrum is gapped, just like we wanted. For ins
 
 
 ```python
-%%output fig='png'
-p = SimpleNamespace(t=1.0, delta=0.3, gamma=-0.5, mu=None)
-syst = Qi_Wu_Zhang()
+lat = kwant.lattice.square()
+QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
+
+def onsite(site, mu):
+    return -mu * pauli.sz
+
+
+def hopx(site1, site2, delta, t):
+    return -0.5j * delta * pauli.sy - t * pauli.sz
+
+
+def hopy(site1, site2, gamma):
+    return -1j * gamma * pauli.sx - gamma * pauli.sz
+
+
+QWZ_infinite[lat(0, 0)] = onsite
+QWZ_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
+QWZ_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
+
+
+def title(p):
+    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
+    return title.format(p['t'], p['mu'], p['delta'], p['gamma'])
+
+
+p = dict(t=1.0, delta=0.3, gamma=-0.5, mu=None)
 mus = np.linspace(-2, 0, 11)
 holoviews.HoloMap(
-    {p.mu: spectrum(syst, p, zticks=[-4, -2, 0, 2, 4], title=title) for p.mu in mus},
+    {p["mu"]: spectrum(QWZ_infinite, p, zticks=[-4, -2, 0, 2, 4], title=title) for p["mu"] in mus},
     kdims=[r"$\mu$"],
 )
 ```
 
 As a check that everything worked, let's look at the dispersion of a ribbon with finite width along the $y$ direction. If there are edge states, we should see a Dirac-like crossing around $k_x=0$.
 
-
 ```python
-p = SimpleNamespace(t=1.0, delta=0.3, gamma=-0.5, mu=None)
-syst = Qi_Wu_Zhang(w=15)
+W = 15
+
+ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
+ribbon.fill(QWZ_infinite, shape=(lambda site: 0 <= site.pos[1] < W), start=(0, 0))
+
+p = dict(t=1.0, delta=0.3, gamma=-0.5)
 mus = np.linspace(-2, 0, 11)
 
 style = {
@@ -187,7 +179,7 @@ style = {
     "title": title,
 }
 
-holoviews.HoloMap({p.mu: spectrum(syst, p, **style) for p.mu in mus}, kdims=[r"$\mu$"])
+holoviews.HoloMap({p["mu"]: spectrum(ribbon, p, **style) for p["mu"] in mus}, kdims=[r"$\mu$"])
 ```
 
 We see that the crossing is there, and it disappears when the gap closes. So we can identify the point $\mu=-2t-2\gamma$ as a critical point at which the quantum Hall state becomes topologically trivial.

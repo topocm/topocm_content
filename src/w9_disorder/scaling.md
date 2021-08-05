@@ -145,11 +145,11 @@ plt.ylabel(r"$\langle G \rangle$")
 
 evals = [5.5, 5.75, 6]
 ax.set_xticks(evals)
-ax.set_xticklabels(["${0}$".format(i) for i in evals])
+ax.set_xticklabels([f"${i}$" for i in evals])
 
 evals = [1, 1.5, 2]
 ax.set_yticks(evals)
-ax.set_yticklabels(["${0}$".format(i) for i in evals])
+ax.set_yticklabels([f"${i}$" for i in evals])
 
 ax.set_xlim(5.5, 6.0)
 ax.set_ylim(1.0, 2.0)

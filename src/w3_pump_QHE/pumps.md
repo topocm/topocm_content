@@ -9,85 +9,6 @@ from holoviews.core.options import Cycle
 
 %output size=120
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-
-
-def ts_modulated_wire(L=50):
-    """Create an infinite wire with a periodic potential
-
-    Chain lattice, one orbital per site.
-    Returns kwant system.
-
-    Arguments required in onsite/hoppings: 
-        t, mu, mu_lead, A, phase
-
-    The period of the potential is 2*pi/L.
-    """
-    omega = 2 * np.pi / L
-
-    def onsite(site, p):
-        x = site.pos[0]
-        return 2 * p.t - p.mu + p.A * (np.cos(omega * x + p.phase) + 1)
-
-    def hopping(site1, site2, p):
-        return -p.t
-
-    sym_lead = kwant.TranslationalSymmetry([-L])
-
-    lat = kwant.lattice.chain()
-    syst = kwant.Builder(sym_lead)
-
-    syst[(lat(x) for x in range(L))] = onsite
-    syst[lat.neighbors()] = hopping
-
-    return syst
-
-
-def modulated_wire(L=50, dL=10):
-    """Create a pump. 
-
-    Chain lattice, one orbital per site.
-    Returns kwant system.
-
-    L is the length of the pump,
-    dL is the length of the clean regions next to the pump,
-            useful for demonstration purposes.
-
-    Arguments required in onsite/hoppings: 
-        t, mu, mu_lead, A, omega, phase
-    """
-
-    def onsite(site, p):
-        x = site.pos[0]
-        return 2 * p.t - p.mu + p.A * (np.cos(p.omega * x + p.phase) + 1)
-
-    lead_onsite = lambda site, p: 2 * p.t - p.mu_lead
-
-    def hopping(site1, site2, p):
-        return -p.t
-
-    lat = kwant.lattice.chain()
-    syst = kwant.Builder()
-
-    syst[(lat(x) for x in range(L))] = onsite
-    syst[lat.neighbors()] = hopping
-
-    sym_lead = kwant.TranslationalSymmetry([-1])
-    lead = kwant.Builder(sym_lead)
-    lead[lat(0)] = lead_onsite
-    lead[lat.neighbors()] = hopping
-
-    syst.attach_lead(lead)
-    syst.attach_lead(lead.reversed())
-
-    return syst
-
-
-def total_charge(value_array):
-    """Calculate the pumped charge from the list of reflection matrices."""
-    determinants = [np.linalg.det(r) for r in value_array]
-    charge = np.cumsum(np.angle(np.roll(determinants, -1) / determinants))
-    charge = charge - charge[0]
-    return charge / (2 * np.pi)
 ```
 
 # Thouless pumps
@@ -199,12 +120,32 @@ We can quickly check how continuous bands in the wire become discrete evenly spa
 
 
 ```python
-p = SimpleNamespace(t=1, mu=0.0, phase=0.0, A=None)
-syst = ts_modulated_wire(L=17)
+def hopping(site1, site2, t):
+    return -t
 
 
-def title(p):
-    return "Band structure, $A={:.2}$".format(p.A)
+def onsite(site, t, mu, A, phase, omega):
+    return 2*t - mu + A * (np.cos(omega * site.pos[0] + phase) + 1)
+
+
+def infinite_modulated_wire(L):
+    """Create an infinite wire with a periodic potential
+
+    Chain lattice, one orbital per site.
+    Returns kwant system.
+    """
+    lat = kwant.lattice.chain()
+    pump = kwant.Builder(kwant.TranslationalSymmetry([-L]))
+
+    pump[lat.shape((lambda x: True), [0])] = onsite
+    pump[lat.neighbors()] = hopping
+
+    return pump
+
+
+L = 17
+bulk = infinite_modulated_wire(L)
+p = dict(t=1, mu=0.0, phase=0.0, omega=(2*np.pi / L))
 
 
 kwargs = {
@@ -214,12 +155,12 @@ kwargs = {
     "xdim": r"$k$",
     "ydim": r"$E$",
     "k_x": np.linspace(-np.pi, np.pi, 101),
-    "title": title,
+    "title": (lambda p: f"Band structure, $A={p['A']:.2}$"),
 }
 
 
 holoviews.HoloMap(
-    {p.A: spectrum(syst, p, **kwargs) for p.A in np.linspace(0, 0.8, 10)},
+    {p["A"]: spectrum(bulk, p, **kwargs) for p["A"] in np.linspace(0, 0.8, 10)},
     kdims=[r"$A$"],
 )
 ```
@@ -383,21 +324,45 @@ The scattering problem in 1D can be solved quickly, so let's calculate the pumpe
 %%opts Path.Q (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts HLine (color=Cycle(values=['r', 'g', 'b', 'y']) linestyle='--')
 
+def modulated_wire(L, bulk):
+    """Create a pump.
 
-def plot_charge(mu):
-    energy = 0.0
+    Chain lattice, one orbital per site.
+    Returns kwant system.
+
+    L is the length of the pump,
+
+    Arguments required in onsite/hoppings: 
+        t, mu, mu_lead, A, omega, phase
+    """
+
+    lat = kwant.lattice.chain()
+    syst = kwant.Builder()
+    syst.fill(bulk, shape=(lambda site: 0 <= site.pos[0] < L), start=[0])
+
+    lead = kwant.Builder(kwant.TranslationalSymmetry([-1]))
+    lead[lat(0)] = lambda site, t, mu_lead: 2 * t - mu_lead
+    lead[lat.neighbors()] = hopping
+
+    syst.attach_lead(lead)
+    syst.attach_lead(lead.reversed())
+
+    return syst
+
+
+def plot_charge(syst, p, energy):
     phases = np.linspace(0, 2 * np.pi, 100)
-    p = SimpleNamespace(t=1, mu=mu, mu_lead=mu, A=0.6, omega=0.3)
-    syst = modulated_wire(L=100).finalized()
-    rs = [
-        kwant.smatrix(syst, energy, params=dict(p=p)).submatrix(0, 0)
-        for p.phase in phases
+    determinants = [
+        np.linalg.det(kwant.smatrix(syst, energy, params=p).submatrix(0, 0))
+        for p["phase"] in phases
     ]
-    wn = -total_charge(rs)
-    title = "$\mu={:.2}$".format(mu)
+    charge = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
+    charge -= charge[0]
+
+    title = f"$\mu={mu:.2}$"
     kdims = [r"$t/T$", r"$q/e$"]
     plot = holoviews.Path(
-        (phases / (2 * np.pi), wn), kdims=kdims, label=title, group="Q"
+        (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"
     )
     return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).opts(
         plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3]}
@@ -411,15 +376,17 @@ kwargs = {
     "xdim": r"$k$",
     "ydim": r"$E$",
     "k_x": np.linspace(-np.pi, np.pi, 101),
-    "title": lambda p: "Band structure, $A={:.2}$".format(p.A),
+    "title": "Band structure",
 }
 
-p = SimpleNamespace(t=1, mu=0.0, phase=0.0, A=0.6)
-syst = ts_modulated_wire(L=17)
-mus = [0.1, 0.3, 0.6, 0.9]
-HLines = holoviews.Overlay([holoviews.HLine(mu) for mu in mus])
-spectrum(syst, p, **kwargs) * HLines + holoviews.Overlay(
-    [plot_charge(mu) for mu in mus]
+p.update(mu_lead=0.0, A=0.6, phase=0)
+
+pump = modulated_wire(L=100, bulk=bulk).finalized()
+
+energies = [0.1, 0.3, 0.6, 0.9]
+HLines = holoviews.Overlay([holoviews.HLine(energy) for energy in energies])
+spectrum(bulk, p, **kwargs) * HLines + holoviews.Overlay(
+    [plot_charge(pump, p, energy) for energy in energies]
 ).relabel("Pumped charge")
 ```
 
@@ -433,14 +400,15 @@ So there should be states crossing the bulk band gap. Let's see if it's true.
 
 
 ```python
-p = SimpleNamespace(t=1, mu=0.0, mu_lead=0, A=0.6, omega=0.3, phase=None)
-syst = modulated_wire(L=110).finalized()
-phases = np.linspace(0, 2 * np.pi, 251)
-en = [np.linalg.eigvalsh(syst.hamiltonian_submatrix(params=dict(p=p))) for p.phase in phases]
-en = np.array(en)
-ticks = {"xticks": [0, 1], "yticks": [0, 0.5, 1]}
-kdims = [r"$t/T$", r"$E$"]
-holoviews.Path((phases / (2 * np.pi), en), kdims=kdims)[:, 0:1.2].opts(plot=ticks)
+spectrum(
+    modulated_wire(L=110, bulk=bulk),
+    p=dict(
+        t=1, mu=0.0, mu_lead=0, A=0.6, omega=0.3,
+        phase=np.linspace(0, 2 * np.pi, 251)
+    ),
+    ylims=(0, 1.4),
+    xdim="$t/T$",
+).opts(plot={"xticks": [(0, "$0$"), (2*np.pi, "$1$")], "yticks": [0, 0.5, 1]})
 ```
 
 Indeed, the levels in the bulk stay flat and have a high degeneracy, but we see that there are also single levels that get pushed across the gap. Since the bulk is homogeneous, these states have to be localized at the edge.

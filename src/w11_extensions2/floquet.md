@@ -16,40 +16,6 @@ pi_ticks = [
     (np.pi / 2, r"$\pi/2$"),
     (np.pi, r"$\pi$"),
 ]
-
-
-def checkerboard(W=None):
-    lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)])
-    a, b = lat.sublattices
-    if W:
-
-        def lead_shape(pos):
-            (x, y) = pos
-            return 0 <= y < W and 0 <= x < W
-
-        syst = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
-        syst[a.shape(lead_shape, (0, 0))] = 0
-        syst[b.shape(lead_shape, (1, 0))] = 0
-    else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-        syst[lat.shape(lambda pos: True, (0, 0))] = 0
-    syst[kwant.HoppingKind((0, 0), b, a)] = lambda s1, s2, p: -p.t1
-    syst[kwant.HoppingKind((-1, 1), b, a)] = lambda s1, s2, p: -p.t2
-    syst[kwant.HoppingKind((1, 0), a, b)] = lambda s1, s2, p: -p.t3
-    syst[kwant.HoppingKind((0, 1), a, b)] = lambda s1, s2, p: -p.t4
-    return syst
-
-
-def evolution_operator(hamiltonians, T):
-    n = len(hamiltonians)
-    exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
-    return reduce(np.dot, exps)
-
-
-def get_h_k(lead, p):
-    bands = kwant.physics.Bands(lead, params=dict(p=p))
-    h, t = bands.ham, bands.hop
-    return lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
 ```
 
 # Introduction
@@ -181,27 +147,10 @@ with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ a
 
 ```python
 %%opts Path {+axiswise}
-
-
-def nanowire_chain(L=None):
-    lat = kwant.lattice.chain()
-
-    def onsite(site, p):
-        return (2 * p.t - p.mu) * pauli.szs0 + p.B * pauli.s0sz + p.delta * pauli.sxs0
-
-    def hopping(site1, site2, p):
-        return -p.t * pauli.szs0 + 0.5 * 1j * p.alpha * pauli.szsx
-
-    if L:
-        syst = kwant.Builder()
-    else:
-        syst = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
-        L = 1
-
-    syst[(lat(x) for x in range(L))] = onsite
-    syst[kwant.HoppingKind((1,), lat)] = hopping
-
-    return syst
+def evolution_operator(hamiltonians, T):
+    n = len(hamiltonians)
+    exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
+    return reduce(np.dot, exps)
 
 
 def calculate_finite_spectrum(periods, hamiltonians):
@@ -227,17 +176,32 @@ def calculate_bands(momenta, hamiltonians_k, T):
     return np.array(energies).real
 
 
+def onsite(site, t, mu, B, delta):
+    return (2 * t - mu) * pauli.szs0 + B * pauli.s0sz + delta * pauli.sxs0
+
+
+def hopping(site1, site2, t, alpha):
+    return -t * pauli.szs0 + 0.5 * 1j * alpha * pauli.szsx
+
+
+lat = kwant.lattice.chain()
+infinite_nanowire = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
+infinite_nanowire[lat(0)] = onsite
+infinite_nanowire[kwant.HoppingKind((1,), lat)] = hopping
+finite_nanowire = kwant.Builder()
+finite_nanowire.fill(infinite_nanowire, (lambda site: 0 <= site.pos[0] < 20), (0,))
+infinite_nanowire = kwant.wraparound.wraparound(infinite_nanowire).finalized()
+finite_nanowire = finite_nanowire.finalized()
+
 J = 2.0
-p1 = SimpleNamespace(t=J / 2, mu=-1 * J, B=J, delta=2 * J, alpha=J)
-p2 = SimpleNamespace(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
+p1 = dict(t=J / 2, mu=-1 * J, B=J, delta=2 * J, alpha=J)
+p2 = dict(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
 
-syst = nanowire_chain(L=20).finalized()
-H1 = syst.hamiltonian_submatrix(params=dict(p=p1))
-H2 = syst.hamiltonian_submatrix(params=dict(p=p2))
+H1 = finite_nanowire.hamiltonian_submatrix(params=p1)
+H2 = finite_nanowire.hamiltonian_submatrix(params=p2)
 
-lead = kwant.wraparound.wraparound(nanowire_chain(L=None)).finalized()
-h1_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p1, k_x=kx))
-h2_k = lambda kx: lead.hamiltonian_submatrix(params=dict(p=p2, k_x=kx))
+h1_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p1, k_x=k_x))
+h2_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p2, k_x=k_x))
 
 periods = np.linspace(0.2 / J, 1.6 / J, 100)
 momenta = np.linspace(-np.pi, np.pi)
@@ -301,8 +265,18 @@ Let's have a look at the dispersion, and also see what happens as we tune the dr
 
 ```python
 %%output size=200
+
+lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
+a, b = lat.sublattices
+infinite_checkerboard = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+infinite_checkerboard[lat.shape(lambda pos: True, (0, 0))] = 0
+infinite_checkerboard[kwant.HoppingKind((0, 0), b, a)] = lambda s1, s2, t1: -t1
+infinite_checkerboard[kwant.HoppingKind((-1, 1), b, a)] = lambda s1, s2, t2: -t2
+infinite_checkerboard[kwant.HoppingKind((1, 0), a, b)] = lambda s1, s2, t3: -t3
+infinite_checkerboard[kwant.HoppingKind((0, 1), a, b)] = lambda s1, s2, t4: -t4
+
 def plot_dispersion_2D(T):
-    syst = checkerboard()
+    syst = infinite_checkerboard
     B = np.array(syst.symmetry.periods).T
     A = B @ np.linalg.inv(B.T @ B)
     syst = kwant.wraparound.wraparound(syst).finalized()
@@ -310,16 +284,16 @@ def plot_dispersion_2D(T):
     def hamiltonian_k(par):
         def f(k_x, k_y):
             k_x, k_y = np.linalg.lstsq(A, [k_x, k_y], rcond=None)[0]
-            ham = syst.hamiltonian_submatrix(params=dict(p=par, k_x=k_x, k_y=k_y))
+            ham = syst.hamiltonian_submatrix(params=dict(**par, k_x=k_x, k_y=k_y))
             return ham
 
         return f
 
     hamiltonians_k = [
-        hamiltonian_k(SimpleNamespace(t1=1, t2=0, t3=0, t4=0)),
-        hamiltonian_k(SimpleNamespace(t1=0, t2=1, t3=0, t4=0)),
-        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=1, t4=0)),
-        hamiltonian_k(SimpleNamespace(t1=0, t2=0, t3=0, t4=1)),
+        hamiltonian_k(dict(t1=1, t2=0, t3=0, t4=0)),
+        hamiltonian_k(dict(t1=0, t2=1, t3=0, t4=0)),
+        hamiltonian_k(dict(t1=0, t2=0, t3=1, t4=0)),
+        hamiltonian_k(dict(t1=0, t2=0, t3=0, t4=1)),
     ]
 
     def get_energies(k_x, k_y):
@@ -338,7 +312,7 @@ def plot_dispersion_2D(T):
         "vdims": ["$E$"],
     }
 
-    title = r"$T = {:.2} \pi$".format(T / np.pi)
+    title = fr"$T = {T / np.pi:.2} \pi$"
 
     xs = np.linspace(-np.pi, np.pi, energies.shape[1])
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
@@ -362,6 +336,16 @@ That's something we can also very easily verify by computing the dispersion of a
 %%output size=200
 %%opts Path {+axiswise}
 
+W = 10
+ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
+ribbon.fill(infinite_checkerboard, (lambda site: 0 <= site.pos[0] - site.pos[1] < W), (0, 0))
+ribbon = ribbon.finalized()
+
+def get_h_k(lead, p):
+    bands = kwant.physics.Bands(ribbon, params=p)
+    h, t = bands.ham, bands.hop
+    return lambda k: h + t * np.exp(-1j * k) + t.T.conj() * np.exp(1j * k)
+
 
 def calculate_bands(momenta, hamiltonians_k, T):
     energies = []
@@ -372,13 +356,11 @@ def calculate_bands(momenta, hamiltonians_k, T):
     return np.array(energies).real
 
 
-ribbon_lead = checkerboard(10).finalized()
-
 hamiltonians_k = [
-    get_h_k(ribbon_lead, SimpleNamespace(t1=1, t2=0, t3=0, t4=0)),
-    get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=1, t3=0, t4=0)),
-    get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=0, t3=1, t4=0)),
-    get_h_k(ribbon_lead, SimpleNamespace(t1=0, t2=0, t3=0, t4=1)),
+    get_h_k(ribbon, dict(t1=1, t2=0, t3=0, t4=0)),
+    get_h_k(ribbon, dict(t1=0, t2=1, t3=0, t4=0)),
+    get_h_k(ribbon, dict(t1=0, t2=0, t3=1, t4=0)),
+    get_h_k(ribbon, dict(t1=0, t2=0, t3=0, t4=1)),
 ]
 
 periods = np.linspace(0, 4 * np.pi, 11)
@@ -388,7 +370,7 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 
 def plot(n):
     T = periods[n]
-    title = r"spectrum: $T={:.2} \pi$".format(T / np.pi)
+    title = fr"spectrum: $T={T / np.pi:.2} \pi$"
     return holoviews.Path(
         (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
     ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": 3})

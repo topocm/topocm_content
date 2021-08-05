@@ -111,22 +111,22 @@ If we do everything right (this does require some trial and error in searching f
 
 ```python
 def nanowire_chains(length=40, n=2):
-    def onsite(site, p):
+    def onsite(site, t, mu, B, delta):
         (x, y) = site.pos
         return (
-            (2 * p.t - p.mu) * pauli.szs0
-            + p.delta * pauli.sxs0
-            + (y % 2 == 0) * p.B * pauli.s0sz
-            + (y % 2 == 1) * p.B * pauli.s0sy
+            (2 * t - mu) * pauli.szs0
+            + delta * pauli.sxs0
+            + (y % 2 == 0) * B * pauli.s0sz
+            + (y % 2 == 1) * B * pauli.s0sy
         )
 
-    def hopy(site1, site2, p):
-        return -p.t * pauli.szs0 + 0.5 * 1j * p.alpha * pauli.szsx
+    def hopy(site1, site2, t, alpha):
+        return -t * pauli.szs0 + 0.5 * 1j * alpha * pauli.szsx
 
-    def hopx(site1, site2, p):
+    def hopx(site1, site2, tx):
         (x1, y1) = site1.pos
         (x2, y2) = site2.pos
-        return 1j * (-1) ** ((x1 + x2 - 1) % 2 == 0) * p.tx * pauli.sysx
+        return 1j * (-1) ** ((x1 + x2 - 1) % 2 == 0) * tx * pauli.sysx
 
     def shape(pos):
         (x, y) = pos
@@ -144,7 +144,7 @@ def nanowire_chains(length=40, n=2):
 
 
 syst = nanowire_chains()
-p = SimpleNamespace(t=1.0, tx=0.2, mu=0.0, B=0.4, delta=0.15, alpha=0.3)
+p = dict(t=1.0, tx=0.2, mu=0.0, B=0.4, delta=0.15, alpha=0.3)
 spectrum(
     syst,
     p,
@@ -166,21 +166,19 @@ Once again, coupling the layers we get a familiar Dirac cone on the surface:
 ```python
 def stacked_qwz(w=50):
     def shape(pos):
-        (x, y, z) = pos
-        return 0 <= z < w
+        return 0 <= pos[2] < w
 
-    def hopx(site1, site2, p):
-        return -0.5j * p.delta * pauli.sx - p.t * pauli.sz
+    def hopx(site1, site2, delta, t):
+        return -0.5j * delta * pauli.sx - t * pauli.sz
 
-    def hopy(site1, site2, p):
-        return p.gamma * pauli.sy
+    def hopy(site1, site2, gamma):
+        return gamma * pauli.sy
 
-    def hopz(site1, site2, p):
-        (x, y, z) = site1.pos
-        return -0.5j * p.delta * pauli.sy * (-1) ** (y) - p.t * pauli.sz
+    def hopz(site1, site2, delta, t):
+        return -0.5j * delta * pauli.sy * (-1) ** (site1.pos[1]) - t * pauli.sz
 
-    def onsite(site, p):
-        return pauli.sz * (4 * p.t + p.mu)
+    def onsite(site, t, mu):
+        return pauli.sz * (4 * t + mu)
 
     lat = kwant.lattice.general(np.eye(3))
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0), (0, 2, 0)))
@@ -196,7 +194,7 @@ def stacked_qwz(w=50):
 xticks = [(-np.pi, r"$-\pi$"), (0, r"$0$"), (np.pi, r"$\pi$")]
 yticks = [(0, r"$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
 
-p = SimpleNamespace(t=1.0, delta=1, gamma=0.5, mu=-0.5)
+p = dict(t=1.0, delta=1, gamma=0.5, mu=-0.5)
 syst = stacked_qwz(30)
 
 spectrum(
