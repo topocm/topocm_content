@@ -6,7 +6,7 @@ from init_mooc_nb import *
 
 init_notebook()
 
-dims = SimpleNamespace(
+dims = dict(
     G=holoviews.Dimension(r"$G/G_0$"),
     V_bias=holoviews.Dimension("$V_{bias}$"),
     phi=holoviews.Dimension(r"$\Phi/\Phi_0$"),
@@ -159,7 +159,7 @@ def plot_spectroscopy(V_barrier):
         Andreev_conductance(tunnel_spectroscopy_device, params, energy)
         for energy in energies
     ]
-    kdims = [dims.V_bias, dims.G]
+    kdims = [dims["V_bias"], dims["G"]]
     plot = holoviews.Path((energies, Gs_trivial), kdims=kdims, label="trivial").opts(
         style={"color": "k"}
     )
@@ -311,7 +311,7 @@ ring = ring.finalized()
 
 def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     N = spectrum.shape[1] // 2
-    kdims = [dims.phi, "$E$"]
+    kdims = [dims["phi"], "$E$"]
     plot = holoviews.Path((fluxes, spectrum), kdims=kdims).opts(
         style={"color": "k", "alpha": 0.4}
     )
@@ -331,7 +331,7 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     energy_gs -= np.max(energy_gs)
     current = np.diff(energy_gs) * len(energy_gs)
 
-    xdim = dims.phi
+    xdim = dims["phi"]
     ydim = r"$E_{tot}(\Phi)$"
 
     ticks = {"xticks": [(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]}

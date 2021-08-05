@@ -30,7 +30,6 @@ init_mooc_nb = [
     "kwant",
     "holoviews",
     "init_notebook",
-    "SimpleNamespace",
     "pprint_matrix",
     "scientific_number",
     "pretty_fmt_complex",
@@ -40,12 +39,6 @@ init_mooc_nb = [
 ]
 
 __all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
-
-
-class SimpleNamespace(types.SimpleNamespace):
-    def update(self, **kwargs):
-        self.__dict__.update(kwargs)
-        return self
 
 
 # Adjust printing of matrices, and numpy printing of numbers.
