@@ -124,14 +124,14 @@ def spectrum(
         plot = hv.Path((variables[0][1], energies), kdims=[xdim, ydim])
 
         ticks = {}
-        if isinstance(xticks, collections.Iterable):
+        if isinstance(xticks, collections.abc.Iterable):
             ticks["xticks"] = list(xticks)
         elif xticks is None:
             pass
         else:
             ticks["xticks"] = xticks
 
-        if isinstance(yticks, collections.Iterable):
+        if isinstance(yticks, collections.abc.Iterable):
             ticks["yticks"] = list(yticks)
         elif isinstance(yticks, int):
             ticks["yticks"] = yticks
@@ -308,7 +308,7 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
 
     changing = dict()
     for key, value in params.items():
-        if isinstance(value, collections.Iterable):
+        if isinstance(value, collections.abc.Iterable):
             changing[key] = value
 
     for key, value in [("k_x", k_x), ("k_y", k_y), ("k_z", k_z)]:
@@ -318,7 +318,7 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
                 "which is reserved for momentum. "
                 "Please rename it.".format(key)
             )
-        if isinstance(value, collections.Iterable):
+        if isinstance(value, collections.abc.Iterable):
             changing[key] = value
 
 
