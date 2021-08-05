@@ -11,60 +11,56 @@ from time import time
 import scipy.linalg as sla
 
 randn = np.random.randn
+```
+
+# Introduction
+
+Fabian Hassler from RWTH Aachen will present the topological invariants
 
 
-def chern_torus(W=5, L=5):
+```python
+MoocVideo("ceyus0cRBi0", src_location="8.2-intro")
+```
 
-    disorder_potential = randn(W, L)
+# Applications of topological invariants
 
-    def shape(pos):
-        (x, y) = pos
-        return (0 <= x < W) * (0 <= y < L)
+Throughout the course we computed several times a topological invariant of different systems. When is calculating a topological invariant useful or necessary?
 
-    def onsite(site, p):
-        t, mu, dis_amplitude = p.t, p.mu, p.disorder
-        (x, y) = site.pos
-        return (4 * t - mu) * pauli.sz
+The toy model Hamiltonians that we considered do not really require a complicated calculation set up to figure out whether they are topological or not. However, there are two types of applications where a heavy duty algorithm is important. These are:
 
-    def hopx(site1, site2, p):
-        t, delta = p.t, p.delta
-        return -t * pauli.sz + 1j * p.delta * pauli.sx
+* Ab-initio band structures calculations
+* Disordered systems
 
-    def hopy(site1, site2, p):
-        t, delta = p.t, p.delta
-        return -t * pauli.sz - 1j * p.delta * pauli.sy
+So, we start with a Hamiltonian of some complicated material, and we want to know if it is topological or not. What's worse is that we don't even know in advance if it is gapped or not! If the system is disordered (you'll learn more about those next week), then in addition we can never simulate a truly infinite system. What we can do is to take chunks of finite size  and hope that it behaves correctly like an infinite system once the sample size is large enough.
 
-    lat = kwant.lattice.square()
-    syst = kwant.Builder()
-    syst[lat.shape(shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-    syst[kwant.HoppingKind((-W + 1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, -L + 1), lat)] = hopy
-    return syst.finalized()
+This Hamiltonian may have many parameters, so it's a large $N\times N$ matrix. For systems with a complicated band structure, $N$ is fixed to be the number of orbitals we need to faithfully approximate the Hamiltonian, while in disordered systems we would usually simulate a finite system with linear size $L$, and so $N=L^d$, with $d$ the dimensionality of the space.
 
+There's a simple rule which allows us to guess how large a disordered system should be, in order to correctly reproduce the topology of an infinite system.
 
-def projected_operators(syst, p, energy=0):
-    x, y = np.array([i.pos for i in syst.sites]).T
-    # Double all entries to take orbitals into account.
-    x = np.resize(x, (2, len(x))).T.flatten()
-    y = np.resize(y, (2, len(y))).T.flatten()
-    x *= 2 * np.pi / (np.max(x) + 1)
-    y *= 2 * np.pi / (np.max(y) + 1)
-    op_x = np.diag(np.exp(1j * x))
-    op_y = np.diag(np.exp(1j * y))
+> If the typical decay length of the state at the Fermi level of a disordered system is $\xi$, then we need to take a sample with $L \gtrsim \xi$ to correctly calculate its topological properties.
 
-    ham = syst.hamiltonian_submatrix(params=dict(p=p))
-    ham -= 0 * np.identity(len(ham))
-    energies, states = np.linalg.eigh(ham)
+The reason why this is true is that in a smaller sample the bulk is not 'insulating enough'.
 
-    projector = states[:, energies < energy]
+So now we know that the main problem is that we need to do something with a large matrix.
 
-    op_x = projector.T.conj() @ op_x @ projector
-    op_y = projector.T.conj() @ op_y @ projector
-    return op_x, op_y
+# Computational costs
+
+How expensive are the calculations? If you look in the literature, you'll see wildly differently looking algorithms bundled together with different claims of performance. There is actually a very simple way to figure out, and it comes down to an almost universally correct empirical rule:
+
+> Whenever you need to do something with a dense matrix of size $M\times M$ in a numerical calculation, the costs of doing it most likely are $\sim M^3$.
+
+This is true almost no matter what you do: matrix multiplication, inversion, diagonalization, calculation of a determinant, and dozens of other decompositions all cost the same. The specific value of the numerical prefactor does vary.
+
+The things become more complicated when the Hamiltonian becomes sparse, since then one may efficiently use that most entries in the matrix are zero. For example, multiplying two $M\times M$ banded matrices has a cost $~M$, instead of $M^3$.
+
+Part of our intuition stays true. So since after diagonalizing a Hamiltonian we obtain an $M\times M$ matrix of eigenvectors, typically we still need to perform $\sim M^3$ number of operations.
+
+A scattering matrix is smaller than the matrix of all the eigenvectors, and for our sample with a linear size $L$, the size of the scattering matrix is $L^{d-1}$, as opposed to $L^d$, the size of the Hamiltonian. While this fact isn't [trivial](http://en.wikipedia.org/wiki/LU_decomposition#Sparse_matrix_decomposition) at [all](http://en.wikipedia.org/wiki/Nested_dissection), calculation of a scattering matrix still costs the cube of its size, so $L^{3d-3}$.
+
+This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
 
 
+```python
 def two_terminal(L, W):
     t = 1.0
 
@@ -116,56 +112,8 @@ def smat_time(N):
 
     res = time() - start
     return res
-```
-
-# Introduction
-
-Fabian Hassler from RWTH Aachen will present the topological invariants
 
 
-```python
-MoocVideo("ceyus0cRBi0", src_location="8.2-intro")
-```
-
-# Applications of topological invariants
-
-Throughout the course we computed several times a topological invariant of different systems. When is calculating a topological invariant useful or necessary?
-
-The toy model Hamiltonians that we considered do not really require a complicated calculation set up to figure out whether they are topological or not. However, there are two types of applications where a heavy duty algorithm is important. These are:
-
-* Ab-initio band structures calculations
-* Disordered systems
-
-So, we start with a Hamiltonian of some complicated material, and we want to know if it is topological or not. What's worse is that we don't even know in advance if it is gapped or not! If the system is disordered (you'll learn more about those next week), then in addition we can never simulate a truly infinite system. What we can do is to take chunks of finite size  and hope that it behaves correctly like an infinite system once the sample size is large enough.
-
-This Hamiltonian may have many parameters, so it's a large $N\times N$ matrix. For systems with a complicated band structure, $N$ is fixed to be the number of orbitals we need to faithfully approximate the Hamiltonian, while in disordered systems we would usually simulate a finite system with linear size $L$, and so $N=L^d$, with $d$ the dimensionality of the space.
-
-There's a simple rule which allows us to guess how large a disordered system should be, in order to correctly reproduce the topology of an infinite system.
-
-> If the typical decay length of the state at the Fermi level of a disordered system is $\xi$, then we need to take a sample with $L \gtrsim \xi$ to correctly calculate its topological properties.
-
-The reason why this is true is that in a smaller sample the bulk is not 'insulating enough'.
-
-So now we know that the main problem is that we need to do something with a large matrix.
-
-# Computational costs
-
-How expensive are the calculations? If you look in the literature, you'll see wildly differently looking algorithms bundled together with different claims of performance. There is actually a very simple way to figure out, and it comes down to an almost universally correct empirical rule:
-
-> Whenever you need to do something with a dense matrix of size $M\times M$ in a numerical calculation, the costs of doing it most likely are $\sim M^3$.
-
-This is true almost no matter what you do: matrix multiplication, inversion, diagonalization, calculation of a determinant, and dozens of other decompositions all cost the same. The specific value of the numerical prefactor does vary.
-
-The things become more complicated when the Hamiltonian becomes sparse, since then one may efficiently use that most entries in the matrix are zero. For example, multiplying two $M\times M$ banded matrices has a cost $~M$, instead of $M^3$.
-
-Part of our intuition stays true. So since after diagonalizing a Hamiltonian we obtain an $M\times M$ matrix of eigenvectors, typically we still need to perform $\sim M^3$ number of operations.
-
-A scattering matrix is smaller than the matrix of all the eigenvectors, and for our sample with a linear size $L$, the size of the scattering matrix is $L^{d-1}$, as opposed to $L^d$, the size of the Hamiltonian. While this fact isn't [trivial](http://en.wikipedia.org/wiki/LU_decomposition#Sparse_matrix_decomposition) at [all](http://en.wikipedia.org/wiki/Nested_dissection), calculation of a scattering matrix still costs the cube of its size, so $L^{3d-3}$.
-
-This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
-
-
-```python
 Ns_diag = np.logspace(1, np.log10(80), 5)[:4]
 diag_times = [diag_time(N) for N in Ns_diag]
 
@@ -277,9 +225,9 @@ def find_singularities(onsite, lefthopping, righthopping):
     # so their names are also meaningless: A, B.
     n = len(onsite)
 
-    A = np.bmat([[-righthopping, np.zeros((n, n))], [np.zeros((n, n)), np.eye(n)]])
+    A = np.block([[-righthopping, np.zeros((n, n))], [np.zeros((n, n)), np.eye(n)]])
 
-    B = np.bmat([[onsite, lefthopping], [np.eye(n), np.zeros((n, n))]])
+    B = np.block([[onsite, lefthopping], [np.eye(n), np.zeros((n, n))]])
 
     return scipy.linalg.eigvals(A, B)
 
@@ -288,7 +236,7 @@ def winding_plot(onsite, lefthopping, righthopping):
     singularities = find_singularities(onsite, lefthopping, righthopping)
     winding = sum(abs(singularities) < 1) - len(onsite)
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
-    title = "Winding number: ${}$".format(winding)
+    title = f"Winding number: ${winding}$"
     kdims = [r"$\operatorname{Re}(z)$", r"$\operatorname{Im}(z)$"]
     pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).opts(
         style={"color": "k", "linestyle": "--"}
@@ -362,13 +310,47 @@ To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $
 %%opts Points {+framewise}
 %%opts Path {+framewise}
 
-p = SimpleNamespace(t=1.0, mu=0.1, delta=0.1, disorder=0.5)
-syst = chern_torus(12, 12)
+
+def onsite(site, t, mu):
+    return (4 * t - mu) * pauli.sz
 
 
-def evaluate_m(syst, p):
-    op_x, op_y = projected_operators(syst, p, energy=0.01)
-    temp = op_x @ op_y @ op_x.T.conj() @ op_y.T.conj()
+def hopx(site1, site2, t, delta):
+    return -t * pauli.sz + 1j * delta * pauli.sx
+
+
+def hopy(site1, site2, t, delta):
+    return -t * pauli.sz - 1j * delta * pauli.sy
+
+# Construct the system
+W = L = 12
+lat = kwant.lattice.square(norbs=2)
+chern_torus = kwant.Builder(kwant.TranslationalSymmetry((L, 0), (0, W)))
+chern_torus[lat.shape((lambda site: True), (0, 0))] = onsite
+chern_torus[kwant.HoppingKind((1, 0), lat)] = hopx
+chern_torus[kwant.HoppingKind((0, 1), lat)] = hopy
+chern_torus = kwant.wraparound.wraparound(chern_torus).finalized()
+
+# Define phase operators
+x, y = np.array([i.pos for i in chern_torus.sites]).T
+# Double all entries to take orbitals into account.
+x = np.resize(x, (2, len(x))).T.flatten()
+y = np.resize(y, (2, len(y))).T.flatten()
+x *= 2 * np.pi / (np.max(x) + 1)
+y *= 2 * np.pi / (np.max(y) + 1)
+op_x = np.diag(np.exp(1j * x))
+op_y = np.diag(np.exp(1j * y))
+
+
+def evaluate_m(syst, p, energy=0):
+    ham = syst.hamiltonian_submatrix(params=p)
+    energies, states = np.linalg.eigh(ham)
+    projector = states[:, energies < energy]
+
+    p_x = projector.T.conj() @ op_x @ projector
+    p_y = projector.T.conj() @ op_y @ projector
+
+    temp = p_x @ p_y @ p_x.T.conj() @ p_y.T.conj()
     eigs = np.linalg.eigvals(temp)
     # get rid of the four zero eigenvalues
     res = np.sum(np.log(eigs))
@@ -384,7 +366,7 @@ def evaluate_m(syst, p):
 
     x = np.append([0], xs)
     y = np.append([0], ys)
-    title = "$m={:.2}$, Chern number $={:1.0f}$".format(p.mu, res)
+    title = f"$m={p['mu']:.2}$, Chern number $={res:1.0f}$"
     window_widening = (max(x) - min(x)) * 0.05
     pl = holoviews.Path((x, y)).opts(style={"color": "b"})
     pl *= holoviews.Points((x, y)).opts(style={"color": "b"})
@@ -394,8 +376,9 @@ def evaluate_m(syst, p):
     return pl[xlim, ylim].relabel(title).opts(plot=ticks)
 
 
+p = dict(t=1.0, mu=0.1, delta=0.1, k_x=0, k_y=0)
 holoviews.HoloMap(
-    {p.mu: evaluate_m(syst, p) for p.mu in np.linspace(-0.2, 0.4, 16)}, kdims=[r"$m$"]
+    {p["mu"]: evaluate_m(chern_torus, p) for p["mu"] in np.linspace(-0.2, 0.4, 16)}, kdims=[r"$m$"]
 )
 ```
 

@@ -9,135 +9,6 @@ from matplotlib import cm
 from matplotlib.colors import hsv_to_rgb
 
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-
-
-def d_wave(w=None, direction=None):
-    """Creates a d-wave system.
-    
-    Parameters:
-    -----------
-    w : int
-        Width of the system, if None the system is infinite
-    direction : str
-        Direction of translation symmetry, if None it's an infinite
-        system in x and y.
-    """
-
-    def hopx(site1, site2, p):
-        return -p.t * pauli.sz - p.delta * pauli.sx
-
-    def hopy(site1, site2, p):
-        return -p.t * pauli.sz + p.delta * pauli.sx
-
-    def onsite(site, p):
-        return (4 * p.t - p.mu) * pauli.sz
-
-    lat = kwant.lattice.square()
-
-    if not w:
-
-        def ribbon_shape(pos):
-            (x, y) = pos
-            return True
-
-        sym = kwant.TranslationalSymmetry(*lat.prim_vecs)
-    else:
-        if direction == "topo":
-
-            def ribbon_shape(pos):
-                (x, y) = pos
-                return 0 <= y - x < w
-
-            sym = kwant.TranslationalSymmetry((1, 1))
-        elif direction == "triv":
-
-            def ribbon_shape(pos):
-                (x, y) = pos
-                return 0 <= y < w
-
-            sym = kwant.TranslationalSymmetry((1, 0))
-
-    syst = kwant.Builder(sym)
-
-    syst[lat.shape(ribbon_shape, (0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1), lat)] = hopy
-
-    return syst
-
-
-def graphene_infinite():
-    lat = kwant.lattice.honeycomb()
-    a, b = lat.sublattices
-    syst = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
-    syst[lat.shape(lambda pos: True, (0, 0))] = 0
-    syst[kwant.builder.HoppingKind((0, 0), a, b)] = lambda site1, site2, p: p.t_1
-    syst[kwant.builder.HoppingKind((0, 1), a, b)] = lambda site1, site2, p: p.t_23
-    syst[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, p: p.t_23
-    return syst
-
-
-def plot_dets(syst, p, ks, chiral=False):
-    B = np.array(syst.symmetry.periods).T
-    A = B @ np.linalg.inv(B.T @ B)
-
-    def momentum_to_lattice(k):
-        k, residuals = np.linalg.lstsq(A, k, rcond=-1)[:2]
-        return list(k)
-
-    syst = kwant.wraparound.wraparound(syst).finalized()
-    kys, kxs = np.meshgrid(ks, ks)
-    dets = np.zeros_like(kxs, dtype=complex)
-    for i, kx in enumerate(ks):
-        for j, ky in enumerate(ks):
-            kx, ky = momentum_to_lattice([kx, ky])
-            ham = syst.hamiltonian_submatrix(params=dict(p=p, k_x=kx, k_y=ky))
-            if chiral:
-                # Bring the chiral symmetric Hamiltonian in offdiagonal form
-                U = (pauli.s0 + 1j * pauli.sx) / np.sqrt(2)
-                ham = U @ ham @ U.T.conjugate()
-            dets[i, j] = ham[1, 0]
-    H = np.angle(dets) / (2 * np.pi)
-    V = np.abs(dets)
-    H = np.mod(H, 1)
-    V /= np.max(V)
-    V = 1 - V ** 2
-    S = np.ones_like(H)
-    HSV = np.dstack((H, S, V))
-    RGB = hsv_to_rgb(HSV)
-    bounds = (ks.min(), ks.min(), ks.max(), ks.max())
-    pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
-    return pl.opts(plot={"xticks": pi_ticks, "yticks": pi_ticks}).opts(
-        style={"interpolation": None}
-    )
-
-
-def Weyl_slab(w=5):
-    def hopx(site1, site2, p):
-        return 0.5j * p.t * pauli.sx - p.t * pauli.sz
-
-    def hopy(site1, site2, p):
-        return -p.t * pauli.sz
-
-    def hopz(site1, site2, p):
-        return 0.5j * p.t * pauli.sy - p.t * pauli.sz
-
-    def onsite(site, p):
-        return 6 * p.t * pauli.sz - p.mu * pauli.sz
-
-    lat = kwant.lattice.general(np.eye(3))
-    syst = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
-
-    def shape(pos):
-        (x, y, z) = pos
-        return 0 <= z < w
-
-    syst[lat.shape(shape, (0, 0, 0))] = onsite
-    syst[kwant.HoppingKind((1, 0, 0), lat)] = hopx
-    syst[kwant.HoppingKind((0, 1, 0), lat)] = hopy
-    syst[kwant.HoppingKind((0, 0, 1), lat)] = hopz
-
-    return syst
 ```
 
 # Introduction
@@ -189,20 +60,66 @@ To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This 
 
 ```python
 %%output size=150 fig='png'
-p = SimpleNamespace(t_1=1.0, t_23=1.0)
-syst = graphene_infinite()
+
+
+def plot_dets(syst, p, ks, chiral=False):
+    B = np.array(syst.symmetry.periods).T
+    A = B @ np.linalg.inv(B.T @ B)
+
+    def momentum_to_lattice(k):
+        k, residuals = np.linalg.lstsq(A, k, rcond=-1)[:2]
+        return list(k)
+
+    syst = kwant.wraparound.wraparound(syst).finalized()
+    kys, kxs = np.meshgrid(ks, ks)
+    dets = np.zeros_like(kxs, dtype=complex)
+    for i, kx in enumerate(ks):
+        for j, ky in enumerate(ks):
+            kx, ky = momentum_to_lattice([kx, ky])
+            ham = syst.hamiltonian_submatrix(params=dict(**p, k_x=kx, k_y=ky))
+            if chiral:
+                # Bring the chiral symmetric Hamiltonian in offdiagonal form
+                U = (pauli.s0 + 1j * pauli.sx) / np.sqrt(2)
+                ham = U @ ham @ U.T.conjugate()
+            dets[i, j] = ham[1, 0]
+    H = np.angle(dets) / (2 * np.pi)
+    V = np.abs(dets)
+    H = np.mod(H, 1)
+    V /= np.max(V)
+    V = 1 - V ** 2
+    S = np.ones_like(H)
+    HSV = np.dstack((H, S, V))
+    RGB = hsv_to_rgb(HSV)
+    bounds = (ks.min(), ks.min(), ks.max(), ks.max())
+    pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
+    return pl.opts(plot={"xticks": pi_ticks, "yticks": pi_ticks}).opts(
+        style={"interpolation": None}
+    )
+
+
+
+lat = kwant.lattice.honeycomb()
+a, b = lat.sublattices
+graphene = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+graphene[lat.shape(lambda pos: True, (0, 0))] = 0
+graphene[kwant.builder.HoppingKind((0, 0), a, b)] = lambda site1, site2, t_1: t_1
+graphene[kwant.builder.HoppingKind((0, 1), a, b)] = lambda site1, site2, t_23: t_23
+graphene[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, t_23: t_23
+
+
+p = dict(t_1=1.0, t_23=1.0)
 ks = np.sqrt(3) * np.linspace(-np.pi, np.pi, 80)
 kwargs = dict(
-    title=lambda p: r"Graphene, $t_1 = {:.2} \times t$".format(p.t_1), zticks=3
+    title=(lambda p: rf"Graphene, $t_1 = {p['t_1']:.2} \times t$"), zticks=3
 )
 ts = np.linspace(1, 2.4, 8)
 (
     holoviews.HoloMap(
-        {p.t_1: spectrum(syst, p, k_x=ks, k_y=ks, **kwargs) for p.t_1 in ts},
+        {p["t_1"]: spectrum(graphene, p, k_x=ks, k_y=ks, **kwargs) for p["t_1"] in ts},
         kdims=["$t_1$"],
     )
     + holoviews.HoloMap(
-        {p.t_1: plot_dets(syst, p, ks) for p.t_1 in ts}, kdims=["$t_1$"]
+        {p["t_1"]: plot_dets(graphene, p, ks) for p["t_1"] in ts}, kdims=["$t_1$"]
     )
 )
 ```
@@ -293,14 +210,39 @@ For a $d$-wave superconductor this will only happen for some crystalline orienta
 
 ```python
 %%opts VLine (color='k')  Curve (linestyle='--')
-p = SimpleNamespace(mu=2.0, t=1.0, delta=1.0)
-k = np.arccos(1 - p.mu / p.t / 4)
-ks = np.linspace(-np.pi, np.pi, 50)
-sys0 = d_wave()
-sys1 = d_wave(50, direction="topo")
-sys2 = d_wave(50, direction="triv")
 
-det_plot = plot_dets(sys0, p, ks, chiral=True)
+def onsite(site, t, mu):
+    return (4 * t - mu) * pauli.sz
+
+def hopx(site1, site2, t, delta):
+    return -t * pauli.sz - delta * pauli.sx
+
+def hopy(site1, site2, t, delta):
+    return -t * pauli.sz + delta * pauli.sx
+
+lat = kwant.lattice.square()
+dwave_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+dwave_infinite[lat(0, 0)] = onsite
+dwave_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
+dwave_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
+
+W = 50
+dwave_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
+dwave_ribbon.fill(dwave_infinite, (lambda site: 0 <= site.pos[1] < W), (0, 0))
+dwave_diagonal = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
+dwave_diagonal.fill(
+    dwave_infinite,
+    (lambda site: 0 <= site.pos[1] - site.pos[0] < W),
+    (0, 0)
+)
+
+p = dict(mu=2.0, t=1.0, delta=1.0)
+
+# Fermi momentum
+k = np.arccos(1 - p["mu"] / p["t"] / 4)
+ks = np.linspace(-np.pi, np.pi, 51)
+
+det_plot = plot_dets(dwave_infinite, p, ks, chiral=True)
 
 det_plot1 = (
     det_plot
@@ -314,11 +256,12 @@ det_plot2 = det_plot * holoviews.VLine(k) * holoviews.VLine(-k)
 kwargs = dict(k_x=ks, ylims=[-2, 2], xticks=pi_ticks, yticks=3)
 
 (
-    spectrum(sys1, p, title="Ribbon with edge states", **kwargs)
+    spectrum(dwave_diagonal, p, title="Ribbon with edge states", **kwargs)
     * holoviews.VLine(-2 * k)
+    * holoviews.VLine(0)
     * holoviews.VLine(2 * k)
     + det_plot1
-    + spectrum(sys2, p, title="Ribbon without edge states", **kwargs)
+    + spectrum(dwave_ribbon, p, title="Ribbon without edge states", **kwargs)
     * holoviews.VLine(-k)
     * holoviews.VLine(k)
     + det_plot2
@@ -356,18 +299,42 @@ $${\bf k}\rightarrow \tilde{\bf k}={\bf k+ B}.$$
 %%output fig='png'
 %%opts Surface [azimuth=45]
 
-syst = Weyl_slab(w=10)
-p = SimpleNamespace(t=1.0, mu=None)
+
+def onsite(site, t, mu):
+    return 6 * t * pauli.sz - mu * pauli.sz
+
+
+def hopx(site1, site2, t):
+    return 0.5j * t * pauli.sx - t * pauli.sz
+
+
+def hopy(site1, site2, t):
+
+    return -t * pauli.sz
+
+def hopz(site1, site2, t):
+    return 0.5j * t * pauli.sy - t * pauli.sz
+
+W = 10
+lat = kwant.lattice.cubic(norbs=2)
+weyl_slab = kwant.Builder(kwant.TranslationalSymmetry([1, 0, 0], [0, 1, 0]))
+weyl_slab[lat.shape((lambda pos: 0 <= pos[2] < W), (0, 0, 0))] = onsite
+weyl_slab[kwant.HoppingKind((1, 0, 0), lat)] = hopx
+weyl_slab[kwant.HoppingKind((0, 1, 0), lat)] = hopy
+weyl_slab[kwant.HoppingKind((0, 0, 1), lat)] = hopz
+
+
+p = dict(t=1.0)
 mus = np.linspace(-0.4, 2, 13)
 
 kwargs = dict(
     k_x=np.linspace(-np.pi, 0),
     k_y=np.linspace(-np.pi, np.pi),
-    title=lambda p: "Weyl semimetal, $\mu = {:.2}$".format(p.mu),
+    title=lambda p: f"Weyl semimetal, $\mu = {p['mu']:.2}$",
     num_bands=4,
 )
 
-holoviews.HoloMap({p.mu: spectrum(syst, p, **kwargs) for p.mu in mus}, kdims=[r"$\mu$"])
+holoviews.HoloMap({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"])
 ```
 
 Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.
