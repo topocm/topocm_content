@@ -83,7 +83,7 @@ params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
 (
     spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Trivial bandstructure")
-    + spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Topological bandstructure")
+    + spectrum(spinful_kitaev_chain, params_topological, **style).relabel("Topological bandstructure")
 )
 ```
 
