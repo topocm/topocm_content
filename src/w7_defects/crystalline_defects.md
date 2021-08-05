@@ -416,8 +416,8 @@ answers = [
 ]
 
 explanation = (
-    "Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
-    "and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
+    r"Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
+    r"and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
 )
 
 MoocMultipleChoiceAssessment(

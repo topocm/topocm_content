@@ -149,6 +149,11 @@ MoocVideo("cKzUuQyZjFo", src_location="8.1-intro")
 # At a glance: periodic table
 
 
+
+Let us now look at all the possible symmetry classes in dimensions from $0$ to $3$, and see what kind of topological insulators are possible.
+
+There are quite a few, here is the full list:
+
 ```python
 full_table, format_string = make_table(
     show_symmetries=False, sort_order=np.argsort(symmetry_classes)
@@ -163,12 +168,7 @@ colordefs = "{}"
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
-Let us now look at all the possible symmetry classes in dimensions from $0$ to $3$, and see what kind of topological insulators are possible.
-
-There are quite a few, here is the full list:
-
 This table has a lot of logic in it, but to you it most likely looks no better than this:
-
 
 ```python
 np.random.seed(1)
