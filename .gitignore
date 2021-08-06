@@ -20,14 +20,10 @@ auto
 # Python auxiliary files
 *.pyc
 .ropeproject
-
-
-# Cached output
-.nb_output_cache
-_build
+.vscode
 
 # Misc
 .DS_Store
 
 # Output files
-generated
+_build
