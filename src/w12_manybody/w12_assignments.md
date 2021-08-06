@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Review assignment
+## Review assignment
 
 ### arXiv:0910.2763
 
@@ -25,20 +42,11 @@ init_notebook()
 
 **Hint:** Making a fractional quantum Hall effect by coupling wires
 
++++
 
 ### Bonus: Find your own paper to review!
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Many-body topology")
-```
++++

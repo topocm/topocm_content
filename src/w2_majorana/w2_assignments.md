@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulation: tweaking the nanowire
+## Simulation: tweaking the nanowire
 
 We have two choices for your coding assignments of this week. Consider the task complete when you finish one of the two.
 
@@ -15,7 +32,7 @@ This is especially true since both of the assignments constitute a complete pape
 
 As usual, start by grabbing the notebooks of this week (`w2_majorana`). They are once again over [here](http://tiny.cc/topocm_smc).
 
-## Tilted magnetic field
+### Tilted magnetic field
 
 Explore what happens when we change one the important knobs of the nanowire model, the external magnetic field. We studied what happens when $B$ is pointing along the $z$ direction. However, what happens when the magnetic field is tilted?
 
@@ -28,7 +45,7 @@ Compare your results with what you find over here:
 
 * arXiv:1403.4464
 
-## From $4\pi$ to $2\pi$.
+### From $4\pi$ to $2\pi$.
 
 Now let's switch to the signatures of Majoranas. The code for these is in the `signatures` notebook.
 
@@ -40,16 +57,9 @@ What do you see? Compare your results with the paper below.
 
 * arXiv:1210.3237
 
-```python
-MoocSelfAssessment()
-```
++++
 
-
-```python
-MoocDiscussion("Labs", "Majorana nanowire")
-```
-
-# Review assignment
+## Review assignment
 
 As we mentioned, there are really hundreds of papers that use the models and concepts that we used in the lecture.
 
@@ -72,18 +82,9 @@ This paper first showed how Majoranas in wire networks can be moved around
 
 **Hint:** Real nanowires are more complicated.
 
++++
 
 ### Bonus: Find your own paper to review!
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-
-```python
-MoocSelfAssessment()
-```
-
-
-```python
-MoocDiscussion("Reviews", "Majoranas")
-```

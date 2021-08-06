@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Time-reversal symmetry and fermion parity pumps
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -10,16 +27,17 @@ import scipy
 from matplotlib import cm
 ```
 
-# Introduction
+## Introduction
 
 Charles Kane from the University of Pennsylvania will introduce today's lecture on two dimensional topological insulators with time-reversal symmetry.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("n5oUQvvsYd0", src_location="5.1-intro", res="360")
 ```
 
-# Adding symmetry to a topological insulator
+## Adding symmetry to a topological insulator
 
 In general, there are different approaches to discover new types of topological systems.
 
@@ -63,7 +81,7 @@ The following sketch describes the situation in the case $N=1$:
 
 The next task which we now face is to understand if such edges stay topologically protected once we add coupling between the two blocks.
 
-# A perfectly transmitted channel and Kramers degeneracy
+## A perfectly transmitted channel and Kramers degeneracy
 
 We could try to see if all the edge states can be removed by adding some terms to the Hamiltonian, but instead we will use a closely related fact.
 
@@ -71,13 +89,16 @@ Let's study transport through such edge states as a function of their total numb
 
 ![](figures/qsh_scattering.svg)
 
-## Scattering states
+### Scattering states
 
 We label incoming states on the left and right with $\left|n,\textrm{L}\right\rangle$ and $\left|n,\textrm{R}\right\rangle$. The index $n$ goes from $1$ to $N$. The outgoing states are the time-reversed partners of the incoming states, so they are given by $\mathcal{T}\left|n,\textrm{L}\right\rangle$ and $\mathcal{T}\left|n,\textrm{R}\right\rangle$. Scattering states in the left and right regions are superpositions of incoming and outgoing states,
 
 $$
 \left|\Psi,\textrm{L}\right\rangle = \sum_{n=1}^N \alpha_{n,\textrm{L}}\,\left|n,\textrm{L}\right\rangle + \beta_{n,\textrm{L}}\,\mathcal{T}\left|n,\textrm{L}\right\rangle\,,
 $$
+
+
+
 $$
 \left|\Psi,\textrm{R}\right\rangle = \sum_{n=1}^N \alpha_{n,\textrm{R}}\,\left|n,\textrm{R}\right\rangle + \beta_{n,\textrm{R}}\,\mathcal{T}\left|n,\textrm{R}\right\rangle\,.
 $$
@@ -102,7 +123,7 @@ If we can gap out the edges by adding some extra terms to the Hamiltonian, or ba
 
 To see whether this is possible at all, we first have to understand the constraints that time-reversal symmetry imposes on $S$.
 
-## Scattering matrices with time-reversal symmetry
+### Scattering matrices with time-reversal symmetry
 
 Let's recall some basic facts about time-reversal symmetry, which we already studied in the first week. Time-reversal symmetry has an antiunitary operator $\mathcal{T}$ which commutes with the Hamiltonian. Being antiunitary, $\mathcal{T}$ may come in two flavors - either $\mathcal{T}^2=1$ or $\mathcal{T}^2=-1$. The first case applies to systems with no or integer spin, such that $\mathcal{T}=\mathcal{K}$ in the simplest case, where $\mathcal{K}$ is the complex conjugation operator. The second case applies to systems with half-integer spin, and in the simplest case we have $\mathcal{T}=i\sigma_y\mathcal{K}$.
 
@@ -111,6 +132,9 @@ Let's apply the time-reversal operator to our scattering states. We get
 $$
 \mathcal{T}\left|\Psi,\textrm{L}\right\rangle = \sum_{n=1}^N \alpha^*_{n,\textrm{L}}\,\mathcal{T}\left|n,\textrm{L}\right\rangle + \beta^*_{n,\textrm{L}}\,\mathcal{T}^2\left|n,\textrm{L}\right\rangle\,,
 $$
+
+
+
 $$
 \mathcal{T}\left|\Psi,\textrm{R}\right\rangle = \sum_{n=1}^N \alpha^*_{n,\textrm{R}}\,\mathcal{T}\left|n,\textrm{R}\right\rangle + \beta^*_{n,\textrm{R}}\,\mathcal{T}^2\left|n,\textrm{R}\right\rangle\,.
 $$
@@ -118,7 +142,7 @@ $$
 Now, since time-reversal symmetry does not change the energy of a state, $\mathcal{T}\left|\Psi,\textrm{R}\right\rangle$ and $\mathcal{T}\left|\Psi,\textrm{L}\right\rangle$ are scattering states with the same energy as $\left|\Psi,\textrm{R}\right\rangle$ and $\left|\Psi,\textrm{L}\right\rangle$. Hence, the coefficients of incoming and outgoing modes are still related by the same scattering matrix $S$ as before. Note, however, that applying $\mathcal{T}$ exchanged the role of the $\alpha$'s and $\beta$'s, such that the $\alpha$'s now correspond to outgoing states and the $\beta$'s to incoming states. Hence, we have
 
 $$
- S\mathcal{T}^2 \begin{pmatrix}\beta^*_\textrm{L} \\ \beta^*_\textrm{R} \end{pmatrix} = \begin{pmatrix} \alpha^*_\textrm{L} \\ \alpha^*_\textrm{R} \end{pmatrix}\,.
+S\mathcal{T}^2 \begin{pmatrix}\beta^*_\textrm{L} \\ \beta^*_\textrm{R} \end{pmatrix} = \begin{pmatrix} \alpha^*_\textrm{L} \\ \alpha^*_\textrm{R} \end{pmatrix}\,.
 $$
 
 Multiplying both sides by $\mathcal{T}^2S^\dagger$ and taking the complex conjugate gives
@@ -145,8 +169,9 @@ We are forced to conclude that it is impossible to have $r$ unitary, and therefo
 
 This is the discovery that Charles Kane described in the introductory video. We can quickly check it by randomly selecting an antisymmetric scattering matrix with odd $N$, like the following one with $N=3$,
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 N = 3
 np.random.seed(12)
 S = kwant.rmt.circular(N * 2, sym="AII")
@@ -156,8 +181,9 @@ pprint_matrix(S)
 
 and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 r = S[:N, :N]
 print("Reflection eigenvalues")
 pprint_matrix(np.linalg.eigvalsh(r @ r.T.conj()))
@@ -169,7 +195,7 @@ pprint_matrix(np.linalg.eigvalsh(t @ t.T.conj())[::-1])
 
 > We conclude that if $\mathcal{T}^2=-1$ and the number of edge states going in one direction is odd, they cannot be gapped out, and the system is topological. On the other hand, if there is an even number of such edge states, they can be gapped out. Since these are the only two options, the integer invariant of a Chern insulator is reduced to a $\pm 1$ invariant in the presence of time reversal symmetry. These topologically protected, counterpropagating edge states are often referred to as **helical edge states**.
 
-# Helical edge states are Kramers pairs
+## Helical edge states are Kramers pairs
 
 You might ask yourself what makes $\mathcal{T}^2=-1$ special, leading to the topological protection of the helical edge states.
 
@@ -185,7 +211,7 @@ Thus, an electron moving to the right must have spin up by assumption. In order 
 
 In the case $\mathcal{T}^2=1$, there is no Kramers' theorem. As a consequence, even though you can construct models which have counterpropagating edge states, you will find that they have no topological protection and can be gapped out without breaking the time-reversal symmetry.
 
-# The quantum spin Hall effect
+## The quantum spin Hall effect
 
 There is no really precise name for the 2D topological insulator with time-reversal symmetry. It is often called "$\mathbb{Z}_2$ topological insulator." However, this simply indicates that there are only two values of the topological invariant, and so it isn't a very specific name.
 
@@ -201,8 +227,9 @@ In particular, let's again make the simple assumption that the spin projection a
 
 However, the quantized spin Hall current is not a general property of a quantum spin Hall insulator. Here, it arises because we have combined time reversal symmetry with a spin conservation law, and as we learned in the first week, conservation laws are boring from a topological point of view.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Consider the simple case where spin is conserved. "
     "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
@@ -226,7 +253,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# A model for the quantum spin Hall insulator
+## A model for the quantum spin Hall insulator
 
 There is an important model which can be used to describe quantum spin Hall insulators, known as the **Bernevig-Hughes-Zhang model** or, in short, BHZ model. In essence, this model is equivalent to two copies of the Chern insulator Hamiltonian on the square lattice that we studied in the fourth week.
 
@@ -249,8 +276,9 @@ You can see that it is basically two copies of the massive Dirac Hamiltonian we 
 
 By changing the sign of $M$ from negative to positive, you get a gap closing at $\mathbf{k}=\pmb{0}$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # Onsite and hoppings for bhz model
 def onsite(site, M, B, D, del_z):
     return (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 + del_z * pauli.sysy
@@ -294,7 +322,7 @@ This gap closing turns your trivial insulator into a topologically non-trivial q
 
 In the rest of this lecture, we will use the BHZ model as a toy-model to illustrate the behavior of a quantum spin Hall insulator using numerical examples. The BHZ model, however, is more than a toy-model, and it can be used to capture the behavior of some real semiconducting materials. For this reason, the BHZ model will be a main protagonist in the next chapter, where we will discuss real materials and the experimental evidence for the quantum spin Hall effect.
 
-# Alternative point of view: fermion parity pump
+## Alternative point of view: fermion parity pump
 
 In the previous cases of the Kitaev chain and the quantum Hall effect, the bulk topological invariant that we eventually obtained was characterized by the response to some adiabatic experiment.
 
@@ -314,8 +342,9 @@ To make things more simple, you may actually imagine that the circumference of t
 
 So let's look at the energy spectrum of a cylinder as a function of $k$ (or equivalently $\Phi$), and compare a cylinder in the quantum spin Hall phase with a cylinder in the trivial insulating phase.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 W = 20
 
 bhz_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -368,7 +397,7 @@ Strangely, this reminds us of the topological superconducting ring that we studi
 
 You may appreciate that our argument did not rely on spin being a good quantum number, or on any other detail of the system, but only on Kramers theorem. And in fact it holds very generally. Deforming the dispersion of Kramers pairs does not break the fermion parity pump, as long as the way states combine to form Kramers pairs at $k=0$ and $k=\pi$ is unchanged.
 
-# Pumping expression for the topological invariant
+## Pumping expression for the topological invariant
 
 At this point, following the same path we followed for Chern insulator, we would like to find an expression for a topological bulk invariant which characterizes the quantum spin Hall effect.
 
@@ -398,8 +427,9 @@ This gives us a curve which starts at $\textrm{Pf}[r(0)]$ and ends at either $\t
 
 In the plot below, we show how this trajectory changes for our cylinder geometry as the BHZ model is driven through the topological phase transition. In the right panel, the green dots give you the phase of $\textrm{Pf}[r(0)]$ and $\textrm{Pf}[r(\pi)]$, and the blue line the phase of $\det[r(k)]$.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output fig='png'
 
 cylinder_W = 3
@@ -461,7 +491,7 @@ We now have a quantity equal to $\pm 1$, which cannot change continuously unless
 
 From reading the paper, or just from the above discussion, you see that it takes a lot of effort to derive an explicit expression for a topological invariant. Even though it is a hard task, sometimes one can guess the right result (one of us was indeed able to guess the above expression for $Q$ before it was known). Other times, one can invoke some simplification and obtain some important insight. This is what we will do in the next unit.
 
-# A simplification: inversion symmetry
+## A simplification: inversion symmetry
 
 As just mentioned, topological invariants in higher dimensions are often difficult to write down and evaluate in the general case. Luckily, in the presence of [inversion symmetry](http://en.wikipedia.org/wiki/Parity_%28physics%29#Effect_of_spatial_inversion_on_some_variables_of_classical_physics) - which reverses the lattice coordinates with respect to a symmetry center - the topological condition can be stated in rather simple terms.
 This turns out to be quite useful to describe most topological materials, which happen to have crystal structure with inversion symmetry.
@@ -476,12 +506,13 @@ Note that the simplification obtained by adding inversion symmetry is that the s
 
 Our next step is to calculate the effective description of helical edge states at a domain wall between a topological phase and a non-topological phase. This is something we already know how to do thanks to our experience with domain walls in the Kitaev chain and in Chern insulators. It will give us insight into the topological transition and the bulk topological invariant.
 
-## Study of a domain wall
+### Study of a domain wall
 
 Let's imagine that the helical edge runs along the $y$ direction, and that the domain wall is described by a mass profile $M(x)$ along the $x$ direction, which is zero at the domain wall:
 
 ![](figures/qsh_domain_wall.svg)
 
++++
 
 In this configuration, $k_y$ is still a good quantum number, and we can study the energy dispersion of states bound to the domain wall as a function of $k_y$. If the edge is gapless there must be a momentum, say $\bar{k}_y$, where counterpropagating modes cross at the Fermi level. Let's fix $k_y=\bar{k}_y$, and write down an effective Hamiltonian for the motion transverse to the domain wall.
 
@@ -513,7 +544,9 @@ Does this mean that any gap closing at a TRIM is a topological transition? The s
 transform into each other under inversion i.e. $\mathcal{P}|\pm,\sigma\rangle= |\mp,\sigma\rangle$. By combining these states
 into symmetric and anti-symmetric superpositions
 
-$$|e,\sigma\rangle=\frac{1}{\sqrt{2}}\left[|+,\sigma\rangle\, + \,|-,\sigma\rangle\right],\,\quad |o,\sigma\rangle=\frac{i}{\sqrt{2}}\left[|+,\sigma\rangle\, - \,|-,\sigma\rangle\right],$$
+$$
+|e,\sigma\rangle=\frac{1}{\sqrt{2}}\left[|+,\sigma\rangle\, + \,|-,\sigma\rangle\right],\,\quad |o,\sigma\rangle=\frac{i}{\sqrt{2}}\left[|+,\sigma\rangle\, - \,|-,\sigma\rangle\right],
+$$
 
 we obtain states that are even ($e$) and odd ($o$) under inversion—they are eigenstates of $\mathcal{P}$ with eigenvalue $+1$ or $-1$. They are also eigenstates of $M$ at $k_x=k_y=0$. The factor of $i$ in $|o,\sigma\rangle$ ensures a consistency under the time-reversal transformation, such that $\mathcal{T}|(e,o),\sigma\rangle=\sigma|(e,o),\sigma\rangle$.
 
@@ -523,7 +556,11 @@ This leads to a simplified way of computing a topological invariant of quantum s
 
 > To compute a bulk topological invariant for a two-dimensional topological state with time reversal and inversion symmetry we need to keep track of the parity $P$ of all the occupied eigenstates of $H(\mathbf{k})$ at the different time-reversal invariant momenta in the Brillouin zone. We may write such a bulk topological invariant as a product
 
-> $$Q=\prod_{n,j}P_{n,j}\,,$$
+>
+
+$$
+Q=\prod_{n,j}P_{n,j}\,,
+$$
 
 > where $P_{n,j}$ is the parity, $n$ runs over the occupied bands of $H(\mathbf{k})$ and $j$ over the time-reversal invariant momenta.
 
@@ -535,8 +572,9 @@ As a bonus, thanks to the previous arguments we can begin to understand how to l
 
 Such a band inversion is not impossible to achieve in real materials, and can be captured using the BHZ model. But let's leave this to the next lecture.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
     "in the topological phase (i.e., both with $Q=-1$)?"
@@ -561,16 +599,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Summary
+## Summary
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("ft9ppqqLhH4", src_location="5.1-summary", res="360")
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "QSHE - theory")
 ```

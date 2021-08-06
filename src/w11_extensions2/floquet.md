@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Floquet topological insulators
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -18,16 +35,17 @@ pi_ticks = [
 ]
 ```
 
-# Introduction
+## Introduction
 
 Today's topic, Floquet topological insulators, is introduced by Mark Rudner from the Niels Bohr Institute at Copenhagen.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("1peVp_IZ7Ts", src_location="11.1-intro")
 ```
 
-# Periodically driven systems
+## Periodically driven systems
 
 We will now learn about a new generalization of topology, namely how it applies to the quantum evolution of systems with a time-dependent Hamiltonian. As you may recall, we've already encountered time dependence, back when we considered quantum pumps. However, back then we assumed that the time evolution was very slow, such that the system stayed in the ground state at all times, i.e. it was adiabatic. Can we relax the adiabaticity constraint? Can we find an analog of topology in systems that are driven so fast that energy isn't conserved?
 
@@ -69,7 +87,7 @@ $$
 
 which just says that time evolution from $t_1$ to $t_3$ is a product of time evolutions from $t_1$ to $t_2$ and then from $t_2$ to $t_3$. Of course an immediate consequence of this is the equality $U(t_2, t_1)^\dagger = U(t_2, t_1)^{-1} = U(t_1, t_2)$.
 
-## Floquet theory
+### Floquet theory
 
 The central object for the study of driven systems is the evolution operator over one period of the driving,
 
@@ -97,8 +115,9 @@ If the system is translationally invariant, we can study the effective band stru
 
 Of course, selecting a single quasi-energy as the Fermi level is arbitrary, since the equilibrium state of driven systems doesn't correspond to a Fermi distribution of filling factors, but at least it seems close enough for us to try to apply topological ideas.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
     "Floquet operator. What if we chose a different one?"
@@ -122,7 +141,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Driven Majorana wire
+## Driven Majorana wire
 
 Let us start by considering something we know very well, namely the superconducting Majorana nanowire model from week 2. This model has three important parameters which determine whether the wire is in the topological Majorana phase or not: the chemical potential $\mu$, the superconducting gap $\Delta$, and the magnetic field $B$. The topological phase with unpaired Majorana modes at zero energy is realized for $B > \sqrt{\mu^2 + \Delta^2}$.
 
@@ -144,8 +163,9 @@ $$
 
 with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ and $\mu_2$. A peculiar property of driven systems is that as the period becomes large, the band structure 'folds': if the driving is very weak, and the original Hamiltonian has energy $E$, the Floquet Hamiltonian has a much smaller quasienergy $(E\bmod 2\pi /T)$. This means that even when $H_1$ and $H_2$ correspond to trivial systems, we can still obtain nontrivial topology if we make the period large enough, as you can see for yourself:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%opts Path {+axiswise}
 def evolution_operator(hamiltonians, T):
     n = len(hamiltonians)
@@ -244,7 +264,7 @@ So the calculation above reveals two interesting features of driven systems: the
 
 Now try to answer the following question: what's the topological invariant of this system? How do we tell whether normal Majoranas are present, and whether $\pi$-Majoranas are present? (We'll return to this question in the end of the lecture.)
 
-# A Floquet Chern insulator
+## A Floquet Chern insulator
 
 As a second example of a driven system that shows something that the undriven system doesn't, let's consider the following toy model.
 
@@ -262,8 +282,9 @@ Every electron makes a closed loop and ends up back at its origin. After every s
 
 Let's have a look at the dispersion, and also see what happens as we tune the driving period:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output size=200
 
 lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
@@ -331,8 +352,9 @@ Now, there isn't a Hamiltonian which is more topologically trivial than the zero
 
 That's something we can also very easily verify by computing the dispersion of a finite size ribbon:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output size=200
 %%opts Path {+axiswise}
 
@@ -387,8 +409,9 @@ When the driving period is tuned to ensure the absence of bulk dispersion, we ca
 
 So what is happening with bulk-edge correspondence?
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "How can you change the chirality of the edge states in the figure above?"
 
 answers = [
@@ -408,7 +431,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Bulk-edge correspondence in driven systems
+## Bulk-edge correspondence in driven systems
 
 The two examples we've studied reveal an imporant feature of topological Floquet insulators. It seems that knowing the bulk Floquet Hamiltonian is sufficient to calculate the topological invariant, by just applying the known expression to the Floquet Hamiltonian. However, that's not enough.
 
@@ -416,16 +439,10 @@ In rough terms, the reason for this insufficiency is due to Floquet topological 
 
 What do we need to know to derive the full topological invariant from the bulk properties? The answer is that we need the complete evolution operator for all moments in time, or in other words the full dependence $H(t)$. The actual calculation of the topological invariant is technically involved, and falls beyond what we can cover in this course. Moreover, to the best of our knowledge, the full classification of Floquet topological insulators is not yet accomplished.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("DbyqIczcR9c", src_location="11.1-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Floquet")
 ```

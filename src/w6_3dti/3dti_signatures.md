@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Experimental progress and candidate materials
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -16,14 +33,15 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 ```
 
-# Introduction: searching the periodic table for topological materials
+## Introduction: searching the periodic table for topological materials
 
 How do we find a topological insulator? In the first video of today, David Vanderbilt from Rutgers University will tell us more about the material science aspects of topological insulators research.
 
 This is an expertise that no one from the course team has, so pay close attention to it: this material stands apart from the rest.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("62ZObitJ4DM", src_location="6.2-intro")
 ```
 
@@ -31,14 +49,15 @@ In the rest of the lecture, we will instead discuss the experimental signatures 
 
 All the figures showing the experimental data are copyright of the Zahid Hasan lab, Princeton, 2015. They are available under CC-BY-NC-SA 4.0 International license.
 
-# Conductance of a 3D topological insulator
+## Conductance of a 3D topological insulator
 
 Both the quantum Hall and quantum spin Hall states have striking conductance quantization properties, thanks to the presence of perfectly transmitting one-dimensional transport channels.
 
 The 3D topological insulators do not posses similar striking conductance properties. In a slab geometry, the surface states contribute with a finite density of propagating states. This density has a minimum at the Dirac point. The conductance increases roughly with a hyperbolic shape if the chemical potential is tuned away from the Dirac point as shown in the plot below:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # BHZ model
 def onsite(site, mu, D1, D2, M, B1, B2):
     return (
@@ -136,7 +155,7 @@ This behavior discussed above is not very striking. For instance, the same behav
 
 Perhaps we will be more lucky with topological signatures of 3D topological insulators, if we look at the Hall conductance?
 
-# Landau levels
+## Landau levels
 
 In last chapter, we saw that one single surface of a 3D topological insulator is characterized by a Hall conductance of $ (n+1/2)\, e^2/h$. We also pointed out that there are always two surfaces, say the top and bottom one of a slab, which gives a total Hall conductance of $(2n+1)\,e^2/h$ and makes it hard to observe the half-integer Hall conductance.
 
@@ -156,8 +175,9 @@ Therefore, rather than observing a sequence $e^2/h\,(2n+1)$, we observe a more c
 
 So, even by studying the Landau levels experimentally, we do not get a topological signature. But do not despair, luckily there is a much better thing that we can do rather than just measuring conductance: looking at the energy spectrum of the surface states directly.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
 
 answers = [
@@ -178,7 +198,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Spectroscopy of the surface of a 3D topological insulator
+## Spectroscopy of the surface of a 3D topological insulator
 
 Amazingly, the surface states of a 3D topological insulator can be directly imaged experimentally using the technique of Angle Resolved Photo Emission Spectroscopy - or, in short, [ARPES](http://en.wikipedia.org/wiki/Angle-resolved_photoemission_spectroscopy).
 
@@ -196,8 +216,9 @@ In the top panel of the figure above, we see that by changing the chemical poten
 
 While the top panels shows where the occupied states lie in the $(k_x, k_y)$ plane, in the second and third rows we see a cross-section of the energy as a function of momentum, where the Dirac cone is clearly visible, emerging from a bulk valence band filled with electrons.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
 
 answers = [
@@ -217,7 +238,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Quasiparticle interference (QPI)
+## Quasiparticle interference (QPI)
 
 Scanning tunneling microscopy (STM) is another tool to image surface states in a topological insulator. In the process of STM we tunnel electrons into the surface from a metallic tip. In contrast to ARPES, the electrons are not going into free space, so we don't have momentum resolution. On the other hand, we do trade momentum resolution for nearly atomic spatial resolution. We know where exactly on the surface the electron came from.
 
@@ -234,7 +255,7 @@ By comparing the QPI patterns showing spin-dependent and spin-independent scatte
 
 In fact, by comparing the fourier transform of the QPI on the right with the Fermi surface on the left, we begin to see that the absence of back-scattering, which is one of the key properties of the topological insulator surface state plays a key role. As you might remember from the quantum spin hall systems - elastic backscattering of electrons is forbidden between states at $\bf k$ and $-\bf k$ because of Kramers' theorem. Looking at the QPI pattern from spin-independent impurities and comparing it with the Fermi surface confirms this.
 
-# The issue of bulk conductivity
+## The issue of bulk conductivity
 
 One of the central issues that has plagued the experimental progress with topological insulators is the presence of bulk doping or conductance in most naturally grown crystals. You can see this simply by looking at the ARPES plots below:
 
@@ -250,7 +271,7 @@ Being metallic really ruins a lot of interesting properties of the topological i
 
 where various combinations of $Bi$, $Se$ and $Te$ have been combined to drive the system insulating. By looking at the ARPES spectra, it should look convincing that by varying different conditions, the fermi level is indeed shifting in to the interior of the gap. The experimental tricks used to get this working range between changing the pressure of various elements in the growth condition to counter doping the surface etc.  But the resistance results seem to be improving quite a bit.
 
-# Hexagonal warping
+## Hexagonal warping
 
 ARPES measurements on the surface of topological materials in the bismuth family also demonstrated an interesting (even though non-topological) feature of the surface states.
 
@@ -275,8 +296,9 @@ You see a correction to the Dirac velocity proportional to $\alpha \mathbf{k}^2$
 
 Let's plot the spectrum of this extended effective Hamiltonian:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output fig='png'
 
 A = 1.2
@@ -343,16 +365,12 @@ This Hamiltonian reproduces correctly the *hexagonal warping* of the Fermi surfa
 
 In addition to modifying the shape of the Fermi surface, we see that the extra term is proportional to $\sigma_z$, and rotates the spin of the surface state out of plane. This strongly affects the scattering properties of the surface state.
 
-# Outlook: from basic science to potential applications
+## Outlook: from basic science to potential applications
 
 David Vanderbilt will conclude this week's lectures by offering a perspective on the future of the field.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("WZmNeEwM1N4", src_location="6.2-summary")
-```
-
-
-```python
-MoocDiscussion("Questions", "3DTI materials and signatures")
 ```

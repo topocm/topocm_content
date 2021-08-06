@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Topology in gapless systems
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -11,16 +28,17 @@ from matplotlib.colors import hsv_to_rgb
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 ```
 
-# Introduction
+## Introduction
 
 Ashvin Vishwanath from the University of California, Berkeley will introduce Weyl semimetals and other examples of gapless, yet topological, systems.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("MAWwa4r1qIc", src_location="10.1-intro")
 ```
 
-# Topological invariants of Fermi surfaces
+## Topological invariants of Fermi surfaces
 
 The idea that leads us to the topology of gapless systems is extremely simple. It is:
 
@@ -34,7 +52,7 @@ What types of topological invariants are relevant? Aside from special circumstan
 
 So we are left with only two symmetry classes: A and AIII (no symmetry at all or sublattice/chiral symmetry), and with only two invariants: if there is a sublattice symmetry, a winding number can be defined, and without it there's a Chern number.
 
-# Graphene and protected Dirac cones
+## Graphene and protected Dirac cones
 
 We've already analysed the 0D Chern number that stabilizes the usual Fermi surfaces. Let's go one dimension higher, and study winding numbers in systems with sublattice symmetry around 1D loops. 
 
@@ -51,14 +69,17 @@ The topological invariant is a nonzero winding of $\det h(\mathbf{k})$ when $\ma
 
 To study a particular example where this appears, let's return to graphene, which we studied as a simple limit of Haldane model. For graphene we have the Hamiltonian
 
-$$h(k_x, k_y) = t_1 e^{i \mathbf{k} \cdot \mathbf{a_1}} + t_2 e^{i \mathbf{k} \cdot \mathbf{a_2}} + t_3 e^{i \mathbf{k} \cdot \mathbf{a_3}},$$
+$$
+h(k_x, k_y) = t_1 e^{i \mathbf{k} \cdot \mathbf{a_1}} + t_2 e^{i \mathbf{k} \cdot \mathbf{a_2}} + t_3 e^{i \mathbf{k} \cdot \mathbf{a_3}},
+$$
 
 where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two graphene sublattices, and $a_1, a_2, a_3$ are the lattice vectors connecting one unit cell to its neighbors.
 
 To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This is what the band structure and $\det h$ look like:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output size=150 fig='png'
 
 
@@ -154,7 +175,7 @@ $$
 
 such that for $m>0$ we have a fully gapped Hamiltonian, and for $m<0$ there are two Dirac points.
 
-# $d$-wave superconductors and edge states
+## $d$-wave superconductors and edge states
 
 Gapless points with Dirac dispersion were known for quite some time before graphene. They exist in the cuprate family of high temperature superconductors, known to have a $d$-wave order parameter. These materials are layered, with weak couplings between the layers, so in the study of these complicated systems, one often starts with a simplified two-dimensional Hamiltonian.
 
@@ -169,7 +190,7 @@ $$
 
 There is no spin-orbit coupling here, so the Hamiltonian has a spinless time-reversal symmetry $H = H^*$. It also has a particle-hole symmetry $H= - \tau_y H^* \tau_y$. Their product, the chiral symmetry $H = -\tau_y H \tau_y$ allows the Hamiltonian to have gapless points where both the single-particle dispersion and the pairing vanish.
 
-## Difference between sublattice symmetries
+### Difference between sublattice symmetries
 
 Time-reversal symmetry ensures that the winding points come in pairs at opposite momenta, just like in graphene.
 In graphene however, the chiral symmetry operator $\sigma_z$ commutes with the time-reversal symmetry operator. This means that applying time-reversal symmetry changes the direction of a loop in momentum space, but leaves the winding number invariant. In $d$-wave superconductors on the other hand, the chiral symmetry operator $\tau_y$ is odd under time-reversal (i.e. the operators anticommute), and the winding is invariant under it.
@@ -178,8 +199,9 @@ This means that a Dirac point at momentum $k$ and positive winding must come tog
 
 The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac points at $|k_x| = |k_y| = k_F / \sqrt{2}$.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
 
 answers = [
@@ -199,7 +221,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-## Edge states
+### Edge states
 
 Now let's see how bulk-edge correspondence can be made to work for gapless systems. The idea here is to consider the projection of the wave vector parallel to a continuous sample boundary $k_\parallel$ as a parameter, and to apply the bulk-edge correspondence to the remaining lower-dimensional Hamiltonian.
 
@@ -207,8 +229,9 @@ Whenever the line corresponding to a constant $k_\parallel$ crosses a Dirac poin
 
 For a $d$-wave superconductor this will only happen for some crystalline orientations, as you can see for yourself:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%opts VLine (color='k')  Curve (linestyle='--')
 
 def onsite(site, t, mu):
@@ -274,28 +297,35 @@ On the other hand, the crystal boundary (1, 1), which lies at an angle $\pi/4$ w
 
 These edge states were known to exist long before the discovery of topological insulators, and it is fascinating to see how they perfectly fit to the theory of topological phenomena!
 
-# Weyl points
+## Weyl points
 
 So far we've seen two examples of Dirac points in two dimensions, the surface of a 3D topological insulator and graphene. You might wonder, why don't we have such cones in three dimensions? These do indeed exist and are called Weyl points instead of Dirac points. The reason is historical - Dirac's equation for the electron (which  is in 3D) involves states with four components, two for the electron and two for the hole. The direct generalization of graphene to $3D$ that we will discuss involves states with two electron component. Such electron states with linear dispersion were studied first by Weyl, and have strange properties as we will illustrate below.
 
 Let us start by writing the low-energy Hamiltonian for the three dimensional generalization of graphene:
 
-$$H({\bf k})=(\sigma_x k_x+\sigma_y k_y+\sigma_z k_z).$$
+$$
+H({\bf k})=(\sigma_x k_x+\sigma_y k_y+\sigma_z k_z).
+$$
 
 Here you might think of $\sigma_{x,y,z}$ as the spin of the electron (just as on the surface of a topological insulator).
 
-Next we try the usual thing we would do with a two-dimensional Dirac cone - namely see what happens when we gap it out by applying a magnetic field $\bf\sigma\cdot B$. Adding such a term, we find that the Hamiltonian transforms as follows: 
+Next we try the usual thing we would do with a two-dimensional Dirac cone - namely see what happens when we gap it out by applying a magnetic field $\bf\sigma\cdot B$. Adding such a term, we find that the Hamiltonian transforms as follows:
 
-$$H({\bf k})\rightarrow H({\bf k})+{\bf\sigma\cdot B}={\bf\sigma\cdot (k+B)}.$$
+$$
+H({\bf k})\rightarrow H({\bf k})+{\bf\sigma\cdot B}={\bf\sigma\cdot (k+B)}.
+$$
 
-The key observation here is that the addition of a magnetic field effectively shifts the wave-vector as 
+The key observation here is that the addition of a magnetic field effectively shifts the wave-vector as
 
-$${\bf k}\rightarrow \tilde{\bf k}={\bf k+ B}.$$
+$$
+{\bf k}\rightarrow \tilde{\bf k}={\bf k+ B}.
+$$
 
 > So applying the most general perturbation we can think of does not gap out the Weyl point where the energy vanishes. Instead, the perturbation only shifts the Weyl point around in momentum space. This feels like some kind of topological protection.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output fig='png'
 %%opts Surface [azimuth=45]
 
@@ -341,15 +371,19 @@ Is there a sense in which Weyl points are "topological"? They are clearly protec
 
 A natural subspace to choose is to fix $k_z=m$. The Weyl Hamiltonian then becomes that of a massive 2D Dirac cone
 
-$$H_{2D,Dirac}(k_x,k_y;m)\equiv H(k_x,k_y,k_z=m)=(\sigma_x k_x+\sigma_y k_y+m\sigma_z).$$
+$$
+H_{2D,Dirac}(k_x,k_y;m)\equiv H(k_x,k_y,k_z=m)=(\sigma_x k_x+\sigma_y k_y+m\sigma_z).
+$$
 
 As we talked about in week 4 with Chern insulators, the massive Dirac model has a Chern number, which changes by $1$ if $m$ changes sign. 
 
 > So we can think of the Weyl Hamiltonian in the momentum planes at fixed $k_z$ as Chern insulators with Chern numbers $n_{Ch}=0$ (i.e. trivial) if $k_z < 0$ and $n_{Ch}=1$ (topological) if $k_z > 0$.  The Hamiltonian at $k_z=0$ is at the phase transition point of the Chern insulator, which supports a gapless Dirac point.
 
-Systems with Weyl points are known as Weyl semimetals. Just like other topological phases, Weyl semimetals have an interesting surface spectrum. We can understand this easily by viewing the Weyl point as a stack of Chern insulators in momentum space. For any surface in a plane that contains the $z$-axis, we can treat $k_z$ as a conserved quantity. At this $k_z=m$, the Hamiltonian is just that of a Chern insulator with an appropriate Chern number. For the range of $k_z$ where the Chern number $n_{Ch}(k_z)=1$, the surface spectrum supports chiral edge states with an energy approximated at low energy by 
+Systems with Weyl points are known as Weyl semimetals. Just like other topological phases, Weyl semimetals have an interesting surface spectrum. We can understand this easily by viewing the Weyl point as a stack of Chern insulators in momentum space. For any surface in a plane that contains the $z$-axis, we can treat $k_z$ as a conserved quantity. At this $k_z=m$, the Hamiltonian is just that of a Chern insulator with an appropriate Chern number. For the range of $k_z$ where the Chern number $n_{Ch}(k_z)=1$, the surface spectrum supports chiral edge states with an energy approximated at low energy by
 
-$$E(k_x,k_z)\approx v(k_z)k_x.$$
+$$
+E(k_x,k_z)\approx v(k_z)k_x.
+$$
 
 We can consider the edge states over a range of $k_z$ together to visualize the "surface states". 
 
@@ -359,8 +393,9 @@ At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z
 
 ![](figures/weyl.svg)
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
 
 answers = [
@@ -378,11 +413,4 @@ explanation = (
 MoocMultipleChoiceAssessment(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "Topology in gapless systems")
 ```

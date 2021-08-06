@@ -1,34 +1,23 @@
 image: topocourse/topocourse
 stages:
-  - execute
   - build
   - deploy
 
 
 execute_ipynbs:
-  stage: execute
+  stage: build
   before_script:
-    - pip install ruamel.yaml git+https://gitlab.kwant-project.org/anton-akhmerov/publist.git
+    - pip install ruamel.yaml git+https://gitlab.kwant-project.org/anton-akhmerov/publist.git jupyter-book
   script:
-    - export PYTHONPATH=$PYTHONPATH:${PWD}/code
-    - export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 MKL_DYNAMIC=FALSE
-    - export MARKDOWN=generated/markdown
-    - mkdir -p $MARKDOWN
-    - cp -r src/* $MARKDOWN
-    - python scripts/preprocess_markdown.py
-    - export WITH_OUTPUT=generated/with_output
-    - cp -r data $WITH_OUTPUT
-    - cp -r $MARKDOWN/* $WITH_OUTPUT
-    - find $WITH_OUTPUT -name '*.md' | parallel --delay 3 --jobs 32 notedown -o --run --timeout -1 --match fenced
-    - rm -rf $WITH_OUTPUT/data
+    - jupyter-book build src
   artifacts:
     paths:
-      - generated/with_output
+      - src/_build/html
     expire_in: 7d
 
 
 mirror to github:
-  stage: execute
+  stage: build
   allow_failure: true
   only:
     - branches@qt/topocm
@@ -47,55 +36,13 @@ mirror to github:
     - for REPO in $REPOS; do git push --mirror $REPO; done
 
 
-edx archive:
-  stage: build
-  before_script:
-    - pip install ruamel.yaml
-  script: ./scripts/converter.py ./generated/with_output
-  artifacts:
-    paths:
-      - generated/import_to_edx.tar.gz
-      - generated/html/edx
-    expire_in: 7d
-
-
-pelican website:
-  stage: build
-  variables:
-    DEST: "generated/html"
-  before_script:
-    - pip install ruamel.yaml
-  script:
-    - python scripts/converter_pelican.py
-    - pelican -o $DEST/ -s website_assets/pelicanconf.py generated/pelican_content
-  artifacts:
-    paths:
-      - generated/html
-    expire_in: 30d
-
-
-ocw website:
-  stage: build
-  before_script:
-    - pip install ruamel.yaml
-  script:
-    - python scripts/converter_ocw.py
-    - mv website_assets/iframes.txt generated/html/ocw
-  artifacts:
-    paths:
-      - generated/html/ocw
-    expire_in: 1d
-
-
 .upload_website: &upload_website
   stage: deploy
   before_script:
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
   script:
-    - cp -r generated/with_output generated/html/notebooks
-    - "rsync -ravz --delete generated/html/* $USER@tnw-tn1.tudelft.net:"
-    - "rsync -ravz --delete website_assets/static $USER@tnw-tn1.tudelft.net:"
+    - "rsync -ravz src/_build/html/* $USER@tnw-tn1.tudelft.net:"
   after_script:
     - rm -rf ~/.ssh
 

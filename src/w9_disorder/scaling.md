@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Disorder and the scaling theory of localization
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 import os
 
@@ -13,16 +30,17 @@ data_folder = (
 )
 ```
 
-# Introduction
+## Introduction
 
 Anderson localization is introduced by Piet Brouwer from the Free University of Berlin.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("sbbyL0RDH-o", src_location="9.1-intro")
 ```
 
-# Motivation
+## Motivation
 
 At this point, you might be wondering how we got from talking about topological insulators to disordered metals. Well, we told you several times that topological states are supposed to be robust to disorder, and that this is one of the main reasons why they are so interesting.
 
@@ -30,13 +48,15 @@ Based on the arguments we made in previous weeks, you could convince yourselves 
 
 For example, we told you that at the edge of a two-dimensional topological insulator, there is a perfectly conducting state that is robust to disorder. Remember however that we made no such claims about the surface states of a three-dimensional topological insulator! In fact, while in three dimensions the conductance is certainly susceptible to disorder, topology forbids it from becoming zero. Such subtle properties require a more detailed understanding of disorder.
 
-# Simple limits: localized and extended states
+## Simple limits: localized and extended states
 
 When we speak of disorder in electronic systems, the main distinction we need to keep in mind is that between extended and localized states.
 
 Let's start by thinking of a three dimensional metal with a low density of impurities, and hence weak disorder. In this limit, electrons moving through the system are only scattered by impurities every now and then, but otherwise they move ballistically between collisions. This picture is known as the [Drude model](http://en.wikipedia.org/wiki/Drude_model), and yields a conductivity given by
 
-$$\sigma=n e^2\tau/m,$$
+$$
+\sigma=n e^2\tau/m,
+$$
 
 where $n$ is the electron density, $m$ is the electron mass and $\tau$ the mean free time between collisions. In this limit, the electron wave functions are extended throughout the bulk of the system, much like the plane waves of a clean crystal.
 
@@ -48,33 +68,41 @@ Let's discuss qualitatively the simplest effect of strong disorder on topologica
 
 The considerations above make it clear that the presence or absence of an energy gap is not a good criterion to tell whether a system is insulating or not in the presence of strong disorder, and that we need to understand the nature of the electronic states in the system. Our definition of an insulating state must obey a new criterion. As will see next, this criterion can be obtained by studying conductance as a function of the system size.
 
-# Conductance scaling
+## Conductance scaling
 
 How can we really get away with understanding electrons in disordered potentials without doing any real quantum mechanical calculations? We can only do this in the two aforementioned extreme limits, and actually only in certain dimensions. In principle, to see how the "transition" from extended to localized electrons happens as disorder is increased, one must solve the full quantum mechanical problem. So far, it seems impossible to solve this problem exactly in any dimension other than 1D, so we won't bother and instead discuss an educated guess, which gives us most of the answer.
 
 To start with, let us be more specific and consider the conductance $G(L)$ of a $d$-dimensional block with sides $L$. The conductance represents the ease with which electrons can propagate through the block, and is has the natural unit $G_0=e^2/h$. Therefore, we can think of the dimensionless conductance $g(L)=G(L)/G_0$ as sort of a higher dimensional analog of the average transmission of electrons between the ends of the system, multiplied by the number of channels. If we take the analogy with transmission seriously, we can guess that the conductance of a combination of blocks, each with conductance $g(L)$, has conductance $g'$ which depends on $g(L)$. This is not very different from what we expect classically. For example, consider a connected pair of metallic blocks of conductivity $g(L)$ each, such that the total conductivity of the connected blocks is $g'$. If the blocks are connected in series, then $g'=g(L)/2$. If they are connected in parallel, then $g'=2 g(L)$. 
 
-We can extend the above guess due to Thouless to relate the conductance $g(L)$ of a block of size $L$ to that of a block of size $2L$ i.e. 
+We can extend the above guess due to Thouless to relate the conductance $g(L)$ of a block of size $L$ to that of a block of size $2L$ i.e.
 
-$$g(2L)=f(g(L)),$$
+$$
+g(2L)=f(g(L)),
+$$
 
 where $f$ is some function. We can use this equation to relate the conductances at a bunch of different length scales, but not quite at all continuous lengths. We could create a larger set of similar relations by increasing the block size by a factor of $b$ instead of $2$. By choosing $b=1+\delta{\lambda}$, we can write the equation
 
-$$g(b L)=g(L(1+\delta\lambda))=g(L)+g(L)\beta(g(L))\delta\lambda,$$
+$$
+g(b L)=g(L(1+\delta\lambda))=g(L)+g(L)\beta(g(L))\delta\lambda,
+$$
 
 where $\beta$ is a function called the scaling function or often simply the *beta function*. Taking the limit $\delta\lambda\rightarrow 0$ we obtain the *scaling equation*
 
-$$\frac{d\textrm{ln}g}{d\textrm{ln}L}=\beta(g).$$
+$$
+\frac{d\textrm{ln}g}{d\textrm{ln}L}=\beta(g).
+$$
 
 >This is the educated guess known as *single parameter scaling* that was adopted by  the "Gang of Four" (Abrahams, Anderson, Licciardello and Ramakrishnan) and is essentially an application of the idea of the [renormalization group](http://en.wikipedia.org/wiki/Renormalization_group) to the conductance problem. Of course, we don't quite know the function $\beta$, but as we will see in the next unit, it is possible to guess the form in various limits and this is enough to guess the qualitative behavior of the conductance.
 
-While the above representation will be useful for understanding the "flow diagram", the above scaling hypothesis has a simple general solution 
+While the above representation will be useful for understanding the "flow diagram", the above scaling hypothesis has a simple general solution
 
-$$g(L)=\Phi(L/\xi),$$
+$$
+g(L)=\Phi(L/\xi),
+$$
 
 where $\Phi$ is a function that is determined entirely by $\beta$, and $\xi$ is a decay length.
 
-# Scaling flow diagram
+## Scaling flow diagram
 
 Now we are in a position to make use of the scaling hypothesis. We don't really know $\beta(g)$ in general, but we can compute it for large $g$ i.e. in the metallic/delocalized limit and also in the small $g$ or strongly localized limit. In the strongly localized limit $g\sim g_c e^{-L/\xi}$ so that $\beta(g)=\textrm{ln}(g/g_c)$, while in the weak scattering limit, we can estimate $g$ from the classical Drude formula so that $g\sim L^{(d-2)}$ and $\beta(g)\sim d-2$. In addition, one can calculate "quantum corrections" to the $\beta-$function at large $g$, which turn out to depend on other details such as the symmetry class of the disorder.
 
@@ -86,8 +114,9 @@ What we see is that for dimensions $d=1,2$ the curve stays below $\beta\leq 0$, 
 
 The situation is different in $d=3$ dimensions. If the conductance $g$ is large enough to begin with, then $\beta > 0$ and the arrow points to larger values of $g$. This means that the conductance grows with increasing system size. On the other hand, if disorder is large enough such that $\beta < 0$ initially, $g$ decreases as the system size increases. The separation point $\beta = 0$ between these two behaviours is the *metal-insulator transition*.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?"
 
 answers = [
@@ -116,7 +145,7 @@ So we see that in symmetry classes A and AI the conductance always drops, even t
 
 The class AII has a critical metal-insulator transition point, and a metallic phase at $g > g_c$, just like a disordered 3D system. The growth of conductance in this system is much slower however: instead of $g \sim L$, in 2D AII we have $g \sim \log L$.
 
-# Metal-insulator transition
+## Metal-insulator transition
 
 The most interesting feature of the scaling theory of conductance that we have learned about so far is the existence of a universal critical point at which the behavior of the system changes from insulating (negative $\beta$ function) to metallic (positive $\beta$ function). This is the point $\beta=0$ which appears in 3D and in 2D in class AII. Let's study such a critical point in more detail.
 
@@ -124,8 +153,9 @@ The first thing to observe is that at the critical point, we have $d\ln g/ d\ln 
 
 In practice, this behavior can be observed at a fixed $L$ by varying one parameter $\alpha$ appearing in the model under study, typically the disorder strength or the chemical potential. The average conductance $\langle g \rangle$ is then computed as a function of $\alpha$ for different values of $L$. One then obtains a plot like the following:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 data = np.loadtxt(data_folder + "data_from_doru.dat")
 
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -166,24 +196,33 @@ At $V = V_c$, all the curves overlap in the same point: we find that $g$ is basi
 
 Let us study the conductance scaling around this point. The beta function changes sign at $g_c$, and in its vicinity we can consider it to be a linear function of $g$:
 
-$$\beta(g) = \frac{1}{\nu}\,\frac{g-g_c}{g_c}\,,$$
+$$
+\beta(g) = \frac{1}{\nu}\,\frac{g-g_c}{g_c}\,,
+$$
 
 where $\nu$ is just a coefficient and $g-g_c\ll g_c$. On the insulating side of the transition, it is convenient to write down $g  = g_c - \delta g$. Using the fact that $\ln g \simeq - \delta g/ g_c + \ln g_c$, and that $g_c$ does not depend on $L$, one obtains the following scaling equation for $\delta g$,
 
-$$ \frac{d \delta g}{d \ln L} = \frac{\delta g}{\nu}\,.$$
+$$
+\frac{d \delta g}{d \ln L} = \frac{\delta g}{\nu}\,.
+$$
 
 Integrating this equation gives a power law,
 
-$$ \frac{\delta g(L)}{\delta g(L_0)} = \left(\frac{L}{L_0}\right)^{1/\nu}\,. $$
+$$
+\frac{\delta g(L)}{\delta g(L_0)} = \left(\frac{L}{L_0}\right)^{1/\nu}\,.
+$$
 
 At a fixed $L_0$, the behavior close to the transition is given by $\delta g(L_0) \simeq a(L_0) (V-V_c)$. So we get
 
-$$ g(L) =  g_c - a(L_0)\,(V-V_c) \, (L/L_0)^{1/\nu} = g_c - a(L_0)\,(L/\xi)^{1/\nu}\,.$$
+$$
+g(L) =  g_c - a(L_0)\,(V-V_c) \, (L/L_0)^{1/\nu} = g_c - a(L_0)\,(L/\xi)^{1/\nu}\,.
+$$
 
 The length $\xi = L_0\,(V-V_c)^{-\nu}\,$ is the localization length, which diverges at the transition point $V=V_c$. The number $\nu$ is known as the *critical exponent*, and determines the scaling behavior of the conductance close to the critical point.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = r"What would we see if $\beta$ crossed from positive to negative values?"
 
 answers = [
@@ -205,7 +244,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Absence of localization for topological insulators
+## Absence of localization for topological insulators
 
 Finally let's remark on how the conductance scaling flow is modified on the protected surfaces of topological insulators.
 
@@ -213,16 +252,10 @@ At large conductances we know that the classical scaling must still hold, since 
 
 It turns out, the scaling flow on the surface of a topological insulator is modified by the appearance of an extra term, that vanishes at large conductance, but ensures that there is no localization.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("JdDeBJEBO0s", src_location="9.1-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Anderson localization")
 ```

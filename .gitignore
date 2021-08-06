@@ -24,6 +24,7 @@ auto
 
 # Cached output
 .nb_output_cache
+_build
 
 # Misc
 .DS_Store

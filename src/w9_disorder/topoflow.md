@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Flow diagram of topological insulators
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 import os
 
@@ -16,16 +33,17 @@ data_folder = (
 )
 ```
 
-# Introduction
+## Introduction
 
 The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("8gkERY6hXTU", src_location="9.2-intro")
 ```
 
-# A toy model for two-parameter scaling: the disordered Kitaev chain
+## A toy model for two-parameter scaling: the disordered Kitaev chain
 
 Before we learn what happens to topological insulators in the presence of disorder, let's decide on a specific example for concreteness.
 
@@ -34,7 +52,7 @@ Topology makes the behavior of disordered systems richer, however a careful simu
 Luckily, unlike in the non-topological case, a one-dimensional system can already show interesting properties in the presence of disorder, so we can just reuse the familiar Kitaev chain and add disorder to it.
 
 It is nothing but the same 1D tight-binding model that we saw in week one,
- 
+
 $$
 H = \sum_n (\mu_n + 2t + m) \tau_z\left|n\right\rangle\left\langle n\right|-\sum_n \left[(t\tau_z+i\Delta\tau_y)\,\left|n\right\rangle\left\langle n\!+\!\!1 \right| + \textrm{h.c.}\right].
 $$
@@ -43,7 +61,7 @@ For convenience, we introduced a mass $m$ that corresponds to the gap in the Dir
 
 The only difference from what we used before is that now the chemical potential $\mu_n$ varies randomly from site to site. For example, we can sample the values $\mu_n$ from a Gaussian distribution with mean value $\mu_0 $ and standard deviation $U$.
 
-# The simpler effect of disorder
+## The simpler effect of disorder
 
 In addition to transmission through a finite chain we can now compute its topological invariant $\mathcal{Q}$.
 
@@ -57,8 +75,9 @@ Let's try the most obvious thing and see what happens to  $\langle Q\rangle$, as
 
 So below we see $\mathcal{Q}$ averaged over 100 different realizations in a disordered Kitaev chain with 30 sites as we gradually increase $U$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def make_kitaev_chain(L=10):
     lat = kwant.lattice.chain(norbs=2)
     syst = kwant.Builder()
@@ -157,8 +176,9 @@ The second effect, despite looking mysterious, appears just because the disorder
 
 Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
 )
@@ -180,7 +200,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Two parameter scaling in one dimension
+## Two parameter scaling in one dimension
 
 Speaking of the scaling flow: the scaling hypothesis appears to be very powerful, does the topology have any impact on it?
 
@@ -202,8 +222,9 @@ Let's try and verify our hypothesis by constructing the scaling flow of the diso
 
 Here's what we get:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
     data_folder + "scaling_data_ts.dat"
 ):
@@ -266,8 +287,9 @@ The flow, we just calculated is in fact valid for all one-dimensional topologica
 
 It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What does the 2 parameter flow diagram predict about the infinite size limit?"
 )
@@ -287,7 +309,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Critical point
+## Critical point
 
 The scaling flow of 1D topological insulators can be solved exactly, and especially for our system we can very easily derive some of its properties.
 
@@ -309,11 +331,13 @@ $$
 
 with a parameter
 
-$$\alpha = \frac{1}{v}\,\int_0^L\, m(x)\, dx\,$$
+$$
+\alpha = \frac{1}{v}\,\int_0^L\, m(x)\, dx\,
+$$
 
 proportional to the average value of the random mass in the chain.
 
-An incoming wave from the left (negative $x$) entering the scattering region is partially transmitted through it and partially reflected. We can find the reflection and transmission amplitudes $r, t$ by substituting $\Psi(0)=(1,r)^T$ and $\Psi(L) = (t,0)^T$ in the equation above. By solving the simple linear system that comes out of the substitution, we get immediately 
+An incoming wave from the left (negative $x$) entering the scattering region is partially transmitted through it and partially reflected. We can find the reflection and transmission amplitudes $r, t$ by substituting $\Psi(0)=(1,r)^T$ and $\Psi(L) = (t,0)^T$ in the equation above. By solving the simple linear system that comes out of the substitution, we get immediately
 
 $$
 r = \tanh (\alpha)\,,\;\;t = \cosh^{-1} (\alpha).
@@ -321,7 +345,9 @@ $$
 
 The scattering topological invariant $Q$ for the Kitaev chain is the sign of the determinant of $r$. In our case, since $r$ is just a number, we immediately get
 
-$$Q=r = \tanh\alpha\,.$$
+$$
+Q=r = \tanh\alpha\,.
+$$
 
 We see that the topological transition happens when $\alpha=0$. That is, to model the transition, we think of $m(x)$ as a random function of $x$ which can take positive and negative values with equal probabilities. 
 
@@ -333,7 +359,7 @@ $$
 \left\langle T \right \rangle \propto 1/\sqrt{L}\,.
 $$
 
-# Two parameter scaling in higher dimensions
+## Two parameter scaling in higher dimensions
 
 Just like the regular scaling flow, the topological one is also richer in $d>1$.
 
@@ -349,16 +375,10 @@ Metallic phases are the final part that we need to consider. The appearance of t
 
 An extra attractive metallic fixed point can make the flow diagram more complicated. For example, the metallic phase can completely separate the two insulating phases and eliminate the fixed point. What happens in each particular case is not always certain, and is still an open research topic.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("NY6wPiH0E9E", src_location="9.2-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Topological scaling")
 ```

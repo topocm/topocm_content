@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Topological mechanics
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -8,14 +25,15 @@ init_notebook()
 import topomech
 ```
 
-# Introduction
+## Introduction
 
 Today's lecture will be given by Vincenzo Vitelli, from Leiden University. You will learn about topologically protected mechanical structures, that mirror the properties of topological insulators and quantum Hall systems.
 
 The main concepts and mathematical ideas will be presented in the context of real mechanical prototypes. Hopefully, this approach will stimulate you to cross the line that too often separates theory from applications.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("i-eNPei2zMg", src_location="10.2-intro")
 ```
 
@@ -30,7 +48,7 @@ href="http://creativecommons.org/licenses/by-sa/4.0/">
 alt="Creative Commons License" style="border-width:0"
 src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
 
-# Kink and anti-kink
+## Kink and anti-kink
 
 Let's consider the chain you saw in the video:
 
@@ -88,8 +106,9 @@ $$
 
 where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates between left-leaning ($u<0$ as $x\rightarrow-\infty$) and right-leaning ($u>0$ as $x\rightarrow+\infty$) states.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = r"What happens to the kink width $w_0$ when the gap closes?"
 
 answers = ["It goes to zero.", "It does not vary.", "It diverges."]
@@ -104,7 +123,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Non-linear dynamics
+## Non-linear dynamics
 
 You can explicitly obtain a continuum Lagrangian for the chain which, in the limit $l(x)\approx\bar{l}$ and $\bar{\theta}\ll 1$, reads:
 
@@ -129,13 +148,15 @@ As discussed in the introductory video, however, something that behaves like an 
 Rather than analyzing mathematically the dynamics of the Lagrangian above, watch the two videos below that
 show the motion in the linkage limit.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("BE4NDhfdpBQ", src_location="10.2-topological-linkages-I")
 ```
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("mRjpzC4rJx0", src_location="10.2-topological-linkages-II")
 ```
 
@@ -145,14 +166,15 @@ If you are curious about the mathematical details and a systematic study of the 
 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](http://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("w2k1Y0WON2E", src_location="10.2-topological-linkages-III")
 ```
 
 The same reference above contains hints on how to build this structure with LEGO - plus of course all the mathematical details!
 
-# Zero modes and states of self-stress
+## Zero modes and states of self-stress
 
 At this point we could expand around the kink solution and find a zero mode localized at its center where the gap closes. Such a zero mode allows the kink to translate as shown in the linkage video.
 
@@ -184,8 +206,9 @@ dimensions.)
 
 As a simple test of your knowledge, consider the following question whose answer will prove handy later.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
     "where all nodes have the same number of bonds (neglecting boundaries)?"
@@ -217,7 +240,7 @@ Conversely the states of self stress are the zero eigenvectors  of the transpose
 
 Here we merely remark that if one smoothly deforms the network without cutting bonds or adding sites then the left hand side of the Maxwell count does not change. This means that after such a smooth deformation, the difference between the number of zero modes and states of self stress must remain invariant even if $n_m$ and $n_{ss}$ change individually. In this sense the isostatic condition can be viewed as a charge neutrality condition. As we shall see,  this electrostatic analogy is far reaching. We will now turn our attention to periodic mechanical structures that are isostatic, hence ‘‘charge neutral’’, but mechanically polarized so that edge modes can appear at the sample boundary like charges in an electrically polarized medium.
 
-# Topological band theory
+## Topological band theory
 
 The first step is to set up a topological band theory of vibrational modes by defining the Fourier-transformed rigidity matrix $R(\mathbf{k})$ whose determinant is complex: $\det R(\mathbf{k}) \equiv |\det R(\mathbf{k})|e^{i\phi(\mathbf{k})}$. Consider now for simplicity a two dimensional lattice whose phonons are gapped, away from $\mathbf{k}=\mathbf{0}$, like the twisted Kagome lattice shown at the end of the introductory video.
 
@@ -251,12 +274,13 @@ where $\hat{n}$ is the inward-pointing normal to the boundary, and $V_\text{cell
 Notice that this result applies to a **patch** of the material, unlike the original Maxwell count which is a **global** statement. It can be understood intuitively with the aid of the electrostatic analogy to polarized media. Just as Gauss's law yields the net charge enclosed in a region from the flux of the *electric* polarization through its boundary, the net
 value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given by the flux of the *topological* polarization through its boundary.
 
-# Dislocations and topological zero modes
+## Dislocations and topological zero modes
 
 Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("Mrm7JH6LJJI", src_location="10.2-dislocations")
 ```
 
@@ -285,8 +309,9 @@ defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$)
 
 A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
     r"are of equal length and have an angle $\pi/2$ between them, "
@@ -314,8 +339,9 @@ In the numerical simulation below, you can see explicitly that transforming the 
 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 from holoviews.core.element import Element2D
 from holoviews.plotting.mpl import ElementPlot
 
@@ -361,17 +387,19 @@ You can see that the localized mode changes position from left to right between 
 
 These examples show how to insert topologically protected mechanical modes anywhere you want in the lattice. In the video and in the numerical simulation, the activation was performed ‘‘by hand’’. However, these soft motions can also be activated by adding motors that can cause some motions that perform a desired task, as is the case in robotic structures.
 
-# States of self-stress and selective buckling
+## States of self-stress and selective buckling
 
 You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("RbJTxKFqO7I", src_location="10.2-buckling")
 ```
 
 As you can see, by controlling the position of states of self stress, you can pre-select the region of a material that will fail, for example by buckling. All you have to do is to activate the self stress by pushing on the structure in the same way as you had to activate the zero modes to set them in motion.
 
++++
 
 You can find out more details in this paper.
 
@@ -381,16 +409,10 @@ In summary, states of self stress and zero modes represent **propensities** that
 
 As a result these states are designed to be topologically robust under smooth deformations and yet tunable, e.g. you can choose where to position them by adding defects to the lattice and choose their localization properties by playing with the gap. The tunability in response to changes in lattice structure is a crucial feature that lets us exploit the properties of weak topological insulators in a mechanical context.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("j0X0sVy_6Og", src_location="10.2-summary")
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "Topological Mechanics")
 ```

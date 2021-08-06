@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Majorana signatures: 4π-periodic Josephson effect, Andreev conductance quantization
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -13,16 +30,17 @@ dims = dict(
 )
 ```
 
-# How to detect Majoranas
+## How to detect Majoranas
 
 Our second guest lecturer for this week is Carlo Beenakker, from Leiden University.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("WAhNblNbadA", src_location="2.2-intro")
 ```
 
-# Andreev reflection
+## Andreev reflection
 
 To understand how conductance through a Majorana works, we first have to learn how charge is transferred from a metallic lead to a superconductor. In general this transfer takes place via a mechanism known as Andreev reflection. Before we discuss the conductance signatures of a Majorana zero mode, it is useful to learn what Andreev reflection is.
 
@@ -56,13 +74,15 @@ With this picture, you can understand that Andreev reflection is very similar to
 
 Let's call $r_{eh}$ the amplitude for Andreev reflection. Its absolute value squared, $\left|r_{eh}\right|^2$, is the probability that an incoming electron from the normal metal is Andreev reflected as a hole. Once we know $r_{eh}$, we can compute the conductance $G(V)$, which relates the current $I$ that develops as a response to a small voltage $V$, $G(V) = dI/dV$. The conductance is given by the following formula:
 
-$$G(V)=2G_0|r_{eh}|^2.$$
+$$
+G(V)=2G_0|r_{eh}|^2.
+$$
 
 We will not derive this equation, since it can be understood intuitively. The conductance is proportional to the probability $|r_{eh}|^2$ of Andreev reflection, since we know that at low voltages this is the only process that transfers electric charge from the left to the right electrode.
 
 The factor of $2$ is due to each Andreev reflection transferring a charge of a Cooper pair, $2e$. Finally, $G_0=e^2/h$ is the **conductance quantum**, the fundamental proportionality constant which relates currents to voltages.
 
-# Andreev reflection off a Majorana zero mode
+## Andreev reflection off a Majorana zero mode
 
 Now that we understand a conventional NS interface, let's see what happens if our superconductor is topological:
 
@@ -76,7 +96,7 @@ Yes, and in a rather drastic way. Going back to the picture of Andreev reflectio
 
 In the double barrier problem in quantum mechanics, you can have **resonant** transmission in the presence of a bound state. This means that the probability $\left|r_{eh}\right|^2$ to pass through the barriers is dramatically enhanced if the energy of the incident electron matches the energy of the bound state. In our case, the energy of the incident electron is $V$, and the energy of the bound state, the Majorana mode, is zero. So the presence of the Majorana mode leads to a **resonant peak** in the conductance of the NS interface at $V=0$.
 
-# Quantization of the Majorana resonance
+## Quantization of the Majorana resonance
 
 Seeing the resonant peak is the most direct way we know to measure the presence of a Majorana zero mode.
 
@@ -86,8 +106,9 @@ Is there anything in particular which distinguishes the Majorana resonance from 
 
 Let's just look at what happens if we compare conductance of an NS interface in the cases when S is trivial and non-trivial, and see how the conductance changes as we alter the tunnel barrier strength.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 lat = kwant.lattice.chain(norbs=4)
 
 # The scattering region: one site with a tunnel barrier
@@ -177,7 +198,9 @@ def plot_spectroscopy(V_barrier):
     return plot.opts(plot={"Overlay": style_overlay, "Path": style_path})
 ```
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 holoviews.HoloMap(
     {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
     kdims=[r"$V_{barrier}$"],
@@ -189,17 +212,25 @@ the peak height of the Majorana resonance is quantized to the value of $2G_0$, i
 
 To understand why it is robust, we need to go beyond drawing cartoon figures.
 
-## Reflection matrix of a normal metal-superconductor interface
+### Reflection matrix of a normal metal-superconductor interface
 
 Quantum-mechanically, we can describe transport through the NS interface as a scattering problem. An incoming wave function $\Psi_\textrm{in}$ propagates in the left electrode, until it is reflected back at the interface with the superconductor, turning into an outgoing wave function $\Psi_\textrm{out}$. Because of the presence of the superconductor, both the incoming and outgoing states can be electrons $\Psi_e$ or holes $\Psi_h$. At **zero energy**, they are related to each other by particle-hole symmetry:
 
-$$\Psi_e(E) = \mathcal{P}\,\Psi_h(-E)\,$$
+$$
+\Psi_e(E) = \mathcal{P}\,\Psi_h(-E)\,
+$$
 
 The reflection enforces a linear relation between incoming and ingoing waves:
 
-$$\Psi_\textrm{out} = r(V) \,\Psi_\textrm{in}\,$$
+$$
+\Psi_\textrm{out} = r(V) \,\Psi_\textrm{in}\,
+$$
 
-$$r(V)=\left(\begin{array}{cc}r_{ee}&r_{eh}\\r_{he}&r_{hh}\end{array}\right).$$
+
+
+$$
+r(V)=\left(\begin{array}{cc}r_{ee}&r_{eh}\\r_{he}&r_{hh}\end{array}\right).
+$$
 
 The matrix $r$ is known as the **reflection matrix**. Its complex elements are the amplitudes of normal and Andreev reflection of an incoming electron - $r_{ee}$ and $r_{eh}$ - and normal and Andreev reflection of an incoming hole - $r_{hh}$ and $r_{he}$. (For brevity we don't write out explicitly that each of those depends on $V$.)
 
@@ -207,7 +238,9 @@ If there is more than one incoming electron state (in our case there are two due
 
 Because for $eV\ll \Delta$ there are no propagating waves in the superconductor, the reflection process which relates $\Psi_\textrm{out}$ and $\Psi_\textrm{in}$ is unitary, $r^\dagger r=1$. This implies that
 
-$$\left|r_{ee}\right|^2+\left|r_{eh}\right|^2 = \left|r_{he}\right|^2+\left|r_{hh}\right|^2 = 1\,.$$
+$$
+\left|r_{ee}\right|^2+\left|r_{eh}\right|^2 = \left|r_{he}\right|^2+\left|r_{hh}\right|^2 = 1\,.
+$$
 
 This is the mathematical way of saying that an electron (or hole) arriving at the interface has no alternatives other than being normal-reflected or Andreev-reflected.
 
@@ -217,19 +250,25 @@ In order to derive $r$ explicitly we could start directly from the Bogoliubov-de
 
 First, particle-hole symmetry exchanges electrons and hole components of the wave function, so it involves a Pauli matrix $\tau_x$ acting on $\Psi_\textrm{in}$ or $\Psi_\textrm{out}$. Second, it is an anti-unitary symmetry, so it involves complex conjugation. Third, it changes the sign of the energy so it sends $V$ into $-V$. Hence we arrive at the following symmetry for the reflection matrix:
 
-$$\tau_x r^*(-V) \tau_x = r(V)\,.$$
+$$
+\tau_x r^*(-V) \tau_x = r(V)\,.
+$$
 
 Together with unitarity, particle-hole symmetry imposes that the conductance is symmetric around zero voltage, $G(V)=G(-V)$. In the most interesting point, $V=0$ we have:
 
-$$ \tau_x r^*_0 \tau_x = r_0 \,.$$
+$$
+\tau_x r^*_0 \tau_x = r_0 \,.
+$$
 
 where we defined $r_0\equiv r(V=0)$. So much for the impact of symmetry on $r$. What about topology?
 
-# Topological invariant of the reflection matrix
+## Topological invariant of the reflection matrix
 
-The Majorana zero mode is the consequence of a topological phase in the topological superconductor, and its presence is dictated by the bulk-boundary correspondence. Can we find any consequence of this fact in $r_0$? It turns out that reflection matrices $r$ with particle-hole symmetry are also topological in their own way. Their topological invariant is 
+The Majorana zero mode is the consequence of a topological phase in the topological superconductor, and its presence is dictated by the bulk-boundary correspondence. Can we find any consequence of this fact in $r_0$? It turns out that reflection matrices $r$ with particle-hole symmetry are also topological in their own way. Their topological invariant is
 
-$$Q = \det\,r_0\,.$$
+$$
+Q = \det\,r_0\,.
+$$
 
 Again, we will not *derive* this equation, but rather convince ourselves this expression is correct.
 
@@ -241,12 +280,15 @@ The only way to make the determinant change sign is to close the bulk gap in the
 
 Explicitly, we have that
 
-$$Q=|r_{ee}|^2-|r_{eh}|^2\equiv\pm 1\,.$$
+$$
+Q=|r_{ee}|^2-|r_{eh}|^2\equiv\pm 1\,.
+$$
 
 We already saw that unitarity requires that $|r_{ee}|^2+|r_{eh}|^2=1$. There are only two possibilities for both conditions to be true: either $|r_{ee}|=1$ (**perfect  normal reflection**) or $|r_{eh}|=1$ (**perfect Andreev reflection**). The situation cannot change without a phase transition. Thus the quantized conductance of the Majorana mode is topologically robust in this case, and in fact survives past the tunneling limit. 
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Imagine we replace the superconducting electrode with an insulating material, "
     "and imagine that at the interface with the normal metal there is a bound state. "
@@ -270,11 +312,13 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Flux-induced fermion parity switch in topological superconductors
+## Flux-induced fermion parity switch in topological superconductors
 
-How do we probe the Pfaffian topological invariant of a topological superconductor directly? Last week, we introduced a thought-experiment where we probed the bulk-edge correspondence of Majorana modes by changing the sign of the hopping across a bond. The non-trivial value of the topological invariant results in a fermion parity switch as a result of the change in sign of the hopping $t$ across the junction i.e. 
+How do we probe the Pfaffian topological invariant of a topological superconductor directly? Last week, we introduced a thought-experiment where we probed the bulk-edge correspondence of Majorana modes by changing the sign of the hopping across a bond. The non-trivial value of the topological invariant results in a fermion parity switch as a result of the change in sign of the hopping $t$ across the junction i.e.
 
-$$t\rightarrow -t.$$
+$$
+t\rightarrow -t.
+$$
 
 It turns out that the sign change in the hopping across the junction might also be obtained by introducing a magnetic flux through the superconducting ring (similar to the [Aharonov-Bohm effect](http://en.wikipedia.org/wiki/Aharonov-Bohm_effect)). The role of the special bond is now played by a Josephson junction, which is just an insulating barrier interrupting the ring, as in the following sketch:
 
@@ -282,7 +326,9 @@ It turns out that the sign change in the hopping across the junction might also 
 
 How does the magnetic flux enter the Hamiltonian? By following the usual argument for introducing magnetic fields into lattice Hamiltonians using [Peierls substitution](http://topocondmat.org/w2_majorana/Peierls.html), the flux $\Phi$ can be accounted for simply by changing the phase of the hopping across the junction in the ring:
 
-$$t\,\to\,t\,\exp (i\phi/2).$$
+$$
+t\,\to\,t\,\exp (i\phi/2).
+$$
 
 Here, $\phi = 2\pi\Phi/\Phi_0$ is usually called the **superconducting phase difference** across the junction, and $\Phi_0=2e/h$ is the **superconducting flux quantum**. Notice that when $\Phi=\Phi_0$ the hopping changes sign: $t \,\to\, \exp (i\pi) t = -t$, exactly as we had last week!
 
@@ -290,8 +336,9 @@ Here, $\phi = 2\pi\Phi/\Phi_0$ is usually called the **superconducting phase dif
 
 To see how this happens explicitly, let's look at the spectrum of a topological superconducting ring as a function of flux,  obtained using our nanowire model:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # Make a finite ring.
 
 L = 100
@@ -345,7 +392,9 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     return plot
 ```
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 params = dict(mu_sc=0.4, t=1.0, alpha=0.2, delta=0.1, Ez=1)
 
 fluxes = np.linspace(0, 4 * np.pi, 51)
@@ -364,11 +413,13 @@ plot_spectrum_nanowire(fluxes, spectrum)
 
 Staring at the spectrum we see that, lo and behold, the fermion parity switch appears, around $\Phi=\Phi_0/2$. Can we measure this fermion parity switch in our superconducting ring?
 
-# Detecting the fermion parity switch using the Josephson effect
+## Detecting the fermion parity switch using the Josephson effect
 
 The change in fermion parity of the ground state can be detected using the so-called [Josephson effect](http://en.wikipedia.org/wiki/Josephson_effect). The Josephson current can be computed from the expectation value of the derivative of the energy operator with respect to flux,
 
-$$I(\Phi)=\frac{1}{2}\frac{d E_\textrm{tot}(\Phi)}{d \Phi},$$
+$$
+I(\Phi)=\frac{1}{2}\frac{d E_\textrm{tot}(\Phi)}{d \Phi},
+$$
 
 where $E_\textrm{tot}(\Phi)=\left\langle H_{BdG}(\Phi)\right\rangle$ is the total energy of the system corresponding to the BdG Hamiltonian $H_{BdG}(\Phi)$. 
 
@@ -378,16 +429,19 @@ Note that this argument relies on the absence of a reservoir of electrons, such 
 
 The fermion parity switch, together with fermion parity conservation of the ring, result in the energy $E_\textrm{tot}(\Phi)$ and the corresponding current (that can be measured) showing a $2\Phi_0$ periodicity in $\Phi$ - that is, a $4\pi$ periodicity in $\phi$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
 
 At this point you might wonder, what is so unique about the $2\Phi_0$ periodicity of the Josephson effect?
 
-To answer this question, we need to review an alternative way of thinking about the Josephson effect in terms of just connecting a pair of superconductors by a junction without having to wrap the superconductor in a ring. In this case,  the hopping phase  $\phi$ (which we also referred to as the *superconducting phase*) that appeared in the tunneling term proportional to $t e^{i\phi/2}$ can be eliminated by shifting the fermion operators on one side of the junction by a phase i.e.  $c^\dagger\rightarrow c^\dagger e^{-i\phi/2}$. For superconducting systems, this transformation has the interesting effect of changing the superconducting phase on one side of the junction as 
+To answer this question, we need to review an alternative way of thinking about the Josephson effect in terms of just connecting a pair of superconductors by a junction without having to wrap the superconductor in a ring. In this case,  the hopping phase  $\phi$ (which we also referred to as the *superconducting phase*) that appeared in the tunneling term proportional to $t e^{i\phi/2}$ can be eliminated by shifting the fermion operators on one side of the junction by a phase i.e.  $c^\dagger\rightarrow c^\dagger e^{-i\phi/2}$. For superconducting systems, this transformation has the interesting effect of changing the superconducting phase on one side of the junction as
 
-$$\Delta\rightarrow \Delta e^{i\phi}.$$ 
+$$
+\Delta\rightarrow \Delta e^{i\phi}.
+$$
 
 Now you see why $\phi$ was referred to as *superconducting phase* in the first place. After this transformation (also called a gauge transformation) $\phi$ really becomes the complex phase of the superconducting term proportional to $\Delta$.
 
@@ -395,8 +449,9 @@ Now you see why $\phi$ was referred to as *superconducting phase* in the first p
 
 As seen from the plots below, this is exactly what happens in the non-topological phase. In this case, when we look at the energy spectrum, no fermion parity switches appear:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 params["Ez"] = 0.2
 
 spectrum = np.array([
@@ -409,15 +464,17 @@ plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.11, 0.11])
 
 In turn, this means that energy and current are periodic with period $\Phi_0$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
 
 At this point, you might be a little worried about how the topological superconductor managed to get around this *conventional wisdom*. The answer is subtle, and relies on the implicit assumption of the ground state fermion parity of the junction being fixed as one changes $\phi$. Topological superconductors violate this assumption and therefore can create the $4\pi$ periodic (or fractional) Josephson effect. 
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
     "into a reservoir very quickly, making the junction always relax to the ground state. "
@@ -439,14 +496,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Summary
+## Summary
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("sSacO5RpW5A", src_location="2.2-summary")
-```
-
-
-```python
-MoocDiscussion("Questions", "Signatures of Majorana modes")
 ```

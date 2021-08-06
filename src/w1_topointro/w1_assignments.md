@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations: what about other symmetries
+## Simulations: what about other symmetries
 
 So you've made it through the content of the first week. Congratulations!
 
@@ -17,8 +34,9 @@ Let's begin by grabbing the notebooks of this week and the extra code we use to 
 
 You need to copy the `code` folder and the `w1_topointro` folder. Let's look into what's inside.
 
++++
 
-#### First task: combination of particle-hole and time-reversal symmetries
+### First task: combination of particle-hole and time-reversal symmetries
 
 Look at the notebook about topology of zero-dimensional systems, and see how we generate Hamiltonians with a spinful time-reversal symmetry
 
@@ -30,8 +48,9 @@ Now try to add this time reversal symmetry to a Hamiltonian which also has parti
 What do you think will happen? What will the extra symmetry do to the topological invariant?
 Test your guess by plotting the spectrum and calculating the Pfaffian invariant.
 
++++
 
-#### Second task: Su-Schrieffer-Heeger (SSH) model
+### Second task: Su-Schrieffer-Heeger (SSH) model
 
 Similar to the Kitaev chain, the SSH model is simple a one-dimensional model where you can see all the essential aspects of topological systems. Unlike the Kitaev chain it does correspond to a physical system: electrons in a polyacetylene chain.
 
@@ -40,10 +59,14 @@ Here's such a chain:
 ![](figures/polyacetylene.png)
 
 Due to the dimerization of the chain the unit cell has two atoms and the hoppings have alternating strengths $t_1$ and $t_2$, so that the Hamiltonian is
-$$H = \sum_{n=1}^N t_1 \left|2n-1\right\rangle\left\langle 2n\right|+t_2 \left|2n\right\rangle \left\langle 2n+1\right| + \textrm{h.c}$$
+
+$$
+H = \sum_{n=1}^N t_1 \left|2n-1\right\rangle\left\langle 2n\right|+t_2 \left|2n\right\rangle \left\langle 2n+1\right| + \textrm{h.c}
+$$
 
 We can choose to start a unit cell from an even-numbered site, so $t_1$ becomes intra-cell hopping and $t_2$ inter-cell hopping.
 
++++
 
 Now get the notebook with the Kitaev chain and transform a Kitaev chain into an SSH chain.
 
@@ -58,19 +81,13 @@ The particle-hole symmetry, is a consequence of a mathematical transformation, a
 The symmetry protecting the SSH chain, however, can be broken.
 Test your guess about the protecting symmetry by adding to your chain a term which breaks this symmetry and checking what it does to the spectrum of a finite chain and to its dispersion (especially as chain goes through a phase transition).
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Toy models simulations")
-```
-
-# Review assignment
+## Review assignment
 
 For the first week we have these papers:
 
@@ -88,20 +105,11 @@ See this idea also applied in arXiv:1405.6896.
 
 **Hint:** A toy model may still be useful in practice.
 
++++
 
 ### Bonus: Find your own paper to review!
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Toy models")
-```
++++

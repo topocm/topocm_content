@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations
+## Simulations
 
 As usual, start by grabbing the notebooks of this week (`w5_qshe`). They are once again over [here](http://tiny.cc/topocm_smc).
 
@@ -25,19 +42,13 @@ The helical edge states of quantum spin Hall effect survive for some time when a
 
 What about conductance in a two terminal geometry: can you see the crossover from quantum spin Hall regime to quantum Hall regime?
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Quantum spin Hall effect")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:1306.1925
 
@@ -64,13 +75,4 @@ MoocDiscussion("Labs", "Quantum spin Hall effect")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Quantum spin Hall effect")
-```
++++

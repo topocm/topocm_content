@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations: Disorder, butterflies, and honeycombs
+## Simulations: Disorder, butterflies, and honeycombs
 
 As usual, start by grabbing the notebooks of this week (`w3_pump_QHE`). They are once again over [here](http://tiny.cc/topocm_smc).
 
@@ -31,19 +48,13 @@ Take a look at how to implement a honeycomb lattice in Kwant [tutorials](http://
 
 Bonus: See what happens to the edge states as you introduce a constriction in the middle of the Hall bar. This is an extremely useful experimental tool used in making quantum Hall interferometers (also check out the density of states using the code from the edge states notebook).
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Quantum Hall effect")
-```
-
-# Review assignment
+## Review assignment
 
 For the third week we have these papers:
 
@@ -70,14 +81,4 @@ Figure out what different features arise from other cases.
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Quantum Hall effect")
-```
++++

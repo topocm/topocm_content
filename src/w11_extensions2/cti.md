@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Crystalline topological insulators
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -8,16 +25,17 @@ init_notebook()
 %output size=150
 ```
 
-# Introduction
+## Introduction
 
 Crystalline topological insulators are introduced by Liang Fu from MIT.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("N9-tUYjXC1s", src_location="11.2-intro")
 ```
 
-# The role of crystalline symmetries
+## The role of crystalline symmetries
 
 In the very beginning of the course, we told you that conservation laws - unitary symmetries of the Hamiltonian - do not lead to striking consequences on topology. They allow to reduce the problem by making the Hamiltonian block-diagonal, but not much else (see also Shinsei Ryu's introductory video to week eight).
 
@@ -31,8 +49,9 @@ Due to this type of constraint on the Brillouin zone, crystalline symmetries can
 
 Note however, that sometimes the mere presence of a surface can break a crystalline symmetry of the bulk, so that one should be careful when applying the bulk-boundary correspondence to properties based on crystalline symmetries.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = r"In which case can inversion symmetry protect gapless surface states?"
 
 answers = [
@@ -49,7 +68,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Reflection symmetry
+## Reflection symmetry
 
 The second-simplest crystalline symmetry (after translation symmetry of course) occurring in many materials is reflection (or mirror) symmetry around one spatial coordinate. For instance, in a 3D crystal, reflection symmetry around the $z$ axis transforms the wave-wector as
 
@@ -69,8 +88,9 @@ The mirror Chern number is a topological invariant in the sense that it cannot c
 
 Naturally, the same recipe allows to construct a reflection symmetric topological insulator starting from any other topological invariant, not just a Chern number. We will now try to do this.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "How would you attempt to make a model of a topological"
     " insulator with surface states protected by reflection symmetry?"
@@ -94,7 +114,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Examples
+## Examples
 
 Let's think, what could be the simplest topological system protected by reflection symmetry.
 
@@ -108,8 +128,9 @@ On the other hand, if the hopping between the nanowires is reflection invariant,
 
 If we do everything right (this does require some trial and error in searching for the hopping that actually can couple the two Majoranas from the edge), we get a painfully familiar dispersion:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def nanowire_chains(length=40, n=2):
     def onsite(site, t, mu, B, delta):
         (x, y) = site.pos
@@ -162,8 +183,9 @@ This means that the Chern number of the alternating layers has to have opposite 
 
 Once again, coupling the layers we get a familiar Dirac cone on the surface:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def stacked_qwz(w=50):
     def shape(pos):
         return 0 <= pos[2] < w
@@ -211,7 +233,7 @@ spectrum(
 
 Again, the dispersion of the edge states looks exactly like what we saw already because the edge state dispersion in any topological insulator is just given by the Dirac equation.
 
-# Experimental realization of a 3D crystalline topological insulator
+## Experimental realization of a 3D crystalline topological insulator
 
 As mentioned by Liang Fu, three dimensional crystalline topological insulators have been both predicted and also found in nature. The magical material, which is topological turns out to be SnTe, which is actually a "rock-salt" structure. We won't bore you with the details of the rock-salt structure, which you can find for yourself on [Wikipedia](https://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure). 
 
@@ -229,13 +251,6 @@ The crystal surface you see here is perpendicular to two mirror planes projected
 
 The reflection symmetry pins the pairs of Dirac cones to the mirror planes, while time reversal symmetry requires their momenta to be opposite. The 90 degree rotation symmetry interchanges the pairs of cones.
 
-# Conclusion
+## Conclusion
 
 In short, crystalline topological insulators combine the variety of topological phases with the variety of the crystalline symmetry groups, leading to a multitude of new opportunities.
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Crystalline TI")
-```

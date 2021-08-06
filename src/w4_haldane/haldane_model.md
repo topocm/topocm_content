@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Haldane model, Berry curvature, and Chern number
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -11,18 +28,19 @@ import scipy
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
-# Intro
+## Intro
 
 Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he [introduced](http://faculty.washington.edu/cobden/papers/haldane88.pdf) in 1988, and which has become a prototype for the anomalous quantum Hall effect.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("7nVO4uMm-do", src_location="4.2-intro")
 ```
 
 We will now study the model in detail, starting from the beginning.  Along the way, we will also learn about the Chern number, the bulk topological invariant of a quantum Hall state.
 
-# Dirac cones in graphene
+## Dirac cones in graphene
 
 In the last chapter we saw how it is possible to obtain a quantum Hall state by coupling one-dimensional systems. At the end, our recipe was to first obtain a Dirac cone, add a mass term to it and finally to make this mass change sign. Following this recipe we were able to obtain chiral edge states without applying an external magnetic field.
 
@@ -40,16 +58,21 @@ $$
 
 with $\mathbf{k}=(k_x, k_y)$ and
 
-$$h(\mathbf{k}) = t_1\,\sum_i\,\exp\,\left(i\,\mathbf{k}\cdot\mathbf{a}_i\right)\,.$$
+$$
+h(\mathbf{k}) = t_1\,\sum_i\,\exp\,\left(i\,\mathbf{k}\cdot\mathbf{a}_i\right)\,.
+$$
 
 Here $\mathbf{a}_i$ are the three vectors in the figure, connecting nearest neighbors of the lattice [we set the lattice spacing to one, so that for instance $\mathbf{a}_1=(1,0)$].  Introducing a set of Pauli matrices $\sigma$ which act on the sublattice degree of freedom, we can write the Hamiltonian in a compact form as
 
-$$H_0(\mathbf{k}) = t_1\,\sum_i\,\left[\sigma_x\,\cos(\mathbf{k}\cdot\mathbf{a}_i)-\sigma_y \,\sin(\mathbf{k}\cdot\mathbf{a}_i)\right]\,.$$
+$$
+H_0(\mathbf{k}) = t_1\,\sum_i\,\left[\sigma_x\,\cos(\mathbf{k}\cdot\mathbf{a}_i)-\sigma_y \,\sin(\mathbf{k}\cdot\mathbf{a}_i)\right]\,.
+$$
 
 The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives rise to the famous band structure of graphene, with the two bands touching at the six corners of the Brillouin zone:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 honeycomb = kwant.lattice.honeycomb()
 a, b = honeycomb.sublattices
 nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
@@ -89,13 +112,15 @@ spectrum(haldane_infinite, p, k_x=k, k_y=k, title=title)
 
 Only two of these six Dirac cones are really distinct, the ones at $\mathbf{K}=(2\pi/3, 2\pi/3\sqrt{3})$ and $\mathbf{K}'=(2\pi/3, -2\pi/3\sqrt{3})$. All the others can be obtained by adding some reciprocal lattice vector to $\mathbf{K}$ and $\mathbf{K}'$.
 
-# Discrete symmetries of graphene
+## Discrete symmetries of graphene
 
 The symmetries of graphene were discussed intensively in the video, so let's review them.
 
 As we already said in our first week, graphene is the prototype of a system with sublattice symmetry, which makes the Hamiltonian block off-diagonal with respect to the two sublattices. The sublattice symmetry reads
 
-$$\sigma_z\,H_0(\mathbf{k})\,\sigma_z = -H_0(\mathbf{k})\,.$$
+$$
+\sigma_z\,H_0(\mathbf{k})\,\sigma_z = -H_0(\mathbf{k})\,.
+$$
 
 Sublattice symmetry is only approximate, and it is consequence of the nearest neighbor tight-binding model. Just like the inversion symmetry mentioned in the video, it protects the Dirac points and needs to be broken in order to open a gap.
 
@@ -103,33 +128,39 @@ In addition to sublattice and inversion symmetry, the honeycomb lattice also has
 
 Finally, there is time-reversal symmetry, which at the moment is perfectly preserved in our tight-binding model. Since we are not considering the spin degree of freedom of the electrons, the time-reversal symmetry operator in real space is just complex conjugation. In momentum space representation, time-reversal symmetry reads
 
-$$ H_0(\mathbf{k}) = H_0^*(-\mathbf{k})\,.$$
+$$
+H_0(\mathbf{k}) = H_0^*(-\mathbf{k})\,.
+$$
 
 It's important to note that time-reversal symmetry sends $\mathbf{K}$ into $\mathbf{K}'$ and therefore it exchanges the two Dirac cones.
 
 The product of (approximate) sublattice and time-reversal symmetries yields a further discrete symmetry, a particle-hole symmetry $\sigma_z H^*(-\mathbf{k})\,\sigma_z = -H_0(\mathbf{k})$.
 
-# Making graphene topological
+## Making graphene topological
 
 Let's recall that our goal is to make our graphene sheet enter a quantum Hall state, with chiral edge states. The first necessary step is to make the bulk of the system gapped. 
 
 How can we open a gap in graphene? The Dirac points are protected by both sublattice (inversion) and time-reversal symmetry. So there are many ways we can think of to open an energy gap at $\mathbf{K}$ and $\mathbf{K}'$.
 
-## First try
+### First try
 
 The easiest way to break sublattice symmetry is to assign an opposite onsite energy $M$ or $-M$ to the $A$ or $B$ sites respectively. The Hamiltonian is then given by
 
-$$ H_0(\mathbf{k}) + M\,\sigma_z\,.$$
+$$
+H_0(\mathbf{k}) + M\,\sigma_z\,.
+$$
 
 This leads to a gapped spectrum,
 
-$$E(\mathbf{k})=\pm \sqrt{\left|h(\mathbf{k})\right|^2 + M^2}\,.$$
+$$
+E(\mathbf{k})=\pm \sqrt{\left|h(\mathbf{k})\right|^2 + M^2}\,.
+$$
 
 However, we quickly realize that by doing this we end up in a rather boring situation. Taking the limit $\left|M\right| \gg t_1$, we obtain electronic states which are localized in one of the two sublattices $A$ or $B$, independent of the sign of $M$. Most importantly, there is no trace of edge states.
 
 It's easy to see why this mass term is hopeless: it preserves time-reversal symmetry. And with the time-reversal symmetry present, it is definitely impossible to obtain chiral edge states.
 
-## Second try
+### Second try
 
 There is another, more ingenious way to gap out the Dirac cones in graphene, which is the essence of today's model. It involves adding imaginary second-nearest neighbor hoppings, with the following distinctive pattern:
 
@@ -152,8 +183,9 @@ The last term changes sign under time-reversal symmetry, breaking it. This is th
 
 Let's see what happens to the system when these special second neighbor hoppings are turned on:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
@@ -169,7 +201,9 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 %%output fig='svg'
 
 W = 20
@@ -213,8 +247,9 @@ The appearance of edge states means that graphene has entered a topological phas
 
 As you know, this means we have created a **Chern insulator**. The reason for this name will become obvious in the second part of the lecture.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What happens if we take a Haldane model in the topological phase and turn "
     "on a weak magnetic field?"
@@ -235,7 +270,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Pumping in terms of Berry phase
+## Pumping in terms of Berry phase
 
 Last week we understood the quantum Hall effect in terms of a pumping argument that we attributed to Laughlin.
 
@@ -251,43 +286,57 @@ We then ask: what is the final quantum state at the time $T$? For a long time pe
 
 This would be rather boring. Berry instead realized that for a closed loops there is an additional phase $\gamma$, which in our case may depend on $k_x$:
 
-$$\gamma(C) = \oint_C\,\mathbf{A}(\mathbf{k})\,\cdot d\mathbf{k}\,.$$
+$$
+\gamma(C) = \oint_C\,\mathbf{A}(\mathbf{k})\,\cdot d\mathbf{k}\,.
+$$
 
 Here, $\mathbf{A}(\mathbf{k})=i\left\langle\,\psi(\mathbf{k}) \,|\,\nabla_\mathbf{k}\,\psi(\mathbf{k})\right\rangle$ is a vector with two complex entries, which are obtained by taking the derivatives of $\left|\psi(\mathbf{k})\right\rangle$ with respect to $k_x$ and $k_y$ and then taking the inner product with $\left\langle\psi(\mathbf{k})\right|$. This vector goes by the rather obscure name of Berry connection. In our example, the final quantum state at the end of the cycle is thus
 
-$$\exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.$$
+$$
+\exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.
+$$
 
 We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](http://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.  
 
-## Flux pumping
+### Flux pumping
 
 The phase $\gamma(k_x)$ must bear information about the charge pumped during an adiabatic cycle over $k_y$. Now we take advantage of pumped charge being invariant as long as the energy gap is preserved. This means that we have the freedom to change the energy dispersion $E(k_x,k_y)$ arbitrarily, as long as we do not close the gap.
 
 It is convenient to make the energy dispersion completely flat along the $k_x$ direction for $k_y=0$, analogous to the case of Landau levels. In this way, since at fixed $k_y$ all the wave functions have the same energy, we can choose our initial quantum state to be localized in a single unit cell in the $x$ direction,
 
-$$\left|\psi(n,t=0)\right\rangle=\int_0^{2\pi} dk_x\, e^{i k_x n}\,\left|\psi(k_x, k_y=0)\right\rangle\,.$$
+$$
+\left|\psi(n,t=0)\right\rangle=\int_0^{2\pi} dk_x\, e^{i k_x n}\,\left|\psi(k_x, k_y=0)\right\rangle\,.
+$$
 
 Starting from this state, after one adiabatic cycle we obtain
 
-$$\left|\psi(n,t=T)\right\rangle=\int_0^{2\pi} dk_x\, e^{i k_x n}\,\exp\,\left[i\gamma(k_x)-i\theta(k_x)\right]\,\left|\psi(k_x, k_y=2\pi)\right\rangle,$$
+$$
+\left|\psi(n,t=T)\right\rangle=\int_0^{2\pi} dk_x\, e^{i k_x n}\,\exp\,\left[i\gamma(k_x)-i\theta(k_x)\right]\,\left|\psi(k_x, k_y=2\pi)\right\rangle,
+$$
 
 where $\theta(k_x)=\int_0^T E[k_x, k_y(t)]\,d t$ is the dynamical phase. Now we notice something strange. While $\theta(k_x)$ is a truly periodic function of $k_x$ because $E(k_x)=E(k_x+2\pi)$, the only restriction on the Berry phase $\gamma(k_x)$ is to be periodic modulo $2\pi$. That is, we can have $\gamma(k_x+2\pi)=\gamma(k_x)+2\pi W$ with $W$ an integer number.
 
-Let's try to deform the dispersion along $k_y$ in order to make the combination $\gamma(k_x)-\theta(k_x)$ as large as possible (just like before, this is allowed as long as we do not close the gap). The best we can do is choose $\theta(k_x)$ so that 
+Let's try to deform the dispersion along $k_y$ in order to make the combination $\gamma(k_x)-\theta(k_x)$ as large as possible (just like before, this is allowed as long as we do not close the gap). The best we can do is choose $\theta(k_x)$ so that
 
-$$\gamma(k_x)-\theta(k_x)=W k_x.$$
+$$
+\gamma(k_x)-\theta(k_x)=W k_x.
+$$
 
-Plugging this in to the form of the wave-function we see that 
+Plugging this in to the form of the wave-function we see that
 
-$$\left|\psi(n,t=T)\right\rangle=\int dk_x e^{i k_x (n+W)}\,\left|\psi(k_x, k_y=0)\right\rangle,$$
+$$
+\left|\psi(n,t=T)\right\rangle=\int dk_x e^{i k_x (n+W)}\,\left|\psi(k_x, k_y=0)\right\rangle,
+$$
 
-which means that every wave function is shifted over by $W$ unit cells. Thus the system with the wave functions $\left|\psi(\mathbf{k})\right\rangle$ pumps $W$ units of charge if the Berry phase satisfies 
+which means that every wave function is shifted over by $W$ unit cells. Thus the system with the wave functions $\left|\psi(\mathbf{k})\right\rangle$ pumps $W$ units of charge if the Berry phase satisfies
 
-$$\gamma(k_x+2\pi)-\gamma(k_x)=2\pi W.$$
+$$
+\gamma(k_x+2\pi)-\gamma(k_x)=2\pi W.
+$$
 
 > The quantity $W$ is called the **Chern number** and is the topological invariant characterizing the bandstructure of two dimensional quantum Hall systems. Because it is an integer, it cannot be changed by any continuous deformation of the Hamiltonian, provided the gap does not close. The Chern number is in fact the bulk topological invariant for all insulators with broken time-reversal symmetry. If $W=0$, we have a topologically trivial insulator with no chiral edge states. If $W=n$ there are $n$ chiral edge states at the boundary of the insulator.
 
-# Compact form of the Chern number as Berry curvature
+## Compact form of the Chern number as Berry curvature
 
 We did not denote the Berry connection as $\mathbf{A}(\mathbf{k})$ just by chance. We picked that letter because this vector reminds us a lot of the vector potential $\mathbf{A}(\mathbf{r})$ that is used in electromagnetism.
 
@@ -295,13 +344,17 @@ Just like the vector potential, the definition of $\mathbf{A}(\mathbf{k})$ depen
 
 Now that we have established an analogy with the vector potential, we cannot avoid the idea of taking the curl of the Berry connection, which is known as the **Berry curvature**:
 
-$$\mathbf{\Omega}(\mathbf{k}) = \nabla_\mathbf{k} \times \mathbf{A}(\mathbf{k})=i\left[\left\langle \frac{\partial \psi(\mathbf{k})}{\partial k_x}\,\Bigg|\,\frac{\partial\,\psi(\mathbf{k})}{\partial k_y}\right\rangle-\left\langle \frac{\partial \psi(\mathbf{k})}{\partial k_y}\,\Bigg|\,\frac{\partial\,\psi(\mathbf{k})}{\partial k_x}\right\rangle\right]\,.$$
+$$
+\mathbf{\Omega}(\mathbf{k}) = \nabla_\mathbf{k} \times \mathbf{A}(\mathbf{k})=i\left[\left\langle \frac{\partial \psi(\mathbf{k})}{\partial k_x}\,\Bigg|\,\frac{\partial\,\psi(\mathbf{k})}{\partial k_y}\right\rangle-\left\langle \frac{\partial \psi(\mathbf{k})}{\partial k_y}\,\Bigg|\,\frac{\partial\,\psi(\mathbf{k})}{\partial k_x}\right\rangle\right]\,.
+$$
 
 The Berry curvature is like a *magnetic field in momentum space*. Just like the magnetic field $\mathbf{B}(\mathbf{r})=\nabla_\mathbf{r}\times\mathbf{A}(\mathbf{r})$ in electromagnetism, it is a local quantity which does not suffer from the ambiguities of the vector potential (it is gauge independent).
 
-The main advantage of introducing the analogy with the magnetic field is that it motivates us to use Stokes theorem. The Brillouin Zone has the shape of a torus. Therefore the curve $k_x=0$ and $k_x=2\pi$ on the torus bounds the entire Brillouin zone. Using Stokes theorem on this curve we can conclude that 
+The main advantage of introducing the analogy with the magnetic field is that it motivates us to use Stokes theorem. The Brillouin Zone has the shape of a torus. Therefore the curve $k_x=0$ and $k_x=2\pi$ on the torus bounds the entire Brillouin zone. Using Stokes theorem on this curve we can conclude that
 
-$$2\pi W=\gamma(2\pi)-\gamma(0)=\iint_{\textrm{BZ}} \mathbf{\Omega}(\mathbf{k})\,\cdot\,d\mathbf{S}\,,$$
+$$
+2\pi W=\gamma(2\pi)-\gamma(0)=\iint_{\textrm{BZ}} \mathbf{\Omega}(\mathbf{k})\,\cdot\,d\mathbf{S}\,,
+$$
 
 where the integral extends over the entire Brillouin Zone.
 
@@ -311,7 +364,7 @@ Loosely speaking, a situation with a non-zero Chern number is a bit like having 
 
 To see how this can happen, we first have to understand the following: if there is Berry curvature in the Brillouin zone, what are its sources?
 
-# Gap closings are sources of Berry curvature
+## Gap closings are sources of Berry curvature
 
 The Berry phase can only be computed if the Hamiltonian has a gap. For a Hamiltonian $H(\mathbf{k})$ with many bands $E_n(\mathbf{k})$, this means that we can compute the Chern number only for an isolated band $E_n(\mathbf{k})$ which does not touch any other band. If there is a band touching, the Berry phase is undefined.
 
@@ -333,8 +386,9 @@ The Brillouin zones for $|t_2|>M/(3\sqrt{3})$, on the other hand, have Berry cur
 
 To see this more clearly, we can compute the Berry curvature numerically and plot it over the whole Brillouin zone as a function of $t_2$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def berry_curvature(syst, p, ks, num_filled_bands=1):
     """Berry curvature of a system.
 
@@ -410,8 +464,9 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
     return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
 ```
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
 kwargs = {
     "title": title,
@@ -427,8 +482,9 @@ holoviews.HoloMap(
 )
 ```
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "How does time-reversal symmetry influence the Berry curvature?"
 
 answers = [
@@ -450,8 +506,9 @@ At the same time it's important to know that the particular distribution of the 
 
 For instance, here is a slider plot for the Berry curvature for the quantum Hall lattice model studied in the previous chapter.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 lat = kwant.lattice.square()
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
@@ -492,16 +549,10 @@ holoviews.HoloMap(
 
 You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that when $\mu = -2t - 2\gamma$ some flux of opposite sign appears at $k_x = k_y=0$, the Dirac point, which leaves no net curvature and leads to a change in the Chern number. This is the signature of the topological transition seen from the Berry curvature.
 
-# Summary: extending the model to spinful electrons and photons
+## Summary: extending the model to spinful electrons and photons
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("0gxE68kvdmw", src_location="4.2-summary")
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "Haldane model")
 ```

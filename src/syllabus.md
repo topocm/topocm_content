@@ -1,15 +1,25 @@
-# Syllabus
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
 
-{% for chapter in chapters -%}
-* **{{chapter.title}}**
-{% for section in chapter.sections %}  * [{{section.title}}]({{section.location}}.ipynb)
-{% endfor -%}
-{%- endfor %}
+# Introduction
+
++++
+
 ## Course structure
 
 Each section consists of several relatively self-contained topics, each introduced and summarized by an expert.
 
-## Current course team
+### Current course team
 
 **Anton Akhmerov** is an assistant professor in Kavli Institute of Nanoscience of Delft University of Technology and QuTech.
 
@@ -19,7 +29,7 @@ Each section consists of several relatively self-contained topics, each introduc
 
 **Bas Nijholt, Irfan Muhammad, Tómas Örn Rosdahl** are PhD students working in Kavli Institute for Nanoscience at TU Delft supervised by Anton Akhmerov.
 
-## Other course developers
+### Other course developers
 
 The initial verison of the course was created by:
 * Anton Akhmerov
@@ -28,7 +38,7 @@ The initial verison of the course was created by:
 * Sebastian Rubbert
 * Rafał Skolasiński
 
-## Acknowledgements
+### Acknowledgements
 
 When working on the course, we greatly benefitted from support of
 
@@ -48,7 +58,7 @@ For the support with implementing the technical aspects of the course we thank
 
 Finally, we thank all the external speakers for contributing the videos for the course.
 
-## License
+### License
 
 Unless otherwise specified the **Course Materials** of TU
 Delft TOPOCMx are Copyright [Delft University of Technology](http://www.tudelft.nl/en/) and are licensed under

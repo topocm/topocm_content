@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# From Kitaev chain to a nanowire
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -19,16 +36,17 @@ style = {
 }
 ```
 
-# From Kitaev model to an experiment
+## From Kitaev model to an experiment
 
 We have a special guest to begin this week's lecture, Yuval Oreg from the Weizmann Institute in Rehovot.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("GQLfs4i22ms", src_location="2.1-intro")
 ```
 
-# Small parameters
+## Small parameters
 
 We are now all set to make Majoranas in a real system. Or at least to invent a way to make Majoranas in a real system.
 
@@ -42,7 +60,9 @@ The way we approach this problem is by considering the Kitaev chain a 'skeleton'
 
 So once again, here is our 'skeleton', the Kitaev model Hamiltonian written in momentum space:
 
-$$H_{Kitaev} = (-2 t \cos k -\mu) \tau_z + 2 \Delta \tau_y \sin k.$$
+$$
+H_{Kitaev} = (-2 t \cos k -\mu) \tau_z + 2 \Delta \tau_y \sin k.
+$$
 
 The model seems OK for a start, because it has some superconducting pairing $\Delta$ and some normal dispersion given by terms proportional to $\mu$ and $t$.
 
@@ -50,7 +70,9 @@ Before we proceed further, let's understand the relation between these parameter
 
 First of all, we want to make a controllable system, so that we can tweak its parameters. That means that we need a **semiconductor**. In semiconductors the electron density is very low, so that the chemical potential is near the bottom of the band. This makes it easier to define $\mu$ with respect to the bottom of the band:
 
-$$\mu \rightarrow \mu - 2t.$$
+$$
+\mu \rightarrow \mu - 2t.
+$$
 
 Now the transition between trivial and non-trivial states happens when $\mu = 0$.
 
@@ -58,12 +80,15 @@ Of course semiconductors are never additionally superconducting. Luckily this is
 
 The next thing we should consider is that $\mu$ will always stay small compared to the bandwidth, so $\mu \ll 2t$. The same holds for superconducting pairing: $\Delta \ll t$. This is because superconductivity is a very weak effect compared to the kinetic energy of electrons. These two inequalities combined mean that we can expand the $\cos k$ term and only work with the continuum limit of the Kitaev model:
 
-$$H = (k^2/2m - \mu) \tau_z + 2 \Delta \tau_y k.$$
+$$
+H = (k^2/2m - \mu) \tau_z + 2 \Delta \tau_y k.
+$$
 
 The effective electron mass $m$ is just the coefficient of the expansion. Let's take a look at the band structure in this regime, both in the topological regime and in the trivial regime:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 lat = kwant.lattice.chain(norbs=4)
 spinful_kitaev_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
@@ -87,7 +112,7 @@ params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 )
 ```
 
-# The need for spin
+## The need for spin
 
 Still, there is one obvious thing missing from the model, namely electron spin. This model works with some hypothetical spinless fermions, that do not really exist. So to make the model physical, we need to remember that every single particle has spin, and the Hamiltonian has some action in spin space, described by the Pauli matrices $\sigma$.
 
@@ -99,14 +124,17 @@ What's the correct way of introducing spin then? We still need to add it. Let's 
 
 We achieve this by adding Zeeman coupling of the spin to an external magnetic field:
 
-$$H = (k^2/2m - \mu - B \sigma_z) \tau_z + 2 \Delta \tau_y k.$$
+$$
+H = (k^2/2m - \mu - B \sigma_z) \tau_z + 2 \Delta \tau_y k.
+$$
 
 Whenever the Zeeman energy $|B|$ is larger than $\mu$ we have one Majorana fermion at the end of the chain.
 
 Let's look at what happens with the dispersion as we increase the magnetic field from zero to a value larger than $\mu$.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def title(params):
     return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
 
@@ -126,7 +154,7 @@ We now see that we resolved the first problem:
 > A high enough **Zeeman splitting** allows to separate the different spins.
 > Then we can make one spin species trivial, while the other one is topological and hosts Majoranas.
 
-# Realistic superconducting pairing
+## Realistic superconducting pairing
 
 The next part for us to worry about is the superconductor.
 
@@ -142,7 +170,9 @@ So if we want to invent a way to make Majoranas, we will need to use $s$-wave pa
 
 This leaves only one option. All the $s$-wave superconductors are spin-singlet:
 
-$$H_{pair} = \Delta(c_\uparrow c_\downarrow - c_\downarrow c_\uparrow) + \text{h.c.}$$
+$$
+H_{pair} = \Delta(c_\uparrow c_\downarrow - c_\downarrow c_\uparrow) + \text{h.c.}
+$$
 
 This means that now we need to modify the pairing, but before that we'll need to do one other important thing.
 
@@ -174,7 +204,7 @@ Why is this basis useful?
 
 There is one disadvantage. The particle-hole symmetry now becomes more complicated. For our system with only one orbital and spin it is $\mathcal{P} = \sigma_y \tau_y \mathcal{K}$. But, let us tell you, the advantages are worth it.
 
-# s-wave superconductor with magnetic field
+## s-wave superconductor with magnetic field
 
 Let's look at how our chain looks once we change the superconducting coupling to be $s$-wave. The Zeeman field (or anything of magnetic origin) changes sign under time-reversal symmetry. 
 
@@ -189,7 +219,9 @@ This Hamiltonian is easy to diagonalize since every term only has either a $\tau
 We can use this expression to track the crossings. We also know that when $B=0$ the system is trivial due to spin degeneracy.
 Together this means that we expect the system to be non-trivial (and will have a negative Pfaffian invariant) when
 
-$$ B^2 > \Delta^2 + \mu^2.$$
+$$
+B^2 > \Delta^2 + \mu^2.
+$$
 
 Are we now done? Not quite.
 
@@ -201,8 +233,9 @@ And that is a big problem. Majoranas are their own particle-hole partners, and t
 
 So does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 def onsite(onsite, t, mu, B, delta):
@@ -229,7 +262,7 @@ We can also approach this differently. From all the spin Pauli matrices, only $\
 
 Now we need to solve this final problem before we are done.
 
-# How to open the gap?
+## How to open the gap?
 
 The final stretch is straightforward.
 
@@ -237,7 +270,9 @@ We know that there is no gap because of conservation of one of the spin projecti
 
 If we don't want to create an inhomogeneous magnetic field, we have to use a different term that couples to spin. That term is spin-orbit interaction. In it's [simplest form](http://en.wikipedia.org/wiki/Rashba_effect) this interaction appears in our wire as
 
-$$H_{SO} = \alpha \sigma_y k,$$
+$$
+H_{SO} = \alpha \sigma_y k,
+$$
 
 so it is like a Zeeman field pointing in $y$-direction with a strength proportional to the particle momentum. Note that this term is invariant under time reversal symmetry (both $\sigma_y$ and $k$ change sign). So now we have our final Hamiltonian:
 
@@ -249,8 +284,9 @@ At $k = 0$, spin-orbit coupling vanishes, so it has no effect on the system bein
 
 Let's now check that it does what we want, namely open the gap at a finite momentum:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
 holoviews.HoloMap(
@@ -266,7 +302,7 @@ Yep, it does :)
 
 An important remark: You might now think that since spin-orbit interaction depends on spin, it makes the magnetic field unnecessary. This is not true: Since spin-orbit interaction preserves time-reversal symmetry, in the absence of a magnetic field the energy spectrum of the model would have a *Kramers degeneracy*, as you learned last week. To get one unpaired Majorana mode per edge and not two, we need to break Kramers degeneracy and therefore break time-reversal symmetry. So the combination of both Zeeman field and spin-orbit coupling is needed.
 
-# Putting everything together
+## Putting everything together
 
 Let's now rest for a moment and reflect on what we have done.
 
@@ -290,8 +326,9 @@ The smaller the gap, the worse the protection of Majoranas, and the more we need
 
 Let's calculate the gap as a function of all of the relevant parameters.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%opts Curve (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts Overlay [show_legend=True legend_position='top']
 
@@ -363,8 +400,9 @@ Let's summarize our observations:
 
 We finish our investigation of this model for now with a final simple picture of the band structure of our system.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
 holoviews.HoloMap({params["mu"]: spectrum(nanowire_chain, params, **style, title=title) for params["mu"] in mus}, kdims=[r"$\mu$"])
@@ -380,8 +418,9 @@ At $k=0$ the spin-orbit coupling is ineffective, so the electron and hole bands 
 
 The non-monotonous behavior of the gap versus $B$ that we saw earlier is a consequence of this complicated band structure: There are different values of momenta where the dispersion has local minima. When we are close to the phase transition, $k=0$ defines the gap, while for large $B$, it is the gap at finite momentum that becomes smallest.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
 answers = [
     "Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
@@ -400,14 +439,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Outlook
+## Outlook
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("MsFyJBAMFLI", src_location="2.1-summary")
-```
-
-
-```python
-MoocDiscussion("Questions", "Majoranas in nanowires")
 ```

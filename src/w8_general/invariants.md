@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Different approaches to topological invariants
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -13,16 +30,17 @@ import scipy.linalg as sla
 randn = np.random.randn
 ```
 
-# Introduction
+## Introduction
 
 Fabian Hassler from RWTH Aachen will present the topological invariants
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("ceyus0cRBi0", src_location="8.2-intro")
 ```
 
-# Applications of topological invariants
+## Applications of topological invariants
 
 Throughout the course we computed several times a topological invariant of different systems. When is calculating a topological invariant useful or necessary?
 
@@ -43,7 +61,7 @@ The reason why this is true is that in a smaller sample the bulk is not 'insulat
 
 So now we know that the main problem is that we need to do something with a large matrix.
 
-# Computational costs
+## Computational costs
 
 How expensive are the calculations? If you look in the literature, you'll see wildly differently looking algorithms bundled together with different claims of performance. There is actually a very simple way to figure out, and it comes down to an almost universally correct empirical rule:
 
@@ -59,8 +77,9 @@ A scattering matrix is smaller than the matrix of all the eigenvectors, and for 
 
 This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def two_terminal(L, W):
     t = 1.0
 
@@ -121,8 +140,9 @@ Ns_smat = np.logspace(1, 3, 10)[:6]
 smat_times = [smat_time(N) for N in Ns_smat]
 ```
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 plt.plot(Ns_diag, diag_times, "-o", label="diagonalization")
 plt.plot(Ns_smat, smat_times, "-o", label="scattering matrix")
 
@@ -137,7 +157,7 @@ plt.legend()
 plt.show()
 ```
 
-## Momentum integration
+### Momentum integration
 
 As you saw, unless we're lucky, a topological invariant is a $d$-dimensional integral of something like winding number density or Berry curvature. If we deal with the scattering matrix, the Brillouin zone is once again reduced by one dimension, and the integral becomes $(d-1)$-dimensional.
 
@@ -152,7 +172,7 @@ So let's take a system with $N$ orbitals in a unit cell, and edge state decay le
 * $\sim (N/\xi)^{3d-3}$ for disordered systems using scattering approach.
 * $\sim N^3 / \xi^{d-1}$ for band structures using scattering approach.
 
-# A special thing about 1D
+## A special thing about 1D
 
 There is a special feature of topological invariants in 1D, that dramatically speeds up a calculation. It's a computational trick that is so elegant and universal that we'd like to share it.
 
@@ -183,7 +203,7 @@ but it just counts how much the phase of $\det h$ increases as $k$ goes through 
 
 How to take this integral? The trick is to use analytic continuation to a complex plane.
 
-As $k$ varies from $0$ to $2\pi$, $e^{ik}$ goes around the unit circle in the complex plane. Let's now make a substitution $e^{ik}\,\to\,z$, with $z$ a complex number. The determinant $\det[h(k)]$ becomes a polynomial function in $z$, $f(z) = \det[h_0 + z\, t_L + z^{-1}\, t_R]$. We now need to compute the following integral on the unit circle 
+As $k$ varies from $0$ to $2\pi$, $e^{ik}$ goes around the unit circle in the complex plane. Let's now make a substitution $e^{ik}\,\to\,z$, with $z$ a complex number. The determinant $\det[h(k)]$ becomes a polynomial function in $z$, $f(z) = \det[h_0 + z\, t_L + z^{-1}\, t_R]$. We now need to compute the following integral on the unit circle
 
 $$
 Q(H) = \frac{1}{2\pi i}\,\oint dz \,\frac{d}{dz} \log f(z) = \frac{1}{2\pi i}\,\oint\,dz\,\frac{f'(z)}{f(z)}.
@@ -193,7 +213,9 @@ We can now use a nice result from complex analysis, the [argument principle](htt
 
 To find the zeros we notice that we need to solve a problem
 
-$$[z h_0 + z^2 t_L + t_R]\psi = 0.$$
+$$
+[z h_0 + z^2 t_L + t_R]\psi = 0.
+$$
 
 This is a [polynomial eigenvalue problem](http://en.wikipedia.org/wiki/Nonlinear_eigenproblem), and it is trivially mapped onto a standard eigenvalue problem.
 
@@ -210,8 +232,9 @@ $$
 
 So by finding all the eigenvalues $z$ we get all the zeros of $h(z)$ inside the unit circle, and immediately obtain the 1D topological invariant:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def random_sys(N=4):
     onsite = randn(N, N) + 1j * randn(N, N)
     lefthopping = randn(N, N) + 1j * randn(N, N)
@@ -265,7 +288,7 @@ In the graph above, we see the zeros (red) and poles (blue) of $h(z)$ for some r
 
 The approach of analytic continuation onto a complex plane works whenever we have only one momentum variable, so for any 1D system, or a 2D system where we compute the scattering, and allows to calculate the integral exactly and in one step.
 
-# Real space methods
+## Real space methods
 
 There is also a broad class of algorithms that rely on the real space structure of the system, and on the inability to deform the wave functions of the filled state into completely localized orbitals.
 
@@ -287,6 +310,8 @@ $$
 \varPhi_x = \sum_{ij} |\psi_i\rangle\langle \psi_i | \varphi_x | \psi_j\rangle \langle \psi_j|,
 $$
 
+
+
 $$
 \varPhi_y = \sum_{ij} |\psi_i\rangle \langle \psi_i | \varphi_y | \psi_j\rangle \langle \psi_j|.
 $$
@@ -305,8 +330,9 @@ So the **Bott index** $m$ looks like a Chern number, behaves like a Chern number
 
 To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $\log\varPhi_x \varPhi_y \varPhi_x^\dagger \varPhi_y^\dagger$, taking a disordered Chern insulator as a sample system:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%opts Points {+framewise}
 %%opts Path {+framewise}
 
@@ -382,16 +408,10 @@ holoviews.HoloMap(
 )
 ```
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("9qCSXEfSlqE", src_location="8.2-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Topological invariants")
 ```

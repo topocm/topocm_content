@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulation: powers combined
+## Simulation: powers combined
 
 As usual, start by grabbing the notebooks of this week (`w11_extensions2`). They are once again over [here](http://tiny.cc/topocm_smc).
 
@@ -17,19 +34,13 @@ By now you should have a feel for how to make new topological phases. Your task 
 
 Take care however: if you take a topologically nontrivial system and just apply rapid driving, you'll still get a topological one. This cheating way is prohibited: at any moment during the driving cycle the Hamiltonian of your system should remain gapped.
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Floquet and crystalline")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:1010.6126
 
@@ -52,14 +63,4 @@ MoocDiscussion("Labs", "Floquet and crystalline")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Floquet and crystalline")
-```
++++

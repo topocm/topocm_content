@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# About this course
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 # This cell is present in all the notebooks.
 # It makes the necessary packages available and adjusts various settings.
 # You should execute this cell at the start.
@@ -13,7 +30,7 @@ init_notebook()
 from IPython.display import HTML
 ```
 
-# A welcome word
+## A welcome word
 
 First of all, greetings from the TOPOCMx team! We are very happy that you chose to follow our course.
 
@@ -76,7 +93,7 @@ We want you to share what you found difficult, what you found easy, and where yo
 Moreover, we publish the **source code** for every single bit of this course in this [Github repository](https://github.com/topocm/topocm_content).
 So whenever you see a typo, or you would like to suggest an improvement, you can open a new issue, (or even make a pull request if you know how to use Github).
 
-# Software you will need
+## Software you will need
 
 If you don't want to be bothered trying out the numerical simulations, you are all set if you have an EdX account and you are signed up for the course.
 
@@ -150,38 +167,36 @@ The same applies to Python and the Python scientific stack (NumPy, SciPy, Matplo
 
 **Do you have questions about installation? Use this discussion:**
 
++++
 
-```python
-MoocDiscussion("Software", "Help with installation")
-```
-
-# Literature
+## Literature
 
 We are mostly going to focus on the overall structure of the field and study the most basic and general phenomena. We will also skip detailed derivations or some details.
 
 For a more formal and complete source of information on topological insulators and superconductors we recommend you to look into the reviews below. (Of course we think they will be much easier to follor after you finish the course).
 
++++
 
-## Topological insulator reviews
+### Topological insulator reviews
 
 * arXiv:0801.0901
 * arXiv:1002.3895
 * arXiv:1008.2026
 
-## Majorana fermion reviews
+### Majorana fermion reviews
 
 * arXiv:1112.1950
 * arXiv:1202.1293
 * arXiv:1206.1736
 * arXiv:1407.2131
 
-## Advanced topics: Fractional particles and topological quantum computation
+### Advanced topics: Fractional particles and topological quantum computation
 
 * arXiv:0707.1889
 * arXiv:0711.4697
 * arXiv:1404.0897
 
-## Extra topics
+### Extra topics
 
 * arXiv:1211.5623
 * arXiv:1501.00531

@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Thouless pumps and winding invariant
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -11,22 +28,25 @@ from holoviews.core.options import Cycle
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
-# Thouless pumps
+## Thouless pumps
 
 Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("gKZK9IGY9wo", src_location="3.1-intro", res="360")
 ```
 
-# Hamiltonians with parameters
+## Hamiltonians with parameters
 
 Previously, when studying the topology of systems supporting Majoranas (both the Kitaev chain and the nanowire), we were able to calculate topological properties by studying the bulk Hamiltonian $H(k)$.
 
 There are two points of view on this Hamiltonian. We could either consider it a Hamiltonian of an infinite system with momentum conservation
 
-$$H = H(k) |k\rangle\langle k|,$$
+$$
+H = H(k) |k\rangle\langle k|,
+$$
 
 or we could equivalently study a finite system with only a small number of degrees of freedom (corresponding to a single unit cell), and a Hamiltonian which depends on some continuous periodic parameter $k$.
 
@@ -34,13 +54,17 @@ Of course, without specifying that $k$ is the real space momentum, there is no m
 
 Sometimes we want to know how a physical system changes if we slowly vary some parameters of the system, for example a bias voltage or a magnetic field. Because the parameters change with time, the Hamiltonian becomes time-dependent, namely
 
-$$H = H(t).$$
+$$
+H = H(t).
+$$
 
 The slow [adiabatic](https://en.wikipedia.org/wiki/Adiabatic_theorem) change of parameters ensures that if the system was initially in the ground state, it will stay in the ground state, so that the topological properties are useful.
 
 A further requirement for topology to be useful is the *periodicity* of time evolution:
 
-$$H(t) = H(t+T).$$
+$$
+H(t) = H(t+T).
+$$
 
 The period can even go to $\infty$, in which case $H(-\infty) = H(+\infty)$. The reasons for the requirement of periodicity are somewhat abstract. If the Hamiltonian has parameters, we're studying the topology of a *mapping* from the space of parameter values to the space of all possible gapped Hamiltonians. This mapping has nontrivial topological properties only if the space of parameter values is compact.
 
@@ -48,7 +72,7 @@ For us, this simply means that the Hamiltonian has to be periodic in time.
 
 Of course, if we want systems with bulk-edge correspondence, then in addition to $t$ our Hamiltonian must still depend on the real space coordinate, or the momentum $k$.
 
-# Quantum pumps
+## Quantum pumps
 
 In the image below (source: Chambers's Encyclopedia, 1875, via Wikipedia) you see a very simple periodic time-dependent system, an Archimedes screw pump.
 
@@ -62,8 +86,9 @@ Let's take a one-dimensional region, coupled to two electrodes on both sides, an
 
 So our system now looks like this:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # Plot of the potential in the pumping system as a function of coordinate.
 # Some part of the leads is shown with a constant potential.
 # Regions with E < 0 should be shaded to emulate Fermi sea.
@@ -108,7 +133,9 @@ plt.show()
 
 It is described by the Hamiltonian
 
-$$H(t) = \frac{k^2}{2m} + A [1 - \cos(x/\lambda + 2\pi t/T)].$$
+$$
+H(t) = \frac{k^2}{2m} + A [1 - \cos(x/\lambda + 2\pi t/T)].
+$$
 
 As we discussed, if we change $t$ very slowly, the solution will not depend on how fast $t$ varies.
 
@@ -118,8 +145,9 @@ The potential near the bottom of each minimum is approximately quadratic, so the
 
 We can quickly check how continuous bands in the wire become discrete evenly spaced bands as we increase $A$:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def hopping(site1, site2, t):
     return -t
 
@@ -169,8 +197,9 @@ So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an in
 
 Electron wave functions from neighboring potential minima do not overlap, so when we change the potential by one time period, we move exactly $N$ electrons.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "Why are some levels in the band structure flat while some are not?"
 answers = [
     "The flat levels are the ones whose energies are not sensitive to the offset of confining potential.",
@@ -189,7 +218,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Quantization of pumped charge
+## Quantization of pumped charge
 
 As we already learned, integers are important, and they could indicate that something topological is happening.
 
@@ -201,8 +230,9 @@ To simplify the counting let's "dry out" the pump: We can define a procedure tha
 
 For example, we can do this:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # Same plot as above, but now with an extra rectangular barrier in the
 # middle, and with arrows both ways showing that the barrier widens.
 
@@ -275,7 +305,7 @@ So without doing any calculations, we can conclude that:
 > The number of electrons pumped per cycle of a quantum pump is an integer as long as
 > the bulk of the pump is gapped. Therefore it is a **topological invariant**.
 
-# Counting electrons through reflection.
+## Counting electrons through reflection.
 
 The expression for the pumped charge in terms of the bulk Hamiltonian $H(k, t)$ is complicated.
 
@@ -311,7 +341,7 @@ While we derived this relation only for the case when all incoming particles ref
 
 Let's check if this expression holds to our expectations. If $||r||=1$, this is just the number of times the phase of $\det r$ winds around zero, and it is certainly an integer, as we expected.
 
-# Applying the topological invariant
+## Applying the topological invariant
 
 We're left with a simple exercise.
 
@@ -319,8 +349,9 @@ We know now how to calculate the pumped charge during one cycle, so let's just s
 
 The scattering problem in 1D can be solved quickly, so let's calculate the pumped charge as a function of time for different values of the chemical potential in the pump.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%opts Path.Q (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts HLine (color=Cycle(values=['r', 'g', 'b', 'y']) linestyle='--')
 
@@ -398,8 +429,9 @@ As the periodic potential moves, it tries to increase the energies of all the st
 
 So there should be states crossing the bulk band gap. Let's see if it's true.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 spectrum(
     modulated_wire(L=110, bulk=bulk),
     p=dict(
@@ -415,8 +447,9 @@ Indeed, the levels in the bulk stay flat and have a high degeneracy, but we see 
 
 Of course, since we have a finite system, the charge cannot be pumped forever from one end into the other. So the pumping breaks down when you see the edge states crossing the bulk bands. At these moments the charge can flow back through the bulk.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What happens to the dependence of the reflection phase shift on time if we "
     "remove one of the reservoirs and leave the other one?"
@@ -440,16 +473,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Quantized charge and scattering invariant
+## Quantized charge and scattering invariant
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("6lXRAZ7hv7E", src_location="3.1-summary", res="360")
-```
-
-**Questions about what you learned? Ask them below**
-
-
-```python
-MoocDiscussion("Questions", "Quantum pumps")
 ```

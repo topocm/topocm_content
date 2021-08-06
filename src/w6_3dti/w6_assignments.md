@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,7 +24,7 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations: more Chern insulators
+## Simulations: more Chern insulators
 
 As usual, start by grabbing the notebooks of this week (`w6_3dti`). They are once again over [here](http://tiny.cc/topocm_smc).
 
@@ -24,19 +41,13 @@ One mechanism of opening the gap on the surface of a topological insulator is to
 
 The BHZ model is rather rich and allows to produce every possible topological invariant. Can you find the parameter values that produce all the desired values of the invariants? (Hint: you need to make the model anisotropic).
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "3DTI")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:1410.0655
 
@@ -63,14 +74,4 @@ MoocDiscussion("Labs", "3DTI")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "3DTI")
-```
++++

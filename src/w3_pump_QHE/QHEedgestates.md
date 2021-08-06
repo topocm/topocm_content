@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Quantum Hall effect: edge states
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -9,7 +26,7 @@ init_notebook()
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
-# Where do the pumped electrons come from and go to?
+## Where do the pumped electrons come from and go to?
 
 You have just seen that Laughlin's argument explains the quantization of the Hall conductance in terms of a pump which moves electrons through the bulk of a Hall cylinder, from one edge to the other of the cylinder.
 
@@ -33,14 +50,18 @@ The cartoon above is purely based on classical physics, and needs to be suppleme
 
 But before we move on to that, we should realize that the picture above is in fact a manifestation of the **bulk-boundary correspondence**. Chiral edge states could not exist without the bulk of the quantum Hall sample.
 
-# A closer look at the chiral edge states
+## A closer look at the chiral edge states
 
 So let's look at the edges of a Hall system in more detail. Let's think about the ribbon geometry, that we used when we discussed the Laughlin pump in a Hall cylinder. This time, we will take into account explicitly that the ribbon has a finite width $W$ in the $y$ direction.
 
 In practice, in order to confine the electrons in this region there must be a potential barrier $V(y)$, which has to be added to the Hamiltonian:
 
-$$H=p_y^2+(\hbar k-e B y-\Phi)^2\,+V(y).$$
+$$
+H=p_y^2+(\hbar k-e B y-\Phi)^2\,+V(y).
+$$
 
+
++++
 
 Let's recall that $k=2\pi n/L$ because of periodic boundary conditions over $x$. We do not really care about the particular shape of the potential. Generically, it will be very flat in the middle of the ribbon and very steep right at its boundaries:
 
@@ -52,8 +73,9 @@ But let's now move closer to the edges. That is, let's consider states which are
 
 Because $y_0$ is proportional to $k$, this means the states close to the edge will acquire a dependence on $k$. Let's see if this is true, by plotting $E(k)$ for our ribbon:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def onsite(site, t, mu):
     return 4 * t - mu
 
@@ -106,20 +128,25 @@ You can see that, as a consequence of this bending of the Landau levels, even if
 
 The particular shape of the dispersion $E(k)$ will depend on the details of the confining potential (which in this case was an infinite square well). However, close to the Fermi level we can always approximate the dispersion $E(k)$ of the edge states as a straight line. We then obtain, for each edge state, a linear relation between energy and momentum,
 
-$$E = \hbar v (k-k_F).$$
+$$
+E = \hbar v (k-k_F).
+$$
 
 Here $k_F$ is the Fermi momentum, which in the case of our ribbon is equal to $k_F = 2\pi N / L$, with $N$ the number of electrons in the system.
 
 Because the slope of the potential is just the local electric field $\mathcal{E}_y=-\partial_y V(y)$ perpendicular to the edge of the sample, the velocity $v$ of the edge states can be simply interpreted as the [drift velocity](http://en.wikipedia.org/wiki/Guiding_center) of a skipping state,
 
-$$v = \mathcal{E}_y/B\,.$$
+$$
+v = \mathcal{E}_y/B\,.
+$$
 
 The velocity is opposite at the two edges because the local electric field $\mathcal{E}$ created by the confining potential always points towards the interior of the sample.
 
 An important thing to note is that the presence of edge states does not depend in any way on the particular shape of the sample as well. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a “picture” of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
     """Create a hall bar system. 
 
@@ -212,8 +239,9 @@ kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
 answers = [
     "They go at the same velocity.",
@@ -231,7 +259,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# The harmless anomaly of the chiral edges
+## The harmless anomaly of the chiral edges
 
 The chiral edge states can be described in such simple terms, that you might doubt the fact that they cannot exist without a bulk. After all, couldn't we just build a theory of a single chiral edge state, neglecting the bulk of the quantum Hall system and the existence of the other edge? Can't a truly one-dimensional system just show the same behavior of the chiral edge state of the quantum Hall effect?
 
@@ -239,7 +267,9 @@ Let's consider the equation $E=\hbar v (k-k_F)$ which describes these chiral sta
 
 The momentum $k$ changes according to the equation $\hbar \dot{k} = -e\mathcal{E}$. After a time $t$, the energy of a state with momentum $k$ has changed to $\hbar v (k - k_F - e\mathcal{E}t/\hbar)$. This increase corresponds to a time-dependent shift of the Fermi momentum, $k_F\,\to\,k_F + e\mathcal{E}t/\hbar$. Recall that $k_F = 2\pi N/L$ where $N$ is the number of electrons, so the rate of change of $k_F$ gives
 
-$$\dot{N} = \mathcal{E}L/\Phi_0,$$
+$$
+\dot{N} = \mathcal{E}L/\Phi_0,
+$$
 
 with $\Phi_0=h/e$ a flux quantum! Since the number of electrons is changing, **charge is not conserved**. In particular, after a time such that $\mathcal{E}L t = \Phi_0$, it seems that exactly one electron has popped out of nowhere at the edge.
 
@@ -249,7 +279,7 @@ At this point, you should understand what's happening. This is just how the Laug
 
 We called the anomaly “harmless” since the non-conservation of charge at the edge has a very simple explanation when the rest of the system is included in the picture. If you ever encounter other “anomalous” theories, it might well be a sign that the system under consideration is only the edge of something else!
 
-# Quantization of Hall Conductance from edge states
+## Quantization of Hall Conductance from edge states
 
 To conclude our case about chiral edge states, we will now show that both signatures of the quantum Hall effect can be explained solely in terms of the edge states, as long as the interactions between electrons are neglected. In principle, this exercise can be done in any of the sample geometries that you have seen so far: the 6-terminal Hall bar, the Hall cylinder, and the Corbino geometry. We will choose the last one for the sake of convenience.
 
@@ -259,8 +289,9 @@ So let's take again our Corbino disk immersed in an external magnetic field. Wit
 
 In this new drawing, we have also added arrows to indicate that we now know that each edge of the Corbino supports one chiral  state. We cannot resist the temptation of showing you another beautiful plot of the local density of states, showing edge states in the Corbino geometry:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
 
@@ -344,13 +375,18 @@ Let's compute the intensity of the current, it's quite simple.
 
 Every chiral edge state is a *transport channel* for the current. Now, the defining property of chiral edge states is that they only allow electrons to travel along the edge in one direction. Electrons have no chance to reverse their velocity, or in other words no chance to *backscatter*.  This means that chiral edge states are perfect transport channels to carry a current, so they have the highest conductance possible. Quantum mechanics limits the maximum conductance that a single transport channel can have to the value $G_0=e^2/h$, which is the conductance quantum you already met last week. With $n$ of these channels, we obtain precisely
 
-$$I_\circlearrowleft = n \,\frac{e^2}{h} V\,.$$
+$$
+I_\circlearrowleft = n \,\frac{e^2}{h} V\,.
+$$
 
+
++++
 
 > Thus, the relevant electromagnetic responses, namely the longitudinal and Hall conductivities $\sigma_L=0$ and $\sigma_H=ne^2/h$, can both be derived directly by only considering the chiral edge states.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
 answers = [
     "It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
@@ -368,20 +404,14 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Important things to know about edge states
+## Important things to know about edge states
 
 The physical picture that we presented this week is very simple, and it is also somewhat simplified.
 
 In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](http://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("rQs12c-SieE", src_location="3.3-summary")
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "Chiral edge states")
 ```

@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Fractional quantum Hall effect and topological particles
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,16 +24,17 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Introduction
+## Introduction
 
 This topic is introduced by Sankar Das Sarma from the university of Maryland.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("4gSJSo3olfg", src_location="12.1-intro")
 ```
 
-# Interacting systems
+## Interacting systems
 
 One obvious thing that we completely ignored throughout the course is the effects of interactions on topology. It is of course possible to generalize all the symmetry classes that we have studied to many-body Hamiltonians, but what happens to the classification of the topological phases?
 
@@ -25,9 +43,9 @@ There are interesting cases where the classification collapses. For example, the
 
 However this is relatively minor compared to the real can of worms that the interactions open: the amount of possibilities for the interacting phases is much larger. To begin with, we'll discuss the oldest known example of a strongly interacting topological phase, the fractional quantum Hall effect. Note that it only covers a single dimension ($D=2$), and a single symmetry class (no symmetry at all). Yet, classifying all such states turns out to be a very hard task.
 
-# Fractional charge and statistics in the fractional quantized Hall effect
+## Fractional charge and statistics in the fractional quantized Hall effect
 
-If you followed what we learned about the integer quantum Hall effect, you'll remember that we used the pumping argument to establish that the Hall conductance in an incompressible liquid is quantized in integers. You might now wonder if the experimental evidence for the fractional quantum Hall effect completely invalidates this argument in some way. The key step in the argument was to realize that the pumped charge that results from the insertion of one flux quantum $\Phi_0$ into a Corbino geometry is 
+If you followed what we learned about the integer quantum Hall effect, you'll remember that we used the pumping argument to establish that the Hall conductance in an incompressible liquid is quantized in integers. You might now wonder if the experimental evidence for the fractional quantum Hall effect completely invalidates this argument in some way. The key step in the argument was to realize that the pumped charge that results from the insertion of one flux quantum $\Phi_0$ into a Corbino geometry is
 
 $$
 Q_{pump}=\sigma_{xy}\Phi_0\equiv \nu e,
@@ -44,14 +62,16 @@ the wave function can pick up a Berry phase. For fermions this phase is $\pi$ an
 
 ![](figures/exchange.svg)
 
-Let us first assume that one of the particles was created by a flux quantum. Since the flux quantum created this particle adiabatically by a pumping process, locality dictates that the particle going around the flux quantum + particle cannot know about the existence of the other particle. Thus the phase from going around a particle together with its flux quantum must vanish. On the other hand, the particle picks up a phase of $2\pi \nu$ from just going around the flux quantum. Thus double exchange of a pair of particles leads to a Berry phase of $-2\pi\nu$. This is another strange property of excitations in the FQH state! They must obey different statistics than both fermions and bosons, and are thus referred to as anyons. Therefore the exchange phase of anyons in the simple FQH states is given by 
+Let us first assume that one of the particles was created by a flux quantum. Since the flux quantum created this particle adiabatically by a pumping process, locality dictates that the particle going around the flux quantum + particle cannot know about the existence of the other particle. Thus the phase from going around a particle together with its flux quantum must vanish. On the other hand, the particle picks up a phase of $2\pi \nu$ from just going around the flux quantum. Thus double exchange of a pair of particles leads to a Berry phase of $-2\pi\nu$. This is another strange property of excitations in the FQH state! They must obey different statistics than both fermions and bosons, and are thus referred to as anyons. Therefore the exchange phase of anyons in the simple FQH states is given by
 
 $$
 \phi_{exch}=\pi\nu.
 $$
 
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 question = (
     "The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
     "that must be dropped in order to understand the fractional quantum Hall effect?"
@@ -75,7 +95,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Topological degeneracy
+## Topological degeneracy
 
 Knowing that the system supports particles with nontrivial braiding statistics, we can derive its next important property, the topological degeneracy of the ground state.
 
@@ -98,7 +118,7 @@ Now all we need to do is an exercise in elementary quantum mechanics. First of a
 
 We have seen an example of ground state degeneracy in Majorana wires, where the degeneracy of the zero modes could not be lifted by any local perturbation. The difference between the Majorana case and fractional quantum Hall is that in the latter we don't rely on the presence of defects, and the degeneracy is a property of the surface on which we put the fractional quantum Hall state.
 
-# Creating an FQH state
+## Creating an FQH state
 
 How can we describe a fractional quantum Hall state? Laughlin used a representation of the many-electron wave function in complex coordinates to guess a wave function of an incompressible state. We will instead follow the more intuitive "Composite Fermion" approach due to Jain to understand this state. 
 
@@ -123,7 +143,7 @@ Pictorially the composite fermion transformation is represented as:
 The next step in the composite fermion approach to the FQH state is to say that all the correlation effects of the Coulomb interaction are taken care of by the flux attachment. Beyond this, the composite fermions are weakly interacting particles. If we believe in this picture, then the only non-interacting incompressible states that we can get are integer quantum Hall states. This means that the FQH states are integer quantum Hall states of the composite fermions.
 
 How does this explain a fractionally filled state? Well, the original electron is $2m$ flux quanta together with a composite fermion. If we smear out the flux created by the electron density $\nu$, we get a magnetic field of $2m\nu$ flux quanta per unit area. This is in addition to the one flux quantum per unit area of the external magnetic field. Therefore the composite fermions, which are at a density of $\nu$ per unit area, see a magnetic field of $2m\nu+1$ per unit area. We can make the composite fermions form an incompressible state with $p$-Landau levels filled if 
-$\nu=p(2m\nu+1),$ so that we describe a state of filling 
+$\nu=p(2m\nu+1),$ so that we describe a state of filling
 
 $$
 \nu=\frac{p}{2 m p-1}.
@@ -131,8 +151,9 @@ $$
 
 Thus the composite fermion theory provides an explanation for how electrons can form incompressible states at a fractional sequence of filling fractions that is known as the "Jain sequence". These states were all seen in experiments.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
     "postulating that:"
@@ -156,28 +177,22 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Classification and fractional topological insulators
+## Classification and fractional topological insulators
 
 Before we approach the classification of topological insulators in the presence of symmetries, let us discuss the fractional quantum Hall effect. In fact, there is a whole bunch of fractional quantum Hall states, so there is clearly room for classification. However, at first glance it looks more challenging because we cannot really solve general two dimensional interacting Hamiltonians. The tool that is used to understand what phases might exist is braiding. Based on all the examples of two-dimensional topological states with no symmetry that we have so far, it is believed that distinct topological states are characterized by distinct particle-like anyonic excitations with distinct topological properties. It is certainly obvious that if two states have topologically distinct excitations in the bulk they cannot be adiabatically deformed into one another, since the braiding rules cannot change continuously.
 
 So the basic rule of the game is to ask what are all possible braiding rules for excitations in two dimensions. One would think that it would simply be arbitrary. Turns out that the situation is not quite as bad - locality and unitarity put rather strong constraints on the possible braidings of particles. The answer is obtained through a branch of mathematics called modular tensor category theory, and the theory tells us that valid sets of fractional excitations must obey the so-called pentagon and hexagon equations. All this being said, not all solutions of these equations are known - so basically the set of possible phases is not quite known. And this is all very abstract - and not even all the abstractly known phases that have acceptable braiding rules are known to be realized in nature. In fact, so far most of the known phases seem to be composite fermion ones that are well understood.
 
-## Symmetries
+### Symmetries
 
 To approach the classification of interacting topological insulators with symmetries, we can start by playing the same game as Kane and Mele, and combine two fractional quantum Hall states (instead of integer ones) to make a fractional topological insulator. If we choose a pair of FQH states which are related by time-reversal and stack them together for spin-up and spin-down electrons, that technically leads to a time-reversal invariant state. The key question that needs to be asked is whether one can gap out the edge states by adding time-reversal invariant perturbations. If one can do that, then unlike the Kane-Mele quantum spin Hall state, the state is not a phase that is protected by just time-reversal symmetry. This question is not too mathematically involved, though still beyond this course and can be answered by the bosonization technique as was done by [Stern and Levin](http://arxiv.org/abs/0906.2769).
 
 We can however explain the result. If one stacks the two FQH states one obtains a spin-Hall conductance $\sigma_{sh}$, which is equal to the Hall conductance of each layer. Let the smallest charge of an excitation of our phase be $e^*$, some fraction of electron charge. It turns out that the edge states are protected from gapping by time-reversal invariant perturbations if and only if $\sigma_{sh}/e^*$ is an odd integer. This gives some idea as to what kind of interacting analogues of quantum spin Hall states one may get. But again, as with the non-symmetric case, the general classification is still up in the air. More importantly, we don't really have realistic candidates for such states yet.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("zrL-qxjKfGw", src_location="12.1-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "FQHE")
 ```

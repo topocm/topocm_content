@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Dirac equation of the surface states, 3D Bernevig-Hughes-Zhang model
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,21 +24,23 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Introduction
+## Introduction
 
 Joel Moore from the University of California, Berkeley will introduce this week's topic, by telling us how the idea of a two-dimensional topological insulator was generalized to three dimensions.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("NIhMjm7cyug", src_location="6.1-intro")
 ```
 
-# Making  3D topological invariants out of 2D ones
+## Making  3D topological invariants out of 2D ones
 
 Let us follow the direction explained by Joel Moore and construct a three-dimensional topological state from the two-dimensional topological state. This time, we'll do this by studying the system in momentum space rather than in real space as we did before. As with two dimensional systems, time-reversal invariant momenta (TRIMs) play an important role in three dimensions. 
 
 For illustrative purposes, consider the three dimensional irreducible Brillouin Zone (i.e. $k_j\in [0,\pi]$) of a cubic system shown below. Fixing one of the three momenta $k_{x,y,z}$ to a TRIM, say $k_x=0$ without loss of generality, we can think of the Hamiltonian in the $(k_y,k_z)$ plane as a two dimensional Hamiltonian, which may either be topologically trivial ($\mathbb{Z}_2$-index $=0$) or non-trivial ($\mathbb{Z}_2$-index $=1$).
 
++++
 
 ![](figures/3dbz.svg)
 
@@ -33,7 +52,7 @@ Very frequently the topological invariants of a compound are written as $(1;010)
 
 Just by using the bulk-edge correspondence for $Q$ we know that the strong topological invariant means that there is an odd number of helical states going in each direction on each facet of the topological insulator. We will see later why this is special, but before that let's construct a model for a 3D TI.
 
-# BHZ model of a 3D topological insulator
+## BHZ model of a 3D topological insulator
 
 Our goal in this unit is to derive an effective three-dimensional Hamiltonian $H(\mathbf{k})$ for a strong topological insulator.
 
@@ -41,7 +60,7 @@ We follow the same logic that led us to defining the three-dimensional topologic
 
 Let's recapitulate what we said about the BHZ model last week. It is a four band model, which has two electron bands (spin up and spin down) and two hole bands (spin up and down). It has inversion symmetry, with electron and hole bands having opposite parity. We will not need more bands for our 3D topological insulator model.
 
-Copying the BHZ Hamiltonian of last week, at $k_z=0$ we have 
+Copying the BHZ Hamiltonian of last week, at $k_z=0$ we have
 
 $$
 H(k_z=0) = \epsilon(\mathbf{k})\cdot\mathbb{1} +
@@ -85,13 +104,15 @@ This Hamiltonian is known as the **3D BHZ model**. It is gapped at finite $M$, a
 
 The above derivation makes one important point evident: a necessary ingredient to have a strong topological insulator is to break spin conservation. Above, we achieved this by adding coupling between the spins, to avoid the undesirable gap closing at finite $k_z$
 
-# Dirac surface states
+## Dirac surface states
 
 What is the dispersion of the surface state of the $3D$ topological insulator?
 
 We know that if we fix one momentum (say $k_x$) to zero, the Hamiltonian of the remaining system is that of a quantum spin Hall insulator. For this system we know that the Hamiltonian of the edge states is just that of a pair of counter-propagating modes, so
 
-$$H = v \sigma_y k_y.$$
+$$
+H = v \sigma_y k_y.
+$$
 
 Here, the matrix $\sigma_y$ acts on the degrees of freedom of these two surface modes, and doesn't correspond to particle spin.
 
@@ -101,12 +122,15 @@ What if we consider a nonzero $k_x$? Generically, the two modes are then coupled
 
 So if the surface of the topological insulator is isotropic, its Hamiltonian is merely
 
-$$H=v \mathbf{\sigma} \cdot \mathbf{k}.$$
+$$
+H=v \mathbf{\sigma} \cdot \mathbf{k}.
+$$
 
 Let's have a quick look at it to get a more concrete understanding:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output fig='png'
 
 def onsite(site, C, D1, D2, M, B1, B2):
@@ -176,7 +200,7 @@ This is of course not possible in any purely 2D system, since the Hall conductan
 
 > The statement that it is impossible to have a tight-binding Hamiltonian with time-reversal symmetry and a single Dirac cone is known as the "fermion doubling theorem". There are several tricks that one can perform to work around this limitation in a numerical simulation, but we won't cover them in the course.
 
-# Weak invariants
+## Weak invariants
 
 Now that we understand what is special about the strong invariant, let's deal with the weak invariants.
 
@@ -187,8 +211,9 @@ As a final illustration of the relation between weak and strong invariants, let'
 
 We determine the topological invariant in the same way as for QSHE: we see if the phase of the reflection matrix connects the Pfaffians of $r(k_y=0)$ and $r(k_y=\pi)$.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output fig='png'
 
 # A system for computing the topological invariant
@@ -291,8 +316,9 @@ We see the values of the invariants change several times:
 * When $M$ is lowered further, two new Dirac cones appear at $k = (0,\pi)$ and $k = (\pi, 0)$. This changes the invariants to $\mathcal{Q}(k_x=0) = 0$ and $\mathcal{Q}(k_x=\pi) = 1$.
 * Finally one more Dirac cone appears at $k = (\pi, \pi)$, accompanied by both invariants becoming trivial.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
 
 answers = [
@@ -312,7 +338,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Quantum Hall conductance and the magneto-electric effect
+## Quantum Hall conductance and the magneto-electric effect
 
 So, what happens if we measure the Hall conductance of a 3D topological insulator? Will we actually obtain a half-integer? If you followed the course closely, you will know that the answer is negative, and that the Hall conductance is always quantized to an integer. So what is going on when we measure the Hall conductance?
 
@@ -326,8 +352,9 @@ In total we thus get $\sigma_{xy} = (2n + 1) e^2/h$: an integer, which resolves 
 
 Finally, let's look at the dispersion of the Landau levels and edge states:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 %%output size=150
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
 
@@ -344,8 +371,9 @@ spectrum(wire, p, k_x=k, **kwargs)
 
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
     "a very thick Corbino disk. "
@@ -371,15 +399,12 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Conclusion: integers, half-integers, and two types of electromagnetic response
+## Conclusion: integers, half-integers, and two types of electromagnetic response
 
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("s7H6oLighOM", src_location="6.1-summary")
-```
-
-```python
-MoocDiscussion("Questions", "3DTI invariants")
 ```

@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,11 +24,11 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations: Majorana defects
+## Simulations: Majorana defects
 
 As usual, start by grabbing the notebooks of this week (`w7_defects`). They are once again over [here](http://tiny.cc/topocm_smc).
 
-## Quantum spin Hall junction
+### Quantum spin Hall junction
 
 Let us study the spectrum of a Josephson junction on a quantum spin Hall edge in more detail. As in the lecture, we can add a magnet in the middle of the junction, which adds a Zeeman energy term to the Hamiltonian.
 
@@ -23,7 +40,7 @@ Compare your results to the following paper, particularly Fig. 2.
 
 * arXiv:0804.4469
 
-## Majorana in a crystalline defect
+### Majorana in a crystalline defect
 
 Following Taylor Hughes suggestion from the summary of the lecture about crystalline defects, create an edge dislocation carrying a Majorana mode in an array of weakly coupled Kitaev chains.
 
@@ -31,19 +48,13 @@ Then try to split the dislocation into two disclinations. What happens to the Ma
 
 Note that Kwant only supports regular lattices, so crystallographic defects can be implemented by altering some hoppings, as was done in the simulations in the lecture.
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Topological defects")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:0707.1692
 
@@ -66,14 +77,4 @@ MoocDiscussion("Labs", "Topological defects")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Topological defects")
-```
++++

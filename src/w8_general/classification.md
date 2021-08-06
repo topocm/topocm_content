@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# 10 symmetry classes and the periodic table of topological insulators
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -137,24 +154,27 @@ def color_table(table, color_array):
     return "\n".join(defs)
 ```
 
-# Introduction
+## Introduction
 
 Shinsei Ryu from the University of Illinois will introduce the general classification of topological insulators and superconductors.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("cKzUuQyZjFo", src_location="8.1-intro")
 ```
 
-# At a glance: periodic table
+## At a glance: periodic table
 
-
++++
 
 Let us now look at all the possible symmetry classes in dimensions from $0$ to $3$, and see what kind of topological insulators are possible.
 
 There are quite a few, here is the full list:
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 full_table, format_string = make_table(
     show_symmetries=False, sort_order=np.argsort(symmetry_classes)
 )
@@ -170,7 +190,9 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 
 This table has a lot of logic in it, but to you it most likely looks no better than this:
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(1)
 
 full_table, format_string = make_table(
@@ -201,7 +223,7 @@ A $\mathbb{Z}_2$ entry means that there are only two distinct topological phases
 
 Now that we have attached a meaning to each entry in the table, let's try to understand the table as a whole. The first thing to do is to understand why it has ten and only ten rows.
 
-# Symmetry classes
+## Symmetry classes
 
 Each row in the table corresponds to a certain *symmetry class*, that is to a given combination of the presence or absence of three fundamental discrete symmetries.
 
@@ -227,7 +249,7 @@ For instance, you will recall that for the time-reversal operator acting on elec
 
 Thus, a system can behave in three ways under time-reversal symmetry $\mathcal{T}$: (1) it does not have time-reversal symmetry, (2) it has it and $\mathcal{T}$ squares to $+1$, (3) it has it and $\mathcal{T}$ squares to $-1$. The same holds for particle-hole symmetry, which can also have $\mathcal{P}^2=\pm 1$. On the other hand, the chiral symmetry only comes in one flavor, $\mathcal{C}^2=1$.
 
-## Combining symmetries
+### Combining symmetries
 
 How do we arrive to having ten symmetry classes? Let's count all the possible cases carefully. By combining the three cases for $\mathcal{P}$ and the three cases for $\mathcal{T}$ we arrive at nine possible combinations. 
 
@@ -239,7 +261,9 @@ On the other hand, if both $\mathcal{P}$ and $\mathcal{T}$ are absent, then $\ma
 
 Adding all the possibilities, we indeed find 10 symmetry classes:
 
-$$(3\times 3 - 1) + 2 = 8 + 2 = 10\,.$$
+$$
+(3\times 3 - 1) + 2 = 8 + 2 = 10\,.
+$$
 
 The first term in the sum corresponds to the eight cases where there is at least one anti-unitary symmetry: either $\mathcal{P}$, or $\mathcal{T}$, or both. These eight symmetry classes are called *real*, because an anti-unitary symmetry always involves the complex conjugation operator. This does not necessarily mean that the Hamiltonian is a real matrix, but it is a reminder that there is a constraint between its real and imaginary parts.
 
@@ -247,8 +271,9 @@ The second term in the sum covers the two cases when there are no anti-unitary s
 
 Let's have another look at the 10 rows in the table, this time specifying which combination of the three fundamental symmetries each row has:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 np.random.seed(1)
 
 full_table, format_string = make_table(
@@ -268,8 +293,9 @@ The somewhat cryptic notations in the leftmost column are just the names of the 
 Their names come from an elegant mathematical classification of [symmetric spaces](http://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](http://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field. 
 The two complex classes are A and AIII.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "Which symmetry class do we get if we break Kramers degeneracy in class BDI?"
 
 answers = ["D", "AIII", "DIII", "None, class BDI has no Kramers degeneracy"]
@@ -285,14 +311,15 @@ Finally, let us make an extra observation:
 
 > While the particle-hole symmetry appears in any superconductor, it must satisfy $\mathcal{P}^2 = -\mathcal{T}^2$ due to the way the Bogoliubov quasiparticles are related to the original electrons. This makes the symmetry classes BDI, and CII rely on a fine-tuned Hamiltonian, just like the symmetry class AIII.
 
-# What we learned so far
+## What we learned so far
 
 To get some confidence with the table and these obscure names, it is useful to see where the topological systems that we have studied so far fit into the table.
 
 Every red entry in the table below corresponds to something which we already know and studied in the previous weeks of the course, as you can discover by moving the mouse over it.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 tooltips = {
     (1, 6): "Chern insulator: no symmetries, d=2",
     (9, 5): "Majorana wire: spinful particle-hole, d=1",
@@ -336,7 +363,7 @@ HTML(
 
 As you can see, the Majorana wire and the $p$-wave superconductor are in class D, the Chern insulators in class A, and the time-reversal invariant topological insulators in class AII. These names occur quite often in the literature.
 
-# Finding a periodic structure
+## Finding a periodic structure
 
 We have now explained why there are ten rows and the meaning of the symmetry classes, but the table as a whole still does not have a coherent structure. Is there a way that we can connect systems between different symmetry classes and different dimensions?
 
@@ -346,7 +373,7 @@ The basic idea is to add a new momentum $k_{d+1}$ to the Bloch Hamiltonian in su
 
 This procedure is slightly different depending on whether the initial $H_d$ has chiral symmetry or not. In one case the procedure removes symmetries, in the other it adds them. Let's start with the first.
 
-## Removing symmetries
+### Removing symmetries
 
 Let's first suppose that $H_d$ has chiral symmetry $\mathcal{C}$. The Hamiltonian then has $n$ pairs of energy bands symmetric around zero, which we can denote as $\pm \epsilon_{n,d}$, hiding their dependence on the different momenta appearing in $H_d$.
 
@@ -356,7 +383,7 @@ $$
 H_{d+1} = H_d\,\cos k_{d+1} + \mathcal{C} \sin k_{d+1}.
 $$
 
-This Hamiltonian has the same number of bands as $H_d$, even though the bands are higher-dimensional. Given its simple form, every band $\epsilon_{n,d+1}^n$ is directly related to a band $\epsilon_{n,d}$ of $H_d$, 
+This Hamiltonian has the same number of bands as $H_d$, even though the bands are higher-dimensional. Given its simple form, every band $\epsilon_{n,d+1}^n$ is directly related to a band $\epsilon_{n,d}$ of $H_d$,
 
 $$
 \epsilon_{n,d+1} = \pm \sqrt{\epsilon_{n, d}^2\,\cos^2 k_{d+1} + \sin^2 k_{d+1}}.
@@ -372,7 +399,7 @@ If instead $\mathcal{C}$ is not the only discrete symmetry of $H_d$, then $H_d$ 
 
 We won't do that, but state that the result is that by removing chiral symmetry and adding one dimension, one obtains that BDI $\to$ D, DIII $\to$ AII, CII $\to$ C and CI $\to$ AI.
 
-## Adding symmetries
+### Adding symmetries
 
 Let's now start from a Hamiltonian without chiral symmetry. Our procedure this time involves a doubling of the number of bands of $H_d$. That is, we introduce a new set of Pauli matrices $\tau$, not present in $H_d$, and write $H_{d+1}$ as
 
@@ -391,7 +418,7 @@ Now that we have learned how to extend the topological classification by adding 
 
 So we have made the procedure of finding topological phases systematic.
 
-# The Bott clock
+## The Bott clock
 
 If you repeat the procedure many times, you will find that it has a period, i.e. at some point you end up in the same symmetry class you started with.
 
@@ -411,8 +438,9 @@ The grey entries in the table are the chiral classes, and the arrows show which 
 
 Finally, let's see what the table looks like when we order the rows according to the Bott clock above:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 np.random.seed(5)
 n = 8
 
@@ -443,16 +471,17 @@ In fact, we know another way to change the dimensionality while preserving the t
 
 For example, this means that in the SSH chain, which is a $d=1$ dimensional system in symmetry class AIII, the scattering invariant is the same as the Hamiltonian invariant in the $d=0$ symmetry class A, i.e. the number of negative eigenvalues. On the other hand, the scattering invariant of the quantum Hall effect, the winding number of $r$, is the same expression as the Hamiltonian topological invariant of the SSH chain.
 
-# Reading the table in different ways
+## Reading the table in different ways
 
-## Complex classes: Chern and winding numbers
+### Complex classes: Chern and winding numbers
 
 The first thing to observe is that the complex classes only have $\mathbb{Z}$ invariant. We already know what these invariants are in low dimensions: the Chern number, which we encountered in quantum Hall systems (class A, $d=2$), and the winding number of the reflection matrix, which we encountered when we studied reflection from the Thouless pump.
 
 The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](http://arxiv.org/abs/1104.1602).
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 n = 8
 
 periodic_table, format_string = make_table(n=n, show_symmetries=True, sort_order=None)
@@ -468,12 +497,13 @@ block = line_end.join(rows)
 displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
-## Reading the table by columns
+### Reading the table by columns
 
 Another useful feature of the table is that in a given column, all $\mathbb{Z}$ or $2\mathbb{Z}$ entries, which are grouped by the color gradients below, have the same topological invariant.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 np.random.seed(15)
 n = 8
 
@@ -495,12 +525,13 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 
 We can check this statement for some cases we know. For instance, in $d=0$ the $\mathbb{Z}$ topological invariant is the number of filled energy levels, which applies to quantum dots with broken time-reversal symmetry (class A), spinless time-reversal symmetry (class AI) and spinful time-reversal symmetry (class AII, which has $2\mathbb{Z}$ because of Kramers degeneracy). In $d=2$, the $\mathbb{Z}$ topological invariant is the Chern number, and we saw how it applies to both the Chern insulators in class A and the $p$-wave superconductor in class D.
 
-## Dimensional reduction
+### Dimensional reduction
 
 An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionaility twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 np.random.seed(4)
 n = 8
 
@@ -528,8 +559,9 @@ You can now view this cylinder as a one-dimensional system whose ends are the tw
 
 We can proceed further with our dimensional reduction. If we take our one dimensional system and make it into a ring, we obtain a zero-dimensional system. Depending on how the two ends are coupled, the two Majorana modes can favour the even or odd fermion parity state, and this quantity cannot change without a Fermi level crossing. This is the $\mathbb{Z}_2$ invariant of zero-dimensional systems in class D.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
     "like we did when making a 3D TI out of QSHE?"
@@ -552,16 +584,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("nnzPiJ3Q3_8", src_location="8.1-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Periodic table")
 ```

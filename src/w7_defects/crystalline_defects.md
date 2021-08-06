@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Crystalline defects in weak topological insulators
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -11,22 +28,25 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 ```
 
-# Introduction: weak topological phases
+## Introduction: weak topological phases
 
 Taylor Hughes from the University of Illinois at Urbana-Champaign will describe the interplay between defects in crystals and weak topological insulators.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("k3ZKCg7jtTs", src_location="7.2-intro")
 ```
 
 As you can see, there is a simple and universal connection between weak topological phases and the ability of defects to carry topologically protected states. The topological invariant $\mathcal{Q}$ of a dislocation is the number of protected states that it carries. It can be determined from the vector of weak topological invariants, $\mathbf{\mathcal{Q}}_\textrm{weak}$, and the Burgers vector of the dislocation $\mathbf{B}$:
 
-$$\mathcal{Q} = \mathbf{\mathcal{Q}}_\textrm{weak}\cdot\mathbf{B}$$
+$$
+\mathcal{Q} = \mathbf{\mathcal{Q}}_\textrm{weak}\cdot\mathbf{B}
+$$
 
 Let us now go through the main points that lead to this conclusion, and argue for why it has to be that way.
 
-# Crystallographic defects and topology
+## Crystallographic defects and topology
 
 There are many different types of [defects in crystals](http://en.wikipedia.org/wiki/Crystallographic_defect): vacancies, substitutions, grain boundaries, dislocations, and many more.
 
@@ -55,7 +75,7 @@ Unsurprisingly, crystallographic defects that cannot be removed locally are call
 
 This is a non-trivial observation, even though it sounds tautological. There are two different types of topology involved: the topology of the electronic modes and the topology of the crystal.
 
-# The role of defect dimensionality
+## The role of defect dimensionality
 
 When do topological defects carry protected edge states?
 
@@ -73,7 +93,7 @@ First of all, we know that the dimensionality $d_\textrm{egde}$ of a protected s
 
 The topological invariants with dimensionality $d_{edge}+1$ form a vector or a tensor of the weak indices. The last thing we need to figure out is how to extract information about what happens at the defect from the weak indices.
 
-# The defect topological invariant
+## The defect topological invariant
 
 We have almost arrived at the criterion for the appearance of protected states in dislocations.
 
@@ -85,11 +105,13 @@ To see how the weak topological invariant relates to the number of states in the
 
 Counting the number and the orientation of the crystal planes approaching the core of the dislocation is just the Burgers vector. Hence, the number of edge states entering the dislocation core is the Burgers vector times the number of states per crystal plane. This brings us to the conclusion:
 
-$$\mathcal{Q} = \mathbf{\mathcal{Q}}_\textrm{weak}\cdot\mathbf{B}.$$
+$$
+\mathcal{Q} = \mathbf{\mathcal{Q}}_\textrm{weak}\cdot\mathbf{B}.
+$$
 
 Let's now test this idea and see if we can observe the protected dislocation states.
 
-# Electronic states in dislocations
+## Electronic states in dislocations
 
 Now that we know the main concepts, let's apply them to concrete examples. Let's take two models for topological insulators that we already know and apply them to lattice systems with dislocations.
 
@@ -97,8 +119,9 @@ We will create a 3D weak topological insulators by stacking many layers of 2D to
 
 Let's start with a screw dislocation connecting two layers. The system looks like this:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 # Layered BHZ and QAH models
 
 def onsite(site, M, B, D, field):
@@ -213,7 +236,9 @@ The Burgers' vector is parallel to the $z$-axis and has unit length (the disloca
 
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -289,8 +314,9 @@ Here, the fundamental difference between the BHZ model and the quantum anomalous
 
 We can also look at an edge dislocation:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def edge_dislocation(model, L=10, W=15):
     syst = kwant.Builder(
         kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1))
@@ -353,8 +379,9 @@ ax.axis("off");
 
 The Burgers vector is now along the $y$-direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -402,7 +429,9 @@ holoviews.HoloMap({
 }, kdims=["n", "model"]).collate()
 ```
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 question = (
     "What would happen in both simulations above if we changed the dislocation, "
     "making the Burgers vector twice as long?"
@@ -425,16 +454,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("MvcvJiZYSSk", src_location="7.2-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Crystalline defects")
 ```

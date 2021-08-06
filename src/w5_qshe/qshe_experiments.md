@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Experimental progress and candidate materials
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -11,10 +28,11 @@ import warnings
 warnings.simplefilter("ignore", UserWarning)
 ```
 
-# Introduction
+## Introduction
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("-HRBuCgOUvs", src_location="5.2-intro")
 ```
 
@@ -23,7 +41,7 @@ This topic is special, since in order to meaningfully discuss experimental progr
 All the figures showing the experiments are copyright Physical Society of Japan (2008), published in [
 J. Phys. Soc. Jpn. 77, 031007 (2008)](http://journals.jps.jp/doi/abs/10.1143/JPSJ.77.031007) by  Markus König, Hartmut Buhmann, Laurens W. Molenkamp, Taylor Hughes, Chao-Xing Liu, Xiao-Liang Qi, and Shou-Cheng Zhang. They are available under CC-BY-NC-SA 4.0 International license.
 
-# Two limits: Mexican hat and weak pairing
+## Two limits: Mexican hat and weak pairing
 
 We just learned that topological insulators with inversion symmetry were simpler to think about. We will now use the  topological invariant to find a simple recipe for finding topological insulators. All we need to do is somehow vary the parity of the occupied states. One fact of nature that comes to our aid in this is that electrons in semiconductors typically occupy even parity $s$-orbitals and odd parity $p$-orbitals.
 
@@ -33,9 +51,11 @@ Now you might think that all we have to do is go down the periodic table to heav
 
 By carefully choosing the widths, it is possible to invert the odd and even parity bands. We saw from the last unit, that such a band-inversion leads to a topologically non-trivial value of the parity invariant. Right around the topological transition, the even and odd parity bands are degenerate. Thus, we can follow the discussion in the last unit to derive domain wall states at the edges.
 
-We can write down the simplest Hamiltonian for an even and an odd parity band in a basis $|e,\sigma\rangle$ and $|o,\sigma\rangle$ in a block form 
+We can write down the simplest Hamiltonian for an even and an odd parity band in a basis $|e,\sigma\rangle$ and $|o,\sigma\rangle$ in a block form
 
-$$H({\bf k})=\left(\begin{array}{cc}\epsilon_e({\bf k})&\Delta({\bf k})\\\Delta^\dagger({\bf k})&\epsilon_o({\bf k})\end{array}\right),$$
+$$
+H({\bf k})=\left(\begin{array}{cc}\epsilon_e({\bf k})&\Delta({\bf k})\\\Delta^\dagger({\bf k})&\epsilon_o({\bf k})\end{array}\right),
+$$
 
 where $\Delta({\bf k})$ is the $2\times 2$ hybridization matrix. Inversion and time-reversal symmetries imply that $\Delta({\bf k})=-\Delta(-{\bf k})$ is odd under inversion and even under time-reversal.  Here we will focus on one such model, $\Delta({\bf k})=\alpha\sigma_z(k_x+i k_y)$, which we call the Bernevig-Hughes-Zhang model. 
 
@@ -46,8 +66,9 @@ The spectrum of this Hamiltonian is very similar to that of a Chern insulator (a
 
 So below we see a qualitative band structure of one of the QSHE insulators, HgTe/CdTe quantum well, compared with the band structure of InAs/GaSb quantum well.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def onsite(site, mu, B, D, M, ez_y):
     return (
         (M - 4 * B) * pauli.s0sz
@@ -85,7 +106,7 @@ The edge modes in this regime are quite different in structure from those near t
 
 The bulk solutions near $k_x\sim\pm k_F$ can be written as $\psi_\pm(x)=e^{-x/\xi}\psi_\pm(0)$. Matching boundary conditions, we find that a zero energy pair of edge solutions exists in the case of inverted bands. These solutions differ from the ones in the Dirac limit by the presence of the oscillating part of the wave function.
 
-# Quantized conductance and length dependence
+## Quantized conductance and length dependence
 
 Unlike in the case of Majoranas, not much thinking is required to figure out the relevant signature of the quantum spin Hall effect. There is a pair of modes on each edge of the sample that is protected from backscattering. All the other modes are gapped or backscattered, so the edge states are the only ones to carry current. This current will not suffer from backscattering.
 
@@ -95,8 +116,9 @@ When we move the Fermi level outside of the bulk gap, the bulk becomes conductin
 
 We end up with this situation:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def bhz_ribbon(W):
     """Translationally invariant BHZ system with a fixed width W."""
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -192,7 +214,7 @@ Regardless of the exact origin of backscattering, at any finite temperature, the
 
 In principle, this allows us to measure $l_\phi$ for the quantum spin hall edges by looking at the length dependence of the conductance. Indeed, experiments find that small samples have conductance close to $G_0$, while in large samples the conductance is suppressed.
 
-# Landau levels
+## Landau levels
 
 We learned that the key ingredient to obtain an inversion symmetric topological insulator is band inversion - an electron-like band with a positive effective mass and a hole-like band with a negative effective mass are inverted.
 
@@ -220,13 +242,15 @@ Due to this fact, one observes a Hall effect in a certain range of fields, even 
 
 As a further confirmation that this effect is due to band inversion, this behavior was only observed in samples with a thickness above the expected threshold value to obtain a quantum spin Hall phase, and never in samples with a smaller thickness.
 
-# Localization of the edge states by magnetic field
+## Localization of the edge states by magnetic field
 
 Theoretically, the hallmark of the topological insulator is the quantized conductance of the edge states that are protected from elastic backscattering. In the last unit, we learned that the key to this protection is time-reversal symmetry. Therefore, breaking time reversal symmetry by for example applying a magnetic field, should suppress the quantized conductance.
 
 We can think about this more explicitly by considering a simple model for the helical edge states with a magnetic field $\bf B$:
 
-$$H=v_F k_x\sigma_z+{\bf B}\cdot {\bf \sigma},$$
+$$
+H=v_F k_x\sigma_z+{\bf B}\cdot {\bf \sigma},
+$$
 
 where $\bf \sigma$ are Pauli matrices representing the spin degree of freedom at the edge. This is what we get from the BHZ model, which conserves spin. For more general models we would interpret $\bf \sigma$ as a pseudo-spin degree of freedom, which is odd under time-reversal.
 
@@ -234,8 +258,9 @@ If we consider the simple case of a magnetic field ${\bf B}=B {\bf x}$ along the
 
 We can very easily calculate that this is the case if we plot the conductance of the QSHE model as a function of magnetic field:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 E_zs = np.linspace(0, 0.15, 50)
 p["mu"] = 0
 p["M"] = 1
@@ -285,8 +310,9 @@ You might be worried that the suppression of conductance is only shown for the l
 
 Localization of QSHE edge states by magnetic field is relatively poorly understood, and we are not aware of a final experiment that would prove its existence or tell us in details what it is that happens at the QSHE edge in a magnetic field. As you will learn in two weeks, opening the gap by magnetic field opens new pathways for the creation of Majoranas, and so it is still a very important direction of research.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
     "the quantum Hall effect in week 3?"
@@ -310,16 +336,10 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Summary
+## Summary
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("Kop4zXWQ1Zc", src_location="5.2-summary")
-```
-
-**Questions about what you just learned? Ask them below!**
-
-
-```python
-MoocDiscussion("Questions", "QSHE - experiments")
 ```

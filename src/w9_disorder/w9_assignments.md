@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,9 +24,9 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations
+## Simulations
 
-## 1D localization
+### 1D localization
 
 As usual, start by grabbing the notebooks of this week (`w9_disorder`). They are once again over [here](http://tiny.cc/topocm_smc).
 
@@ -31,7 +48,7 @@ Examine the plot for larger $L$, but this time plot $\textrm{ln}(g)$ to verify t
 
 Check what happens when you reduce the disorder? Is there sign of a insulator- metal transition at lower disorder?
 
-## Griffiths phase
+### Griffiths phase
 
 A disordered Kitaev chain has a peculiar property. Close to the transition point it can have infinite density of states even despite it is insulating.
 
@@ -43,18 +60,13 @@ If all goes well, you should observe different behaviors: the density of states 
 
 * arXiv:cond-mat/0011200
 
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Disorder")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:0908.0881
 
@@ -81,14 +93,4 @@ MoocDiscussion("Labs", "Disorder")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "Disorder")
-```
++++

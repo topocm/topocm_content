@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Assignments
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -7,11 +24,11 @@ from init_mooc_nb import *
 init_notebook()
 ```
 
-# Simulations: Gaps and invariants
+## Simulations: Gaps and invariants
 
 As usual, start by grabbing the notebooks of this week (`w8_general`). They are once again over [here](http://tiny.cc/topocm_smc).
 
-## A different analytic continuation
+### A different analytic continuation
 
 You have learned how to map a winding number onto counting the zeros of an eigenproblem in a complex plane. This can be applied to other symmetry classes as well.
 
@@ -27,7 +44,7 @@ In order to test your invariant, you'll need a topologically non-trivial system 
 
 This is a hard task; if you go for it, try it out, but don't hesitate to ask for help in the discussion below.
 
-## Finding gaps
+### Finding gaps
 
 The analytic continuation from $e^{ik}$ to a complex plane is also useful in telling if a system is gapped.
 
@@ -35,19 +52,13 @@ Using the mapping of a 1D Hamiltonian to the eigenvalue problem, implement a fun
 
 Then implement an algorithm which uses this check to find the lowest and the highest energy states for a given 1D Hamiltonian $H = h + t e^{ik} + t^\dagger e^{-ik}$ (with $h$, $t$ arbitrary matrices, of course).
 
-
-```python
-MoocSelfAssessment()
-```
++++
 
 **Now share your results:**
 
++++
 
-```python
-MoocDiscussion("Labs", "Topological invariants")
-```
-
-# Review assignment
+## Review assignment
 
 ### arXiv:1006.0690
 
@@ -70,14 +81,4 @@ MoocDiscussion("Labs", "Topological invariants")
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
 
-
-```python
-MoocSelfAssessment()
-```
-
-**Do you have questions about what you read? Would you like to suggest other papers? Tell us:**
-
-
-```python
-MoocDiscussion("Reviews", "General classification")
-```
++++

@@ -1,4 +1,21 @@
-```python
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+# Majoranas in topological insulators and superconductors
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
 import sys
 
 sys.path.append("../../code")
@@ -8,16 +25,17 @@ import scipy.sparse.linalg as sl
 init_notebook()
 ```
 
-# Introduction
+## Introduction
 
 We have a returning lecturer for the first chapter of this week's lectures: Carlo Beenakker from Leiden University, who will tell us more about different ways to create Majoranas in superconducting vortices.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("YVGlfejNH90", src_location="7.1-intro")
 ```
 
-# Different types of bulk-edge correspondence
+## Different types of bulk-edge correspondence
 
 By now, we have seen examples of how the topological properties of the bulk of a material can give birth to new physical properties at its edges, and how these edge properties cannot exist without a bulk. This is the essence of bulk-edge correspondence. For example, the unpaired Majorana bound states at the edges of a Kitaev chain exist because they are separated by the bulk of the chain.
 
@@ -29,7 +47,7 @@ In this week, we will see that this does not need to be the case.
 
 We will see how this simple insight opens new avenues in the hunt for topological protection.
 
-# Turning the helical edge into a topological superconductor
+## Turning the helical edge into a topological superconductor
 
 In the past weeks, we have studied two systems that appear very different, but where topology showed up in a very similar way.
 
@@ -51,8 +69,9 @@ We will not repeat our pumping experiment, that is increasing the flux $\Phi$ by
 
 From the point of view of the superconducting junction, this means that advancing the phase difference $\phi$ by $2\pi$, the ground state fermion parity of the junction changes. Recalling what we learned in the second and third weeks, we can say that the Josephson effect is $4\pi$-periodic.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
 
 answers = [
@@ -75,7 +94,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-## Majoranas on the quantum spin-Hall edge
+### Majoranas on the quantum spin-Hall edge
 
 We know that the $4\pi$-periodicity of the Josephson effect can always be associated with the presence of Majorana zero modes at the two superconducting interfaces of the Josephson junction.
 
@@ -95,7 +114,9 @@ To understand them in more detail, note that the magnet and the superconductor b
 
 We can capture this behavior with the following Bogoliubov-de Gennes Hamiltonian for the edge:
 
-$$H_\textrm{BdG}=(-iv\sigma_x \partial_x-\mu)\tau_z+m(x)\,\sigma_z+\Delta(x)\,\tau_x.$$
+$$
+H_\textrm{BdG}=(-iv\sigma_x \partial_x-\mu)\tau_z+m(x)\,\sigma_z+\Delta(x)\,\tau_x.
+$$
 
 The first term is the edge Hamiltonian of the quantum spin-Hall effect, describing spin up and down electrons moving in opposite direction, together with a chemical potential $\mu$. The matrix $\tau_z$ acts on the particle-hole degrees of freedom, doubling the normal state Hamiltonian as usual. The second term is the Zeeman term due to the presence of the magnet. Finally, the last term is the superconducting pairing.
 
@@ -103,8 +124,9 @@ The strength of the Zeeman field $m(x)$ and the pairing $\Delta(x)$ both depend 
 
 This is shown below in a numerical simulation of a quantum spin-Hall disk. The left panel shows the edge state of the disk without any superconductor or magnet. In the right panel we cover one half of the disk by a superconductor and the other by a magnet, and obtain two well-separated Majoranas:
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 my = 0.5 * (pauli.sys0 + pauli.sysz)
 s0s0sz = np.kron(pauli.s0s0, pauli.sz)
 s0szsz = np.kron(pauli.s0sz, pauli.sz)
@@ -185,7 +207,7 @@ The density of states plot of the lowest energy state reveals one Majorana mode 
 
 This clearly shows how is it possible to obtain 0D topologically protected states (the Majorana modes) from a $2D$ bulk topological phase (the quantum spin Hall insulator). All we had to do was to add the appropriate ingredients (the superconductor and the magnet).
 
-# Two-dimensional $p$-wave superconductors
+## Two-dimensional $p$-wave superconductors
 
 Let us now move on to Majoranas in vortices, as discussed by Carlo Beenakker in the introductory video. We will need a model for a 2D topological superconductor. How do we obtain it?
 
@@ -193,9 +215,11 @@ It turns out that the method we used to construct 2D Chern insulators in week 4,
 
 That isn't very surprising though, is it? Remember that back then, we told you to forget that the Kitaev model was really a superconductor. Bearing that in mind, it comes as no surprise that stacking 1D superconductors gives us a 2D superconductor.
 
-So let's look back at the Hamiltonian we obtained for a Chern insulator by coupling a stack of Kitaev chains: 
+So let's look back at the Hamiltonian we obtained for a Chern insulator by coupling a stack of Kitaev chains:
 
-$$H_\textrm{2D}(\mathbf{k})=-(2t\cos{k_x}+\mu)\,\tau_z+\Delta\sin{k_x}\tau_y-2\gamma\,(\cos{k_y}\tau_z+\sin{k_y}\,\tau_x).$$ 
+$$
+H_\textrm{2D}(\mathbf{k})=-(2t\cos{k_x}+\mu)\,\tau_z+\Delta\sin{k_x}\tau_y-2\gamma\,(\cos{k_y}\tau_z+\sin{k_y}\,\tau_x).
+$$
 
 Those of us who are careful would want to check that the above Hamiltonian is indeed a superconductor, in particular that the terms coupling different chains do not spoil particle-hole symmetry.
 
@@ -205,24 +229,30 @@ The Hamiltonian above is quite anisotropic - it looks different in the $x$ and $
 
 In this way we arrive at the canonical Hamiltonian of a so-called $p$-wave superconductor:
 
-$$H(k_x,k_y)=-[2t\,(\cos{k_x}+\cos{k_y})+\mu]\,\tau_z+\Delta\,(\sin{k_x}\tau_y-\sin{k_y}\tau_x).$$
+$$
+H(k_x,k_y)=-[2t\,(\cos{k_x}+\cos{k_y})+\mu]\,\tau_z+\Delta\,(\sin{k_x}\tau_y-\sin{k_y}\tau_x).
+$$
 
 Apart from looking more symmetric between the $x$ and $y$ directions, the Hamiltonian clearly separates normal hopping, which is proportional to $t$, and superconducting pairing, which is proportional to $\Delta$. This superconductor is $p$-wave because the pairing is linear in momentum, just like in the Kitaev chain. This can be seen explicitly by expanding $H$ around $\mathbf{k}=\mathbf{0}$, which gives
 
-$$H(k_x,k_y)\approx [t\,(k_x^2+k_y^2)-\mu+4 t]\tau_z+[i \Delta(k_x+i k_y)\tau_++\textrm{h.c.}],$$
+$$
+H(k_x,k_y)\approx [t\,(k_x^2+k_y^2)-\mu+4 t]\tau_z+[i \Delta(k_x+i k_y)\tau_++\textrm{h.c.}],
+$$
 
 where $\tau_+=(\tau_x+i\tau_y)/2$. Note that the pairing is proportional to $k_x+ik_y$, and it breaks both time-reversal and inversion symmetries.
 
 Even though we have reinterpreted the Hamiltonian $H$ as a superconductor, it is still originally a Chern insulator. This means that the system is still characterized by a bulk Chern number, which determines the presence of chiral edge states.
 A chiral edge state can be described by a simple effective Hamiltonian, equivalent to that of a quantum Hall edge:
 
-$$H_\textrm{edge}=\hbar v k$$
+$$
+H_\textrm{edge}=\hbar v k
+$$
 
 with $v$ the velocity and $k$ the momentum along the edge. Note that the edge Hamiltonian maintains the particle-hole symmetry of the bulk: for every state with energy $E$ and momentum $k$ there is a state with energy $-E$ and momentum $-k$.
 
 We are now ready to see how unpaired Majoranas can appear in a 2D $p$-wave superconductor.
 
-# Vortices in 2D p-wave superconductors
+## Vortices in 2D p-wave superconductors
 
 So far we have considered a uniform superconducting pairing $\Delta$, with constant amplitude and phase. This is an idealized situation, which corresponds to a perfect superconductor with no defects.
 
@@ -257,8 +287,9 @@ To answer this question, observe that the energy spectrum $E_n = 2 \pi\,n\,\hbar
 
 Below, we plot the wave function of the lowest energy state in a $p$-wave disk with a vortex in the middle. The lowest energy wavefunction is an equal superposition of the two Majorana modes. Here you can see that half of it is localized close to the vortex core and half of it close to the edge.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 def onsite(site1, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -308,8 +339,9 @@ ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 question = (
     "What happens if you add a second vortex to the superconductor? "
     "Imagine that the vortices and edge are all very far away from each other"
@@ -333,7 +365,7 @@ MoocMultipleChoiceAssessment(
 )
 ```
 
-# Vortices in 3D topological insulator
+## Vortices in 3D topological insulator
 
 Unfortunately, superconductors with $p$-wave pairing are very rare, with mainly [one material](http://en.wikipedia.org/wiki/Strontium_ruthenate) being a good candidate. But instead waiting for nature to help us, we can try to be ingenious.
 
@@ -343,7 +375,9 @@ We already know how to make Majoranas with a 2D topological insulator. Let us no
 
 The Hamiltonian of the surface is a very simple extension of the edge Hamiltonian,  $\sigma_x k_x + \sigma_y k_y$ instead of just $\sigma_x k_x$. We can imagine that $k_y$ is the momentum along the interface between the magnet and the superconductor, and it is conserved. The effective Bogoliubov-de Gennes Hamiltonian is
 
-$$H_\textrm{BdG}=(-i\sigma_x \partial_x+ \sigma_y k_y-\mu)\tau_z+m(x)\,\sigma_z+\Delta(x) \tau_x.$$
+$$
+H_\textrm{BdG}=(-i\sigma_x \partial_x+ \sigma_y k_y-\mu)\tau_z+m(x)\,\sigma_z+\Delta(x) \tau_x.
+$$
 
 What is the dispersion $E(k_y)$ of states along the interface resulting from this Hamiltonian? Well, for $k_y=0$ we have exactly the Hamiltonian of the magnet/superconductor interface in the quantum spin-Hall case, which had a zero mode. So we know that the interface is gapless. The magnet breaks time-reversal symmetry, so we will have a chiral edge state, with energy $E$ proportional to $k_y$. Just like in the $p$-wave superconductor case!
 
@@ -359,8 +393,9 @@ In fact, the magnet was only a crutch that we used to make our argument. We can 
 
 To confirm this conclusion, below we show the result of a simulation of a 3D BHZ model in a cube geometry, with a vortex line passing through the middle of the cube. To make things simple, we have added superconductivity everywhere in the cube, and not just on the surface (nothing prevents us from doing this, even though in real life materials like Bi$_2$Te$_3$ are not naturally superconducting).
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 import matplotlib.cm
 import matplotlib.colors as mcolors
 
@@ -371,7 +406,9 @@ gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
 )
 ```
 
-```python
+```{code-cell} ipython3
+:tags: [remove-input]
+
 lat = kwant.lattice.cubic(norbs=8)
 
 
@@ -454,16 +491,10 @@ plt.show()
 
 In the right panel, you can see a plot of the wavefunction of the lowest energy state. You see that it is very well localized at the end points of the vortex line passing through the cube. These are precisely the two Majorana modes that Carlo Beenakker explained at the end of his introductory video.
 
-# Conclusions
+## Conclusions
 
+```{code-cell} ipython3
+:tags: [remove-input]
 
-```python
 MoocVideo("B7lMz-NrKec", src_location="7.1-summary")
-```
-
-Questions about what you just learned? Ask them below!
-
-
-```python
-MoocDiscussion("Questions", "Majoranas in topological insulators")
 ```
