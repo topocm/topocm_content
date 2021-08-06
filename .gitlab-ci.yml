@@ -7,17 +7,17 @@ stages:
 execute_ipynbs:
   stage: build
   script:
-    - jupyter-book build src
+    - jupyter-book build .
     # Workaround of https://github.com/executablebooks/MyST-NB/issues/287
-    - cp src/_static/mystnb.css src/_build/html/_static/
+    - cp _static/mystnb.css _build/html/_static/
   artifacts:
     paths:
-      - src/_build/html
+      - _build/html
     expire_in: 7d
   cache:
     - key: global
       paths:
-        - src/_build/
+        - _build/
 
 
 mirror to github:
@@ -46,7 +46,7 @@ mirror to github:
     - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
     - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
   script:
-    - "rsync -ravz src/_build/html/* $USER@tnw-tn1.tudelft.net:"
+    - "rsync -ravz _build/html/* $USER@tnw-tn1.tudelft.net:"
   after_script:
     - rm -rf ~/.ssh
 

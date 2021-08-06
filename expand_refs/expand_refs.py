@@ -1,6 +1,7 @@
 import os
 import re
 from pathlib import Path
+from functools import cache
 
 from jinja2 import Template
 
@@ -24,13 +25,6 @@ INLINE_TEMPLATE = Template(
 )
 
 
-def expand_syllabus(toc, template, out):
-    """Plug the TOC data into a syllabus template."""
-    Path(out).write_text(
-        Template(Path(template).read_text()).render(chapters=YAML().load(Path(toc)))
-    )
-
-
 def update_bibliography(bibliography, source_path):
     """Find all arxiv references and update bibliography from them."""
     prerpints = sum(
@@ -52,9 +46,14 @@ def update_bibliography(bibliography, source_path):
     )
 
 
-def expand_refs(bibliography, source_path):
+@cache
+def read_refs(bibliography):
     refs = YAML().load(Path(bibliography))
-    refs = {ref["id"]: ref for ref in refs}
+    return {ref["id"]: ref for ref in refs}
+
+
+def replace_refs(app, docname, source):
+    refs = read_refs("bibliography.yml")
 
     def replace(match):
         if match.group(1) == "### ":
@@ -65,22 +64,14 @@ def expand_refs(bibliography, source_path):
             template = INLINE_TEMPLATE
         return match.group(1) + template.render(preprint=refs[match.group(2)])
 
-    for document in Path(source_path).glob("**/*.md"):
-        modified = re.sub(
-            r"(### |\* |[^#*] )" + PREPRINT_REGEX, replace, document.read_text()
-        )
-        document.write_text(modified)
+    source[0] = re.sub(r"(### |\* |[^#*] )" + PREPRINT_REGEX, replace, source[0])
 
 
-def main():
-    course_materials = Path(os.environ["MARKDOWN"])
-    toc = "toc.yml"
-    template = course_materials / "syllabus.md.j2"
-    out = course_materials / "syllabus.md"
-    expand_syllabus(toc, template, out)
-    update_bibliography("bibliography.yml", course_materials)
-    expand_refs("bibliography.yml", course_materials)
+def setup(app):
+    app.connect("source-read", replace_refs)
 
-
-if __name__ == "__main__":
-    main()
+    return {
+        'version': '0.0.1',
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+    }
