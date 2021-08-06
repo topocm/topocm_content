@@ -26,7 +26,7 @@ init_notebook()
 
 # Set the path to a folder containing data files, to work with filters as well.
 data_folder = (
-    "data/" if os.path.exists("data") and os.path.isdir("data") else "../../data/"
+    "data/" if os.path.exists("data") and os.path.isdir("data") else "../data/"
 )
 ```
 
