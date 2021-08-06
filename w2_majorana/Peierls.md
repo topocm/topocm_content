@@ -11,15 +11,13 @@ kernelspec:
   name: python3
 ---
 
-# TODO FIX ME
+# Tight-binding models in a magnetic field: Peierls substitution
 
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
 # This first cell will be removed by the converter.
 ```
-
-## Tight-binding models in a magnetic field: Peierls substitution
 
 To understand how the vector potential enters a tight-binding model by the so-called Peierls substitution, let us remind ourselves that the gauge-invariance of the Schrodinger equation requires us to transform the wave-function amplitude or equivalently the creation operator of an electron at a site as
 

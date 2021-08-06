@@ -11,11 +11,7 @@ kernelspec:
   name: python3
 ---
 
-# TODO FIX ME
-
-+++
-
-## Additional notes on computing Chern number
+# Additional notes on computing Chern number
 
 Computing the Chern number from the Berry connection  $\bf{a}(\bf {k})=i\langle u(\bf{k})|\bf{\nabla}(|u(\bf{k})\rangle)$ is annoying because one needs to find a gauge where the Bloch wave-functions $u_n({\bf k})$ are continuous.
 
