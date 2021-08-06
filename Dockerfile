@@ -54,9 +54,9 @@ RUN cd /tmp && \
     conda install mamba -n base -c conda-forge
 
 # Add environment file
-COPY python3.yaml .
+COPY environment.yml .
 
-RUN mamba env update -n base -f python3.yaml && mamba clean --all
+RUN mamba env update -n base -f environment.yml && mamba clean --all
 
 # setting openblas and mkl variables
 ENV OPENBLAS_NUM_THREADS=1\
