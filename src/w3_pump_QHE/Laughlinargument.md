@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size = 150
@@ -35,7 +35,7 @@ College of Management - Academic Studies for their help in preparing the videos.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("QC3tQT7MD00", src_location="3.2-intro", res="360")
+Video("QC3tQT7MD00")
 ```
 
 ## The Hall effect
@@ -130,7 +130,7 @@ answers = [
     "Zero since current is perpendicular to electric field.",
 ]
 explanation = "As we saw the velocity is related to the cross-product of the electric and magnetic field."
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -452,7 +452,7 @@ explanation = (
     "The key ingredient in the Laughlin argument was that there is no states at the fermi level in "
     "the bulk which is equivalent to no longitudinal conductivity"
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -582,7 +582,7 @@ question = (
 )
 answers = ["$2.\,$", "$2 W/L\,.$", "$2 B WL / \Phi_0\, $.", "$ B L^2/\Phi_0\,$."]
 explanation = "Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$."
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -592,5 +592,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("2u8_2isyi7o", src_location="3.2-summary", res="360")
+Video("2u8_2isyi7o")
 ```

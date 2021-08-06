@@ -1,5 +1,7 @@
 title: 'Topology in condensed matter: tying quantum knots'
 author: Topology course team
+copyright: ""
+extra_footer: "© 2021, TU Delft, CC-BY-SA 4.0 & MIT"
 execute:
   execute_notebooks: cache
   timeout: -1
@@ -16,3 +18,7 @@ sphinx:
       - crossorigin: anonymous
     - - https://unpkg.com/@holoviz/panel@0.10.2/dist/panel.min.js
       - crossorigin: anonymous
+    # Workaround of https://github.com/executablebooks/MyST-NB/issues/287
+    html_style: mystnb.css
+launch_buttons:
+  binderhub_url: ""  # Turn off binder for now

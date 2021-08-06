@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 from holoviews.core.options import Cycle
@@ -35,7 +35,7 @@ Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("gKZK9IGY9wo", src_location="3.1-intro", res="360")
+Video("gKZK9IGY9wo")
 ```
 
 ## Hamiltonians with parameters
@@ -213,7 +213,7 @@ explanation = (
     "when the wave functions from neighboring minima overlap."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -468,7 +468,7 @@ explanation = (
     "for most of the cycle unless a sharp resonance appears"
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -478,5 +478,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("6lXRAZ7hv7E", src_location="3.1-summary", res="360")
+Video("6lXRAZ7hv7E")
 ```

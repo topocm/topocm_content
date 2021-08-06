@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size = 150
@@ -33,7 +33,7 @@ warnings.simplefilter("ignore", UserWarning)
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("-HRBuCgOUvs", src_location="5.2-intro")
+Video("-HRBuCgOUvs")
 ```
 
 This topic is special, since in order to meaningfully discuss experimental progress we need to do something we didn't do before in the course: we will show you the measurements and compare them with the *simple* theoretical expectations. Like this we will see what agrees and what doesn't.
@@ -331,7 +331,7 @@ explanation = (
     "required for the protection of edge states in the quantum spin Hall effect. "
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -341,5 +341,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("Kop4zXWQ1Zc", src_location="5.2-summary")
+Video("Kop4zXWQ1Zc")
 ```

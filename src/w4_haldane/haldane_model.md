@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 import scipy
@@ -35,7 +35,7 @@ Duncan Haldane from Princeton University will teach us about an interesting two 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("7nVO4uMm-do", src_location="4.2-intro")
+Video("7nVO4uMm-do")
 ```
 
 We will now study the model in detail, starting from the beginning.  Along the way, we will also learn about the Chern number, the bulk topological invariant of a quantum Hall state.
@@ -265,7 +265,7 @@ answers = [
 
 explanation = "Topological robustness is still present, so the number of edge states cannot change unless the gap closes."
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -495,7 +495,7 @@ answers = [
     "at one momentum becomes opposite to the Berry curvature at opposite momentum.",
 ]
 
-MoocMultipleChoiceAssessment(question=question, answers=answers, correct_answer=3)
+MultipleChoice(question=question, answers=answers, correct_answer=3)
 ```
 
 You can see that the Berry curvature is really located around the Dirac points. Around $t_2=0$, the two Dirac points give canceling contributions. After a gap closing however, the contribution of one of the two Dirac points changes sign, so that the two add to $\pm 1$ instead of canceling each other.
@@ -554,5 +554,5 @@ You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that wh
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("0gxE68kvdmw", src_location="4.2-summary")
+Video("0gxE68kvdmw")
 ```

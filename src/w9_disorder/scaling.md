@@ -20,7 +20,7 @@ import sys
 import os
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -37,7 +37,7 @@ Anderson localization is introduced by Piet Brouwer from the Free University of 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("sbbyL0RDH-o", src_location="9.1-intro")
+Video("sbbyL0RDH-o")
 ```
 
 ## Motivation
@@ -128,7 +128,7 @@ answers = [
 
 explanation = "The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same."
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=0, explanation=explanation
 )
 ```
@@ -239,7 +239,7 @@ explanation = (
     "This is an attractive critical point."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -257,5 +257,5 @@ It turns out, the scaling flow on the surface of a topological insulator is modi
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("JdDeBJEBO0s", src_location="9.1-summary")
+Video("JdDeBJEBO0s")
 ```

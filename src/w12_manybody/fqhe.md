@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 ```
@@ -31,7 +31,7 @@ This topic is introduced by Sankar Das Sarma from the university of Maryland.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("4gSJSo3olfg", src_location="12.1-intro")
+Video("4gSJSo3olfg")
 ```
 
 ## Interacting systems
@@ -90,7 +90,7 @@ explanation = (
     "only be an integer multiple of an electronic charge."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -172,7 +172,7 @@ explanation = (
     " The incompressible liquid is true for either integer or fractional quantum Hall."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -194,5 +194,5 @@ We can however explain the result. If one stacks the two FQH states one obtains 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("zrL-qxjKfGw", src_location="12.1-summary")
+Video("zrL-qxjKfGw")
 ```

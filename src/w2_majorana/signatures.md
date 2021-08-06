@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -37,7 +37,7 @@ Our second guest lecturer for this week is Carlo Beenakker, from Leiden Universi
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("WAhNblNbadA", src_location="2.2-intro")
+Video("WAhNblNbadA")
 ```
 
 ## Andreev reflection
@@ -307,7 +307,7 @@ explanation = (
     "A superconductor is also gapped with respect to excitations, but is different than a normal insulator. "
     "It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -491,7 +491,7 @@ explanation = (
     "Hence the lowest between the red and black energy levels is always occupied, and both energy and current "
     "turn out to have a period $\Phi_0$."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -501,5 +501,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("sSacO5RpW5A", src_location="2.2-summary")
+Video("sSacO5RpW5A")
 ```

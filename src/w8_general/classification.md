@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -161,7 +161,7 @@ Shinsei Ryu from the University of Illinois will introduce the general classific
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("cKzUuQyZjFo", src_location="8.1-intro")
+Video("cKzUuQyZjFo")
 ```
 
 ## At a glance: periodic table
@@ -302,7 +302,7 @@ answers = ["D", "AIII", "DIII", "None, class BDI has no Kramers degeneracy"]
 
 explanation = "Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI."
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -579,7 +579,7 @@ explanation = (
     "and it should be the second Chern number."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -589,5 +589,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("nnzPiJ3Q3_8", src_location="8.1-summary")
+Video("nnzPiJ3Q3_8")
 ```

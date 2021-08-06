@@ -18,13 +18,13 @@ from IPython import display
 from IPython.display import display_html
 from matplotlib import pyplot as plt
 
-import edx_components
+import components
 import functions
 from pfapack import pfaffian as pf
-from edx_components import *
+from components import *
 from functions import *
 
-init_mooc_nb = [
+init_course = [
     "np",
     "matplotlib",
     "kwant",
@@ -38,7 +38,7 @@ init_mooc_nb = [
     "display_html",
 ]
 
-__all__ = init_mooc_nb + edx_components.__all__ + functions.__all__
+__all__ = init_course + components.__all__ + functions.__all__
 
 
 # Adjust printing of matrices, and numpy printing of numbers.
@@ -75,9 +75,9 @@ def pretty_fmt_complex(num, digits=2):
 def print_information():
     print(
         "Populated the namespace with:\n"
-        + ", ".join(init_mooc_nb)
-        + "\nfrom code/edx_components:\n"
-        + ", ".join(edx_components.__all__)
+        + ", ".join(init_course)
+        + "\nfrom code/components:\n"
+        + ", ".join(components.__all__)
         + "\nfrom code/functions:\n"
         + ", ".join(functions.__all__)
     )

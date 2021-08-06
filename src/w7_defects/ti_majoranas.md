@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 import scipy.sparse.linalg as sl
 
 init_notebook()
@@ -32,7 +32,7 @@ We have a returning lecturer for the first chapter of this week's lectures: Carl
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("YVGlfejNH90", src_location="7.1-intro")
+Video("YVGlfejNH90")
 ```
 
 ## Different types of bulk-edge correspondence
@@ -89,7 +89,7 @@ explanation = (
     "and Kramers theorem doesn't apply anymore."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -360,7 +360,7 @@ explanation = (
     "And so, of course, the second vortex must have a Majorana as well."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -496,5 +496,5 @@ In the right panel, you can see a plot of the wavefunction of the lowest energy 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("B7lMz-NrKec", src_location="7.1-summary")
+Video("B7lMz-NrKec")
 ```

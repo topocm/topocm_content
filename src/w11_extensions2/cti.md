@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size=150
@@ -32,7 +32,7 @@ Crystalline topological insulators are introduced by Liang Fu from MIT.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("N9-tUYjXC1s", src_location="11.2-intro")
+Video("N9-tUYjXC1s")
 ```
 
 ## The role of crystalline symmetries
@@ -63,7 +63,7 @@ answers = [
 
 explanation = "Any surface would break inversion symmetry of a crystal."
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=0, explanation=explanation
 )
 ```
@@ -109,7 +109,7 @@ explanation = (
     "which is not broken by the presence of a surface parallel to the stacking direction."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```

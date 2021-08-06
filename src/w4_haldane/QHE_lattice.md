@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size=150
@@ -35,7 +35,7 @@ Xiaoliang Qi from Stanford University will now explain that this is not the case
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("osKP6x0Ewbo", src_location="4.1-intro")
+Video("osKP6x0Ewbo")
 ```
 
 ## Pairs of chiral edges in a 1D wire
@@ -105,7 +105,7 @@ explanation = (
     "On the other hand, chiral edge states are a topological property of the quantum Hall state. "
     "They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -229,7 +229,7 @@ answers = [
     "lattice the filling fraction per unit cell is arbitrary.",
 ]
 explanation = "In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition."
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -270,5 +270,5 @@ so it has a velocity $v=2\gamma$, the direction of which depends on the sign of 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("CXgAcOOVlag", src_location="4.1-summary")
+Video("CXgAcOOVlag")
 ```

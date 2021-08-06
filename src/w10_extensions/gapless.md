@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 from matplotlib import cm
@@ -35,7 +35,7 @@ Ashvin Vishwanath from the University of California, Berkeley will introduce Wey
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("MAWwa4r1qIc", src_location="10.1-intro")
+Video("MAWwa4r1qIc")
 ```
 
 ## Topological invariants of Fermi surfaces
@@ -216,7 +216,7 @@ explanation = (
     r"in the Brillouin zone. The intersection of these two surfaces is a line."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -410,7 +410,7 @@ explanation = (
     "Therefore, only momentum conservation protects surface states from going into the bulk."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```

@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -37,7 +37,7 @@ Fabian Hassler from RWTH Aachen will present the topological invariants
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("ceyus0cRBi0", src_location="8.2-intro")
+Video("ceyus0cRBi0")
 ```
 
 ## Applications of topological invariants
@@ -413,5 +413,5 @@ holoviews.HoloMap(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("9qCSXEfSlqE", src_location="8.2-summary")
+Video("9qCSXEfSlqE")
 ```

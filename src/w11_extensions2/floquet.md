@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -42,7 +42,7 @@ Today's topic, Floquet topological insulators, is introduced by Mark Rudner from
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("1peVp_IZ7Ts", src_location="11.1-intro")
+Video("1peVp_IZ7Ts")
 ```
 
 ## Periodically driven systems
@@ -136,7 +136,7 @@ explanation = (
     "to the Floquet evolution operator, and so it keeps the quasienergies the same."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -426,7 +426,7 @@ explanation = (
     "so it will reverse the direction of the chiral edge modes"
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -444,5 +444,5 @@ What do we need to know to derive the full topological invariant from the bulk p
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("DbyqIczcR9c", src_location="11.1-summary")
+Video("DbyqIczcR9c")
 ```

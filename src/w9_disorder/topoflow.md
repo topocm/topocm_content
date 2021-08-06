@@ -20,7 +20,7 @@ import sys
 import os
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 from matplotlib.collections import LineCollection
@@ -40,7 +40,7 @@ The scaling flow of topological insulators is introduced by Alexander Altland fr
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("8gkERY6hXTU", src_location="9.2-intro")
+Video("8gkERY6hXTU")
 ```
 
 ## A toy model for two-parameter scaling: the disordered Kitaev chain
@@ -195,7 +195,7 @@ explanation = (
     "realizations."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -304,7 +304,7 @@ explanation = (
     "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
     "except near $Q=0$ has a slower decay."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -380,5 +380,5 @@ An extra attractive metallic fixed point can make the flow diagram more complica
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("NY6wPiH0E9E", src_location="9.2-summary")
+Video("NY6wPiH0E9E")
 ```

@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 
@@ -42,7 +42,7 @@ This is an expertise that no one from the course team has, so pay close attentio
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("62ZObitJ4DM", src_location="6.2-intro")
+Video("62ZObitJ4DM")
 ```
 
 In the rest of the lecture, we will instead discuss the experimental signatures of 3D topological insulators, similarly to what we did in the previous week for their 2D counterparts.
@@ -193,7 +193,7 @@ explanation = (
     " $0^{th}$ plateau to begin with so cannot eliminate it. "
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -233,7 +233,7 @@ explanation = (
     "surface states from bulk states, which are in different energy ranges. "
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -372,5 +372,5 @@ David Vanderbilt will conclude this week's lectures by offering a perspective on
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("WZmNeEwM1N4", src_location="6.2-summary")
+Video("WZmNeEwM1N4")
 ```

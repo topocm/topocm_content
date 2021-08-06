@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 import topomech
@@ -34,7 +34,7 @@ The main concepts and mathematical ideas will be presented in the context of rea
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("i-eNPei2zMg", src_location="10.2-intro")
+Video("i-eNPei2zMg")
 ```
 
 The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under a
@@ -118,7 +118,7 @@ explanation = (
     r"This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -151,13 +151,13 @@ show the motion in the linkage limit.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("BE4NDhfdpBQ", src_location="10.2-topological-linkages-I")
+Video("BE4NDhfdpBQ")
 ```
 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("mRjpzC4rJx0", src_location="10.2-topological-linkages-II")
+Video("mRjpzC4rJx0")
 ```
 
 If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper:
@@ -169,7 +169,7 @@ Note that with different geometrical parameters, the same chain above can realiz
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("w2k1Y0WON2E", src_location="10.2-topological-linkages-III")
+Video("w2k1Y0WON2E")
 ```
 
 The same reference above contains hints on how to build this structure with LEGO - plus of course all the mathematical details!
@@ -221,7 +221,7 @@ explanation = (
     "This gives the equation $d N = z N /2$, because each bond is shared by two sites."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -281,7 +281,7 @@ Watch now the following video that explains visually how to insert inside a twis
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("Mrm7JH6LJJI", src_location="10.2-dislocations")
+Video("Mrm7JH6LJJI")
 ```
 
 The key point in designing the lattice in the video  is that the dislocations must not change the local balance between degrees of freedom and constraints. The video shows such a dislocation, obtained by pairing a five-coordinated plaquette with a seven-coordinated plaquette.
@@ -326,7 +326,7 @@ explanation = (
     r"The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -394,7 +394,7 @@ You may get the impression that only the zero modes are potentially useful and t
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("RbJTxKFqO7I", src_location="10.2-buckling")
+Video("RbJTxKFqO7I")
 ```
 
 As you can see, by controlling the position of states of self stress, you can pre-select the region of a material that will fail, for example by buckling. All you have to do is to activate the self stress by pushing on the structure in the same way as you had to activate the zero modes to set them in motion.
@@ -414,5 +414,5 @@ As a result these states are designed to be topologically robust under smooth de
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("j0X0sVy_6Og", src_location="10.2-summary")
+Video("j0X0sVy_6Og")
 ```

@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size = 150
@@ -34,7 +34,7 @@ Charles Kane from the University of Pennsylvania will introduce today's lecture 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("n5oUQvvsYd0", src_location="5.1-intro", res="360")
+Video("n5oUQvvsYd0")
 ```
 
 ## Adding symmetry to a topological insulator
@@ -248,7 +248,7 @@ explanation = (
     "Hence, similar to the Hall effect, a voltage will develop orthogonal to the current."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -592,7 +592,7 @@ explanation = (
     "$Q=1$."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -602,5 +602,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("ft9ppqqLhH4", src_location="5.1-summary", res="360")
+Video("ft9ppqqLhH4")
 ```

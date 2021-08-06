@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 ```
@@ -31,7 +31,7 @@ The topological order is introduced by Barbara Terhal from RWTH Aachen.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("rLdHCKxMumY", src_location="12.2-intro")
+Video("rLdHCKxMumY")
 ```
 
 ## Simplest model for topological degeneracy: Toric code
@@ -87,7 +87,7 @@ explanation = (
     "factor of $2 \\times 2=4$."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```

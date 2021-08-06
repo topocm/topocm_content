@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 ```
@@ -31,7 +31,7 @@ Joel Moore from the University of California, Berkeley will introduce this week'
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("NIhMjm7cyug", src_location="6.1-intro")
+Video("NIhMjm7cyug")
 ```
 
 ## Making  3D topological invariants out of 2D ones
@@ -333,7 +333,7 @@ explanation = (
     "The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -394,7 +394,7 @@ explanation = (
     "Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -406,5 +406,5 @@ Before we move on to the next lecture, Joel Moore will tell us more about the or
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("s7H6oLighOM", src_location="6.1-summary")
+Video("s7H6oLighOM")
 ```

@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 ```
@@ -29,7 +29,7 @@ init_notebook()
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("Ndf2Z84g1R0", src_location="2.3-intro")
+Video("Ndf2Z84g1R0")
 ```
 
 ## Majorana zero modes in nanowire networks
@@ -154,7 +154,7 @@ explanation = (
     "out of which half have even total parity and half have odd total parity. "
     "So the degeneracy at fixed even parity is 2^6."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -278,7 +278,7 @@ explanation = (
     "but the two states can pick up a different phase. "
     "This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -306,5 +306,5 @@ These are the basic ideas of **topological quantum computation**. It is incredib
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("V3e9r4S8GHs", src_location="2.3-summary")
+Video("V3e9r4S8GHs")
 ```

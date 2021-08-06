@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size=150
@@ -254,7 +254,7 @@ explanation = (
     "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
     "is stronger there."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=2, explanation=explanation
 )
 ```
@@ -399,7 +399,7 @@ explanation = (
     "Hence there are three filled Landau levels in the bulk, "
     "so the Fermi level lies somewhere above the third, but below the fourth Landau level."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -413,5 +413,5 @@ In the summary video of this week, Bert Halperin from Harvard University will di
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("rQs12c-SieE", src_location="3.3-summary")
+Video("rQs12c-SieE")
 ```

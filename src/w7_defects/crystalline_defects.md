@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 import itertools
@@ -35,7 +35,7 @@ Taylor Hughes from the University of Illinois at Urbana-Champaign will describe 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("k3ZKCg7jtTs", src_location="7.2-intro")
+Video("k3ZKCg7jtTs")
 ```
 
 As you can see, there is a simple and universal connection between weak topological phases and the ability of defects to carry topologically protected states. The topological invariant $\mathcal{Q}$ of a dislocation is the number of protected states that it carries. It can be determined from the vector of weak topological invariants, $\mathbf{\mathcal{Q}}_\textrm{weak}$, and the Burgers vector of the dislocation $\mathbf{B}$:
@@ -449,7 +449,7 @@ explanation = (
     r"and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
 )
 
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question=question, answers=answers, correct_answer=3, explanation=explanation
 )
 ```
@@ -459,5 +459,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("MvcvJiZYSSk", src_location="7.2-summary")
+Video("MvcvJiZYSSk")
 ```

@@ -19,7 +19,7 @@ kernelspec:
 import sys
 
 sys.path.append("../../code")
-from init_mooc_nb import *
+from init_course import *
 
 init_notebook()
 %output size=110
@@ -43,7 +43,7 @@ We have a special guest to begin this week's lecture, Yuval Oreg from the Weizma
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("GQLfs4i22ms", src_location="2.1-intro")
+Video("GQLfs4i22ms")
 ```
 
 ## Small parameters
@@ -434,7 +434,7 @@ explanation = (
     + "So we are back to the problem that a gap at finite momentum does not open, "
     + "and we do not get a topological phase supporting Majoranas."
 )
-MoocMultipleChoiceAssessment(
+MultipleChoice(
     question, answers, correct_answer=1, explanation=explanation
 )
 ```
@@ -444,5 +444,5 @@ MoocMultipleChoiceAssessment(
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-MoocVideo("MsFyJBAMFLI", src_location="2.1-summary")
+Video("MsFyJBAMFLI")
 ```
