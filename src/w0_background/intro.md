@@ -30,11 +30,11 @@ Finally, we also want this course to be equally useful if you are, say, a **prof
 
 But even despite your different backgrounds, we want our course to feel like this:
 
-<img src="figures/magnetic_discussion_bruno_touschek.png" alt="Discussion" style="width: 70%;"/>
+![Discussion](figures/magnetic_discussion_bruno_touschek.png)
 
 rather than this:
 
-<img src="figures/bored_audience_bruno_touschek.png" alt="Bored audience" style="width: 70%;"/>
+![Bored audience](figures/bored_audience_bruno_touschek.png)
 
 *(Images by Bruno Touschek, © 1981 [CERN](http://cds.cern.ch/record/135949) CC-BY-3.0)*
 

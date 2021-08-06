@@ -323,7 +323,7 @@ This may sound a bit abstract and confusing: where are these points located? We 
 
 The situation is explained by the following sketch, which also gives a bird's-eye view of the phase diagram of the Haldane model as a function of the ratio $t_2/M$:
 
-<img src="figures/phasediagram.svg" alt="Phase diagram" style="width: 70%"/>
+![Phase diagram](figures/phasediagram.svg)
 
 What you see in the sketch above is a schematic illustration of the energy spectrum close to the Dirac points in the Brillouin zone, for some representative values of $t_2/M$ (for simplicity we drew the Brillouin zone as a square and not a hexagon, but that's not essential). The two massless Dirac cones appearing for $t_2=\pm M/(3\sqrt{3})$ are the sources of the Berry curvature, which then “spreads“ along the vertical axis, passing through the Brillouin zones of the gapped phases.
 

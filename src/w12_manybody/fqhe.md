@@ -118,7 +118,7 @@ This amounts to the transformation of the many-body wave function $\Psi_{CF}(z_1
 
 Pictorially the composite fermion transformation is represented as:
 
-<img src="figures/composite.svg" width="800"></img>
+![](figures/composite.svg)
 
 The next step in the composite fermion approach to the FQH state is to say that all the correlation effects of the Coulomb interaction are taken care of by the flux attachment. Beyond this, the composite fermions are weakly interacting particles. If we believe in this picture, then the only non-interacting incompressible states that we can get are integer quantum Hall states. This means that the FQH states are integer quantum Hall states of the composite fermions.
 
