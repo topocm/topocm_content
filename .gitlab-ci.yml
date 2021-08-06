@@ -8,6 +8,8 @@ execute_ipynbs:
   stage: build
   script:
     - jupyter-book build src
+    # Workaround of https://github.com/executablebooks/MyST-NB/issues/287
+    - cp src/_static/mystnb.css src/_build/html/_static/
   artifacts:
     paths:
       - src/_build/html
