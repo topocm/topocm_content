@@ -48,11 +48,12 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.2-Linux-x86_64.sh && \
-    /bin/bash Miniconda3-py37_4.8.2-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-py37_4.8.2-Linux-x86_64.sh
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-py39_4.10.3-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-py39_4.10.3-Linux-x86_64.sh && \
+    conda install mamba -n base -c conda-forge
 
 # Add environment file
 COPY python3.yaml .
 
-RUN conda env update -n root -f python3.yaml && conda clean -tipsy
+RUN mamba env update -n base -f python3.yaml && mamba clean --all

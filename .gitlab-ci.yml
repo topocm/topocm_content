@@ -1,4 +1,4 @@
-image: topocourse/topocourse
+image: topocourse/topocourse:book
 stages:
   - build
   - deploy
@@ -6,8 +6,6 @@ stages:
 
 execute_ipynbs:
   stage: build
-  before_script:
-    - pip install ruamel.yaml git+https://gitlab.kwant-project.org/anton-akhmerov/publist.git jupyter-book
   script:
     - jupyter-book build src
   artifacts:

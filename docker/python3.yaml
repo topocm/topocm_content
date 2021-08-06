@@ -2,19 +2,18 @@ name: python3
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.9*
   - pip
-  - matplotlib=3.2*
+  - matplotlib-base=3.3*
   - kwant=1.4*
-  - scipy=1.4*
+  - scipy=1.7*
   - holoviews=1.13*
-  - feedparser=5.2*
-  - sympy=1.5*
+  - feedparser
+  - sympy=1.6*
   - pfapack
-  - pelican=3.7*
   - ipython>=6.1.0
-  - notebook
   - markdown
-  - notedown
   - pip:
     - ruamel.yaml
+    - jupyter-book
+    - git+https://gitlab.kwant-project.org/anton-akhmerov/publist.git
