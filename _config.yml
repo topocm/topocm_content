@@ -2,7 +2,8 @@ title: 'Topology in condensed matter: tying quantum knots'
 author: Topology course team
 copyright: "2021, TU Delft, CC-BY-SA 4.0 & MIT"
 exclude_patterns:
-  - "_build/*"
+  - _build
+  - src  # Obsolete, should eventually be wiped
   - "**.ipynb_checkpoints"
   - readme.md
 execute:
