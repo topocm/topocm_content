@@ -186,10 +186,10 @@ In a three-dimensional crystal, $n=(n_x,n_y,n_z)$ would be a vector of integers.
 The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}=H_{(l,n-m),(l',0)}$ for all pairs of unit-cell $n$ and $m$. 
 
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz:
-
-$$
-\psi_{(l,n)}=e^{i k n}u_l,
-$$
+>
+> $$
+> \psi_{(l,n)}=e^{i k n}u_l,
+> $$
 
 where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell.
 

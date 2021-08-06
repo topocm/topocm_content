@@ -555,13 +555,11 @@ Every gap closing at a TRIM is an even parity state crossing with an odd parity 
 This leads to a simplified way of computing a topological invariant of quantum spin Hall insulators with inversion symmetry:
 
 > To compute a bulk topological invariant for a two-dimensional topological state with time reversal and inversion symmetry we need to keep track of the parity $P$ of all the occupied eigenstates of $H(\mathbf{k})$ at the different time-reversal invariant momenta in the Brillouin zone. We may write such a bulk topological invariant as a product
-
 >
-
-$$
-Q=\prod_{n,j}P_{n,j}\,,
-$$
-
+> $$
+> Q=\prod_{n,j}P_{n,j}\,,
+> $$
+>
 > where $P_{n,j}$ is the parity, $n$ runs over the occupied bands of $H(\mathbf{k})$ and $j$ over the time-reversal invariant momenta.
 
 You might now worry whether this definition of the invariant relied on having a smooth domain wall. From the fermion parity pump argument, bulk-edge correspondence implies that the bulk must be topologically non-trivial once you have edge states for any termination. Reversing this argument, we know that once we have a topologically non-trivial bulk, we must have helical edge states for any termination.
