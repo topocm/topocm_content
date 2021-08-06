@@ -9,7 +9,6 @@ execute:
 sphinx:
   config:
     html_js_files:
-    - matomo.js
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - - https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js
       - crossorigin: anonymous
