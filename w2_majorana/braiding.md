@@ -113,8 +113,8 @@ Of course, the product above can also be simplified: since $\gamma_2^2=1$, you h
 > Thus the  Hilbert space of states $|\Psi\rangle$ of a set of $N$ pairs of Majorana modes is spanned by the simultaneous eigenstates $|s_1,s_2,\dots,s_N\rangle$ of the commuting fermion parity operators $P_n$ and is written as
 >
 > $$
-> \left|\Psi\right\rangle= \sum_{s_n=0,1} \alpha_{s_1s_2\dots s_N}\,\left| s_1, s_2, \dots, s_N\right\rangle\,
-> $$
+  \left|\Psi\right\rangle= \sum_{s_n=0,1} \alpha_{s_1s_2\dots s_N}\,\left| s_1, s_2, \dots, s_N\right\rangle\,
+  $$
 
 with complex coefficients $\alpha_{s_1s_2\dots s_N}$. 
 

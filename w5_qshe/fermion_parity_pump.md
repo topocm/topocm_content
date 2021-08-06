@@ -557,8 +557,8 @@ This leads to a simplified way of computing a topological invariant of quantum s
 > To compute a bulk topological invariant for a two-dimensional topological state with time reversal and inversion symmetry we need to keep track of the parity $P$ of all the occupied eigenstates of $H(\mathbf{k})$ at the different time-reversal invariant momenta in the Brillouin zone. We may write such a bulk topological invariant as a product
 >
 > $$
-> Q=\prod_{n,j}P_{n,j}\,,
-> $$
+  Q=\prod_{n,j}P_{n,j}\,,
+  $$
 >
 > where $P_{n,j}$ is the parity, $n$ runs over the occupied bands of $H(\mathbf{k})$ and $j$ over the time-reversal invariant momenta.
 

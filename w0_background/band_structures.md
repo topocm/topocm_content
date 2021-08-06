@@ -188,8 +188,8 @@ The Hamiltonian for a crystal has matrix elements that satisfy $H_{(l,n),(l',m)}
 > Bloch's theorem states that the Schrodinger equation for such Hamiltonians in crystals can be solved by the ansatz:
 >
 > $$
-> \psi_{(l,n)}=e^{i k n}u_l,
-> $$
+  \psi_{(l,n)}=e^{i k n}u_l,
+  $$
 
 where $u_l$ is the periodic part of the Bloch function which is identical in each unit-cell.
 
