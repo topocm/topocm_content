@@ -57,3 +57,9 @@ RUN cd /tmp && \
 COPY python3.yaml .
 
 RUN mamba env update -n base -f python3.yaml && mamba clean --all
+
+# setting openblas and mkl variables
+ENV OPENBLAS_NUM_THREADS=1\
+    OMP_NUM_THREADS=1\
+    MKL_DYNAMIC=FALSE\
+    MKL_NUM_THREADS=1
