@@ -10,9 +10,6 @@ from xml.etree.ElementTree import Element, SubElement
 import feedparser
 from IPython import display
 
-module_dir = os.path.dirname(__file__)
-sys.path.extend(module_dir)
-
 
 __all__ = [
     "Video",
