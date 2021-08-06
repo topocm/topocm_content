@@ -19,7 +19,7 @@ kernelspec:
 import sys
 import os
 
-sys.path.append("../../code")
+sys.path.append("../code")
 from init_course import *
 
 init_notebook()
