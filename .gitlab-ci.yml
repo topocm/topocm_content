@@ -14,6 +14,10 @@ execute_ipynbs:
     paths:
       - src/_build/html
     expire_in: 7d
+  cache:
+    - key: global
+      paths:
+        - src/_build/
 
 
 mirror to github:
