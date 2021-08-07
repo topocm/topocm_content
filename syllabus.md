@@ -11,34 +11,34 @@ kernelspec:
   name: python3
 ---
 
-# Introduction
+# Online course on topology in condensed matter
 
-+++
+This is a open online course on topology in condensed matter.
+Initially developed for the [edX platform](https://www.edx.org/course/topology-in-condensed-matter-tying-quantum-knots) in 2015, its development continues here.
 
-## Course structure
+After following this course you will:
+- Discover how topological concepts manifest in condensed matter systems
+- Get an overview of different research directions and important developments
+- Learn to combine the relevant math with simulations and physical arguments to improve your understanding
 
-Each section consists of several relatively self-contained topics, each introduced and summarized by an expert.
+Go right to the [introduction](w0_background/intro) for in-depth information about the course.
 
-### Current course team
+## Authors
 
-**Anton Akhmerov** is an assistant professor in Kavli Institute of Nanoscience of Delft University of Technology and QuTech.
+The course was developed by
 
-**Jay Sau** is an assistant professor in the area of theoretical Condensed matter physics at the University of Maryland, College Park, USA.
+* Anton Akhmerov (TU Delft)
+* Jay Sau (University of Maryland)
+* Bernard van Heck (Leiden University)
+* Sebastian Rubbert (TU Delft)
+* Rafał Skolasiński (TU Delft)
+* Bas Nijholt (TU Delft)
+* Irfan Muhammad (TU Delft)
+* Tómas Örn Rosdahl (TU Delft)
 
-**Bernard van Heck** is a postdoc at Yale University.
+The introductory videos to each topic were contributed by multiple experts from the community.
 
-**Bas Nijholt, Irfan Muhammad, Tómas Örn Rosdahl** are PhD students working in Kavli Institute for Nanoscience at TU Delft supervised by Anton Akhmerov.
-
-### Other course developers
-
-The initial verison of the course was created by:
-* Anton Akhmerov
-* Jay Sau
-* Bernard van Heck
-* Sebastian Rubbert
-* Rafał Skolasiński
-
-### Acknowledgements
+## Acknowledgements
 
 When working on the course, we greatly benefitted from support of
 
@@ -58,7 +58,7 @@ For the support with implementing the technical aspects of the course we thank
 
 Finally, we thank all the external speakers for contributing the videos for the course.
 
-### License
+## License
 
 Unless otherwise specified the **Course Materials** of TU
 Delft TOPOCMx are Copyright [Delft University of Technology](http://www.tudelft.nl/en/) and are licensed under
