@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulations: more Chern insulators
 
-As usual, start by grabbing the notebooks of this week (`w4_haldane`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 ### Yet another Chern insulator
 
 One more tight binding of a Chern insulator that you can encounter in the wild is a regular square lattice with half a flux quantum of magnetic field per unit cell. If you made the Hofstadter butterfly assignment from the previous week, it's just in the middle of the butterfly. Half a flux quantum per unit cell means that the hoppings in one direction are purely imaginary, and different rows have alternating signs

@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulation: powers combined
 
-As usual, start by grabbing the notebooks of this week (`w11_extensions2`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 Are you tired yet of all the different kinds of topology? If no, this assignment is for you :-)
 
 By now you should have a feel for how to make new topological phases. Your task now is to combine the two systems you've learned about and to create a Floquet crystalline topological insulator. If you want even more challenge, create also a gapless Floquet topological material.

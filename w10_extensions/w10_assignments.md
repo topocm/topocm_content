@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulations
 
-As usual, start by grabbing the notebooks of this week (`w10_extensions`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 ### Weyl semimetal with time-reversal symmetry.
 
 Time-reversal symmetry has a very similar effect on Weyl semimetals as it has on gapless superconductors: it keeps the value of the Chern number around the Weyl point the same, and leads to appearance of quadruplets of Weyl points.

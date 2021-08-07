@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulations: Majorana defects
 
-As usual, start by grabbing the notebooks of this week (`w7_defects`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 ### Quantum spin Hall junction
 
 Let us study the spectrum of a Josephson junction on a quantum spin Hall edge in more detail. As in the lecture, we can add a magnet in the middle of the junction, which adds a Zeeman energy term to the Hamiltonian.

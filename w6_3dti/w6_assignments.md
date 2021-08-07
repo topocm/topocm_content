@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulations: more Chern insulators
 
-As usual, start by grabbing the notebooks of this week (`w6_3dti`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 Simulations of the three-dimensional systems are hard, mostly because they take a lot of computational power. That's why we'll do something relatively simple this time.
 
 ### Breaking time-reversal

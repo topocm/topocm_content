@@ -30,8 +30,6 @@ We have two choices for your coding assignments of this week. Consider the task 
 
 This is especially true since both of the assignments constitute a complete paper :)
 
-As usual, start by grabbing the notebooks of this week (`w2_majorana`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 ### Tilted magnetic field
 
 Explore what happens when we change one the important knobs of the nanowire model, the external magnetic field. We studied what happens when $B$ is pointing along the $z$ direction. However, what happens when the magnetic field is tilted?
