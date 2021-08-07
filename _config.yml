@@ -1,0 +1,28 @@
+title: 'Topology in condensed matter: tying quantum knots'
+author: Topology course team
+copyright: "2021, TU Delft, CC-BY-SA 4.0 (materials) & BSD (code)"
+exclude_patterns:
+  - _build
+  - src  # Obsolete, should eventually be wiped
+  - "**.ipynb_checkpoints"
+  - readme.md
+execute:
+  execute_notebooks: cache
+  timeout: -1
+  stderr_output: remove-warn
+sphinx:
+  config:
+    html_js_files:
+    - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
+    - - https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js
+      - crossorigin: anonymous
+    - - https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js
+      - crossorigin: anonymous
+    - - https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.2.3.min.js
+      - crossorigin: anonymous
+    - - https://unpkg.com/@holoviz/panel@0.10.2/dist/panel.min.js
+      - crossorigin: anonymous
+  local_extensions:
+    expand_refs: ./expand_refs/
+launch_buttons:
+  binderhub_url: ""  # Turn off binder for now
