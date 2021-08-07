@@ -1,4 +1,4 @@
-image: topocourse/topocourse:book
+image: topocourse/topocourse
 stages:
   - build
   - deploy
