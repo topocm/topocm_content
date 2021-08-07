@@ -1,6 +1,7 @@
 title: 'Topology in condensed matter: tying quantum knots'
 author: Topology course team
 copyright: "2021, TU Delft, CC-BY-SA 4.0 (materials) & BSD (code)"
+logo: "logo_small.jpg"
 exclude_patterns:
   - _build
   - src  # Obsolete, should eventually be wiped
@@ -26,7 +27,7 @@ sphinx:
   local_extensions:
     expand_refs: ./expand_refs/
 launch_buttons:
-  notebook_interface: jupyterlab
+  notebook_interface: classic
 html:
   use_repository_button: true
   use_issues_button: true
