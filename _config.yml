@@ -6,6 +6,7 @@ exclude_patterns:
   - src  # Obsolete, should eventually be wiped
   - "**.ipynb_checkpoints"
   - readme.md
+only_build_toc_files: true
 execute:
   execute_notebooks: cache
   timeout: -1
@@ -25,4 +26,10 @@ sphinx:
   local_extensions:
     expand_refs: ./expand_refs/
 launch_buttons:
-  binderhub_url: ""  # Turn off binder for now
+  notebook_interface: jupyterlab
+html:
+  use_repository_button: true
+  use_issues_button: true
+  use_edit_page_button: true
+repository:
+  url: https://github.com/topocm/topocm_content
