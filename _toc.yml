@@ -67,3 +67,7 @@ parts:
   - file: w12_manybody/fqhe
   - file: w12_manybody/topoorder
   - file: w12_manybody/w12_assignments
+- caption: Appendices
+  chapters:
+  - file: w2_majorana/Peierls
+  - file: w4_haldane/ComputingChern
