@@ -52,12 +52,12 @@ parts:
   - file: w9_disorder/scaling
   - file: w9_disorder/topoflow
   - file: w9_disorder/w9_assignments
-- caption: Extensions of classification I
+- caption: Extensions of classification I
   chapters:
   - file: w10_extensions/gapless
   - file: w10_extensions/mechanics
   - file: w10_extensions/w10_assignments
-- caption: Extensions of classification II
+- caption: Extensions of classification II
   chapters:
   - file: w11_extensions2/floquet
   - file: w11_extensions2/cti
