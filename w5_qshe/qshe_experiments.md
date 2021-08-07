@@ -39,7 +39,7 @@ Video("-HRBuCgOUvs")
 This topic is special, since in order to meaningfully discuss experimental progress we need to do something we didn't do before in the course: we will show you the measurements and compare them with the *simple* theoretical expectations. Like this we will see what agrees and what doesn't.
 
 All the figures showing the experiments are copyright Physical Society of Japan (2008), published in [
-J. Phys. Soc. Jpn. 77, 031007 (2008)](http://journals.jps.jp/doi/abs/10.1143/JPSJ.77.031007) by  Markus König, Hartmut Buhmann, Laurens W. Molenkamp, Taylor Hughes, Chao-Xing Liu, Xiao-Liang Qi, and Shou-Cheng Zhang. They are available under CC-BY-NC-SA 4.0 International license.
+J. Phys. Soc. Jpn. 77, 031007 (2008)](https://journals.jps.jp/doi/abs/10.1143/JPSJ.77.031007) by  Markus König, Hartmut Buhmann, Laurens W. Molenkamp, Taylor Hughes, Chao-Xing Liu, Xiao-Liang Qi, and Shou-Cheng Zhang. They are available under CC-BY-NC-SA 4.0 International license.
 
 ## Two limits: Mexican hat and weak pairing
 

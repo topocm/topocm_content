@@ -165,7 +165,7 @@ Let's now imagine that experimentalists are not only able to build such a networ
 
 ![](figures/nanowire_network_exchange.svg)
 
-Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](http://en.wikipedia.org/wiki/Adiabatic_theorem). 
+Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](https://en.wikipedia.org/wiki/Adiabatic_theorem). 
 
 So let's imagine that we are in the adiabatic limit and that we exchange two Majoranas $\gamma_n$ and $\gamma_m$. As usual in quantum mechanics, the initial and final quantum states are connected by a unitary operator $U$ ($U^{-1}=U^\dagger$),
 
@@ -181,7 +181,7 @@ $$
 U\equiv\exp(\beta \gamma_n \gamma_m) = \cos(\beta) + \gamma_n\gamma_m \sin(\beta)\,,
 $$
 
-*up to an overall phase*. Here, $\beta$ is a real coefficient to be determined, and in the last equality we have used the fact that $(\gamma_n\gamma_m)^2=-1$. To determine $\beta$, it is convenient to go to the [Heisenberg picture](http://en.wikipedia.org/wiki/Heisenberg_picture) and look at the evolution of the Majorana operators in time. We have that
+*up to an overall phase*. Here, $\beta$ is a real coefficient to be determined, and in the last equality we have used the fact that $(\gamma_n\gamma_m)^2=-1$. To determine $\beta$, it is convenient to go to the [Heisenberg picture](https://en.wikipedia.org/wiki/Heisenberg_picture) and look at the evolution of the Majorana operators in time. We have that
 
 $$
 \gamma_n\,\to\,  U\,\gamma_n\,U^\dagger\,,\\
@@ -285,7 +285,7 @@ MultipleChoice(
 
 ## Majoranas and quantum computation: basic ideas
 
-The non-Abelian statistics of Majorana modes is a very special property. Furthermore, it has some practical interest, since it could be used to realize a robust **quantum computer**. (If you are not yet interested in quantum computation, you can skip this part, even though we suggest that you get interested in it! Quantum computation is a huge topic of research, but [this](http://arxiv.org/abs/quant-ph/9708022) is a good place to start learning.)
+The non-Abelian statistics of Majorana modes is a very special property. Furthermore, it has some practical interest, since it could be used to realize a robust **quantum computer**. (If you are not yet interested in quantum computation, you can skip this part, even though we suggest that you get interested in it! Quantum computation is a huge topic of research, but [this](https://arxiv.org/abs/quant-ph/9708022) is a good place to start learning.)
 
 Let's discuss very briefly how this can be done.
 

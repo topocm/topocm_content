@@ -30,7 +30,7 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 ## Intro
 
-Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he [introduced](http://faculty.washington.edu/cobden/papers/haldane88.pdf) in 1988, and which has become a prototype for the anomalous quantum Hall effect.
+Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he introduced in 1988, and which has become a prototype for the anomalous quantum Hall effect.
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -44,7 +44,7 @@ We will now study the model in detail, starting from the beginning.  Along the w
 
 In the last chapter we saw how it is possible to obtain a quantum Hall state by coupling one-dimensional systems. At the end, our recipe was to first obtain a Dirac cone, add a mass term to it and finally to make this mass change sign. Following this recipe we were able to obtain chiral edge states without applying an external magnetic field.
 
-There is a real (and a very important) two-dimensional system which has Dirac cones: [graphene](http://en.wikipedia.org/wiki/Graphene). So in this chapter we will take graphene and make it into a topological system with chiral edge states.
+There is a real (and a very important) two-dimensional system which has Dirac cones: [graphene](https://en.wikipedia.org/wiki/Graphene). So in this chapter we will take graphene and make it into a topological system with chiral edge states.
 
 Graphene is a single layer of carbon atoms arranged in a honeycomb lattice. It is a triangular lattice with two atoms per unit cell, type $A$ and type $B$, represented by red and blue sites in the figure:
 
@@ -296,7 +296,7 @@ $$
 \exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.
 $$
 
-We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](http://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.  
+We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.  
 
 ### Flux pumping
 

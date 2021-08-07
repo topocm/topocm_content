@@ -353,7 +353,7 @@ We see that the topological transition happens when $\alpha=0$. That is, to mode
 
 The details of the probability distribution for $m(x)$ are not very important as long as the distribution is characterized by a finite correlation length $\xi \ll L$ - that is, values of $m$ at points more distant than $\xi$ are statistically uncorrelated. 
 
-If this is the case, $\alpha$ is the sum of an order $\sim L/\xi$ of uncorrelated values of $m$. By using the [central limit theorem](http://en.wikipedia.org/wiki/Central_limit_theorem), we can say that $\alpha$ is a normally distributed variable with zero mean and a variance growing linearly in $L$. Since $\alpha$ is a random variable, so is the transmission probability $T=|t^2|=\cosh^{-2}(\alpha)$. From the probability distribution of $\alpha$, we can obtain the scaling behavior of $T$ as
+If this is the case, $\alpha$ is the sum of an order $\sim L/\xi$ of uncorrelated values of $m$. By using the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), we can say that $\alpha$ is a normally distributed variable with zero mean and a variance growing linearly in $L$. Since $\alpha$ is a random variable, so is the transmission probability $T=|t^2|=\cosh^{-2}(\alpha)$. From the probability distribution of $\alpha$, we can obtain the scaling behavior of $T$ as
 
 $$
 \left\langle T \right \rangle \propto 1/\sqrt{L}\,.
@@ -367,7 +367,7 @@ The oldest known example of the two parameter flow is unsurprisingly the quantum
 
 ![](figures/Three_Dimensional_RG_Flowdiagram_of_the_QHE.png)
 
-By Wout Neutkens (Own work) [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0), via Wikimedia Commons
+By Wout Neutkens (Own work) [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0), via Wikimedia Commons
 
 The axes are the same as before - the horizontal one is the topological invariant given by $\sigma_H$, and the vertical axis the longitudinal conductance. The saddle point separating the different topological phases is now elevated to a finite critical conductance, which is known to be around $0.5-0.6$ conductance quanta.
 

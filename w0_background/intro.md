@@ -53,7 +53,7 @@ rather than this:
 
 ![Bored audience](figures/bored_audience_bruno_touschek.png)
 
-*(Images by Bruno Touschek, © 1981 [CERN](http://cds.cern.ch/record/135949) CC-BY-3.0)*
+*(Images by Bruno Touschek, © 1981 [CERN](https://cds.cern.ch/record/135949) CC-BY-3.0)*
 
 ### What you get
 
@@ -105,16 +105,16 @@ Specifically you need:
 * Python 3.5 or 3.6
 * Python scientific stack (SciPy, NumPy, Matplotlib, Jupyter notebook)
 * Holoviews 1.7, a Python library for plotting data.
-* [Kwant](http://kwant-project.org) 1.3, a package for quantum transport simulations.
+* [Kwant](https://kwant-project.org) 1.3, a package for quantum transport simulations.
 
 The installation should be straightforward.
-Installation of most of the requirements is described [here](http://kwant-project.org/install).
+Installation of most of the requirements is described [here](https://kwant-project.org/install).
 
 If you are using Windows, you are all set after following the above instructions.
 
 The easiest way to install `kwant` when you are using Linux or OS X is with `conda` which comes with Miniconda, a Python distribution.
 
-1. Open a terminal and download [Miniconda](http://conda.pydata.org/miniconda.html>)
+1. Open a terminal and download [Miniconda](https://conda.pydata.org/miniconda.html>)
    (or [Anaconda](https://www.continuum.io/downloads)) by running:
 
        wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
@@ -143,27 +143,23 @@ These notebooks are extremely handy, they allow:
 
 * To use an interactive computing environment where you can see what your simulation does right as you are creating it.
 * To combine nicely formatted text (with Latex equations and images) together with code in any language and the output of that code.
-* To easily share that same code: here, take a look at the source of [the notebook](http://nbviewer.ipython.org/github/topocm/topocm_content/blob/master/w0_background/intro.ipynb) that you are currently reading.
+* To easily share that same code: here, take a look at the source of [the notebook](https://nbviewer.ipython.org/github/topocm/topocm_content/blob/master/w0_background/intro.ipynb) that you are currently reading.
 * To convert it to a presentation, blog post, or an EdX course.
 
-The combination of the above nice properties with many more and with Jupyter being free software lead to the notebooks being [highlighted](http://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261) in Nature.
+The combination of the above nice properties with many more and with Jupyter being free software lead to the notebooks being [highlighted](https://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261) in Nature.
 
 For a short presentation of Jupyter notebooks just use `Help -> User Interface Tour` inside the notebook.
 
 ### Sharing notebooks
 
-Showing the results of your work is very easy.
-
-If you are using Sage Cloud, you can just click the "share the notebook" button when you have it opened, and copy the URL.
-
-Otherwise you can make the notebook visible online (for example by putting it in your Dropbox public folder or something similar), copy link, and paste it into [http://nbviewer.ipython.org](http://nbviewer.ipython.org).
+You can make the notebook visible online (for example by putting it in your Dropbox public folder or something similar), copy link, and paste it into https://nbviewer.jupyter.org.
 
 ### Kwant, Python, and Python scientific software
 
-For most of the simulations of condensed matter systems we are going to use the Kwant package. You can learn Kwant in more detail by following the [tutorial](http://kwant-project.org/doc/1.0/tutorial/), however we aim that for most of the exercises you will be able to learn by doing. The starting point of the exercises are the notebooks used in the lectures, and you should be able to solve them by only modifying the contents not too much.
+For most of the simulations of condensed matter systems we are going to use the Kwant package. You can learn Kwant in more detail by following the [tutorial](https://kwant-project.org/doc/1.0/tutorial/), however we aim that for most of the exercises you will be able to learn by doing. The starting point of the exercises are the notebooks used in the lectures, and you should be able to solve them by only modifying the contents not too much.
 
 The same applies to Python and the Python scientific stack (NumPy, SciPy, Matplotlib): these are easy to use, especially when you have code examples. If you are new to programming and wish to get acquainted with Python,
-[here](http://www.learnpython.org/) are [several](http://www.python-course.eu/) [example courses](https://www.codecademy.com/learn/python) that start from the basics and slowly go into advanced topics. There are of course several MOOCs as well, but you will likely not need as much programming skill.
+[here](https://www.learnpython.org/) are [several](https://www.python-course.eu/) [example courses](https://www.codecademy.com/learn/python) that start from the basics and slowly go into advanced topics. There are of course several MOOCs as well, but you will likely not need as much programming skill.
 
 **Do you have questions about installation? Use this discussion:**
 

@@ -42,7 +42,7 @@ Video("QC3tQT7MD00")
 
 We now move on to the quantum Hall effect, the mother of all topological effects in condensed matter physics.
 
-But let's start from the classical [Hall effect](http://en.wikipedia.org/wiki/Hall_effect), the famous phenomenon by which a current flows perpendicular to an applied voltage, or vice versa a voltage develops perpendicular to a flowing current.
+But let's start from the classical [Hall effect](https://en.wikipedia.org/wiki/Hall_effect), the famous phenomenon by which a current flows perpendicular to an applied voltage, or vice versa a voltage develops perpendicular to a flowing current.
 
 How does one get a Hall effect? The key is to break time-reversal symmetry. A flowing current breaks time-reversal symmetry, while an electric field doesn't. Hence, any system with a Hall effect must somehow break time-reversal symmetry.
 
@@ -137,7 +137,7 @@ MultipleChoice(
 
 ## The quantum Hall effect: experimental data
 
-Instead, a completely unexpected result was measured for the first time by Klaus von Klitzing. Typical experimental data looks like this (taken from M.E. Suddards, A. Baumgartner, M. Henini and C. J. Mellor, [New J. Phys. 14 083015](http://iopscience.iop.org/1367-2630/14/8/083015)):
+Instead, a completely unexpected result was measured for the first time by Klaus von Klitzing. Typical experimental data looks like this (taken from M.E. Suddards, A. Baumgartner, M. Henini and C. J. Mellor, [New J. Phys. 14 083015](https://iopscience.iop.org/1367-2630/14/8/083015)):
 
 ![](figures/QHE.png)
 

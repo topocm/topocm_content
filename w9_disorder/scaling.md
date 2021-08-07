@@ -52,7 +52,7 @@ For example, we told you that at the edge of a two-dimensional topological insul
 
 When we speak of disorder in electronic systems, the main distinction we need to keep in mind is that between extended and localized states.
 
-Let's start by thinking of a three dimensional metal with a low density of impurities, and hence weak disorder. In this limit, electrons moving through the system are only scattered by impurities every now and then, but otherwise they move ballistically between collisions. This picture is known as the [Drude model](http://en.wikipedia.org/wiki/Drude_model), and yields a conductivity given by
+Let's start by thinking of a three dimensional metal with a low density of impurities, and hence weak disorder. In this limit, electrons moving through the system are only scattered by impurities every now and then, but otherwise they move ballistically between collisions. This picture is known as the [Drude model](https://en.wikipedia.org/wiki/Drude_model), and yields a conductivity given by
 
 $$
 \sigma=n e^2\tau/m,
@@ -92,7 +92,7 @@ $$
 \frac{d\textrm{ln}g}{d\textrm{ln}L}=\beta(g).
 $$
 
->This is the educated guess known as *single parameter scaling* that was adopted by  the "Gang of Four" (Abrahams, Anderson, Licciardello and Ramakrishnan) and is essentially an application of the idea of the [renormalization group](http://en.wikipedia.org/wiki/Renormalization_group) to the conductance problem. Of course, we don't quite know the function $\beta$, but as we will see in the next unit, it is possible to guess the form in various limits and this is enough to guess the qualitative behavior of the conductance.
+>This is the educated guess known as *single parameter scaling* that was adopted by  the "Gang of Four" (Abrahams, Anderson, Licciardello and Ramakrishnan) and is essentially an application of the idea of the [renormalization group](https://en.wikipedia.org/wiki/Renormalization_group) to the conductance problem. Of course, we don't quite know the function $\beta$, but as we will see in the next unit, it is possible to guess the form in various limits and this is enough to guess the qualitative behavior of the conductance.
 
 While the above representation will be useful for understanding the "flow diagram", the above scaling hypothesis has a simple general solution
 

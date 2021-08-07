@@ -48,11 +48,11 @@ Let us now go through the main points that lead to this conclusion, and argue fo
 
 ## Crystallographic defects and topology
 
-There are many different types of [defects in crystals](http://en.wikipedia.org/wiki/Crystallographic_defect): vacancies, substitutions, grain boundaries, dislocations, and many more.
+There are many different types of [defects in crystals](https://en.wikipedia.org/wiki/Crystallographic_defect): vacancies, substitutions, grain boundaries, dislocations, and many more.
 
 What kinds of defects are important for topology? Consider a vacancy for example:
 ![](figures/Formation_Point_Defect.png)
-(By Safe cracker (Own work) [CC BY 3.0 (http://creativecommons.org/licenses/by/3.0)], via Wikimedia Commons)
+(By Safe cracker (Own work) [CC BY 3.0 (https://creativecommons.org/licenses/by/3.0)], via Wikimedia Commons)
 
 To create a vacancy, we need to remove a single atom (or all the atoms following one line). Can this type of defect carry a topologically protected state?
 
@@ -101,7 +101,7 @@ To see how the weak topological invariant relates to the number of states in the
 
 ![](figures/dislocation_helical.svg)
 
-(adapted from Cdang (Own work), via Wikimedia Commons, [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0).)
+(adapted from Cdang (Own work), via Wikimedia Commons, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0).)
 
 Counting the number and the orientation of the crystal planes approaching the core of the dislocation is just the Burgers vector. Hence, the number of edge states entering the dislocation core is the Burgers vector times the number of states per crystal plane. This brings us to the conclusion:
 

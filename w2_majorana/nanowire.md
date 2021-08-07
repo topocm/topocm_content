@@ -268,7 +268,7 @@ The final stretch is straightforward.
 
 We know that there is no gap because of conservation of one of the spin projections, so we need to break the spin conservation.
 
-If we don't want to create an inhomogeneous magnetic field, we have to use a different term that couples to spin. That term is spin-orbit interaction. In it's [simplest form](http://en.wikipedia.org/wiki/Rashba_effect) this interaction appears in our wire as
+If we don't want to create an inhomogeneous magnetic field, we have to use a different term that couples to spin. That term is spin-orbit interaction. In it's [simplest form](https://en.wikipedia.org/wiki/Rashba_effect) this interaction appears in our wire as
 
 $$
 H_{SO} = \alpha \sigma_y k,

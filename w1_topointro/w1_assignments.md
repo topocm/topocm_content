@@ -30,10 +30,6 @@ So you've made it through the content of the first week. Congratulations!
 
 Now let's get our hands dirty.
 
-Let's begin by grabbing the notebooks of this week and the extra code we use to run these notebooks over [here](http://tiny.cc/topocm_smc). (Click the [i] button to the left of the folder that you want to copy.)
-
-You need to copy the `code` folder and the `w1_topointro` folder. Let's look into what's inside.
-
 +++
 
 ### First task: combination of particle-hole and time-reversal symmetries

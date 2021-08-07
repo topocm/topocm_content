@@ -39,11 +39,11 @@ Video("i-eNPei2zMg")
 
 The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under a
 <a rel="license"
-href="http://creativecommons.org/licenses/by-sa/4.0/"
+href="https://creativecommons.org/licenses/by-sa/4.0/"
 target="_blank">Creative Commons Attribution-ShareAlike 4.0
 International License.</a>
 <a rel="license"
-href="http://creativecommons.org/licenses/by-sa/4.0/">
+href="https://creativecommons.org/licenses/by-sa/4.0/">
 <img
 alt="Creative Commons License" style="border-width:0"
 src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
@@ -72,7 +72,7 @@ We shall now show that the zero mode localized at the edge is a time snaphot of 
 
 ![](figures/kink.png)
 
-To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](http://en.wikipedia.org/wiki/Linkage_%28mechanical%29).  
+To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](https://en.wikipedia.org/wiki/Linkage_%28mechanical%29).  
 
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
@@ -135,7 +135,7 @@ x}\right)^2 -\frac{1}{2}K(\bar u^2-u^2)^2 - \frac{1}{2} K \frac{a^2}{2}(\bar
 u^2-u^2)\frac{\partial u}{\partial x}\right].
 $$
 
-The first term is a linearized kinetic energy, while the second and third terms are the ordinary [$\phi^4$ field theory](http://en.wikipedia.org/wiki/Quartic_interaction) that you might have encountered for instance while studying the Ising model.
+The first term is a linearized kinetic energy, while the second and third terms are the ordinary [$\phi^4$ field theory](https://en.wikipedia.org/wiki/Quartic_interaction) that you might have encountered for instance while studying the Ising model.
 
 The final term linear in $\partial_x u$ is topological in the sense that it integrates to the boundary. It ensures that the static kink has zero energy, since the last three terms in the Lagrangian can be combined into a perfect square, that vanishes for the static kink solution (this is sometimes called a BPS state). The topological boundary term does not affect the equations of motions in the bulk, but it breaks the $\partial_x u \rightarrow -\partial_x u$ symmetry of the $\phi^4$ theory. That's why the two edges are not equivalent in terms of initiating the kink motion.
 
@@ -164,7 +164,7 @@ If you are curious about the mathematical details and a systematic study of the 
 
 * arXiv:1404.2263
 
-Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](http://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
+Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](https://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
 ```{code-cell} ipython3
 :tags: [remove-input]
@@ -236,7 +236,7 @@ This relation between states of self stress and zero modes can be made more prec
 
 The zero energy modes are members of the null space of $R_{ij}$, which in an isostatic system are also the (right) eigenvectors of $R_{ij}$ with eigenvalue 0. (Convince yourself that the rigidity matrix is square for an isostatic system.)
 
-Conversely the states of self stress are the zero eigenvectors  of the transpose matrix $R^{T}$ that relates the forces on the nodes to the tensions in the bonds. The Maxwell count equation follows from the rank-nullity theorem and can be expressed as an index theorem. (We suggest the reader interested in a careful proof and statement of these results to consult [this review](http://arxiv.org/abs/1503.01324).)
+Conversely the states of self stress are the zero eigenvectors  of the transpose matrix $R^{T}$ that relates the forces on the nodes to the tensions in the bonds. The Maxwell count equation follows from the rank-nullity theorem and can be expressed as an index theorem. (We suggest the reader interested in a careful proof and statement of these results to consult [this review](https://arxiv.org/abs/1503.01324).)
 
 Here we merely remark that if one smoothly deforms the network without cutting bonds or adding sites then the left hand side of the Maxwell count does not change. This means that after such a smooth deformation, the difference between the number of zero modes and states of self stress must remain invariant even if $n_m$ and $n_{ss}$ change individually. In this sense the isostatic condition can be viewed as a charge neutrality condition. As we shall see,  this electrostatic analogy is far reaching. We will now turn our attention to periodic mechanical structures that are isostatic, hence ‘‘charge neutral’’, but mechanically polarized so that edge modes can appear at the sample boundary like charges in an electrically polarized medium.
 

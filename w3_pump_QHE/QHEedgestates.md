@@ -134,7 +134,7 @@ $$
 
 Here $k_F$ is the Fermi momentum, which in the case of our ribbon is equal to $k_F = 2\pi N / L$, with $N$ the number of electrons in the system.
 
-Because the slope of the potential is just the local electric field $\mathcal{E}_y=-\partial_y V(y)$ perpendicular to the edge of the sample, the velocity $v$ of the edge states can be simply interpreted as the [drift velocity](http://en.wikipedia.org/wiki/Guiding_center) of a skipping state,
+Because the slope of the potential is just the local electric field $\mathcal{E}_y=-\partial_y V(y)$ perpendicular to the edge of the sample, the velocity $v$ of the edge states can be simply interpreted as the [drift velocity](https://en.wikipedia.org/wiki/Guiding_center) of a skipping state,
 
 $$
 v = \mathcal{E}_y/B\,.
@@ -408,7 +408,7 @@ MultipleChoice(
 
 The physical picture that we presented this week is very simple, and it is also somewhat simplified.
 
-In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](http://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
+In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](https://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
 
 ```{code-cell} ipython3
 :tags: [remove-input]

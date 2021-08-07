@@ -256,7 +256,7 @@ We are now ready to see how unpaired Majoranas can appear in a 2D $p$-wave super
 
 So far we have considered a uniform superconducting pairing $\Delta$, with constant amplitude and phase. This is an idealized situation, which corresponds to a perfect superconductor with no defects.
 
-If you apply a small magnetic field to a superconducting film, or if there are defects in the material, a [**vortex**](http://en.wikipedia.org/wiki/Abrikosov_vortex) of supercurrent can form to lower the free energy of the system.
+If you apply a small magnetic field to a superconducting film, or if there are defects in the material, a [**vortex**](https://en.wikipedia.org/wiki/Abrikosov_vortex) of supercurrent can form to lower the free energy of the system.
 In a vortex, there is a supercurrent circulating in a small area around the defect or the magnetic field lines penetrating the superconductor. The magnetic flux enclosed by the vortex supercurrent is equal to a superconducting flux quantum $h/2e$.
 
 The amplitude $\Delta$ of the superconducting pairing is suppressed in the core of the vortex, going to zero in its center, and the superconducting phase winds by $2\pi$ around a closed path surrounding it. The situation is sketched below:
@@ -367,9 +367,9 @@ MultipleChoice(
 
 ## Vortices in 3D topological insulator
 
-Unfortunately, superconductors with $p$-wave pairing are very rare, with mainly [one material](http://en.wikipedia.org/wiki/Strontium_ruthenate) being a good candidate. But instead waiting for nature to help us, we can try to be ingenious.
+Unfortunately, superconductors with $p$-wave pairing are very rare, with mainly [one material](https://en.wikipedia.org/wiki/Strontium_ruthenate) being a good candidate. But instead waiting for nature to help us, we can try to be ingenious.
 
-As Carlo mentioned, Fu and Kane [realized](http://arxiv.org/abs/0707.1692) that one could obtain an effective $p$-wave superconductor and Majoranas on the surface of a 3D TI.
+As Carlo mentioned, Fu and Kane [realized](https://arxiv.org/abs/0707.1692) that one could obtain an effective $p$-wave superconductor and Majoranas on the surface of a 3D TI.
 
 We already know how to make Majoranas with a 2D topological insulator. Let us now consider an interface between a magnet and a superconductor on the surface of a 3D topological insulator. Since the surface of the 3D TI is two dimensional, such an interface will be a one dimensional structure and not a point defect as in the quantum spin-Hall case.
 

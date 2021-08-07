@@ -320,11 +320,11 @@ $$
 t\rightarrow -t.
 $$
 
-It turns out that the sign change in the hopping across the junction might also be obtained by introducing a magnetic flux through the superconducting ring (similar to the [Aharonov-Bohm effect](http://en.wikipedia.org/wiki/Aharonov-Bohm_effect)). The role of the special bond is now played by a Josephson junction, which is just an insulating barrier interrupting the ring, as in the following sketch:
+It turns out that the sign change in the hopping across the junction might also be obtained by introducing a magnetic flux through the superconducting ring (similar to the [Aharonov-Bohm effect](https://en.wikipedia.org/wiki/Aharonov-Bohm_effect)). The role of the special bond is now played by a Josephson junction, which is just an insulating barrier interrupting the ring, as in the following sketch:
 
 ![](figures/josephson_majorana_ring.svg)
 
-How does the magnetic flux enter the Hamiltonian? By following the usual argument for introducing magnetic fields into lattice Hamiltonians using [Peierls substitution](http://topocondmat.org/w2_majorana/Peierls.html), the flux $\Phi$ can be accounted for simply by changing the phase of the hopping across the junction in the ring:
+How does the magnetic flux enter the Hamiltonian? By following the usual argument for introducing magnetic fields into lattice Hamiltonians using [Peierls substitution](Peierls), the flux $\Phi$ can be accounted for simply by changing the phase of the hopping across the junction in the ring:
 
 $$
 t\,\to\,t\,\exp (i\phi/2).
@@ -415,7 +415,7 @@ Staring at the spectrum we see that, lo and behold, the fermion parity switch ap
 
 ## Detecting the fermion parity switch using the Josephson effect
 
-The change in fermion parity of the ground state can be detected using the so-called [Josephson effect](http://en.wikipedia.org/wiki/Josephson_effect). The Josephson current can be computed from the expectation value of the derivative of the energy operator with respect to flux,
+The change in fermion parity of the ground state can be detected using the so-called [Josephson effect](https://en.wikipedia.org/wiki/Josephson_effect). The Josephson current can be computed from the expectation value of the derivative of the energy operator with respect to flux,
 
 $$
 I(\Phi)=\frac{1}{2}\frac{d E_\textrm{tot}(\Phi)}{d \Phi},

@@ -28,13 +28,11 @@ init_notebook()
 
 ### 1D localization
 
-As usual, start by grabbing the notebooks of this week (`w9_disorder`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 Our aim now is to verify that Anderson localization works in one-dimensional systems.
 
 Simulate the Anderson model of a ribbon of appropriate and large width $W$  as a function of length $L$.
 
-Anderson model is just the simpest [tight binding model on a square lattice](http://kwant-project.org/doc/1.0/tutorial/tutorial1) with random onsite potential.
+Anderson model is just the simpest [tight binding model on a square lattice](https://kwant-project.org/doc/1.0/tutorial/tutorial1) with random onsite potential.
 
 Tune your model in the clean limit such that it has a relatively large number of modes (at least 3). Then calculate conductance as a function of $L$ at a finite disorder, while keeping $W$ constant.
 

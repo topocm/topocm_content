@@ -290,7 +290,7 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 
 The somewhat cryptic notations in the leftmost column are just the names of the different symmetry classes. (Also the 'I's appearing there are Roman cardinal numbers, so for instance BDI is 'B D one', and AIII is "A three".)
 
-Their names come from an elegant mathematical classification of [symmetric spaces](http://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](http://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field. 
+Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field. 
 The two complex classes are A and AIII.
 
 ```{code-cell} ipython3
@@ -477,7 +477,7 @@ For example, this means that in the SSH chain, which is a $d=1$ dimensional syst
 
 The first thing to observe is that the complex classes only have $\mathbb{Z}$ invariant. We already know what these invariants are in low dimensions: the Chern number, which we encountered in quantum Hall systems (class A, $d=2$), and the winding number of the reflection matrix, which we encountered when we studied reflection from the Thouless pump.
 
-The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](http://arxiv.org/abs/1104.1602).
+The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](https://arxiv.org/abs/1104.1602).
 
 ```{code-cell} ipython3
 :tags: [remove-input]

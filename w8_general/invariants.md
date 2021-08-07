@@ -73,7 +73,7 @@ The things become more complicated when the Hamiltonian becomes sparse, since th
 
 Part of our intuition stays true. So since after diagonalizing a Hamiltonian we obtain an $M\times M$ matrix of eigenvectors, typically we still need to perform $\sim M^3$ number of operations.
 
-A scattering matrix is smaller than the matrix of all the eigenvectors, and for our sample with a linear size $L$, the size of the scattering matrix is $L^{d-1}$, as opposed to $L^d$, the size of the Hamiltonian. While this fact isn't [trivial](http://en.wikipedia.org/wiki/LU_decomposition#Sparse_matrix_decomposition) at [all](http://en.wikipedia.org/wiki/Nested_dissection), calculation of a scattering matrix still costs the cube of its size, so $L^{3d-3}$.
+A scattering matrix is smaller than the matrix of all the eigenvectors, and for our sample with a linear size $L$, the size of the scattering matrix is $L^{d-1}$, as opposed to $L^d$, the size of the Hamiltonian. While this fact isn't [trivial](https://en.wikipedia.org/wiki/LU_decomposition#Sparse_matrix_decomposition) at [all](https://en.wikipedia.org/wiki/Nested_dissection), calculation of a scattering matrix still costs the cube of its size, so $L^{3d-3}$.
 
 This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
 
@@ -187,7 +187,7 @@ $$
 
 with $h(k) = h_0 + t_L e^{ik} + t_R e^{-ik}$ a matrix containing the onsite term $h_0$, the left hopping $t_L$ and the right hopping $t_R$.
 
-If you look up the table, this Hamiltonian is characterized by a $\mathbb{Z}$ topological invariant. This invariant is the  [winding number](http://en.wikipedia.org/wiki/Winding_number) that Fabian Hassler discussed in the introductory video. Let's again describe its meaning.
+If you look up the table, this Hamiltonian is characterized by a $\mathbb{Z}$ topological invariant. This invariant is the  [winding number](https://en.wikipedia.org/wiki/Winding_number) that Fabian Hassler discussed in the introductory video. Let's again describe its meaning.
 
 We need to find an integer quantity which can only change when the gap of $H(k)$ closes. Now, $H(k)$ can only have a zero eigenvalue if $h(k)$ does, that is if $\det [h(k)]=0$. For a gapped Hamiltonian, $\det [h(k)]$ will in general be a complex number other than zero for all values of $k$.
 
@@ -209,7 +209,7 @@ $$
 Q(H) = \frac{1}{2\pi i}\,\oint dz \,\frac{d}{dz} \log f(z) = \frac{1}{2\pi i}\,\oint\,dz\,\frac{f'(z)}{f(z)}.
 $$
 
-We can now use a nice result from complex analysis, the [argument principle](http://en.wikipedia.org/wiki/Argument_principle). It tells us that each zero of $f(z)$ inside the unit circle contributes $+1$ to the value of $Q(H)$, and each pole contributes $-1$. Hence, by counting the number of zeros and poles of $f(z)$ inside the unit circle we immediately get the winding number. So, we have reduced the calculation of the topological invariant to finding zeros and poles of the expression $\det[h_0 + z\, t_L + z^{-1}\, t_R]=0$. The poles are trivial to find, and they are all located at $z=0$.
+We can now use a nice result from complex analysis, the [argument principle](https://en.wikipedia.org/wiki/Argument_principle). It tells us that each zero of $f(z)$ inside the unit circle contributes $+1$ to the value of $Q(H)$, and each pole contributes $-1$. Hence, by counting the number of zeros and poles of $f(z)$ inside the unit circle we immediately get the winding number. So, we have reduced the calculation of the topological invariant to finding zeros and poles of the expression $\det[h_0 + z\, t_L + z^{-1}\, t_R]=0$. The poles are trivial to find, and they are all located at $z=0$.
 
 To find the zeros we notice that we need to solve a problem
 
@@ -217,7 +217,7 @@ $$
 [z h_0 + z^2 t_L + t_R]\psi = 0.
 $$
 
-This is a [polynomial eigenvalue problem](http://en.wikipedia.org/wiki/Nonlinear_eigenproblem), and it is trivially mapped onto a standard eigenvalue problem.
+This is a [polynomial eigenvalue problem](https://en.wikipedia.org/wiki/Nonlinear_eigenproblem), and it is trivially mapped onto a standard eigenvalue problem.
 
 $$
 \begin{pmatrix}
@@ -292,9 +292,9 @@ The approach of analytic continuation onto a complex plane works whenever we hav
 
 There is also a broad class of algorithms that rely on the real space structure of the system, and on the inability to deform the wave functions of the filled state into completely localized orbitals.
 
-The intuition behind these is coming from [non-commutative geometry](http://en.wikipedia.org/wiki/Noncommutative_geometry), and so it is very hard to explain intuitively. Let us try to illustrate the logic behind those.
+The intuition behind these is coming from [non-commutative geometry](https://en.wikipedia.org/wiki/Noncommutative_geometry), and so it is very hard to explain intuitively. Let us try to illustrate the logic behind those.
 
-The real space invariants are known for many different [symmetry classes](http://arxiv.org/abs/1012.1019), but for concreteness let's see how they work for the Chern insulators (and accordingly how we can compute the Chern number).
+The real space invariants are known for many different [symmetry classes](https://arxiv.org/abs/1012.1019), but for concreteness let's see how they work for the Chern insulators (and accordingly how we can compute the Chern number).
 
 First, let's make a finite but large system in a way that it is fully gapped. Of course if it's topologically non-trivial, we need to remove the edge states, and we'll do this by applying periodic boundary conditions in both $x$- and $y$-directions.
 

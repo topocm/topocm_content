@@ -26,8 +26,6 @@ init_notebook()
 
 ## Simulations: Gaps and invariants
 
-As usual, start by grabbing the notebooks of this week (`w8_general`). They are once again over [here](http://tiny.cc/topocm_smc).
-
 ### A different analytic continuation
 
 You have learned how to map a winding number onto counting the zeros of an eigenproblem in a complex plane. This can be applied to other symmetry classes as well.
@@ -38,7 +36,7 @@ $$
 Q = \frac{\textrm{Pf } h(k=0)}{\textrm{Pf } h(k=\pi)} \sqrt{\frac{\det h(k=\pi)}{\det h(k=0)}}
 $$
 
-In [this paper](http://arxiv.org/abs/1106.6351) (around Eq. 4.13), have a look at how to use analytic continuation to calculate the analytic continuation of $\sqrt{h}$, and implement the calculation of this invariant without numerical integration, like we did before.
+In [this paper](https://arxiv.org/abs/1106.6351) (around Eq. 4.13), have a look at how to use analytic continuation to calculate the analytic continuation of $\sqrt{h}$, and implement the calculation of this invariant without numerical integration, like we did before.
 
 In order to test your invariant, you'll need a topologically non-trivial system in this symmetry class. You can obtain it by combining a Majorana nanowire with its time-reversed copy.
 

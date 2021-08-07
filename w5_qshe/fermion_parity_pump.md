@@ -493,7 +493,7 @@ From reading the paper, or just from the above discussion, you see that it takes
 
 ## A simplification: inversion symmetry
 
-As just mentioned, topological invariants in higher dimensions are often difficult to write down and evaluate in the general case. Luckily, in the presence of [inversion symmetry](http://en.wikipedia.org/wiki/Parity_%28physics%29#Effect_of_spatial_inversion_on_some_variables_of_classical_physics) - which reverses the lattice coordinates with respect to a symmetry center - the topological condition can be stated in rather simple terms.
+As just mentioned, topological invariants in higher dimensions are often difficult to write down and evaluate in the general case. Luckily, in the presence of [inversion symmetry](https://en.wikipedia.org/wiki/Parity_%28physics%29#Effect_of_spatial_inversion_on_some_variables_of_classical_physics) - which reverses the lattice coordinates with respect to a symmetry center - the topological condition can be stated in rather simple terms.
 This turns out to be quite useful to describe most topological materials, which happen to have crystal structure with inversion symmetry.
 
 From our earlier discussion, we know that a system is a time-reversal invariant topological insulator if it has an odd number of helical edge states. We will now see how we can find an expression for the bulk topological invariant, using inversion symmetry and bulk-boundary correspondence.
