@@ -15,7 +15,7 @@ execute:
 sphinx:
   config:
     ogp_site_url: "https://topocondmat.org"
-    ogp_image: "logo_small.jpg"
+    ogp_image: "https://topocondmat.org/_static/logo_small.jpg"
     html_js_files:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
     - - https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js

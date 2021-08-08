@@ -1,5 +1,5 @@
 format: jb-book
-root: syllabus
+root: index
 parts:
 - caption: Before you begin
   chapters:
