@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-# Assignments
+# Topics for self-study
 
 ```{code-cell} ipython3
 :tags: [remove-cell]
