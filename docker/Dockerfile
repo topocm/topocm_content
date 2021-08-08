@@ -56,7 +56,7 @@ RUN cd /tmp && \
 # Add environment file
 COPY environment.yml .
 
-RUN mamba env update -n base -f environment.yml && mamba clean --all
+RUN mamba env update -n base -f environment.yml && mamba clean --all -y
 
 # setting openblas and mkl variables
 ENV OPENBLAS_NUM_THREADS=1\

@@ -16,4 +16,5 @@ dependencies:
   - pip:
     - ruamel.yaml
     - jupyter-book
+    - sphinxext.opengraph
     - git+https://gitlab.kwant-project.org/anton-akhmerov/publist.git
