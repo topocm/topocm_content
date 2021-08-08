@@ -32,136 +32,39 @@ from IPython.display import HTML
 
 ## A welcome word
 
-First of all, greetings from the TOPOCMx team! We are very happy that you chose to follow our course.
-
-Through TOPOCMx we want to provide an introduction to the new topics on topology in condensed matter.
-We want it to be simple, and we want it to be useful for people with very different background and motivation.
+Through this course we want to provide an introduction to the topic of topology in condensed matter.
+We want it to be accessible and useful to people with different backgrounds and motivations.
 
 We want the course to be useful to you if you are a **master student**, and you want to get an understanding of what topology is all about.
 
-Or you could be a **PhD student or a postdoc** doing experiments, and you want to get a better theoretical understanding of what you should expect in your investigations.
+Or you could be a **PhD student or a postdoc** doing experiments, and you want to get a better theoretical grasp of what you should expect in your investigation.
 
-You could even be a **theorist working in topology** and be extremely familiar with topological invariants and vector bundles, but you would like to get a better understanding of how the mathematical ideas apply in physical systems.
+You could even be a **theorist working in topology** and be extremely familiar with topological invariants and vector bundles, but you would like to get a better overview of how the mathematical ideas apply in physical systems.
 
 Finally, we also want this course to be equally useful if you are, say, a **professor working in condensed matter** and you want to apply the ideas introduced by topology in your domain, so that you just need a quick overview of what research activity is there.
 
-But even despite your different backgrounds, we want our course to feel like this:
+We hope that you find something useful, and we always appreciate your questions and feedback via the [course chat](https://chat.quantumtinkerer.tudelft.nl/topocondmat) or the course repository [issue tracker](https://github.com/topocm/topocm_content/issues).
+So whenever you see a typo, or you would like to suggest an improvement, you can open an issue, (or even make a pull request right away).
 
-![Discussion](figures/magnetic_discussion_bruno_touschek.png)
+### Course structure
 
-rather than this:
+The course is separated into 12 topics, each containing 2–3 lectures on related subjects. 
+Each lecture is introduced by an expert in this subject.
+We end each topic with suggestions of open-ended questions for self-study: numerical simulations or papers to read and review.
 
-![Bored audience](figures/bored_audience_bruno_touschek.png)
+### Prerequisites
 
-*(Images by Bruno Touschek, © 1981 [CERN](https://cds.cern.ch/record/135949) CC-BY-3.0)*
+#### Background knowledge
 
-### What you get
+While the math that we use only requires linear algebra and calculus, this course is complex.
+Topology affects many physical phenomena, and therefore the course will touch a lot of different concepts in condensed matter physics.
+In the [next chapter](band_structures) we provide a brief review of band theory—the main physical concept that you will need, however if you don't know condensed matter physics yet, you are likely to struggle.
 
-Let us explain what you can expect from the course, and what is special about it.
-The first thing which you need to understand is that the course is hard.
-We don't mean advanced and involved math (we took care to skip all the parts that don't help understanding).
-Instead, since topology has impact on many different physical phenomena, the course will touch a lot of different concepts in condensed matter physics.
+#### Code
 
-First of all, we will provide you with a description of the most **important facts and discoveries in topology** in the most simple and concise manner that we can find.
+We provide source code for all the computer simulations used in the course as well as suggestions of what you can investigate on your own. In order to use these, you need to be familiar with Python's scipy stack (check e.g. [this course](https://scipy-lectures.org/)), as well as the [`Kwant`](http://kwant-project.org/) quantum transport package. You can run the code right away without installing anything, using the [Binder](https://mybinder.org/) project over here: [![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/topocm/topocm_content).
 
-This will still be hard to some of you, since the required background in condensed matter physics is still broad.
-If you see that it is the case, you will need to search for advice in the course **discussions**, so you'll also use the course as an expert community.
-
-If you are experienced already, you may find the lectures straightforward.
-However, even though active research on topological insulators began less than ten years ago,
-the field is already incredibly broad.
-
-This is why we want our course to also fulfill a role of a **journal club**:
-every week we'll ask you to read one of several suggested papers, observe how the concepts that you learn
-appear in a new context, and summarize it for the other participants.
-That way you will learn to analyze research papers and get an **overview of the field**.
-
-Most of the numerical simulations that are used in our research are actually amazingly easy if you know how to do them.
-While teaching how to do computer simulations is not our main aim, we provide already set up simulations for the systems we describe in the lectures.
-
-Using these **computer simulations** you can see for yourself how various models behave, discover new parameter regimes that we don't cover in the lectures, or even extend the simulations and see how adding new terms to the models changes the results.
-
-### How you can help us
-
-MOOCs like this one are not a usual way for providing graduate-level materials, and even less so materials that are a topic of active research.
-
-We believe that it is a very useful and promising way of knowledge dissemination, that has advantages over a book, a university course, or a review.
-
-This is why it is extremely important for us to know what is your background and your motivation to take the course.
-We want you to share what you found difficult, what you found easy, and where you think the course can be improved.
-
-Moreover, we publish the **source code** for every single bit of this course in this [Github repository](https://github.com/topocm/topocm_content).
-So whenever you see a typo, or you would like to suggest an improvement, you can open a new issue, (or even make a pull request if you know how to use Github).
-
-## Software you will need
-
-If you don't want to be bothered trying out the numerical simulations, you are all set if you have an EdX account and you are signed up for the course.
-
-However we strongly recommend to not skip the numerical simulations part. Following it will help you to develop intuition about how the topological systems behave. The numerical simulations can also serve as an extremely useful tool helping both in experiments and theory.
-
-To get going with the simulations, you will need to get the computational software.
-Specifically you need:
-
-* Python 3.5 or 3.6
-* Python scientific stack (SciPy, NumPy, Matplotlib, Jupyter notebook)
-* Holoviews 1.7, a Python library for plotting data.
-* [Kwant](https://kwant-project.org) 1.3, a package for quantum transport simulations.
-
-The installation should be straightforward.
-Installation of most of the requirements is described [here](https://kwant-project.org/install).
-
-If you are using Windows, you are all set after following the above instructions.
-
-The easiest way to install `kwant` when you are using Linux or OS X is with `conda` which comes with Miniconda, a Python distribution.
-
-1. Open a terminal and download [Miniconda](https://conda.pydata.org/miniconda.html>)
-   (or [Anaconda](https://www.continuum.io/downloads)) by running:
-
-       wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-
-2. Install Miniconda with:
-
-       bash Miniconda3-latest-MacOSX-x86_64.sh
-
-   and follow its instructions. Make sure that ``conda`` is in your PATH, which you
-   can do by adding ``export PATH="$HOME/miniconda3/bin:$PATH"`` to your ``.bashrc``
-   or ``.bash_profile``.
-
-3. Add the [conda-forge](https://conda-forge.github.io/) channel and install
-   Kwant and its dependencies with:
-
-       conda config --add channels conda-forge
-       conda install kwant holoviews notebook feedparser
-
-### Jupyter notebooks
-
-A separate mention of the software we use goes to Jupyter notebooks.
-
-Every document that you see in our course (including the one that you are reading right now) was prepared as a Jupyter notebook.
-
-These notebooks are extremely handy, they allow:
-
-* To use an interactive computing environment where you can see what your simulation does right as you are creating it.
-* To combine nicely formatted text (with Latex equations and images) together with code in any language and the output of that code.
-* To easily share that same code: here, take a look at the source of [the notebook](https://nbviewer.ipython.org/github/topocm/topocm_content/blob/master/w0_background/intro.ipynb) that you are currently reading.
-* To convert it to a presentation, blog post, or an EdX course.
-
-The combination of the above nice properties with many more and with Jupyter being free software lead to the notebooks being [highlighted](https://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261) in Nature.
-
-For a short presentation of Jupyter notebooks just use `Help -> User Interface Tour` inside the notebook.
-
-### Sharing notebooks
-
-You can make the notebook visible online (for example by putting it in your Dropbox public folder or something similar), copy link, and paste it into https://nbviewer.jupyter.org.
-
-### Kwant, Python, and Python scientific software
-
-For most of the simulations of condensed matter systems we are going to use the Kwant package. You can learn Kwant in more detail by following the [tutorial](https://kwant-project.org/doc/1.0/tutorial/), however we aim that for most of the exercises you will be able to learn by doing. The starting point of the exercises are the notebooks used in the lectures, and you should be able to solve them by only modifying the contents not too much.
-
-The same applies to Python and the Python scientific stack (NumPy, SciPy, Matplotlib): these are easy to use, especially when you have code examples. If you are new to programming and wish to get acquainted with Python,
-[here](https://www.learnpython.org/) are [several](https://www.python-course.eu/) [example courses](https://www.codecademy.com/learn/python) that start from the basics and slowly go into advanced topics. There are of course several MOOCs as well, but you will likely not need as much programming skill.
-
-**Do you have questions about installation? Use this discussion:**
+To obtain a local version of the code, clone or download the [course repository](https://github.com/topocm/topocm_content), install the conda environment from `environment.yml`, and open the source files using the [`jupytext`](https://jupytext.readthedocs.io/en/latest/) jupyter extension.
 
 +++
 
