@@ -55,6 +55,7 @@ For the support with implementing the technical aspects of the course we thank
 * The [Jupyter project](https://jupyter.org) and its developer team, especially Min Ragan-Kelley.
 * [SageMathCloud](https://cloud.sagemath.org) and its creator W. Stein.
 * The [Holoviews](https://holoviews.org) team: Jean-Luc Stevens and Philipp Rudiger.
+* The [Executable books](https://executablebooks.org/) project, powering the current website.
 
 Finally, we thank all the external speakers for contributing the videos for the course.
 
