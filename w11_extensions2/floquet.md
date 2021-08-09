@@ -40,7 +40,6 @@ pi_ticks = [
 Today's topic, Floquet topological insulators, is introduced by Mark Rudner from the Niels Bohr Institute at Copenhagen.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("1peVp_IZ7Ts")
 ```
@@ -116,7 +115,6 @@ If the system is translationally invariant, we can study the effective band stru
 Of course, selecting a single quasi-energy as the Fermi level is arbitrary, since the equilibrium state of driven systems doesn't correspond to a Fermi distribution of filling factors, but at least it seems close enough for us to try to apply topological ideas.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
@@ -164,7 +162,6 @@ $$
 with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ and $\mu_2$. A peculiar property of driven systems is that as the period becomes large, the band structure 'folds': if the driving is very weak, and the original Hamiltonian has energy $E$, the Floquet Hamiltonian has a much smaller quasienergy $(E\bmod 2\pi /T)$. This means that even when $H_1$ and $H_2$ correspond to trivial systems, we can still obtain nontrivial topology if we make the period large enough, as you can see for yourself:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%opts Path {+axiswise}
 def evolution_operator(hamiltonians, T):
@@ -283,7 +280,6 @@ Every electron makes a closed loop and ends up back at its origin. After every s
 Let's have a look at the dispersion, and also see what happens as we tune the driving period:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output size=200
 
@@ -353,7 +349,6 @@ Now, there isn't a Hamiltonian which is more topologically trivial than the zero
 That's something we can also very easily verify by computing the dispersion of a finite size ribbon:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output size=200
 %%opts Path {+axiswise}
@@ -410,7 +405,6 @@ When the driving period is tuned to ensure the absence of bulk dispersion, we ca
 So what is happening with bulk-edge correspondence?
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "How can you change the chirality of the edge states in the figure above?"
 
@@ -442,7 +436,6 @@ What do we need to know to derive the full topological invariant from the bulk p
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("DbyqIczcR9c")
 ```

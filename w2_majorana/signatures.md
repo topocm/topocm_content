@@ -35,7 +35,6 @@ dims = dict(
 Our second guest lecturer for this week is Carlo Beenakker, from Leiden University.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("WAhNblNbadA")
 ```
@@ -107,7 +106,6 @@ Is there anything in particular which distinguishes the Majorana resonance from 
 Let's just look at what happens if we compare conductance of an NS interface in the cases when S is trivial and non-trivial, and see how the conductance changes as we alter the tunnel barrier strength.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 lat = kwant.lattice.chain(norbs=4)
 
@@ -199,7 +197,6 @@ def plot_spectroscopy(V_barrier):
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 holoviews.HoloMap(
     {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
@@ -287,7 +284,6 @@ $$
 We already saw that unitarity requires that $|r_{ee}|^2+|r_{eh}|^2=1$. There are only two possibilities for both conditions to be true: either $|r_{ee}|=1$ (**perfect  normal reflection**) or $|r_{eh}|=1$ (**perfect Andreev reflection**). The situation cannot change without a phase transition. Thus the quantized conductance of the Majorana mode is topologically robust in this case, and in fact survives past the tunneling limit. 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Imagine we replace the superconducting electrode with an insulating material, "
@@ -337,7 +333,6 @@ Here, $\phi = 2\pi\Phi/\Phi_0$ is usually called the **superconducting phase dif
 To see how this happens explicitly, let's look at the spectrum of a topological superconducting ring as a function of flux,  obtained using our nanowire model:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 # Make a finite ring.
 
@@ -393,7 +388,6 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 params = dict(mu_sc=0.4, t=1.0, alpha=0.2, delta=0.1, Ez=1)
 
@@ -430,7 +424,6 @@ Note that this argument relies on the absence of a reservoir of electrons, such 
 The fermion parity switch, together with fermion parity conservation of the ring, result in the energy $E_\textrm{tot}(\Phi)$ and the corresponding current (that can be measured) showing a $2\Phi_0$ periodicity in $\Phi$ - that is, a $4\pi$ periodicity in $\phi$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
@@ -450,7 +443,6 @@ Now you see why $\phi$ was referred to as *superconducting phase* in the first p
 As seen from the plots below, this is exactly what happens in the non-topological phase. In this case, when we look at the energy spectrum, no fermion parity switches appear:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 params["Ez"] = 0.2
 
@@ -465,7 +457,6 @@ plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.11, 0.11])
 In turn, this means that energy and current are periodic with period $\Phi_0$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
@@ -473,7 +464,6 @@ plot_gse_sc_nanowire(fluxes, spectrum)
 At this point, you might be a little worried about how the topological superconductor managed to get around this *conventional wisdom*. The answer is subtle, and relies on the implicit assumption of the ground state fermion parity of the junction being fixed as one changes $\phi$. Topological superconductors violate this assumption and therefore can create the $4\pi$ periodic (or fractional) Josephson effect. 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
@@ -499,7 +489,6 @@ MultipleChoice(
 ## Summary
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("sSacO5RpW5A")
 ```

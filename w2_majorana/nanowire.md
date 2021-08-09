@@ -41,7 +41,6 @@ style = {
 We have a special guest to begin this week's lecture, Yuval Oreg from the Weizmann Institute in Rehovot.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("GQLfs4i22ms")
 ```
@@ -87,7 +86,6 @@ $$
 The effective electron mass $m$ is just the coefficient of the expansion. Let's take a look at the band structure in this regime, both in the topological regime and in the trivial regime:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 lat = kwant.lattice.chain(norbs=4)
 spinful_kitaev_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -133,7 +131,6 @@ Whenever the Zeeman energy $|B|$ is larger than $\mu$ we have one Majorana fermi
 Let's look at what happens with the dispersion as we increase the magnetic field from zero to a value larger than $\mu$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def title(params):
     return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
@@ -234,7 +231,6 @@ And that is a big problem. Majoranas are their own particle-hole partners, and t
 So does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
@@ -285,7 +281,6 @@ At $k = 0$, spin-orbit coupling vanishes, so it has no effect on the system bein
 Let's now check that it does what we want, namely open the gap at a finite momentum:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
@@ -327,7 +322,6 @@ The smaller the gap, the worse the protection of Majoranas, and the more we need
 Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%opts Curve (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts Overlay [show_legend=True legend_position='top']
@@ -401,7 +395,6 @@ Let's summarize our observations:
 We finish our investigation of this model for now with a final simple picture of the band structure of our system.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
@@ -419,7 +412,6 @@ At $k=0$ the spin-orbit coupling is ineffective, so the electron and hole bands 
 The non-monotonous behavior of the gap versus $B$ that we saw earlier is a consequence of this complicated band structure: There are different values of momenta where the dispersion has local minima. When we are close to the phase transition, $k=0$ defines the gap, while for large $B$, it is the gap at finite momentum that becomes smallest.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
 answers = [
@@ -442,7 +434,6 @@ MultipleChoice(
 ## Outlook
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("MsFyJBAMFLI")
 ```

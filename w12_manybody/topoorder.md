@@ -29,7 +29,6 @@ init_notebook()
 The topological order is introduced by Barbara Terhal from RWTH Aachen.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("rLdHCKxMumY")
 ```
@@ -66,7 +65,6 @@ Does this have anything to do with the way we have defined topology in this cour
 The topological robustness makes the topologically degenerate states particularly attractive to store quantum information. The main challenge of quantum information is the quantum decoherence problem, where local fluctuations in the Hamiltonian destroy the phase coherence of the quantum system used to store information. The solution proposed by topological quantum computation is to use the topologically degenerate space of a toric code to store the information. In fact, this is in essence what is being attempted by experimentalists who work on superconducting qubits, under the framework of the surface code. 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "How would the topological degeneracy of the ground state that comes from the loop configurations "

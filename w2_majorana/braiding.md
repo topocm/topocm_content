@@ -27,7 +27,6 @@ init_notebook()
 ## Braiding of Majoranas
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("Ndf2Z84g1R0")
 ```
@@ -136,7 +135,6 @@ In particular, linear combinations of states with different total parity are for
 This consideration only applies to closed systems. It does not apply if we are considering a system which is in contact with a reservoir of electrons, such as a metallic lead, in which case electrons may tunnel in and out of the lead, changing the total parity of the system. Equivalently, it does not apply if we are considering only a part of the total system. You could for instance imagine that, in our sketch, there are more Majorana zero modes in the part of the network which is not drawn explicitly (represented by the dots which “continue” the nanowire). In such a case it is perfectly possible that the *total* network is in, say, a state of even parity, but that the subsystem under consideration is in a superposition of even and odd parity states.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. "
@@ -261,7 +259,6 @@ $$
 Finally, you might object to the fact that the network of nanowires drawn in the figures only allows to exchange neighbouring Majoranas, even though our derivation of $U=\exp(\pi\gamma_n\gamma_m/4)$ seems to hold for any pair of Majoranas. This geometric constraint is not a big problem: by carefully composing many exchanges between neighbours, we can exchange any pair of Majoranas. As an example, you have that $U_{13}\equiv\exp\left(\pi\gamma_1 \gamma_3/4\right) = U_{12}^\dagger\,U^\dagger_{23}\,U_{12}$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. "
@@ -304,7 +301,6 @@ These are the basic ideas of **topological quantum computation**. It is incredib
 ## Summary
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("V3e9r4S8GHs")
 ```

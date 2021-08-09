@@ -29,7 +29,6 @@ init_notebook()
 This topic is introduced by Sankar Das Sarma from the university of Maryland.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("4gSJSo3olfg")
 ```
@@ -70,7 +69,6 @@ $$
 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
@@ -152,7 +150,6 @@ $$
 Thus the composite fermion theory provides an explanation for how electrons can form incompressible states at a fractional sequence of filling fractions that is known as the "Jain sequence". These states were all seen in experiments.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
@@ -192,7 +189,6 @@ We can however explain the result. If one stacks the two FQH states one obtains 
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("zrL-qxjKfGw")
 ```

@@ -29,7 +29,6 @@ init_notebook()
 Joel Moore from the University of California, Berkeley will introduce this week's topic, by telling us how the idea of a two-dimensional topological insulator was generalized to three dimensions.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("NIhMjm7cyug")
 ```
@@ -129,7 +128,6 @@ $$
 Let's have a quick look at it to get a more concrete understanding:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='png'
 
@@ -212,7 +210,6 @@ As a final illustration of the relation between weak and strong invariants, let'
 We determine the topological invariant in the same way as for QSHE: we see if the phase of the reflection matrix connects the Pfaffians of $r(k_y=0)$ and $r(k_y=\pi)$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='png'
 
@@ -317,7 +314,6 @@ We see the values of the invariants change several times:
 * Finally one more Dirac cone appears at $k = (\pi, \pi)$, accompanied by both invariants becoming trivial.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
 
@@ -353,7 +349,6 @@ In total we thus get $\sigma_{xy} = (2n + 1) e^2/h$: an integer, which resolves 
 Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output size=150
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
@@ -372,7 +367,6 @@ spectrum(wire, p, k_x=k, **kwargs)
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
@@ -404,7 +398,6 @@ MultipleChoice(
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("s7H6oLighOM")
 ```

@@ -38,7 +38,6 @@ data_folder = (
 The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("8gkERY6hXTU")
 ```
@@ -76,7 +75,6 @@ Let's try the most obvious thing and see what happens to  $\langle Q\rangle$, as
 So below we see $\mathcal{Q}$ averaged over 100 different realizations in a disordered Kitaev chain with 30 sites as we gradually increase $U$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def make_kitaev_chain(L=10):
     lat = kwant.lattice.chain(norbs=2)
@@ -177,7 +175,6 @@ The second effect, despite looking mysterious, appears just because the disorder
 Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
@@ -223,7 +220,6 @@ Let's try and verify our hypothesis by constructing the scaling flow of the diso
 Here's what we get:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
     data_folder + "scaling_data_ts.dat"
@@ -288,7 +284,6 @@ The flow, we just calculated is in fact valid for all one-dimensional topologica
 It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What does the 2 parameter flow diagram predict about the infinite size limit?"
@@ -378,7 +373,6 @@ An extra attractive metallic fixed point can make the flow diagram more complica
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("NY6wPiH0E9E")
 ```

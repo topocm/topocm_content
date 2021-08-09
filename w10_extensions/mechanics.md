@@ -32,7 +32,6 @@ Today's lecture will be given by Vincenzo Vitelli, from Leiden University. You w
 The main concepts and mathematical ideas will be presented in the context of real mechanical prototypes. Hopefully, this approach will stimulate you to cross the line that too often separates theory from applications.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("i-eNPei2zMg")
 ```
@@ -107,7 +106,6 @@ $$
 where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates between left-leaning ($u<0$ as $x\rightarrow-\infty$) and right-leaning ($u>0$ as $x\rightarrow+\infty$) states.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = r"What happens to the kink width $w_0$ when the gap closes?"
 
@@ -149,13 +147,11 @@ Rather than analyzing mathematically the dynamics of the Lagrangian above, watch
 show the motion in the linkage limit.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("BE4NDhfdpBQ")
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("mRjpzC4rJx0")
 ```
@@ -167,7 +163,6 @@ If you are curious about the mathematical details and a systematic study of the 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](https://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("w2k1Y0WON2E")
 ```
@@ -207,7 +202,6 @@ dimensions.)
 As a simple test of your knowledge, consider the following question whose answer will prove handy later.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
@@ -279,7 +273,6 @@ value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given
 Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("Mrm7JH6LJJI")
 ```
@@ -310,7 +303,6 @@ defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$)
 A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
@@ -340,7 +332,6 @@ In the numerical simulation below, you can see explicitly that transforming the 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 from holoviews.core.element import Element2D
 from holoviews.plotting.mpl import ElementPlot
@@ -392,7 +383,6 @@ These examples show how to insert topologically protected mechanical modes anywh
 You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("RbJTxKFqO7I")
 ```
@@ -412,7 +402,6 @@ As a result these states are designed to be topologically robust under smooth de
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("j0X0sVy_6Og")
 ```

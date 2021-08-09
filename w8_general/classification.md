@@ -159,7 +159,6 @@ def color_table(table, color_array):
 Shinsei Ryu from the University of Illinois will introduce the general classification of topological insulators and superconductors.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("cKzUuQyZjFo")
 ```
@@ -173,7 +172,6 @@ Let us now look at all the possible symmetry classes in dimensions from $0$ to $
 There are quite a few, here is the full list:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 full_table, format_string = make_table(
     show_symmetries=False, sort_order=np.argsort(symmetry_classes)
@@ -191,7 +189,6 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 This table has a lot of logic in it, but to you it most likely looks no better than this:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 np.random.seed(1)
 
@@ -272,7 +269,6 @@ The second term in the sum covers the two cases when there are no anti-unitary s
 Let's have another look at the 10 rows in the table, this time specifying which combination of the three fundamental symmetries each row has:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 np.random.seed(1)
 
@@ -294,7 +290,6 @@ Their names come from an elegant mathematical classification of [symmetric space
 The two complex classes are A and AIII.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "Which symmetry class do we get if we break Kramers degeneracy in class BDI?"
 
@@ -318,7 +313,6 @@ To get some confidence with the table and these obscure names, it is useful to s
 Every red entry in the table below corresponds to something which we already know and studied in the previous weeks of the course, as you can discover by moving the mouse over it.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 tooltips = {
     (1, 6): "Chern insulator: no symmetries, d=2",
@@ -439,7 +433,6 @@ The grey entries in the table are the chiral classes, and the arrows show which 
 Finally, let's see what the table looks like when we order the rows according to the Bott clock above:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 np.random.seed(5)
 n = 8
@@ -480,7 +473,6 @@ The first thing to observe is that the complex classes only have $\mathbb{Z}$ in
 The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](https://arxiv.org/abs/1104.1602).
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 n = 8
 
@@ -502,7 +494,6 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 Another useful feature of the table is that in a given column, all $\mathbb{Z}$ or $2\mathbb{Z}$ entries, which are grouped by the color gradients below, have the same topological invariant.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 np.random.seed(15)
 n = 8
@@ -530,7 +521,6 @@ We can check this statement for some cases we know. For instance, in $d=0$ the $
 An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionaility twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 np.random.seed(4)
 n = 8
@@ -560,7 +550,6 @@ You can now view this cylinder as a one-dimensional system whose ends are the tw
 We can proceed further with our dimensional reduction. If we take our one dimensional system and make it into a ring, we obtain a zero-dimensional system. Depending on how the two ends are coupled, the two Majorana modes can favour the even or odd fermion parity state, and this quantity cannot change without a Fermi level crossing. This is the $\mathbb{Z}_2$ invariant of zero-dimensional systems in class D.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
@@ -587,7 +576,6 @@ MultipleChoice(
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("nnzPiJ3Q3_8")
 ```

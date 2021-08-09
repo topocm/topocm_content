@@ -35,7 +35,6 @@ randn = np.random.randn
 Fabian Hassler from RWTH Aachen will present the topological invariants
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("ceyus0cRBi0")
 ```
@@ -78,7 +77,6 @@ A scattering matrix is smaller than the matrix of all the eigenvectors, and for 
 This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def two_terminal(L, W):
     t = 1.0
@@ -141,7 +139,6 @@ smat_times = [smat_time(N) for N in Ns_smat]
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 plt.plot(Ns_diag, diag_times, "-o", label="diagonalization")
 plt.plot(Ns_smat, smat_times, "-o", label="scattering matrix")
@@ -233,7 +230,6 @@ $$
 So by finding all the eigenvalues $z$ we get all the zeros of $h(z)$ inside the unit circle, and immediately obtain the 1D topological invariant:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def random_sys(N=4):
     onsite = randn(N, N) + 1j * randn(N, N)
@@ -331,7 +327,6 @@ So the **Bott index** $m$ looks like a Chern number, behaves like a Chern number
 To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $\log\varPhi_x \varPhi_y \varPhi_x^\dagger \varPhi_y^\dagger$, taking a disordered Chern insulator as a sample system:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%opts Points {+framewise}
 %%opts Path {+framewise}
@@ -411,7 +406,6 @@ holoviews.HoloMap(
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("9qCSXEfSlqE")
 ```

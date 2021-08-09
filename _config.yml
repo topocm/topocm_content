@@ -27,7 +27,7 @@ sphinx:
     - - https://unpkg.com/@holoviz/panel@0.10.2/dist/panel.min.js
       - crossorigin: anonymous
   local_extensions:
-    expand_refs: ./expand_refs/
+    extensions: ./sphinxext/
   extra_extensions:
     - sphinxext.opengraph
 launch_buttons:

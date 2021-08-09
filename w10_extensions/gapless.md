@@ -33,7 +33,6 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 Ashvin Vishwanath from the University of California, Berkeley will introduce Weyl semimetals and other examples of gapless, yet topological, systems.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("MAWwa4r1qIc")
 ```
@@ -78,7 +77,6 @@ where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two
 To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This is what the band structure and $\det h$ look like:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output size=150 fig='png'
 
@@ -200,7 +198,6 @@ This means that a Dirac point at momentum $k$ and positive winding must come tog
 The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac points at $|k_x| = |k_y| = k_F / \sqrt{2}$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
 
@@ -230,7 +227,6 @@ Whenever the line corresponding to a constant $k_\parallel$ crosses a Dirac poin
 For a $d$-wave superconductor this will only happen for some crystalline orientations, as you can see for yourself:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%opts VLine (color='k')  Curve (linestyle='--')
 
@@ -324,7 +320,6 @@ $$
 > So applying the most general perturbation we can think of does not gap out the Weyl point where the energy vanishes. Instead, the perturbation only shifts the Weyl point around in momentum space. This feels like some kind of topological protection.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='png'
 %%opts Surface [azimuth=45]
@@ -394,7 +389,6 @@ At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z
 ![](figures/weyl.svg)
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
 

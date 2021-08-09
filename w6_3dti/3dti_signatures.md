@@ -40,7 +40,6 @@ How do we find a topological insulator? In the first video of today, David Vande
 This is an expertise that no one from the course team has, so pay close attention to it: this material stands apart from the rest.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("62ZObitJ4DM")
 ```
@@ -56,7 +55,6 @@ Both the quantum Hall and quantum spin Hall states have striking conductance qua
 The 3D topological insulators do not posses similar striking conductance properties. In a slab geometry, the surface states contribute with a finite density of propagating states. This density has a minimum at the Dirac point. The conductance increases roughly with a hyperbolic shape if the chemical potential is tuned away from the Dirac point as shown in the plot below:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 # BHZ model
 def onsite(site, mu, D1, D2, M, B1, B2):
@@ -176,7 +174,6 @@ Therefore, rather than observing a sequence $e^2/h\,(2n+1)$, we observe a more c
 So, even by studying the Landau levels experimentally, we do not get a topological signature. But do not despair, luckily there is a much better thing that we can do rather than just measuring conductance: looking at the energy spectrum of the surface states directly.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
 
@@ -217,7 +214,6 @@ In the top panel of the figure above, we see that by changing the chemical poten
 While the top panels shows where the occupied states lie in the $(k_x, k_y)$ plane, in the second and third rows we see a cross-section of the energy as a function of momentum, where the Dirac cone is clearly visible, emerging from a bulk valence band filled with electrons.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
 
@@ -297,7 +293,6 @@ You see a correction to the Dirac velocity proportional to $\alpha \mathbf{k}^2$
 Let's plot the spectrum of this extended effective Hamiltonian:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='png'
 
@@ -370,7 +365,6 @@ In addition to modifying the shape of the Fermi surface, we see that the extra t
 David Vanderbilt will conclude this week's lectures by offering a perspective on the future of the field.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("WZmNeEwM1N4")
 ```

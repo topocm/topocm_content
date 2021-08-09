@@ -33,7 +33,6 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("gKZK9IGY9wo")
 ```
@@ -87,7 +86,6 @@ Let's take a one-dimensional region, coupled to two electrodes on both sides, an
 So our system now looks like this:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 # Plot of the potential in the pumping system as a function of coordinate.
 # Some part of the leads is shown with a constant potential.
@@ -146,7 +144,6 @@ The potential near the bottom of each minimum is approximately quadratic, so the
 We can numerically check how continuous bands in the wire become discrete evenly spaced bands as we increase $A$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def hopping(site1, site2, t):
     return -t
@@ -198,7 +195,6 @@ So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an in
 Since electrons do not move between neighboring potential minima, so when we change the potential by one time period, we move exactly $N$ electrons.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "Why are some levels in the band structure flat while some are not?"
 answers = [
@@ -231,7 +227,6 @@ Let us consider the reservoirs to be closed finite (but large) boxes. When the p
 Since the Hamiltonian is periodic in time, the Hamiltonian together with all its eigenstates return to the initial values at the end of the period. The adiabatic theorem guarantees that when the Hamiltonian changes slowly the eigenstates evolve to an eigenstate that is adjacent in energy. 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def modulated_wire(L, dL, bulk):
     """Create a pump.
@@ -292,7 +287,6 @@ The states that don't shift in energy are the ones trapped in the minima of the 
 To understand better what is happening, let us color each state according to the position of its center of mass, with red corresponding to the left reservoir, blue to the right one, and white to the middle of the system.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 spectrum_with_reservoirs.opts(c="pos", cmap="seismic")
 ```
@@ -367,7 +361,6 @@ We know now how to calculate the pumped charge during one cycle, so let's just s
 The scattering problem in 1D can be solved quickly, so let's calculate the pumped charge as a function of time for different values of the chemical potential in the pump.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%opts Path.Q (color=Cycle(values=['r', 'g', 'b', 'y']))
 %%opts HLine (color=Cycle(values=['r', 'g', 'b', 'y']) linestyle='--')
@@ -416,7 +409,6 @@ spectrum(bulk, p, **kwargs) * HLines + holoviews.Overlay(
 In the left plot, we show the band structure, where the different colors correspond to different chemical potentials. The right plot shows the corresponding pumped charge. During the pumping cycle the charge may change, and the relation between the offset $\phi$ of the potential isn't always linear. However we see that after a full cycle, the pumped charge exactly matches the number of filled levels in a single potential well.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What happens to the dependence of the reflection phase shift on time if we "
@@ -444,7 +436,6 @@ MultipleChoice(
 ## Quantized charge and scattering invariant
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("6lXRAZ7hv7E")
 ```
