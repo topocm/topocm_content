@@ -33,7 +33,6 @@ warnings.simplefilter("ignore", UserWarning)
 Taylor Hughes from the University of Illinois at Urbana-Champaign will describe the interplay between defects in crystals and weak topological insulators.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("k3ZKCg7jtTs")
 ```
@@ -120,7 +119,6 @@ We will create a 3D weak topological insulators by stacking many layers of 2D to
 Let's start with a screw dislocation connecting two layers. The system looks like this:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 # Layered BHZ and QAH models
 
@@ -237,7 +235,6 @@ The Burgers' vector is parallel to the $z$-axis and has unit length (the disloca
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 kwargs = {
     "k_x": 0,
@@ -315,7 +312,6 @@ Here, the fundamental difference between the BHZ model and the quantum anomalous
 We can also look at an edge dislocation:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def edge_dislocation(model, L=10, W=15):
     syst = kwant.Builder(
@@ -380,7 +376,6 @@ ax.axis("off");
 The Burgers vector is now along the $y$-direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 kwargs = {
     "k_x": 0,
@@ -430,7 +425,6 @@ holoviews.HoloMap({
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What would happen in both simulations above if we changed the dislocation, "
@@ -457,7 +451,6 @@ MultipleChoice(
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("MvcvJiZYSSk")
 ```

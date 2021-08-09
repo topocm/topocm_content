@@ -33,7 +33,6 @@ Ady thanks Dr. Dan Arav and Gil Novik from the School of Media Studies of the
 College of Management - Academic Studies for their help in preparing the videos.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("QC3tQT7MD00")
 ```
@@ -120,7 +119,6 @@ This relation, which says that $\sigma_H\propto n$, is extremely general in the 
 As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder. 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "What is the longitudinal conductance for the ideal electron gas in a magnetic field?"
 answers = [
@@ -146,7 +144,6 @@ Instead, a completely unexpected result was measured for the first time by Klaus
 This setup is easy to try to reproduce numerically, but there's one complication:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def onsite(site, t, mu):
     return 4 * t - mu
@@ -264,7 +261,6 @@ def conductivities(syst, p):
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 syst = qhe_hall_bar(L=60, W=80, w_lead=70, w_vert_lead=28).finalized()
 p = dict(t=1.0, mu=0.3, mu_lead=0.3, B=None)
@@ -272,7 +268,6 @@ Bs = np.linspace(0.02, 0.15, 200)
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 sigmasxx, sigmasxy = zip(*[conductivities(syst, p) for p["B"] in Bs])
 
@@ -348,7 +343,6 @@ Here an integer number of charges is pumped from one edge to the other as the fl
 
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
@@ -425,7 +419,6 @@ def plot_pumping(syst, p):
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 W = 20
 p = dict(t=1, B=(2 * np.pi / W))
@@ -436,7 +429,6 @@ pumping_map
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Experimentally the quantum Hall conductance jumps - what does this mean about the "
@@ -541,7 +533,6 @@ $$
 We can now look again at the Laughlin pump, monitoring at the same time the Landau levels. You can see that the total pumped charge jumps in integer steps each time a Landau level passes through the Fermi level.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def qhe_cylinder(W):
     lat = kwant.lattice.square()
@@ -573,7 +564,6 @@ pumping_map + landau_levels * HLine
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, "
@@ -590,7 +580,6 @@ MultipleChoice(
 ## Summary
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("2u8_2isyi7o")
 ```

@@ -33,7 +33,6 @@ Looking back at the material from the past weeks, you might have the impression 
 Xiaoliang Qi from Stanford University will now explain that this is not the case, and will also introduce this week's topic - Chern insulators.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("osKP6x0Ewbo")
 ```
@@ -83,7 +82,6 @@ At this point you might worry that the Kitaev model has superconductivity, and s
 Finally, before we go on with our plan, keep in mind that considering the phase transition point of a lower dimensional model turns out to be a fairly generic strategy to construct higher dimensional topological models.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. "
@@ -151,7 +149,6 @@ $$
 Aside from special points, this spectrum is gapped, just like we wanted. For instance it is gapped if $\mu<-2t-2\gamma$. If we start from this point and increase the value of $\mu$, the gap closes at the point $\mu = -2t-2\gamma$ and then reopens:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 lat = kwant.lattice.square()
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -190,7 +187,6 @@ holoviews.HoloMap(
 As a check that everything worked, let's look at the dispersion of a ribbon with finite width along the $y$ direction. If there are edge states, we should see a Dirac-like crossing around $k_x=0$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 W = 15
 
@@ -217,7 +213,6 @@ We see that the crossing is there, and it disappears when the gap closes. So we 
 While details such as the bulk spectrum and edge dispersion are different from the case with a magnetic field, the bulk-edge correspondence tells us that the edge states are as robust as those of the quantum Hall effect we studied last week.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "How does our lattice model with no magnetic field differ from the original quantum Hall effect?"
 answers = [
@@ -268,7 +263,6 @@ so it has a velocity $v=2\gamma$, the direction of which depends on the sign of 
 ## Conclusion
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("CXgAcOOVlag")
 ```

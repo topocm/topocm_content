@@ -74,7 +74,6 @@ But let's now move closer to the edges. That is, let's consider states which are
 Because $y_0$ is proportional to $k$, this means the states close to the edge will acquire a dependence on $k$. Let's see if this is true, by plotting $E(k)$ for our ribbon:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def onsite(site, t, mu):
     return 4 * t - mu
@@ -145,7 +144,6 @@ The velocity is opposite at the two edges because the local electric field $\mat
 An important thing to note is that the presence of edge states does not depend in any way on the particular shape of the sample as well. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a “picture” of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
     """Create a hall bar system. 
@@ -240,7 +238,6 @@ kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
 answers = [
@@ -290,7 +287,6 @@ So let's take again our Corbino disk immersed in an external magnetic field. Wit
 In this new drawing, we have also added arrows to indicate that we now know that each edge of the Corbino supports one chiral  state. We cannot resist the temptation of showing you another beautiful plot of the local density of states, showing edge states in the Corbino geometry:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
@@ -385,7 +381,6 @@ $$
 > Thus, the relevant electromagnetic responses, namely the longitudinal and Hall conductivities $\sigma_L=0$ and $\sigma_H=ne^2/h$, can both be derived directly by only considering the chiral edge states.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
 answers = [
@@ -411,7 +406,6 @@ The physical picture that we presented this week is very simple, and it is also 
 In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](https://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("rQs12c-SieE")
 ```

@@ -7,6 +7,8 @@ from jinja2 import Template
 
 from publist.publist import update as update_publist
 from ruamel.yaml import YAML
+import sphinx
+import myst_nb
 
 PREPRINT_REGEX = r"arXiv:(.+?[/\.]\d+)"
 FULL_TEMPLATE = Template(
@@ -67,8 +69,17 @@ def replace_refs(app, docname, source):
     source[0] = re.sub(r"(### |\* |[^#*] )" + PREPRINT_REGEX, replace, source[0])
 
 
+class RemoveAllInputs(sphinx.transforms.Transform):
+    default_priority = 210
+
+    def apply(self):
+        for node in self.document.traverse(myst_nb.nodes.CellInputNode):
+            node.parent.remove(node)
+
+
 def setup(app):
     app.connect("source-read", replace_refs)
+    app.add_transform(RemoveAllInputs)
 
     return {
         'version': '0.0.1',

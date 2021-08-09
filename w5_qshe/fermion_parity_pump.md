@@ -32,7 +32,6 @@ from matplotlib import cm
 Charles Kane from the University of Pennsylvania will introduce today's lecture on two dimensional topological insulators with time-reversal symmetry.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("n5oUQvvsYd0")
 ```
@@ -170,7 +169,6 @@ We are forced to conclude that it is impossible to have $r$ unitary, and therefo
 This is the discovery that Charles Kane described in the introductory video. We can quickly check it by randomly selecting an antisymmetric scattering matrix with odd $N$, like the following one with $N=3$,
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 N = 3
 np.random.seed(12)
@@ -182,7 +180,6 @@ pprint_matrix(S)
 and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 r = S[:N, :N]
 print("Reflection eigenvalues")
@@ -228,7 +225,6 @@ In particular, let's again make the simple assumption that the spin projection a
 However, the quantized spin Hall current is not a general property of a quantum spin Hall insulator. Here, it arises because we have combined time reversal symmetry with a spin conservation law, and as we learned in the first week, conservation laws are boring from a topological point of view.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Consider the simple case where spin is conserved. "
@@ -277,7 +273,6 @@ You can see that it is basically two copies of the massive Dirac Hamiltonian we 
 By changing the sign of $M$ from negative to positive, you get a gap closing at $\mathbf{k}=\pmb{0}$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 # Onsite and hoppings for bhz model
 def onsite(site, M, B, D, del_z):
@@ -343,7 +338,6 @@ To make things more simple, you may actually imagine that the circumference of t
 So let's look at the energy spectrum of a cylinder as a function of $k$ (or equivalently $\Phi$), and compare a cylinder in the quantum spin Hall phase with a cylinder in the trivial insulating phase.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 W = 20
 
@@ -428,7 +422,6 @@ This gives us a curve which starts at $\textrm{Pf}[r(0)]$ and ends at either $\t
 In the plot below, we show how this trajectory changes for our cylinder geometry as the BHZ model is driven through the topological phase transition. In the right panel, the green dots give you the phase of $\textrm{Pf}[r(0)]$ and $\textrm{Pf}[r(\pi)]$, and the blue line the phase of $\det[r(k)]$.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='png'
 
@@ -571,7 +564,6 @@ As a bonus, thanks to the previous arguments we can begin to understand how to l
 Such a band inversion is not impossible to achieve in real materials, and can be captured using the BHZ model. But let's leave this to the next lecture.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
@@ -600,7 +592,6 @@ MultipleChoice(
 ## Summary
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("ft9ppqqLhH4")
 ```

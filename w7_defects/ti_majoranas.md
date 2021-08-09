@@ -30,7 +30,6 @@ init_notebook()
 We have a returning lecturer for the first chapter of this week's lectures: Carlo Beenakker from Leiden University, who will tell us more about different ways to create Majoranas in superconducting vortices.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("YVGlfejNH90")
 ```
@@ -70,7 +69,6 @@ We will not repeat our pumping experiment, that is increasing the flux $\Phi$ by
 From the point of view of the superconducting junction, this means that advancing the phase difference $\phi$ by $2\pi$, the ground state fermion parity of the junction changes. Recalling what we learned in the second and third weeks, we can say that the Josephson effect is $4\pi$-periodic.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
 
@@ -125,7 +123,6 @@ The strength of the Zeeman field $m(x)$ and the pairing $\Delta(x)$ both depend 
 This is shown below in a numerical simulation of a quantum spin-Hall disk. The left panel shows the edge state of the disk without any superconductor or magnet. In the right panel we cover one half of the disk by a superconductor and the other by a magnet, and obtain two well-separated Majoranas:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 my = 0.5 * (pauli.sys0 + pauli.sysz)
 s0s0sz = np.kron(pauli.s0s0, pauli.sz)
@@ -288,7 +285,6 @@ To answer this question, observe that the energy spectrum $E_n = 2 \pi\,n\,\hbar
 Below, we plot the wave function of the lowest energy state in a $p$-wave disk with a vortex in the middle. The lowest energy wavefunction is an equal superposition of the two Majorana modes. Here you can see that half of it is localized close to the vortex core and half of it close to the edge.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def onsite(site1, t, mu):
     return (4 * t - mu) * pauli.sz
@@ -340,7 +336,6 @@ ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What happens if you add a second vortex to the superconductor? "
@@ -394,7 +389,6 @@ In fact, the magnet was only a crutch that we used to make our argument. We can 
 To confirm this conclusion, below we show the result of a simulation of a 3D BHZ model in a cube geometry, with a vortex line passing through the middle of the cube. To make things simple, we have added superconductivity everywhere in the cube, and not just on the surface (nothing prevents us from doing this, even though in real life materials like Bi$_2$Te$_3$ are not naturally superconducting).
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 import matplotlib.cm
 import matplotlib.colors as mcolors
@@ -407,7 +401,6 @@ gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 lat = kwant.lattice.cubic(norbs=8)
 
@@ -494,7 +487,6 @@ In the right panel, you can see a plot of the wavefunction of the lowest energy 
 ## Conclusions
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("B7lMz-NrKec")
 ```

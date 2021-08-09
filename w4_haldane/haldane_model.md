@@ -33,7 +33,6 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he introduced in 1988, and which has become a prototype for the anomalous quantum Hall effect.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("7nVO4uMm-do")
 ```
@@ -71,7 +70,6 @@ $$
 The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives rise to the famous band structure of graphene, with the two bands touching at the six corners of the Brillouin zone:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 honeycomb = kwant.lattice.honeycomb()
 a, b = honeycomb.sublattices
@@ -184,7 +182,6 @@ The last term changes sign under time-reversal symmetry, breaking it. This is th
 Let's see what happens to the system when these special second neighbor hoppings are turned on:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
@@ -202,7 +199,6 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 %%output fig='svg'
 
@@ -248,7 +244,6 @@ The appearance of edge states means that graphene has entered a topological phas
 As you know, this means we have created a **Chern insulator**. The reason for this name will become obvious in the second part of the lecture.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "What happens if we take a Haldane model in the topological phase and turn "
@@ -387,7 +382,6 @@ The Brillouin zones for $|t_2|>M/(3\sqrt{3})$, on the other hand, have Berry cur
 To see this more clearly, we can compute the Berry curvature numerically and plot it over the whole Brillouin zone as a function of $t_2$:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def berry_curvature(syst, p, ks, num_filled_bands=1):
     """Berry curvature of a system.
@@ -465,7 +459,6 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
 kwargs = {
@@ -483,7 +476,6 @@ holoviews.HoloMap(
 ```
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = "How does time-reversal symmetry influence the Berry curvature?"
 
@@ -507,7 +499,6 @@ At the same time it's important to know that the particular distribution of the 
 For instance, here is a slider plot for the Berry curvature for the quantum Hall lattice model studied in the previous chapter.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 lat = kwant.lattice.square()
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -552,7 +543,6 @@ You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that wh
 ## Summary: extending the model to spinful electrons and photons
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("0gxE68kvdmw")
 ```

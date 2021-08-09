@@ -30,7 +30,6 @@ init_notebook()
 Crystalline topological insulators are introduced by Liang Fu from MIT.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("N9-tUYjXC1s")
 ```
@@ -50,7 +49,6 @@ Due to this type of constraint on the Brillouin zone, crystalline symmetries can
 Note however, that sometimes the mere presence of a surface can break a crystalline symmetry of the bulk, so that one should be careful when applying the bulk-boundary correspondence to properties based on crystalline symmetries.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = r"In which case can inversion symmetry protect gapless surface states?"
 
@@ -89,7 +87,6 @@ The mirror Chern number is a topological invariant in the sense that it cannot c
 Naturally, the same recipe allows to construct a reflection symmetric topological insulator starting from any other topological invariant, not just a Chern number. We will now try to do this.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "How would you attempt to make a model of a topological"
@@ -129,7 +126,6 @@ On the other hand, if the hopping between the nanowires is reflection invariant,
 If we do everything right (this does require some trial and error in searching for the hopping that actually can couple the two Majoranas from the edge), we get a painfully familiar dispersion:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def nanowire_chains(length=40, n=2):
     def onsite(site, t, mu, B, delta):
@@ -184,7 +180,6 @@ This means that the Chern number of the alternating layers has to have opposite 
 Once again, coupling the layers we get a familiar Dirac cone on the surface:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def stacked_qwz(w=50):
     def shape(pos):

@@ -31,7 +31,6 @@ warnings.simplefilter("ignore", UserWarning)
 ## Introduction
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("-HRBuCgOUvs")
 ```
@@ -67,7 +66,6 @@ The spectrum of this Hamiltonian is very similar to that of a Chern insulator (a
 So below we see a qualitative band structure of one of the QSHE insulators, HgTe/CdTe quantum well, compared with the band structure of InAs/GaSb quantum well.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def onsite(site, mu, B, D, M, ez_y):
     return (
@@ -117,7 +115,6 @@ When we move the Fermi level outside of the bulk gap, the bulk becomes conductin
 We end up with this situation:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 def bhz_ribbon(W):
     """Translationally invariant BHZ system with a fixed width W."""
@@ -259,7 +256,6 @@ If we consider the simple case of a magnetic field ${\bf B}=B {\bf x}$ along the
 We can very easily calculate that this is the case if we plot the conductance of the QSHE model as a function of magnetic field:
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 E_zs = np.linspace(0, 0.15, 50)
 p["mu"] = 0
@@ -311,7 +307,6 @@ You might be worried that the suppression of conductance is only shown for the l
 Localization of QSHE edge states by magnetic field is relatively poorly understood, and we are not aware of a final experiment that would prove its existence or tell us in details what it is that happens at the QSHE edge in a magnetic field. As you will learn in two weeks, opening the gap by magnetic field opens new pathways for the creation of Majoranas, and so it is still a very important direction of research.
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 question = (
     "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
@@ -339,7 +334,6 @@ MultipleChoice(
 ## Summary
 
 ```{code-cell} ipython3
-:tags: [remove-input]
 
 Video("Kop4zXWQ1Zc")
 ```
