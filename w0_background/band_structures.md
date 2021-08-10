@@ -76,7 +76,7 @@ Now those of you who know basic quantum mechanics might say this is a very stran
 But this indeed is the wave-function for helical Majorana particles that we encounter later on.
 
 #### Applying the Schrodinger equation
-The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):
+The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex vector, though the Hamiltonian is typically not a complex matrix (thankfully):
 
 $$
 H=-\frac{\hbar^2}{2m}\partial_x^2 + V(x),
