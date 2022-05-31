@@ -292,7 +292,7 @@ The series expansion of $H(k)$ that we discussed in the previous paragraph is a 
 This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. 
 The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
-A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals.
+A continuum Hamiltonian is sometimes easier to work with analytically than the crystal lattice of orbitals.
 On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator:
 
 $$
