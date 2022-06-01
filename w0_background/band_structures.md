@@ -292,7 +292,7 @@ The series expansion of $H(k)$ that we discussed in the previous paragraph is a 
 This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone. 
 The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator. 
 
-A continuum Hamiltonian is sometimes easier to work with analytically then the crystal lattice of orbitals.
+A continuum Hamiltonian is sometimes easier to work with analytically than the crystal lattice of orbitals.
 On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator:
 
 $$
@@ -315,7 +315,7 @@ For future reference, $k^2$ would discretize into $k^2=-\sum_n (|n\rangle \langl
 But wait! Didn't we just go in a circle by starting in a lattice Hamiltonian and coming back to a discrete Hamiltonian? 
 Well, actually, the lattice in the newly discretized model has almost nothing to do with the microscopic lattice we started with. 
 More often than not, the lattice constant $\Lambda$ (i.e. effective size of the unit-cell) in the latter representation is orders of magnitude larger than the microscopic lattice constant.
-So the discrete model following from $k\cdot p$ is orders of magnitude more efficient to work with than tht microscopic model, which is why we most often work with these.
+So the discrete model following from $k\cdot p$ is orders of magnitude more efficient to work with than the microscopic model, which is why we most often work with these.
 Of course, there is always a danger of missing certain lattice level phenomena in such a coarse-grained model. 
 Practically, we often do not start with an atomistic lattice model, but rather with a continuum $k\cdot p$ model and then discretize it. 
 This is because, the latter models can often be constrained quite well by a combination symmetry arguments as well as experimental measurements. 
