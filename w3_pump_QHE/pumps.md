@@ -304,7 +304,7 @@ More generally, while levels do not have to move as shown in the figure, the ene
 
 Therefore, our thoughts about "where the electrons came from" leads us to an interesting conclusion: The number of charges pumped in an adiabatic pumping cycle (independent of the strength $A$) is an integer (possibly $0$).
 
-Furthermore, it is an integer as long as the wire is gapped at the chosen Fermi level ( so as to isolate the reservoirs).
+Furthermore, it is an integer as long as the wire is gapped at the chosen Fermi level (so as to isolate the reservoirs).
 
 
 So without doing any calculations, we can conclude that:
