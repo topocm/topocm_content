@@ -345,13 +345,13 @@ $$
 
 The Berry curvature is like a *magnetic field in momentum space*. Just like the magnetic field $\mathbf{B}(\mathbf{r})=\nabla_\mathbf{r}\times\mathbf{A}(\mathbf{r})$ in electromagnetism, it is a local quantity which does not suffer from the ambiguities of the vector potential (it is gauge independent).
 
-The main advantage of introducing the analogy with the magnetic field is that it motivates us to use Stokes theorem. The Brillouin Zone has the shape of a torus. Therefore the curve $k_x=0$ and $k_x=2\pi$ on the torus bounds the entire Brillouin zone. Using Stokes theorem on this curve we can conclude that
+The main advantage of introducing the analogy with the magnetic field is that it motivates us to use Stokes theorem. The Brillouin zone has the shape of a torus. Therefore the curve $k_x=0$ and $k_x=2\pi$ on the torus bounds the entire Brillouin zone. Using Stokes theorem on this curve we can conclude that
 
 $$
 2\pi W=\gamma(2\pi)-\gamma(0)=\iint_{\textrm{BZ}} \mathbf{\Omega}(\mathbf{k})\,\cdot\,d\mathbf{S}\,,
 $$
 
-where the integral extends over the entire Brillouin Zone.
+where the integral extends over the entire Brillouin zone.
 
 > As a result of this formalism, we have established two things. First, there is a Chern number which is defined entirely in terms of the momentum space wave functions. Second, the analogy with the magnetic field allows us to obtain an explicit expression for the Chern number in terms of derivatives of the wave functions.
 
