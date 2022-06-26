@@ -20,26 +20,6 @@ execute_ipynbs:
         - _build/
 
 
-mirror to github:
-  stage: build
-  allow_failure: true
-  only:
-    - branches@qt/topocm
-  variables:
-    REPOS: "git@github.com:topocm/topocm_content.git"
-  before_script:
-    - HOSTS=$(for REPO in $REPOS; do echo ${REPO%:*} | cut -d'@' -f2; done)
-    - mkdir ~/.ssh && chmod 700 ~/.ssh
-    - for HOST in $HOSTS; do ssh-keyscan $HOST >> ~/.ssh/known_hosts; done
-    - echo "$PUSH_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-  after_script:
-    - rm -rf ~/.ssh
-  script:
-    - ORIGIN_URL=$(git config --get remote.origin.url)
-    - cd $(mktemp -d); git clone --bare $ORIGIN_URL .
-    - for REPO in $REPOS; do git push --mirror $REPO; done
-
-
 .upload_website: &upload_website
   stage: deploy
   before_script:
