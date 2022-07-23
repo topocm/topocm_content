@@ -57,19 +57,13 @@ Let's try to make it first order like the Schrodinger equation by defining $h_1(
 After doing this we see that our wave-equation turns into a pair of equations that are linear order in time:
 
 $$
-\partial_t h_2 = c\partial_x h_1
-$$
-
-and
-
-$$
-\partial_t h_1=-c\partial_x h_2.
+\partial_t h_2 = c\partial_x h_1\textrm{, and }\partial_t h_1=c\partial_x h_2.
 $$
 
 We can turn this into the Schrodinger equation if we define:
 
 $$
-\Psi(x,t)=\left(\begin{array}{c}h_1(x,t)\\h_2(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& i\\-i & 0\end{array}\right)(-i\partial_x).
+\Psi(x,t)=\left(\begin{array}{c}h_1(x,t)\\h_2(x,t)\end{array}\right)\quad H=c\left(\begin{array}{cc}0& 1\\1 & 0\end{array}\right)(i\partial_x).
 $$
 
 Now those of you who know basic quantum mechanics might say this is a very strange Schrodinger equation.
