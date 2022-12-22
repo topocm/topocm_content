@@ -19,33 +19,33 @@ execute_ipynbs:
       paths:
         - _build/
 
-
-.upload_website: &upload_website
+.upload_website:
   stage: deploy
+  image: eeacms/rsync
   before_script:
-    - mkdir -p ~/.ssh && ssh-keyscan tnw-tn1.tudelft.net >> ~/.ssh/known_hosts
-    - echo $WEBSITE_KEY | base64 -d > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+      - eval $(ssh-agent -s)
+      - echo "$WEBSITE_UPLOAD_KEY" | tr -d '\r' | ssh-add - > /dev/null
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
   script:
-    - "rsync -ravz _build/html/* $USER@tnw-tn1.tudelft.net:"
-  after_script:
-    - rm -rf ~/.ssh
-
+    - "rsync -ravz _build/html/* -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH"
 
 upload test website:
-  <<: *upload_website
+  extends: .upload_website
   environment: test
   only:
     - branches@qt/topocm
   except:
     - master@qt/topocm
   variables:
-    USER: topocm-test
+    WEBSITE_UPLOAD_PATH: /test
 
 
 upload main website:
-  <<: *upload_website
+  extends: .upload_website
   environment: published
   only:
     - master@qt/topocm
   variables:
-    USER: topocm
+    WEBSITE_UPLOAD_PATH: /
