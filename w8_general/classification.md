@@ -244,6 +244,35 @@ Recall that an anti-unitary operator can be written as the product of a unitary 
 
 For instance, you will recall that for the time-reversal operator acting on electronic states, $\mathcal{T}^2=-1$. This was the crux of Kramers theorem, which in turn was the key to topological insulators. If you go back to week one, you will also remember that we discussed real matrices, which were symmetric under a time-reversal operator $\mathcal{T}=\mathcal{K}$. This operator satisfies $\mathcal{T}^2=1$.
 
+We have seen the two cases $\mathcal{T}^2=\pm 1$, but we do not know yet whether these are the only possible ones. We now want to investigate this. As mentioned before, $\mathcal{T}$ commutes with the Hamiltonian $H$ if the symmetry is present. This allows us to write
+
+$$
+H=\mathcal{T}H\mathcal{T}^{-1}
+\,.
+$$
+
+The time-reversal operator $\mathcal{T}$ is anti-unitary, which means we can, like we did in the first chapter, decompose it into complex conjugation $\mathcal{K}$ and a unitary operator $U$. As we want to know what $\mathcal{T}^2$ can be, we use this decomposition and obtain
+
+$$
+\mathcal{T}^2 = U \mathcal{K} U \mathcal{K} = UU^*
+\,,
+$$
+
+where we have used that $\mathcal{K}U=U^*\mathcal{K}$ and $\mathcal{K}^2=1$. Consequently, $\mathcal{T}^2$ is a unitary operator. Moreover, if $\mathcal{T}$ commutes with the Hamiltonian, so does $\mathcal{T}^2$. Going back to the first chapter, we assumed that unitary symmetries are already factored out, but as we have seen just now, the operator $\mathcal{T}^2$ corresponds to a unitary symmetry. This sounds like a contradiction at first, but just means, that it cannot be more that a simple scalar multiplication and hence $\mathcal{T}^2=\mathrm{e}^{\mathrm{i}\varphi}$ with $\varphi\in\mathbb{R}$. We get even more insight by looking at $\mathcal{T}^2$ and using the fact that $\mathcal{T}$ and $\mathcal{T}^2$ trivially commute. Thus we get
+
+$$
+\mathcal{T}\mathcal{T}^2&=\mathcal{T}^2\mathcal{T}
+\\
+=\mathcal{T}\mathrm{e}^{\mathrm{i}\varphi}&=
+\mathrm{e}^{\mathrm{i}\varphi}\mathcal{T}
+\\
+=\mathrm{e}^{-\mathrm{i}\varphi}\mathcal{T}&=
+\mathrm{e}^{\mathrm{i}\varphi}\mathcal{T}
+\,.
+$$
+
+This can only be upheld with $\mathcal{T}^2=\mathrm{e}^{\mathrm{i}\varphi}=\mathrm{e}^{-\mathrm{i}\varphi}=\pm 1$. So these are indeed the only possible options of time-reversal symmetry we can find. In fact, the same analysis can be done for particle-hole symmetry. The difference that the particle-hole symmetry operator anti-commutes makes no difference here, so we also obtain $\mathcal{P}=\pm 1$.
+
 Thus, a system can behave in three ways under time-reversal symmetry $\mathcal{T}$: (1) it does not have time-reversal symmetry, (2) it has it and $\mathcal{T}$ squares to $+1$, (3) it has it and $\mathcal{T}$ squares to $-1$. The same holds for particle-hole symmetry, which can also have $\mathcal{P}^2=\pm 1$. On the other hand, the chiral symmetry only comes in one flavor, $\mathcal{C}^2=1$.
 
 ### Combining symmetries
