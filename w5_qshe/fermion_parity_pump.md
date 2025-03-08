@@ -108,7 +108,7 @@ $$
 \begin{pmatrix} \beta_\textrm{L} \\ \beta_\textrm{R} \end{pmatrix} = S \begin{pmatrix} \alpha_\textrm{L} \\ \alpha_\textrm{R} \end{pmatrix}.
 $$
 
-There are a total of $2N$ incoming and $2N$ outgoing modes, so $S$ is a $2N\times 2N$ matrix. Since we are including all possible initial and final states, $S$ is also unitary, $S=S^\dagger$. It can be split into reflection and transmission blocks of dimension $N\times N$,
+There are a total of $2N$ incoming and $2N$ outgoing modes, so $S$ is a $2N\times 2N$ matrix. Since we are including all possible initial and final states, $S$ is also unitary, $SS^\dagger = 1$. It can be split into reflection and transmission blocks of dimension $N\times N$,
 
 $$
 S =
