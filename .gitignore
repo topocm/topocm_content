@@ -27,3 +27,6 @@ auto
 
 # Output files
 _build
+# pixi environments
+.pixi/*
+!.pixi/config.toml

@@ -1,0 +1,26 @@
+[workspace]
+authors = ["Anton Akhmerov <anton.akhmerov@gmail.com>"]
+channels = ["conda-forge"]
+name = "python3"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.0,<3.15"
+pip = ">=25.3,<26"
+matplotlib-base = ">=3.10.7,<4"
+kwant = ">=1.5.0,<2"
+scipy = ">=1.16.3,<2"
+holoviews = ">=1.22.0,<2"
+feedparser = ">=6.0.12,<7"
+sympy = ">=1.14.0,<2"
+pfapack = ">=0.3.1,<0.4"
+ipython = ">=9.7.0,<10"
+markdown = ">=3.10,<4"
+
+[pypi-dependencies]
+ruamel-yaml = ">=0.18.16, <0.19"
+jupyter-book = ">=2.0.2, <3"
+sphinxext-opengraph = ">=0.13.0, <0.14"
