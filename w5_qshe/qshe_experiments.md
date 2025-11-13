@@ -30,10 +30,11 @@ warnings.simplefilter("ignore", UserWarning)
 
 ## Introduction
 
-```{code-cell} ipython3
+:::{youtube} -HRBuCgOUvs
+:width: 100%
+:height: 480
+:::
 
-Video("-HRBuCgOUvs")
-```
 
 This topic is special, since in order to meaningfully discuss experimental progress we need to do something we didn't do before in the course: we will show you the measurements and compare them with the *simple* theoretical expectations. Like this we will see what agrees and what doesn't.
 
@@ -333,7 +334,8 @@ MultipleChoice(
 
 ## Summary
 
-```{code-cell} ipython3
+:::{youtube} Kop4zXWQ1Zc
+:width: 100%
+:height: 480
+:::
 
-Video("Kop4zXWQ1Zc")
-```

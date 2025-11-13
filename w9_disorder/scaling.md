@@ -34,10 +34,11 @@ data_folder = (
 
 Anderson localization is introduced by Piet Brouwer from the Free University of Berlin.
 
-```{code-cell} ipython3
+:::{youtube} sbbyL0RDH-o
+:width: 100%
+:height: 480
+:::
 
-Video("sbbyL0RDH-o")
-```
 
 ## Motivation
 
@@ -250,7 +251,8 @@ It turns out, the scaling flow on the surface of a topological insulator is modi
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} JdDeBJEBO0s
+:width: 100%
+:height: 480
+:::
 
-Video("JdDeBJEBO0s")
-```

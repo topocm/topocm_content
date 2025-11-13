@@ -37,10 +37,11 @@ data_folder = (
 
 The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne
 
-```{code-cell} ipython3
+:::{youtube} 8gkERY6hXTU
+:width: 100%
+:height: 480
+:::
 
-Video("8gkERY6hXTU")
-```
 
 ## A toy model for two-parameter scaling: the disordered Kitaev chain
 
@@ -372,7 +373,8 @@ An extra attractive metallic fixed point can make the flow diagram more complica
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} NY6wPiH0E9E
+:width: 100%
+:height: 480
+:::
 
-Video("NY6wPiH0E9E")
-```

@@ -28,10 +28,11 @@ init_notebook()
 
 Joel Moore from the University of California, Berkeley will introduce this week's topic, by telling us how the idea of a two-dimensional topological insulator was generalized to three dimensions.
 
-```{code-cell} ipython3
+:::{youtube} NIhMjm7cyug
+:width: 100%
+:height: 480
+:::
 
-Video("NIhMjm7cyug")
-```
 
 ## Making  3D topological invariants out of 2D ones
 
@@ -397,7 +398,8 @@ MultipleChoice(
 
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
-```{code-cell} ipython3
+:::{youtube} s7H6oLighOM
+:width: 100%
+:height: 480
+:::
 
-Video("s7H6oLighOM")
-```

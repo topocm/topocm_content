@@ -31,10 +31,11 @@ from matplotlib import cm
 
 Charles Kane from the University of Pennsylvania will introduce today's lecture on two dimensional topological insulators with time-reversal symmetry.
 
-```{code-cell} ipython3
+:::{youtube} n5oUQvvsYd0
+:width: 100%
+:height: 480
+:::
 
-Video("n5oUQvvsYd0")
-```
 
 ## Adding symmetry to a topological insulator
 
@@ -591,7 +592,8 @@ MultipleChoice(
 
 ## Summary
 
-```{code-cell} ipython3
+:::{youtube} ft9ppqqLhH4
+:width: 100%
+:height: 480
+:::
 
-Video("ft9ppqqLhH4")
-```

@@ -26,10 +26,11 @@ init_notebook()
 
 ## Braiding of Majoranas
 
-```{code-cell} ipython3
+:::{youtube} Ndf2Z84g1R0
+:width: 100%
+:height: 480
+:::
 
-Video("Ndf2Z84g1R0")
-```
 
 ## Majorana zero modes in nanowire networks
 
@@ -300,7 +301,8 @@ These are the basic ideas of **topological quantum computation**. It is incredib
 
 ## Summary
 
-```{code-cell} ipython3
+:::{youtube} V3e9r4S8GHs
+:width: 100%
+:height: 480
+:::
 
-Video("V3e9r4S8GHs")
-```

@@ -32,10 +32,11 @@ Looking back at the material from the past weeks, you might have the impression 
 
 Xiaoliang Qi from Stanford University will now explain that this is not the case, and will also introduce this week's topic - Chern insulators.
 
-```{code-cell} ipython3
+:::{youtube} osKP6x0Ewbo
+:width: 100%
+:height: 480
+:::
 
-Video("osKP6x0Ewbo")
-```
 
 ## Pairs of chiral edges in a 1D wire
 
@@ -262,7 +263,8 @@ so it has a velocity $v=2\gamma$, the direction of which depends on the sign of 
 
 ## Conclusion
 
-```{code-cell} ipython3
+:::{youtube} CXgAcOOVlag
+:width: 100%
+:height: 480
+:::
 
-Video("CXgAcOOVlag")
-```

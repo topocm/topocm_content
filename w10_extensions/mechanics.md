@@ -31,10 +31,11 @@ Today's lecture will be given by Vincenzo Vitelli, from Leiden University. You w
 
 The main concepts and mathematical ideas will be presented in the context of real mechanical prototypes. Hopefully, this approach will stimulate you to cross the line that too often separates theory from applications.
 
-```{code-cell} ipython3
+:::{youtube} i-eNPei2zMg
+:width: 100%
+:height: 480
+:::
 
-Video("i-eNPei2zMg")
-```
 
 The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under a
 <a rel="license"
@@ -146,15 +147,17 @@ As discussed in the introductory video, however, something that behaves like an 
 Rather than analyzing mathematically the dynamics of the Lagrangian above, watch the two videos below that
 show the motion in the linkage limit.
 
-```{code-cell} ipython3
+:::{youtube} BE4NDhfdpBQ
+:width: 100%
+:height: 480
+:::
 
-Video("BE4NDhfdpBQ")
-```
 
-```{code-cell} ipython3
+:::{youtube} mRjpzC4rJx0
+:width: 100%
+:height: 480
+:::
 
-Video("mRjpzC4rJx0")
-```
 
 If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper:
 
@@ -162,10 +165,11 @@ If you are curious about the mathematical details and a systematic study of the 
 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](https://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
-```{code-cell} ipython3
+:::{youtube} w2k1Y0WON2E
+:width: 100%
+:height: 480
+:::
 
-Video("w2k1Y0WON2E")
-```
 
 The same reference above contains hints on how to build this structure with LEGO - plus of course all the mathematical details!
 
@@ -272,10 +276,11 @@ value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given
 
 Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes.
 
-```{code-cell} ipython3
+:::{youtube} Mrm7JH6LJJI
+:width: 100%
+:height: 480
+:::
 
-Video("Mrm7JH6LJJI")
-```
 
 The key point in designing the lattice in the video  is that the dislocations must not change the local balance between degrees of freedom and constraints. The video shows such a dislocation, obtained by pairing a five-coordinated plaquette with a seven-coordinated plaquette.
 
@@ -382,10 +387,11 @@ These examples show how to insert topologically protected mechanical modes anywh
 
 You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
 
-```{code-cell} ipython3
+:::{youtube} RbJTxKFqO7I
+:width: 100%
+:height: 480
+:::
 
-Video("RbJTxKFqO7I")
-```
 
 As you can see, by controlling the position of states of self stress, you can pre-select the region of a material that will fail, for example by buckling. All you have to do is to activate the self stress by pushing on the structure in the same way as you had to activate the zero modes to set them in motion.
 
@@ -401,7 +407,8 @@ As a result these states are designed to be topologically robust under smooth de
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} j0X0sVy_6Og
+:width: 100%
+:height: 480
+:::
 
-Video("j0X0sVy_6Og")
-```

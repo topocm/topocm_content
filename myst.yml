@@ -82,6 +82,9 @@ project:
       children:
         - file: w2_majorana/Peierls.md
         - file: w4_haldane/ComputingChern.md
+  plugins:
+    - type: javascript
+      path: myst_plugins/youtube.mjs
 site:
   options:
     logo: logo_small.jpg

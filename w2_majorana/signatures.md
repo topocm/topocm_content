@@ -34,10 +34,11 @@ dims = dict(
 
 Our second guest lecturer for this week is Carlo Beenakker, from Leiden University.
 
-```{code-cell} ipython3
+:::{youtube} WAhNblNbadA
+:width: 100%
+:height: 480
+:::
 
-Video("WAhNblNbadA")
-```
 
 ## Andreev reflection
 
@@ -488,7 +489,8 @@ MultipleChoice(
 
 ## Summary
 
-```{code-cell} ipython3
+:::{youtube} sSacO5RpW5A
+:width: 100%
+:height: 480
+:::
 
-Video("sSacO5RpW5A")
-```

@@ -28,10 +28,11 @@ init_notebook()
 
 The topological order is introduced by Barbara Terhal from RWTH Aachen.
 
-```{code-cell} ipython3
+:::{youtube} rLdHCKxMumY
+:width: 100%
+:height: 480
+:::
 
-Video("rLdHCKxMumY")
-```
 
 ## Simplest model for topological degeneracy: Toric code
 

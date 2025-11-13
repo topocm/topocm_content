@@ -32,10 +32,11 @@ warnings.simplefilter("ignore", UserWarning)
 
 Taylor Hughes from the University of Illinois at Urbana-Champaign will describe the interplay between defects in crystals and weak topological insulators.
 
-```{code-cell} ipython3
+:::{youtube} k3ZKCg7jtTs
+:width: 100%
+:height: 480
+:::
 
-Video("k3ZKCg7jtTs")
-```
 
 As you can see, there is a simple and universal connection between weak topological phases and the ability of defects to carry topologically protected states. The topological invariant $\mathcal{Q}$ of a dislocation is the number of protected states that it carries. It can be determined from the vector of weak topological invariants, $\mathbf{\mathcal{Q}}_\textrm{weak}$, and the Burgers vector of the dislocation $\mathbf{B}$:
 
@@ -450,7 +451,8 @@ MultipleChoice(
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} MvcvJiZYSSk
+:width: 100%
+:height: 480
+:::
 
-Video("MvcvJiZYSSk")
-```

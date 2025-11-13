@@ -40,10 +40,11 @@ style = {
 
 We have a special guest to begin this week's lecture, Yuval Oreg from the Weizmann Institute in Rehovot.
 
-```{code-cell} ipython3
+:::{youtube} GQLfs4i22ms
+:width: 100%
+:height: 480
+:::
 
-Video("GQLfs4i22ms")
-```
 
 ## Small parameters
 
@@ -433,7 +434,8 @@ MultipleChoice(
 
 ## Outlook
 
-```{code-cell} ipython3
+:::{youtube} MsFyJBAMFLI
+:width: 100%
+:height: 480
+:::
 
-Video("MsFyJBAMFLI")
-```

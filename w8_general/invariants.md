@@ -34,10 +34,11 @@ randn = np.random.randn
 
 Fabian Hassler from RWTH Aachen will present the topological invariants
 
-```{code-cell} ipython3
+:::{youtube} ceyus0cRBi0
+:width: 100%
+:height: 480
+:::
 
-Video("ceyus0cRBi0")
-```
 
 ## Applications of topological invariants
 
@@ -405,7 +406,8 @@ holoviews.HoloMap(
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} 9qCSXEfSlqE
+:width: 100%
+:height: 480
+:::
 
-Video("9qCSXEfSlqE")
-```

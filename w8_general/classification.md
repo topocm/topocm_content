@@ -158,10 +158,11 @@ def color_table(table, color_array):
 
 Shinsei Ryu from the University of Illinois will introduce the general classification of topological insulators and superconductors.
 
-```{code-cell} ipython3
+:::{youtube} cKzUuQyZjFo
+:width: 100%
+:height: 480
+:::
 
-Video("cKzUuQyZjFo")
-```
 
 ## At a glance: periodic table
 
@@ -575,7 +576,8 @@ MultipleChoice(
 
 ## Conclusions
 
-```{code-cell} ipython3
+:::{youtube} nnzPiJ3Q3_8
+:width: 100%
+:height: 480
+:::
 
-Video("nnzPiJ3Q3_8")
-```
