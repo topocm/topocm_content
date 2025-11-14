@@ -30,3 +30,7 @@ _build
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# jupyter data
+.jupyter/
+!.jupyter/jupyter_server_config.py
