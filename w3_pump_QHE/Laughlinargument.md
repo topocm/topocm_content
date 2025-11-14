@@ -32,11 +32,10 @@ Ady Stern from the Weizmann Institute of Science will introduce the quantum Hall
 Ady thanks Dr. Dan Arav and Gil Novik from the School of Media Studies of the
 College of Management - Academic Studies for their help in preparing the videos.
 
-:::{youtube} QC3tQT7MD00
-:width: 100%
-:height: 480
-:::
-
+```{youtube} QC3tQT7MD00
+:width: 560
+:height: 315
+```
 
 ## The Hall effect
 
@@ -580,8 +579,7 @@ MultipleChoice(
 
 ## Summary
 
-:::{youtube} 2u8_2isyi7o
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 2u8_2isyi7o
+:width: 560
+:height: 315
+```

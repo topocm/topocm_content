@@ -26,11 +26,10 @@ init_notebook()
 
 ## Braiding of Majoranas
 
-:::{youtube} Ndf2Z84g1R0
-:width: 100%
-:height: 480
-:::
-
+```{youtube} Ndf2Z84g1R0
+:width: 560
+:height: 315
+```
 
 ## Majorana zero modes in nanowire networks
 
@@ -301,8 +300,7 @@ These are the basic ideas of **topological quantum computation**. It is incredib
 
 ## Summary
 
-:::{youtube} V3e9r4S8GHs
-:width: 100%
-:height: 480
-:::
-
+```{youtube} V3e9r4S8GHs
+:width: 560
+:height: 315
+```

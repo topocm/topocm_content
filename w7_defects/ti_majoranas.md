@@ -29,11 +29,10 @@ init_notebook()
 
 We have a returning lecturer for the first chapter of this week's lectures: Carlo Beenakker from Leiden University, who will tell us more about different ways to create Majoranas in superconducting vortices.
 
-:::{youtube} YVGlfejNH90
-:width: 100%
-:height: 480
-:::
-
+```{youtube} YVGlfejNH90
+:width: 560
+:height: 315
+```
 
 ## Different types of bulk-edge correspondence
 
@@ -487,8 +486,7 @@ In the right panel, you can see a plot of the wavefunction of the lowest energy 
 
 ## Conclusions
 
-:::{youtube} B7lMz-NrKec
-:width: 100%
-:height: 480
-:::
-
+```{youtube} B7lMz-NrKec
+:width: 560
+:height: 315
+```

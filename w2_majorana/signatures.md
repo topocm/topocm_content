@@ -34,11 +34,10 @@ dims = dict(
 
 Our second guest lecturer for this week is Carlo Beenakker, from Leiden University.
 
-:::{youtube} WAhNblNbadA
-:width: 100%
-:height: 480
-:::
-
+```{youtube} WAhNblNbadA
+:width: 560
+:height: 315
+```
 
 ## Andreev reflection
 
@@ -489,8 +488,7 @@ MultipleChoice(
 
 ## Summary
 
-:::{youtube} sSacO5RpW5A
-:width: 100%
-:height: 480
-:::
-
+```{youtube} sSacO5RpW5A
+:width: 560
+:height: 315
+```

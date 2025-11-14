@@ -28,11 +28,10 @@ init_notebook()
 
 This topic is introduced by Sankar Das Sarma from the university of Maryland.
 
-:::{youtube} 4gSJSo3olfg
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 4gSJSo3olfg
+:width: 560
+:height: 315
+```
 
 ## Interacting systems
 
@@ -189,8 +188,7 @@ We can however explain the result. If one stacks the two FQH states one obtains 
 
 ## Conclusions
 
-:::{youtube} zrL-qxjKfGw
-:width: 100%
-:height: 480
-:::
-
+```{youtube} zrL-qxjKfGw
+:width: 560
+:height: 315
+```

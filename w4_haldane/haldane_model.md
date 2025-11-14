@@ -32,11 +32,10 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he introduced in 1988, and which has become a prototype for the anomalous quantum Hall effect.
 
-:::{youtube} 7nVO4uMm-do
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 7nVO4uMm-do
+:width: 560
+:height: 315
+```
 
 We will now study the model in detail, starting from the beginning.  Along the way, we will also learn about the Chern number, the bulk topological invariant of a quantum Hall state.
 
@@ -543,8 +542,7 @@ You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that wh
 
 ## Summary: extending the model to spinful electrons and photons
 
-:::{youtube} 0gxE68kvdmw
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 0gxE68kvdmw
+:width: 560
+:height: 315
+```

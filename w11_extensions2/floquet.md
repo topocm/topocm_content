@@ -39,11 +39,10 @@ pi_ticks = [
 
 Today's topic, Floquet topological insulators, is introduced by Mark Rudner from the Niels Bohr Institute at Copenhagen.
 
-:::{youtube} 1peVp_IZ7Ts
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 1peVp_IZ7Ts
+:width: 560
+:height: 315
+```
 
 ## Periodically driven systems
 
@@ -436,8 +435,7 @@ What do we need to know to derive the full topological invariant from the bulk p
 
 ## Conclusions
 
-:::{youtube} DbyqIczcR9c
-:width: 100%
-:height: 480
-:::
-
+```{youtube} DbyqIczcR9c
+:width: 560
+:height: 315
+```

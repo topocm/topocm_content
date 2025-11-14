@@ -40,11 +40,10 @@ style = {
 
 We have a special guest to begin this week's lecture, Yuval Oreg from the Weizmann Institute in Rehovot.
 
-:::{youtube} GQLfs4i22ms
-:width: 100%
-:height: 480
-:::
-
+```{youtube} GQLfs4i22ms
+:width: 560
+:height: 315
+```
 
 ## Small parameters
 
@@ -434,8 +433,7 @@ MultipleChoice(
 
 ## Outlook
 
-:::{youtube} MsFyJBAMFLI
-:width: 100%
-:height: 480
-:::
-
+```{youtube} MsFyJBAMFLI
+:width: 560
+:height: 315
+```

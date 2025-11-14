@@ -405,8 +405,7 @@ The physical picture that we presented this week is very simple, and it is also 
 
 In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](https://web.archive.org/web/20210415005925/https://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
 
-:::{youtube} rQs12c-SieE
-:width: 100%
-:height: 480
-:::
-
+```{youtube} rQs12c-SieE
+:width: 560
+:height: 315
+```

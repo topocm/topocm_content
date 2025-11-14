@@ -32,11 +32,10 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
 
-:::{youtube} gKZK9IGY9wo
-:width: 100%
-:height: 480
-:::
-
+```{youtube} gKZK9IGY9wo
+:width: 560
+:height: 315
+```
 
 ## Hamiltonians with parameters
 
@@ -436,8 +435,7 @@ MultipleChoice(
 
 ## Quantized charge and scattering invariant
 
-:::{youtube} 6lXRAZ7hv7E
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 6lXRAZ7hv7E
+:width: 560
+:height: 315
+```

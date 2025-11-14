@@ -39,11 +39,10 @@ How do we find a topological insulator? In the first video of today, David Vande
 
 This is an expertise that no one from the course team has, so pay close attention to it: this material stands apart from the rest.
 
-:::{youtube} 62ZObitJ4DM
-:width: 100%
-:height: 480
-:::
-
+```{youtube} 62ZObitJ4DM
+:width: 560
+:height: 315
+```
 
 In the rest of the lecture, we will instead discuss the experimental signatures of 3D topological insulators, similarly to what we did in the previous week for their 2D counterparts.
 
@@ -365,8 +364,7 @@ In addition to modifying the shape of the Fermi surface, we see that the extra t
 
 David Vanderbilt will conclude this week's lectures by offering a perspective on the future of the field.
 
-:::{youtube} WZmNeEwM1N4
-:width: 100%
-:height: 480
-:::
-
+```{youtube} WZmNeEwM1N4
+:width: 560
+:height: 315
+```

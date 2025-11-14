@@ -32,11 +32,10 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 
 Ashvin Vishwanath from the University of California, Berkeley will introduce Weyl semimetals and other examples of gapless, yet topological, systems.
 
-:::{youtube} MAWwa4r1qIc
-:width: 100%
-:height: 480
-:::
-
+```{youtube} MAWwa4r1qIc
+:width: 560
+:height: 315
+```
 
 ## Topological invariants of Fermi surfaces
 

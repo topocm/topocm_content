@@ -29,11 +29,10 @@ init_notebook()
 
 Crystalline topological insulators are introduced by Liang Fu from MIT.
 
-:::{youtube} N9-tUYjXC1s
-:width: 100%
-:height: 480
-:::
-
+```{youtube} N9-tUYjXC1s
+:width: 560
+:height: 315
+```
 
 ## The role of crystalline symmetries
 
