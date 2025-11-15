@@ -24,8 +24,13 @@ from init_course import *
 init_notebook()
 from holoviews.core.options import Cycle
 
-%output size=120
+holoviews.output(size=120)
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
+from holoviews import opts
+opts.defaults(
+    opts.Path(color=Cycle(values=["r", "g", "b", "y"])),
+    opts.HLine(color=Cycle(values=["r", "g", "b", "y"]), linestyle="--"),
+)
 ```
 
 ## Thouless pumps
@@ -288,7 +293,7 @@ To understand better what is happening, let us color each state according to the
 
 ```{code-cell} ipython3
 
-spectrum_with_reservoirs.opts(c="pos", cmap="seismic")
+spectrum_with_reservoirs.options(c="pos", cmap="seismic")
 ```
 
 We see that the states in the gaps between the wire bands belong to either of the two reservoirs.
@@ -362,8 +367,11 @@ The scattering problem in 1D can be solved quickly, so let's calculate the pumpe
 
 ```{code-cell} ipython3
 
-%%opts Path.Q (color=Cycle(values=['r', 'g', 'b', 'y']))
-%%opts HLine (color=Cycle(values=['r', 'g', 'b', 'y']) linestyle='--')
+from holoviews import opts
+opts.defaults(
+    opts.Path(color=Cycle(values=['r', 'g', 'b', 'y'])),
+    opts.HLine(color=Cycle(values=['r', 'g', 'b', 'y']), linestyle='--'),
+)
 
 
 def plot_charge(syst, p, energy):
@@ -380,9 +388,7 @@ def plot_charge(syst, p, energy):
     plot = holoviews.Path(
         (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"
     )
-    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).opts(
-        plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3]}
-    )
+    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).options(xticks=[0, 1], yticks=[0, 1, 2, 3])
 
 
 kwargs = {

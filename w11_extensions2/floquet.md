@@ -163,7 +163,8 @@ with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ a
 
 ```{code-cell} ipython3
 
-%%opts Path {+axiswise}
+from holoviews import opts
+opts.defaults(opts.Path(axiswise=True))
 def evolution_operator(hamiltonians, T):
     n = len(hamiltonians)
     exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
@@ -234,13 +235,13 @@ def plot(n):
         (J * periods, energies),
         kdims=[r"Driving period $(JT)$", r"Quasi-energy $(ET)$"],
         label="Finite system",
-    ).opts(plot={"xticks": 5, "yticks": pi_ticks})
+    ).options(xticks=5, yticks=pi_ticks)
 
-    VLine = holoviews.VLine(T).opts(style={"color": "b", "linestyle": "--"})
+    VLine = holoviews.VLine(T).options(color="b", linestyle="--")
 
     plot_2 = holoviews.Path(
         (momenta, spectrum[n]), kdims=["$k$", "$E_kT$"], label="Floquet bands"
-    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": "equal"})
+    ).options(xticks=pi_ticks, yticks=pi_ticks, aspect="equal")
     return plot_1 * VLine + plot_2
 
 
@@ -281,7 +282,7 @@ Let's have a look at the dispersion, and also see what happens as we tune the dr
 
 ```{code-cell} ipython3
 
-%%output size=200
+holoviews.output(size=200)
 
 lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
 a, b = lat.sublattices
@@ -335,8 +336,8 @@ def plot_dispersion_2D(T):
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
     return (
-        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).opts(plot=ticks)
-        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).opts(plot=ticks)
+        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3)
+        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3)
     ).relabel(title)
 
 
@@ -350,8 +351,9 @@ That's something we can also very easily verify by computing the dispersion of a
 
 ```{code-cell} ipython3
 
-%%output size=200
-%%opts Path {+axiswise}
+from holoviews import opts
+holoviews.output(size=200)
+opts.defaults(opts.Path(axiswise=True))
 
 W = 10
 ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
@@ -390,7 +392,7 @@ def plot(n):
     title = fr"spectrum: $T={T / np.pi:.2} \pi$"
     return holoviews.Path(
         (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
-    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": 3})
+    ).options(xticks=pi_ticks, yticks=pi_ticks, aspect=3)
 
 
 holoviews.HoloMap({n: plot(n) for n in range(11)}, kdims=["n"])

@@ -129,7 +129,7 @@ Let's have a quick look at it to get a more concrete understanding:
 
 ```{code-cell} ipython3
 
-%%output fig='png'
+holoviews.output(fig='png')
 
 def onsite(site, C, D1, D2, M, B1, B2):
     return (
@@ -211,7 +211,7 @@ We determine the topological invariant in the same way as for QSHE: we see if th
 
 ```{code-cell} ipython3
 
-%%output fig='png'
+holoviews.output(fig='png')
 
 # A system for computing the topological invariant
 probe_lead = kwant.Builder(
@@ -257,12 +257,8 @@ def invariant_at_k_x(p, k_x, k_x_label, col):
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
     xdim, ydim = "$k_y$", "phase"
     kdims = [xdim, ydim]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=f"$k_x={k_x_label}$").opts(
-        style={"color": col}
-    )
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
-        style={"color": col}
-    )
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=f"$k_x={k_x_label}$")
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)
     return plot
 
 
@@ -282,8 +278,8 @@ def plot_invariant(p):
         "legend_position": "top",
     }
     style_path = {"show_legend": True}
-    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
-        plot={"Overlay": style_overlay, "Path": style_path}
+    return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(
+        xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks, show_legend=True, legend_position="top"
     )
 
 
@@ -350,7 +346,7 @@ Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```{code-cell} ipython3
 
-%%output size=150
+holoviews.output(size=150)
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
 
 wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))

@@ -22,7 +22,7 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-%output size=150
+holoviews.output(size=150)
 ```
 
 ## Introduction

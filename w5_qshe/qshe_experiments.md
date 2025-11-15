@@ -22,7 +22,7 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-%output size = 150
+holoviews.output(size=150)
 
 import warnings
 warnings.simplefilter("ignore", UserWarning)
@@ -168,13 +168,8 @@ conductance_plots = [
                 for p["mu"] in mus
             ]
         ),
-        kdims=[r"$\mu$", ydim], label=label)
-            .opts(
-                plot={
-                    "xticks": list(np.linspace(-0.8, 0.8, 5)),
-                },
-                style={"color": color}
-            )
+        kdims=[r"$\mu$", ydim], label=label
+    ).options(xticks=list(np.linspace(-0.8, 0.8, 5)), color=color)
     for p["M"], color, label
     in [(-0.2, "teal", "trivial"), (0.2, "orange", "topological")]
 ]
@@ -269,7 +264,7 @@ G = [
 ez_conductances = (
     holoviews.Path((E_zs, np.array(G)), kdims=["$E_z$", ydim], label="Conductance")
     .redim.range(**{ydim: (0, 2)})
-    .opts(plot={"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]})
+    .options(xticks=[0, 0.05, 0.10, 0.15], yticks=[0, 0.5, 1.0, 1.5, 2.0])
 )
 
 kwargs = {

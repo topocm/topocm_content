@@ -24,7 +24,7 @@ from init_course import *
 init_notebook()
 import scipy
 
-%output size=150 fig='png'
+holoviews.output(size=150, fig='png')
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -200,7 +200,7 @@ And when it does, chiral edge states appear! We can see this by looking at the o
 
 ```{code-cell} ipython3
 
-%%output fig='svg'
+holoviews.output(fig='svg')
 
 W = 20
 
@@ -455,7 +455,7 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
 
     plot = {"xticks": pi_ticks, "yticks": pi_ticks}
     style = {"clims": [-vmax, vmax]}
-    return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
+    return holoviews.Image(bc, **kwargs).options(xticks=pi_ticks, yticks=pi_ticks, clim=(-vmax, vmax))
 ```
 
 ```{code-cell} ipython3

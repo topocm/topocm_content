@@ -78,7 +78,7 @@ To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This 
 
 ```{code-cell} ipython3
 
-%%output size=150 fig='png'
+holoviews.output(size=150, fig='png')
 
 
 def plot_dets(syst, p, ks, chiral=False):
@@ -111,9 +111,7 @@ def plot_dets(syst, p, ks, chiral=False):
     RGB = hsv_to_rgb(HSV)
     bounds = (ks.min(), ks.min(), ks.max(), ks.max())
     pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
-    return pl.opts(plot={"xticks": pi_ticks, "yticks": pi_ticks}).opts(
-        style={"interpolation": None}
-    )
+    return pl.options(xticks=pi_ticks, yticks=pi_ticks, interpolation=None)
 
 
 
@@ -228,7 +226,11 @@ For a $d$-wave superconductor this will only happen for some crystalline orienta
 
 ```{code-cell} ipython3
 
-%%opts VLine (color='k')  Curve (linestyle='--')
+from holoviews import opts
+opts.defaults(
+    opts.VLine(color='k'),
+    opts.Curve(linestyle='--'),
+)
 
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
@@ -321,8 +323,9 @@ $$
 
 ```{code-cell} ipython3
 
-%%output fig='png'
-%%opts Surface [azimuth=45]
+holoviews.output(fig='png')
+from holoviews import opts
+opts.defaults(opts.Surface(azimuth=45))
 
 
 def onsite(site, t, mu):

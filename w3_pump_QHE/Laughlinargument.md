@@ -22,7 +22,7 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-%output size = 150
+holoviews.output(size=150)
 ```
 
 ## Introduction
@@ -272,14 +272,10 @@ Bs = np.linspace(0.02, 0.15, 200)
 sigmasxx, sigmasxy = zip(*[conductivities(syst, p) for p["B"] in Bs])
 
 kdims = [r"$B^{-1} [a.u.]$", r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$"]
-plot_xx = holoviews.Path((1 / Bs, sigmasxx), label=r"$\sigma_{xx}$", kdims=kdims).opts(
-    style={"color": "k"}
-)
-plot_xy = holoviews.Path((1 / Bs, sigmasxy), label=r"$\sigma_{xy}$", kdims=kdims).opts(
-    style={"color": "r"}
-)
+plot_xx = holoviews.Path((1 / Bs, sigmasxx), label=r"$\sigma_{xx}$", kdims=kdims).options(color="k")
+plot_xy = holoviews.Path((1 / Bs, sigmasxy), label=r"$\sigma_{xy}$", kdims=kdims).options(color="r")
 
-(plot_xx * plot_xy).opts(plot={"xticks": 0, "yticks": list(range(8))})
+(plot_xx * plot_xy).options(xticks=0, yticks=list(range(8)))
 ```
 
 Numerical systems are so good that the longitudinal conductivity always stays low even at the transition.
@@ -402,6 +398,11 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
 
 
 def plot_pumping(syst, p):
+    """Compute pumped charge vs flux for the given system and parameters.
+
+    Returns a HoloViews Path with explicit plotting options (xticks, yticks, aspect).
+    """
+    p = dict(p)  # copy to avoid mutating caller
     p["mu_lead"] = p["mu"]
     phis = np.linspace(0, 2 * np.pi, 40)
     syst = syst.finalized()
@@ -409,13 +410,15 @@ def plot_pumping(syst, p):
 
     determinants = [np.linalg.det(r) for r in rs]
     charges = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
-
     charges -= charges[0]
-    kdims = ["$\phi/2\pi$", "$q_{pump}$"]
-    title = f"$\mu = {p['mu']:.2}$, $\sigma_H = {round(charges[-1])} \cdot e^2/h$"
-    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title).opts(
-        plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3], "aspect": "square"}
-    )[:, 0:3.1]
+
+    kdims = [r"$\phi/2\pi$", r"$q_{pump}$"]
+    title = f"$\\mu = {p['mu']:.2f}, \\sigma_H = {round(charges[-1])} \\cdot e^2/h$"
+
+    return (
+        holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title)
+        .options(xticks=[0, 1], yticks=[0, 1, 2, 3], aspect="square")[:, 0:3.1]
+    )
 ```
 
 ```{code-cell} ipython3
@@ -555,7 +558,7 @@ kwargs = {
 }
 
 sys1 = qhe_cylinder(W)
-HLine = holoviews.HLine(0).opts(style={"linestyle": "--", "color": "r"})
+HLine = holoviews.HLine(0).options(linestyle="--", color="r")
 
 landau_levels = holoviews.HoloMap(
     {p["mu"]: spectrum(sys1, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]

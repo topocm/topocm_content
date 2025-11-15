@@ -76,8 +76,6 @@ To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
 $$
-\require{action}
-\require{color}
 \toggle{
 \cos(\theta _{n} + \theta _{n+1}) - \cos(2\bar{\theta}) + \frac{a}{r}(\sin\theta _{n} - \sin\theta _{n+1})=0
 \textit{ (click for explanation)}.}{

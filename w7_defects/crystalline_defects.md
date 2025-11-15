@@ -285,16 +285,17 @@ for name, syst in screw_dislocations.items():
     densities[name] = [density_array(syst, psi) for psi in vecs.T[indices]]
 
 
-# %opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
+from holoviews import opts
+opts.defaults(opts.Raster(cmap='gist_heat_r', interpolation=None, framewise=True))
 
 holoviews.HoloMap({
     (n, name): (
         (
             spectrum
-            * holoviews.Points((k_z, energy)).opts(s=50)
+            * holoviews.Points((k_z, energy)).options(s=50)
             * holoviews.VLine(k_z)
         )
-        + holoviews.Raster(density.T, label=r"$\left|\psi\right|^2$").opts(
+        + holoviews.Raster(density.T, label=r"$\left|\psi\right|^2$").options(
             cmap='gist_heat_r', interpolation=None
         )
     )
@@ -412,10 +413,10 @@ holoviews.HoloMap({
     (n, name): (
         (
             spectrum
-            * holoviews.Points((k_z, energy)).opts(s=50)
+            * holoviews.Points((k_z, energy)).options(s=50)
             * holoviews.VLine(k_z)
         )
-        + holoviews.Raster(density, label=r"$\left|\psi\right|^2$").opts(
+        + holoviews.Raster(density, label=r"$\left|\psi\right|^2$").options(
             cmap='gist_heat_r', interpolation=None
         )
     )

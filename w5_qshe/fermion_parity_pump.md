@@ -22,7 +22,7 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-%output size = 150
+holoviews.output(size=150)
 import scipy
 from matplotlib import cm
 ```
@@ -424,7 +424,7 @@ In the plot below, we show how this trajectory changes for our cylinder geometry
 
 ```{code-cell} ipython3
 
-%%output fig='png'
+holoviews.output(fig='png')
 
 cylinder_W = 3
 infinite_cylinder = kwant.Builder(kwant.TranslationalSymmetry((1, 0), (0, cylinder_W)))
@@ -459,14 +459,11 @@ def scattering_det_pfaff(syst, p):
 
     phase = np.angle(pfaffians[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
     kdims = ["$k_y$", "phase"]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={"color": "b"})
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).opts(
-        style={"color": "g"}
-    )
+    plot = holoviews.Path((ks[1:], phase), kdims=kdims).options(color="b")
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).options(color="g")
     xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    ticks = {"xticks": [(0, "0"), (np.pi, "$\pi$")], "yticks": pi_ticks}
-    return plot.relabel("Winding", depth=1)[xlims, ylims].opts(plot=ticks)
+    return plot.relabel("Winding", depth=1)[xlims, ylims].options(xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks)
 
 (
     dispersion_plots

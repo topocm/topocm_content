@@ -22,7 +22,7 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-%output size=110
+holoviews.output(size=110)
 from holoviews.core.options import Cycle
 
 style = {
@@ -323,8 +323,12 @@ Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
 
-%%opts Curve (color=Cycle(values=['r', 'g', 'b', 'y']))
-%%opts Overlay [show_legend=True legend_position='top']
+from holoviews import opts
+from holoviews.plotting.util import Cycle
+opts.defaults(
+    opts.Curve(color=Cycle(values=['r', 'g', 'b', 'y'])),
+    opts.Overlay(show_legend=True, legend_position='top'),
+)
 
 
 def find_gap(syst, params, resolution=1e-4):
@@ -374,7 +378,7 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     title = fr"$\Delta={delta:.2}$, $\mu={mu:.2}$"
     style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
     plot = holoviews.Overlay(plot)
-    return plot.opts(plot=style)
+    return plot.options(xticks=style["xticks"], yticks=style["yticks"], fig_size=style["fig_size"])
 
 
 Bs = np.linspace(0, 0.3, 71)

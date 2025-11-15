@@ -257,14 +257,10 @@ def winding_plot(onsite, lefthopping, righthopping):
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
     title = f"Winding number: ${winding}$"
     kdims = [r"$\operatorname{Re}(z)$", r"$\operatorname{Im}(z)$"]
-    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).opts(
-        style={"color": "k", "linestyle": "--"}
-    )
-    pl *= holoviews.Points((singularities.real, singularities.imag)).opts(
-        style={"color": "r"}
-    )
-    pl *= holoviews.Points((0, 0)).opts(style={"color": "b"})
-    return pl[-2:2, -2:2].relabel(title).opts(plot={"xticks": 3, "yticks": 3})
+    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).options(color="k", linestyle="--")
+    pl *= holoviews.Points((singularities.real, singularities.imag)).options(color="r")
+    pl *= holoviews.Points((0, 0)).options(color="b")
+    return pl[-2:2, -2:2].relabel(title).options(xticks=3, yticks=3)
 
 
 np.random.seed(30)
@@ -328,8 +324,8 @@ To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $
 
 ```{code-cell} ipython3
 
-%%opts Points {+framewise}
-%%opts Path {+framewise}
+from holoviews import opts
+opts.defaults(opts.Points(framewise=True), opts.Path(framewise=True))
 
 
 def onsite(site, t, mu):
@@ -389,12 +385,11 @@ def evaluate_m(syst, p, energy=0):
     y = np.append([0], ys)
     title = f"$m={p['mu']:.2}$, Chern number $={res:1.0f}$"
     window_widening = (max(x) - min(x)) * 0.05
-    pl = holoviews.Path((x, y)).opts(style={"color": "b"})
-    pl *= holoviews.Points((x, y)).opts(style={"color": "b"})
+    pl = holoviews.Path((x, y)).options(color="b")
+    pl *= holoviews.Points((x, y)).options(color="b")
     xlim = slice(min(x) - window_widening, max(x) + window_widening)
     ylim = slice(-2 * np.pi - 0.5, 0.5)
-    ticks = {"xticks": 2, "yticks": [(-2 * np.pi, r"$-2\pi$"), (0, r"$0$")]}
-    return pl[xlim, ylim].relabel(title).opts(plot=ticks)
+    return pl[xlim, ylim].relabel(title).options(xticks=2, yticks=[(-2 * np.pi, r"$-2\pi$"), (0, r"$0$")])
 
 
 p = dict(t=1.0, mu=0.1, delta=0.1, k_x=0, k_y=0)

@@ -8,6 +8,6 @@ The course uses recently released Jupyter Book 2 that is built on top of the mys
 
 The course uses pixi for environment management. If you need the docs, see https://pixi.sh/latest/.
 
-To build the book, run `pixi run jupyter book build`. This is computationally intensive, so do it sparingly.
+To build the book, run `pixi run jupyter book build --execute`. This is computationally intensive, so do it sparingly.
 
 To execute a single notebook for testing, run `pixi run jupytext --execute --to notebook path/to/file.md`.

@@ -144,7 +144,7 @@ def spectrum(
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(plot={"Path": ticks})
+        return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(**{k: v for k, v in ticks.items()})
 
     elif len(variables) == 2:
         # 2D plot.
@@ -193,7 +193,7 @@ def spectrum(
         if num_bands is None:
             plot = hv.Overlay(
                 [
-                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).opts(plot=style)
+                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).options(**style)
                     for i in range(energies.shape[-1])
                 ]
             )
@@ -202,7 +202,7 @@ def spectrum(
             num_bands //= 2
             plot = hv.Overlay(
                 [
-                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).opts(plot=style)
+                    hv.Surface((xs, ys, energies[:, :, i]), **kwargs).options(**style)
                     for i in range(mid - num_bands, mid + num_bands)
                 ]
             )
@@ -212,7 +212,12 @@ def spectrum(
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot.opts(plot={"Overlay": {"fig_size": 200}})
+        if callable(title):
+            plot = plot.relabel(title(p))
+        elif isinstance(title, str):
+            plot = plot.relabel(title)
+
+        return plot
 
     else:
         raise ValueError("Cannot make 4D plots yet.")

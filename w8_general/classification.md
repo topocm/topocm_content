@@ -33,7 +33,6 @@ displaymd = lambda markdown: display_html(HTML(markdown2html_pandoc(markdown)))
 # the \array rows less dense.
 
 table_header = r"""$$
-\require{color}
 colordefs
 \newcommand\T{\Rule{0pt}{1em}{.3em}}
 \begin{array}{fmt}
@@ -349,7 +348,7 @@ block = line_end.join(rows)
 HTML(
     markdown2html_pandoc(
         table_header.format(
-            colordefs=("\\require{action}\n" + colordefs), fmt=format_string, body=block
+            colordefs=colordefs, fmt=format_string, body=block
         )
     )
 )
