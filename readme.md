@@ -1,6 +1,6 @@
 # The source materials for the EdX course "Topology in Condensed Matter: Tying Quantum Knots"
 
-The latest stable version of the course is located at http://topocondmat.org.  
+The latest stable version of the course is located at http://topocondmat.org.
 
 Open these notebooks in [Binder](http://mybinder.org/): [![Binder](http://mybinder.org/badge.svg)](http://mybinder.org/repo/topocm/topocm_content) such that you can experiment with the code.
 

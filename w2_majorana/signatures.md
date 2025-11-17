@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -106,14 +106,15 @@ Is there anything in particular which distinguishes the Majorana resonance from 
 Let's just look at what happens if we compare conductance of an NS interface in the cases when S is trivial and non-trivial, and see how the conductance changes as we alter the tunnel barrier strength.
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.chain(norbs=4)
 
 # The scattering region: one site with a tunnel barrier
 tunnel_spectroscopy_device = kwant.Builder()
 
+
 def onsite_barrier(site, t, mu_n, V_barrier, Ez):
     return (2 * t - mu_n + V_barrier) * pauli.s0sz + Ez * pauli.sxs0
+
 
 tunnel_spectroscopy_device[lat(0)] = onsite_barrier
 
@@ -123,22 +124,28 @@ normal_lead = kwant.Builder(
     conservation_law=-pauli.s0sz,
 )
 
+
 def onsite_normal(site, t, mu_n, Ez):
     return (2 * t - mu_n) * pauli.s0sz + Ez * pauli.sxs0
+
 
 normal_lead[lat(0)] = onsite_normal
 
 # Superconductor has a gap.
-superconductor=kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+superconductor = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
 
 def onsite_sc(site, t, mu_sc, Ez, delta):
     return (2 * t - mu_sc) * pauli.s0sz + Ez * pauli.sxs0 + delta * pauli.s0sx
 
+
 superconductor[lat(0)] = onsite_sc
+
 
 # Hopping
 def hop(site1, site2, t, alpha):
     return -t * pauli.s0sz + 0.5j * alpha * pauli.sysz
+
 
 normal_lead[lat(1), lat(0)] = superconductor[lat(1), lat(0)] = hop
 
@@ -150,7 +157,9 @@ tunnel_spectroscopy_device = tunnel_spectroscopy_device.finalized()
 
 
 def Andreev_conductance(syst, params, energy=0):
-    smatrix = kwant.smatrix(syst, energy=energy, params=params, in_leads=[0], out_leads=[0])
+    smatrix = kwant.smatrix(
+        syst, energy=energy, params=params, in_leads=[0], out_leads=[0]
+    )
     n_modes = smatrix.lead_info[0].block_nmodes[0]
     return (
         n_modes
@@ -161,9 +170,7 @@ def Andreev_conductance(syst, params, energy=0):
 
 def plot_spectroscopy(V_barrier):
     energies = np.linspace(-0.15, 0.15, 101)
-    params = dict(
-        t=1, mu_n=0.5, mu_sc=0, alpha=.3, delta=0.1, V_barrier=V_barrier
-    )
+    params = dict(t=1, mu_n=0.5, mu_sc=0, alpha=0.3, delta=0.1, V_barrier=V_barrier)
 
     # Trivial, because the magnetic field is zero (third argument)
     params["Ez"] = 0
@@ -179,8 +186,12 @@ def plot_spectroscopy(V_barrier):
         for energy in energies
     ]
     kdims = [dims["V_bias"], dims["G"]]
-    plot = holoviews.Path((energies, Gs_trivial), kdims=kdims, label="trivial").options(color="k")
-    plot *= holoviews.Path((energies, Gs_topological), kdims=kdims, label="topological").options(color="r")
+    plot = holoviews.Path((energies, Gs_trivial), kdims=kdims, label="trivial").options(
+        color="k"
+    )
+    plot *= holoviews.Path(
+        (energies, Gs_topological), kdims=kdims, label="topological"
+    ).options(color="r")
     style_overlay = {
         "xticks": [-0.1, 0.0, 0.1],
         "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
@@ -193,7 +204,6 @@ def plot_spectroscopy(V_barrier):
 ```
 
 ```{code-cell} ipython3
-
 holoviews.HoloMap(
     {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
     kdims=[r"$V_{barrier}$"],
@@ -280,7 +290,6 @@ $$
 We already saw that unitarity requires that $|r_{ee}|^2+|r_{eh}|^2=1$. There are only two possibilities for both conditions to be true: either $|r_{ee}|=1$ (**perfect  normal reflection**) or $|r_{eh}|=1$ (**perfect Andreev reflection**). The situation cannot change without a phase transition. Thus the quantized conductance of the Majorana mode is topologically robust in this case, and in fact survives past the tunneling limit.
 
 ```{code-cell} ipython3
-
 question = (
     "Imagine we replace the superconducting electrode with an insulating material, "
     "and imagine that at the interface with the normal metal there is a bound state. "
@@ -299,9 +308,7 @@ explanation = (
     "A superconductor is also gapped with respect to excitations, but is different than a normal insulator. "
     "It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface."
 )
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
 ```
 
 ## Flux-induced fermion parity switch in topological superconductors
@@ -329,12 +336,12 @@ Here, $\phi = 2\pi\Phi/\Phi_0$ is usually called the **superconducting phase dif
 To see how this happens explicitly, let's look at the spectrum of a topological superconducting ring as a function of flux,  obtained using our nanowire model:
 
 ```{code-cell} ipython3
-
 # Make a finite ring.
 
 L = 100
 ring = kwant.Builder()
 ring.fill(superconductor, shape=(lambda site: 0 <= site.pos[0] < L), start=[0])
+
 
 def junction_hopping(site1, site2, t, alpha, flux):
     phase = np.exp(1j * flux / 2)
@@ -343,9 +350,10 @@ def junction_hopping(site1, site2, t, alpha, flux):
     return reduction * phase_factors @ hop(site1, site2, t, alpha)
 
 
-ring[lat(0), lat(L-1)] = junction_hopping
+ring[lat(0), lat(L - 1)] = junction_hopping
 
 ring = ring.finalized()
+
 
 def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     N = spectrum.shape[1] // 2
@@ -353,7 +361,9 @@ def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     plot = holoviews.Path((fluxes, spectrum), kdims=kdims).options(color="k", alpha=0.4)
     plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).options(color="r")
     plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).options(color="k")
-    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).options(xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")])
+    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).options(
+        xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]
+    )
 
 
 def plot_gse_sc_nanowire(fluxes, spectrum):
@@ -365,9 +375,9 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     xdim = dims["phi"]
     ydim = r"$E_{tot}(\Phi)$"
 
-    plot = holoviews.Path((fluxes, energy_gs), kdims=[xdim, ydim], label="Energy").options(
-        xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]
-    )
+    plot = holoviews.Path(
+        (fluxes, energy_gs), kdims=[xdim, ydim], label="Energy"
+    ).options(xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")])
     ydim = r"$I(\Phi)$"
     plot += holoviews.Path(
         ((fluxes[1:] + fluxes[:-1]) / 2, current), kdims=[xdim, ydim], label="Current"
@@ -376,19 +386,20 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
 ```
 
 ```{code-cell} ipython3
-
 params = dict(mu_sc=0.4, t=1.0, alpha=0.2, delta=0.1, Ez=1)
 
 fluxes = np.linspace(0, 4 * np.pi, 51)
-spectrum = np.array([
-    np.linalg.eigvalsh(ring.hamiltonian_submatrix(params=params))
-    for params["flux"] in fluxes
-])
+spectrum = np.array(
+    [
+        np.linalg.eigvalsh(ring.hamiltonian_submatrix(params=params))
+        for params["flux"] in fluxes
+    ]
+)
 
 # Exchange two lowest energy states if parity is odd.
 N = spectrum.shape[1] // 2
 non_trivial = np.where((fluxes > np.pi) & (fluxes < 3 * np.pi))
-spectrum[non_trivial, N-1 : N+1] *= -1
+spectrum[non_trivial, N - 1 : N + 1] *= -1
 
 plot_spectrum_nanowire(fluxes, spectrum)
 ```
@@ -412,7 +423,6 @@ Note that this argument relies on the absence of a reservoir of electrons, such 
 The fermion parity switch, together with fermion parity conservation of the ring, result in the energy $E_\textrm{tot}(\Phi)$ and the corresponding current (that can be measured) showing a $2\Phi_0$ periodicity in $\Phi$ - that is, a $4\pi$ periodicity in $\phi$:
 
 ```{code-cell} ipython3
-
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
 
@@ -431,13 +441,14 @@ Now you see why $\phi$ was referred to as *superconducting phase* in the first p
 As seen from the plots below, this is exactly what happens in the non-topological phase. In this case, when we look at the energy spectrum, no fermion parity switches appear:
 
 ```{code-cell} ipython3
-
 params["Ez"] = 0.2
 
-spectrum = np.array([
-    np.linalg.eigvalsh(ring.hamiltonian_submatrix(params=params))
-    for params["flux"] in fluxes
-])
+spectrum = np.array(
+    [
+        np.linalg.eigvalsh(ring.hamiltonian_submatrix(params=params))
+        for params["flux"] in fluxes
+    ]
+)
 
 plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.11, 0.11])
 ```
@@ -445,14 +456,12 @@ plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.11, 0.11])
 In turn, this means that energy and current are periodic with period $\Phi_0$:
 
 ```{code-cell} ipython3
-
 plot_gse_sc_nanowire(fluxes, spectrum)
 ```
 
 At this point, you might be a little worried about how the topological superconductor managed to get around this *conventional wisdom*. The answer is subtle, and relies on the implicit assumption of the ground state fermion parity of the junction being fixed as one changes $\phi$. Topological superconductors violate this assumption and therefore can create the $4\pi$ periodic (or fractional) Josephson effect.
 
 ```{code-cell} ipython3
-
 question = (
     "Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
     "into a reservoir very quickly, making the junction always relax to the ground state. "
@@ -469,9 +478,7 @@ explanation = (
     "Hence the lowest between the red and black energy levels is always occupied, and both energy and current "
     "turn out to have a period $\Phi_0$."
 )
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
 ```
 
 ## Summary

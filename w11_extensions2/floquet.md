@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -115,7 +115,6 @@ If the system is translationally invariant, we can study the effective band stru
 Of course, selecting a single quasi-energy as the Fermi level is arbitrary, since the equilibrium state of driven systems doesn't correspond to a Fermi distribution of filling factors, but at least it seems close enough for us to try to apply topological ideas.
 
 ```{code-cell} ipython3
-
 question = (
     "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
     "Floquet operator. What if we chose a different one?"
@@ -162,9 +161,11 @@ $$
 with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ and $\mu_2$. A peculiar property of driven systems is that as the period becomes large, the band structure 'folds': if the driving is very weak, and the original Hamiltonian has energy $E$, the Floquet Hamiltonian has a much smaller quasienergy $(E\bmod 2\pi /T)$. This means that even when $H_1$ and $H_2$ correspond to trivial systems, we can still obtain nontrivial topology if we make the period large enough, as you can see for yourself:
 
 ```{code-cell} ipython3
-
 from holoviews import opts
+
 opts.defaults(opts.Path(axiswise=True))
+
+
 def evolution_operator(hamiltonians, T):
     n = len(hamiltonians)
     exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
@@ -281,7 +282,6 @@ Every electron makes a closed loop and ends up back at its origin. After every s
 Let's have a look at the dispersion, and also see what happens as we tune the driving period:
 
 ```{code-cell} ipython3
-
 holoviews.output(size=200)
 
 lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
@@ -292,6 +292,7 @@ infinite_checkerboard[kwant.HoppingKind((0, 0), b, a)] = lambda s1, s2, t1: -t1
 infinite_checkerboard[kwant.HoppingKind((-1, 1), b, a)] = lambda s1, s2, t2: -t2
 infinite_checkerboard[kwant.HoppingKind((1, 0), a, b)] = lambda s1, s2, t3: -t3
 infinite_checkerboard[kwant.HoppingKind((0, 1), a, b)] = lambda s1, s2, t4: -t4
+
 
 def plot_dispersion_2D(T):
     syst = infinite_checkerboard
@@ -330,14 +331,18 @@ def plot_dispersion_2D(T):
         "vdims": ["$E$"],
     }
 
-    title = fr"$T = {T / np.pi:.2} \pi$"
+    title = rf"$T = {T / np.pi:.2} \pi$"
 
     xs = np.linspace(-np.pi, np.pi, energies.shape[1])
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
     return (
-        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3)
-        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3)
+        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(
+            xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3
+        )
+        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(
+            xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3
+        )
     ).relabel(title)
 
 
@@ -350,15 +355,18 @@ Now, there isn't a Hamiltonian which is more topologically trivial than the zero
 That's something we can also very easily verify by computing the dispersion of a finite size ribbon:
 
 ```{code-cell} ipython3
-
 from holoviews import opts
+
 holoviews.output(size=200)
 opts.defaults(opts.Path(axiswise=True))
 
 W = 10
 ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
-ribbon.fill(infinite_checkerboard, (lambda site: 0 <= site.pos[0] - site.pos[1] < W), (0, 0))
+ribbon.fill(
+    infinite_checkerboard, (lambda site: 0 <= site.pos[0] - site.pos[1] < W), (0, 0)
+)
 ribbon = ribbon.finalized()
+
 
 def get_h_k(lead, p):
     bands = kwant.physics.Bands(ribbon, params=p)
@@ -389,7 +397,7 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 
 def plot(n):
     T = periods[n]
-    title = fr"spectrum: $T={T / np.pi:.2} \pi$"
+    title = rf"spectrum: $T={T / np.pi:.2} \pi$"
     return holoviews.Path(
         (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
     ).options(xticks=pi_ticks, yticks=pi_ticks, aspect=3)
@@ -407,7 +415,6 @@ When the driving period is tuned to ensure the absence of bulk dispersion, we ca
 So what is happening with bulk-edge correspondence?
 
 ```{code-cell} ipython3
-
 question = "How can you change the chirality of the edge states in the figure above?"
 
 answers = [

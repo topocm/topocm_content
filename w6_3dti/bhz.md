@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -128,22 +128,19 @@ $$
 Let's have a quick look at it to get a more concrete understanding:
 
 ```{code-cell} ipython3
+holoviews.output(fig="png")
 
-holoviews.output(fig='png')
 
 def onsite(site, C, D1, D2, M, B1, B2):
-    return (
-        (C + 2 * D1 + 4 * D2) * pauli.s0s0
-        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
-    )
+    return (C + 2 * D1 + 4 * D2) * pauli.s0s0 + (M + 2 * B1 + 4 * B2) * pauli.s0sz
 
 
 def hopx(site1, site2, D2, B2, A2, Bz):
     x1, y1, z1 = site1.pos
     x2, y2, z2 = site2.pos
-    return (
-        -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx
-    ) * np.exp(-0.5j * Bz * (x1 - x2) * (y1 + y2))
+    return (-D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx) * np.exp(
+        -0.5j * Bz * (x1 - x2) * (y1 + y2)
+    )
 
 
 def hopy(site1, site2, D2, B2, A2):
@@ -210,8 +207,7 @@ As a final illustration of the relation between weak and strong invariants, let'
 We determine the topological invariant in the same way as for QSHE: we see if the phase of the reflection matrix connects the Pfaffians of $r(k_y=0)$ and $r(k_y=\pi)$.
 
 ```{code-cell} ipython3
-
-holoviews.output(fig='png')
+holoviews.output(fig="png")
 
 # A system for computing the topological invariant
 probe_lead = kwant.Builder(
@@ -246,14 +242,16 @@ def pfaffian_phase(p, k_x, k_y):
 def invariant_at_k_x(p, k_x, k_x_label, col):
     pfaff = [pfaffian_phase(p, k_x, k_y) for k_y in (0, np.pi)]
     ks = np.linspace(0.0, np.pi, 50)
-    det = np.array([
-        np.linalg.det(
-            kwant.smatrix(
-                top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
-            ).data
-        )
-        for k_y in ks
-    ])
+    det = np.array(
+        [
+            np.linalg.det(
+                kwant.smatrix(
+                    top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
+                ).data
+            )
+            for k_y in ks
+        ]
+    )
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
     xdim, ydim = "$k_y$", "phase"
     kdims = [xdim, ydim]
@@ -265,10 +263,7 @@ def invariant_at_k_x(p, k_x, k_x_label, col):
 def plot_invariant(p):
     xdim, ydim = "$k_y$", "phase"
 
-    plot = (
-        invariant_at_k_x(p, 0, "0", "g")
-        * invariant_at_k_x(p, np.pi, r"\pi", "b")
-    )
+    plot = invariant_at_k_x(p, 0, "0", "g") * invariant_at_k_x(p, np.pi, r"\pi", "b")
     xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.3, np.pi + 0.3)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
     style_overlay = {
@@ -279,7 +274,10 @@ def plot_invariant(p):
     }
     style_path = {"show_legend": True}
     return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(
-        xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks, show_legend=True, legend_position="top"
+        xticks=[(0, "0"), (np.pi, "$\pi$")],
+        yticks=pi_ticks,
+        show_legend=True,
+        legend_position="top",
     )
 
 
@@ -290,7 +288,9 @@ k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-2.75, 0.75, 11)
 spectra = holoviews.HoloMap(
     {
-        p["M"]: spectrum(slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2)
+        p["M"]: spectrum(
+            slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2
+        )
         for p["M"] in Ms
     },
     kdims=["$M$"],
@@ -310,7 +310,6 @@ We see the values of the invariants change several times:
 * Finally one more Dirac cone appears at $k = (\pi, \pi)$, accompanied by both invariants becoming trivial.
 
 ```{code-cell} ipython3
-
 question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
 
 answers = [
@@ -345,7 +344,6 @@ In total we thus get $\sigma_{xy} = (2n + 1) e^2/h$: an integer, which resolves 
 Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```{code-cell} ipython3
-
 holoviews.output(size=150)
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
 
@@ -353,7 +351,7 @@ wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
 wire.fill(
     bhz_infinite,
     shape=(lambda site: 0 <= site.pos[1] < 20 and 0 <= site.pos[2] < 10),
-    start=(0, 0, 0)
+    start=(0, 0, 0),
 )
 k = np.linspace(-3.5, 1.5)
 kwargs = {"ylims": [-0.8, 0.8], "yticks": 5}
@@ -363,7 +361,6 @@ spectrum(wire, p, k_x=k, **kwargs)
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.
 
 ```{code-cell} ipython3
-
 question = (
     "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
     "a very thick Corbino disk. "

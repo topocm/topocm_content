@@ -1,13 +1,8 @@
-import os
 import re
 import secrets
-import sys
-from hashlib import md5
 from textwrap import dedent
-from xml.etree import ElementTree
-from xml.etree.ElementTree import Element, SubElement
+from xml.etree.ElementTree import SubElement
 
-import feedparser
 from IPython import display
 
 
@@ -30,7 +25,7 @@ def _add_solution(el, text):
 
 
 def _replace_latex_delimiters(text):
-    return re.sub(r"\$(.+?)\$", (lambda match: fr"\({match.group(1)}\)"), text)
+    return re.sub(r"\$(.+?)\$", (lambda match: rf"\({match.group(1)}\)"), text)
 
 
 class Video(display.YouTubeVideo):
@@ -137,7 +132,7 @@ class MultipleChoice:
         answer = "The correct answer is: <br>"
         answer += self.answers[self.correct_answer]
         if self.explanation is not None:
-            answer += f"<br><i>" + self.explanation + "</i>"
+            answer += "<br><i>" + self.explanation + "</i>"
 
         s += dedent(
             """

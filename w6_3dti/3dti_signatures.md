@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -22,10 +22,6 @@ sys.path.append("../code")
 from init_course import *
 
 init_notebook()
-
-import scipy
-import scipy.linalg as sla
-from matplotlib import cm
 
 
 import warnings
@@ -55,13 +51,9 @@ Both the quantum Hall and quantum spin Hall states have striking conductance qua
 The 3D topological insulators do not posses similar striking conductance properties. In a slab geometry, the surface states contribute with a finite density of propagating states. This density has a minimum at the Dirac point. The conductance increases roughly with a hyperbolic shape if the chemical potential is tuned away from the Dirac point as shown in the plot below:
 
 ```{code-cell} ipython3
-
 # BHZ model
 def onsite(site, mu, D1, D2, M, B1, B2):
-    return (
-        (2 * D1 + 4 * D2 - mu) * pauli.s0s0
-        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
-    )
+    return (2 * D1 + 4 * D2 - mu) * pauli.s0s0 + (M + 2 * B1 + 4 * B2) * pauli.s0sz
 
 
 def hopx(site1, site2, D2, B2, A2):
@@ -92,11 +84,7 @@ def scattering_region_shape(site):
 
 
 finite_ti = kwant.Builder()
-finite_ti.fill(
-    bhz_infinite,
-    shape=scattering_region_shape,
-    start=(0, 0, 0)
-)
+finite_ti.fill(bhz_infinite, shape=scattering_region_shape, start=(0, 0, 0))
 
 
 def wire_shape(site):
@@ -105,11 +93,7 @@ def wire_shape(site):
 
 
 wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
-wire.fill(
-    bhz_infinite.substituted(mu="mu_lead"),
-    shape=wire_shape,
-    start=(0, 0, 0)
-)
+wire.fill(bhz_infinite.substituted(mu="mu_lead"), shape=wire_shape, start=(0, 0, 0))
 finite_ti.attach_lead(wire)
 finite_ti.attach_lead(wire.reversed())
 finite_ti = finite_ti.finalized()
@@ -120,14 +104,16 @@ mus = np.linspace(-0.4, 0.4, 40)
 # Precalculate lead modes
 finite_ti = finite_ti.precalculate(energy=0, params=p)
 conductances = [
-    kwant.smatrix(finite_ti, params={**p, "mu": mu}).transmission(1, 0)
-    for mu in mus
+    kwant.smatrix(finite_ti, params={**p, "mu": mu}).transmission(1, 0) for mu in mus
 ]
 
 xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
-conductance_plot = holoviews.Path((mus, conductances), kdims=[xdim, ydim]).options(
-    xticks=3, yticks=[0, 2, 4, 6, 8]
-).redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)}).relabel("Conductance")
+conductance_plot = (
+    holoviews.Path((mus, conductances), kdims=[xdim, ydim])
+    .options(xticks=3, yticks=[0, 2, 4, 6, 8])
+    .redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)})
+    .relabel("Conductance")
+)
 
 kwargs = {
     "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
@@ -174,7 +160,6 @@ Therefore, rather than observing a sequence $e^2/h\,(2n+1)$, we observe a more c
 So, even by studying the Landau levels experimentally, we do not get a topological signature. But do not despair, luckily there is a much better thing that we can do rather than just measuring conductance: looking at the energy spectrum of the surface states directly.
 
 ```{code-cell} ipython3
-
 question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
 
 answers = [
@@ -214,7 +199,6 @@ In the top panel of the figure above, we see that by changing the chemical poten
 While the top panels shows where the occupied states lie in the $(k_x, k_y)$ plane, in the second and third rows we see a cross-section of the energy as a function of momentum, where the Dirac cone is clearly visible, emerging from a bulk valence band filled with electrons.
 
 ```{code-cell} ipython3
-
 question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
 
 answers = [
@@ -293,8 +277,7 @@ You see a correction to the Dirac velocity proportional to $\alpha \mathbf{k}^2$
 Let's plot the spectrum of this extended effective Hamiltonian:
 
 ```{code-cell} ipython3
-
-holoviews.output(fig='png')
+holoviews.output(fig="png")
 
 A = 1.2
 B = 1.8
@@ -311,11 +294,10 @@ k_x, k_y = r * np.cos(p), r * np.sin(p)
 k_x = k_x[..., np.newaxis, np.newaxis]
 k_y = k_y[..., np.newaxis, np.newaxis]
 s0, sx, sy, sz = (
-    i.reshape(1, 1, 2, 2) for i in
-    (pauli.s0, pauli.sx, pauli.sy, pauli.sz)
+    i.reshape(1, 1, 2, 2) for i in (pauli.s0, pauli.sx, pauli.sy, pauli.sz)
 )
 H = (
-    A * (k_x ** 2 + k_y ** 2) * s0
+    A * (k_x**2 + k_y**2) * s0
     + B * (k_x * sy - k_y * sx)
     + C * 0.5 * ((k_x + 1j * k_y) ** 3 + (k_x - 1j * k_y) ** 3) * sz
 )
@@ -333,9 +315,7 @@ xy_ticks = [-1.2, 0, 1.2]
 zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
 style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
 # TriSurface expects flat arrays of x,y,z; pass only data and rely on holoviews defaults
-kwargs = {
-    "extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1])
-}
+kwargs = {"extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1])}
 
 # Custom colormap for the hexagonal warping plot
 cmap_list = [
@@ -347,8 +327,9 @@ hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_li
 # hex_cmap colormap is defined below.
 holoviews.Overlay(
     [
-        holoviews.TriSurface((k_x.flat, k_y.flat, band.flat),)
-        .options(cmap=hex_cmap, linewidth=0)
+        holoviews.TriSurface(
+            (k_x.flat, k_y.flat, band.flat),
+        ).options(cmap=hex_cmap, linewidth=0)
         for band in energies
     ]
 ).options(fig_size=350)

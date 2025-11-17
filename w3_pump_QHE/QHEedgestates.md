@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -60,7 +60,6 @@ $$
 H=p_y^2+(\hbar k-e B y-\Phi)^2\,+V(y).
 $$
 
-
 +++
 
 Let's recall that $k=2\pi n/L$ because of periodic boundary conditions over $x$. We do not really care about the particular shape of the potential. Generically, it will be very flat in the middle of the ribbon and very steep right at its boundaries:
@@ -74,7 +73,6 @@ But let's now move closer to the edges. That is, let's consider states which are
 Because $y_0$ is proportional to $k$, this means the states close to the edge will acquire a dependence on $k$. Let's see if this is true, by plotting $E(k)$ for our ribbon:
 
 ```{code-cell} ipython3
-
 def onsite(site, t, mu):
     return 4 * t - mu
 
@@ -102,7 +100,7 @@ def qhe_ribbon(W):
     lat = kwant.lattice.square()
     syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
 
-    syst[lat.shape((lambda pos: -W//2 <= pos[1] < W - W//2), (0, 0))] = onsite
+    syst[lat.shape((lambda pos: -W // 2 <= pos[1] < W - W // 2), (0, 0))] = onsite
     syst[lat.neighbors()] = hopping
 
     return syst
@@ -144,7 +142,6 @@ The velocity is opposite at the two edges because the local electric field $\mat
 An important thing to note is that the presence of edge states does not depend in any way on the particular shape of the sample as well. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a “picture” of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
 
 ```{code-cell} ipython3
-
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
     """Create a hall bar system.
 
@@ -238,7 +235,6 @@ kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
 ```{code-cell} ipython3
-
 question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
 answers = [
     "They go at the same velocity.",
@@ -251,9 +247,7 @@ explanation = (
     "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
     "is stronger there."
 )
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=2, explanation=explanation)
 ```
 
 ## The harmless anomaly of the chiral edges
@@ -287,7 +281,6 @@ So let's take again our Corbino disk immersed in an external magnetic field. Wit
 In this new drawing, we have also added arrows to indicate that we now know that each edge of the Corbino supports one chiral  state. We cannot resist the temptation of showing you another beautiful plot of the local density of states, showing edge states in the Corbino geometry:
 
 ```{code-cell} ipython3
-
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
 
@@ -297,11 +290,12 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     Arguments required in onsite/hoppings:
         t, mu, mu_lead, B, phi
     """
+
     # ring shape
     def ring(pos):
         (x, y) = pos
-        rsq = x ** 2 + y ** 2
-        return r_in ** 2 < rsq < r_out ** 2
+        rsq = x**2 + y**2
+        return r_in**2 < rsq < r_out**2
 
     # Onsite and hoppings
 
@@ -375,13 +369,11 @@ $$
 I_\circlearrowleft = n \,\frac{e^2}{h} V\,.
 $$
 
-
 +++
 
 > Thus, the relevant electromagnetic responses, namely the longitudinal and Hall conductivities $\sigma_L=0$ and $\sigma_H=ne^2/h$, can both be derived directly by only considering the chiral edge states.
 
 ```{code-cell} ipython3
-
 question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
 answers = [
     "It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
@@ -394,9 +386,7 @@ explanation = (
     "Hence there are three filled Landau levels in the bulk, "
     "so the Fermi level lies somewhere above the third, but below the fourth Landau level."
 )
-MultipleChoice(
-    question, answers, correct_answer=3, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=3, explanation=explanation)
 ```
 
 ## Important things to know about edge states

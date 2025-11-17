@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -86,17 +86,20 @@ $$
 The effective electron mass $m$ is just the coefficient of the expansion. Let's take a look at the band structure in this regime, both in the topological regime and in the trivial regime:
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.chain(norbs=4)
 spinful_kitaev_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
 
 def onsite(site, t, mu, B):
     return (2 * t - mu) * pauli.szs0 + B * pauli.szsz
 
+
 spinful_kitaev_chain[lat(0)] = onsite
+
 
 def hop(site1, site2, t, delta):
     return -t * pauli.szs0 - 1j * delta * pauli.sys0
+
 
 spinful_kitaev_chain[kwant.HoppingKind((1,), lat)] = hop
 
@@ -105,8 +108,12 @@ params_trivial = dict(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
 params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
 (
-    spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Trivial bandstructure")
-    + spectrum(spinful_kitaev_chain, params_topological, **style).relabel("Topological bandstructure")
+    spectrum(spinful_kitaev_chain, params_trivial, **style).relabel(
+        "Trivial bandstructure"
+    )
+    + spectrum(spinful_kitaev_chain, params_topological, **style).relabel(
+        "Topological bandstructure"
+    )
 )
 ```
 
@@ -131,9 +138,9 @@ Whenever the Zeeman energy $|B|$ is larger than $\mu$ we have one Majorana fermi
 Let's look at what happens with the dispersion as we increase the magnetic field from zero to a value larger than $\mu$.
 
 ```{code-cell} ipython3
-
 def title(params):
     return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+
 
 params = dict(t=1.0, delta=0.1, mu=0.3, B=None)
 Bs = np.linspace(0, 0.4, 10)
@@ -142,7 +149,7 @@ holoviews.HoloMap(
         params["B"]: spectrum(spinful_kitaev_chain, params, title=title, **style)
         for params["B"] in Bs
     },
-    kdims=[r"$B$"]
+    kdims=[r"$B$"],
 )
 ```
 
@@ -231,25 +238,40 @@ And that is a big problem. Majoranas are their own particle-hole partners, and t
 So does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
 
 ```{code-cell} ipython3
-
 nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
 
 def onsite(onsite, t, mu, B, delta):
     return (2 * t - mu) * pauli.szs0 + B * pauli.s0sz + delta * pauli.sxs0
 
+
 nanowire_chain[lat(0)] = onsite
+
 
 def hop(site1, site2, t, alpha):
     return -t * pauli.szs0 - 0.5j * alpha * pauli.szsx
 
+
 nanowire_chain[kwant.HoppingKind((1,), lat)] = hop
 
+
 def title(params):
-    return r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+    return (
+        r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(
+            **params
+        )
+    )
+
 
 params = dict(t=1.0, mu=0.0, delta=0.1, alpha=0.0)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({params["B"]: spectrum(nanowire_chain, params, **style, title=title) for params["B"] in Bs}, kdims=[r"$B$"])
+holoviews.HoloMap(
+    {
+        params["B"]: spectrum(nanowire_chain, params, **style, title=title)
+        for params["B"] in Bs
+    },
+    kdims=[r"$B$"],
+)
 ```
 
 Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That in turn means that they cannot appear, and that means that the system cannot be gapped.
@@ -281,7 +303,6 @@ At $k = 0$, spin-orbit coupling vanishes, so it has no effect on the system bein
 Let's now check that it does what we want, namely open the gap at a finite momentum:
 
 ```{code-cell} ipython3
-
 params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
 holoviews.HoloMap(
@@ -289,7 +310,7 @@ holoviews.HoloMap(
         params["alpha"]: spectrum(nanowire_chain, params, **style, title=title)
         for params["alpha"] in alphas
     },
-    kdims=[r"$\alpha$"]
+    kdims=[r"$\alpha$"],
 )
 ```
 
@@ -322,12 +343,12 @@ The smaller the gap, the worse the protection of Majoranas, and the more we need
 Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
-
 from holoviews import opts
 from holoviews.plotting.util import Cycle
+
 opts.defaults(
-    opts.Curve(color=Cycle(values=['r', 'g', 'b', 'y'])),
-    opts.Overlay(show_legend=True, legend_position='top'),
+    opts.Curve(color=Cycle(values=["r", "g", "b", "y"])),
+    opts.Overlay(show_legend=True, legend_position="top"),
 )
 
 
@@ -363,28 +384,27 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     params = dict(mu=mu, t=t, delta=delta)
 
     gaps = np.array(
-        [
-            [find_gap(syst, params) for params["B"] in Bs]
-            for params["alpha"] in alphas
-        ]
+        [[find_gap(syst, params) for params["B"] in Bs] for params["alpha"] in alphas]
     )
     dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
     B_crit = holoviews.VLine(np.sqrt(delta**2 + mu**2))
     plot = [
-        holoviews.Curve((Bs, gap), label=fr"$\{alpha=}$", **dims)
-        * B_crit
+        holoviews.Curve((Bs, gap), label=rf"$\{alpha=}$", **dims) * B_crit
         for gap, alpha in zip(gaps, alphas)
     ]
-    title = fr"$\Delta={delta:.2}$, $\mu={mu:.2}$"
+    title = rf"$\Delta={delta:.2}$, $\mu={mu:.2}$"
     style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
     plot = holoviews.Overlay(plot)
-    return plot.options(xticks=style["xticks"], yticks=style["yticks"], fig_size=style["fig_size"])
+    return plot.options(
+        xticks=style["xticks"], yticks=style["yticks"], fig_size=style["fig_size"]
+    )
 
 
 Bs = np.linspace(0, 0.3, 71)
 mus = np.linspace(-0.05, 0.15, 5)
 holoviews.HoloMap(
-    {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r"$\mu$"]
+    {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus},
+    kdims=[r"$\mu$"],
 )
 ```
 
@@ -399,10 +419,15 @@ Let's summarize our observations:
 We finish our investigation of this model for now with a final simple picture of the band structure of our system.
 
 ```{code-cell} ipython3
-
 params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
-holoviews.HoloMap({params["mu"]: spectrum(nanowire_chain, params, **style, title=title) for params["mu"] in mus}, kdims=[r"$\mu$"])
+holoviews.HoloMap(
+    {
+        params["mu"]: spectrum(nanowire_chain, params, **style, title=title)
+        for params["mu"] in mus
+    },
+    kdims=[r"$\mu$"],
+)
 ```
 
 When $\mu$ is very negative we see two split electron bands at positive energy corresponding to two spin orientations.
@@ -416,7 +441,6 @@ At $k=0$ the spin-orbit coupling is ineffective, so the electron and hole bands 
 The non-monotonous behavior of the gap versus $B$ that we saw earlier is a consequence of this complicated band structure: There are different values of momenta where the dispersion has local minima. When we are close to the phase transition, $k=0$ defines the gap, while for large $B$, it is the gap at finite momentum that becomes smallest.
 
 ```{code-cell} ipython3
-
 question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
 answers = [
     "Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
@@ -430,9 +454,7 @@ explanation = (
     + "So we are back to the problem that a gap at finite momentum does not open, "
     + "and we do not get a topological phase supporting Majoranas."
 )
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
 ```
 
 ## Outlook

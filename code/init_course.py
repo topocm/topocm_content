@@ -3,7 +3,6 @@ import datetime
 import os
 import re
 import sys
-import types
 import warnings
 
 # 2. External package imports
@@ -15,12 +14,9 @@ from holoviews import Options, Store
 from IPython import display
 
 # A bunch of functions and modules to pass on, we never use them here
-from IPython.display import display_html
-from matplotlib import pyplot as plt
 
 import components
 import functions
-from pfapack import pfaffian as pf
 from components import *
 from functions import *
 
@@ -58,7 +54,7 @@ def scientific_number(x):
         return "$0$"
     pot = int(np.log(abs(x)) / np.log(10.0)) - 1
     fac = x * 10 ** (-pot)
-    return fr"${fac:1.1f} \cdot 10^{{{pot:1.0f}}}$"
+    return rf"${fac:1.1f} \cdot 10^{{{pot:1.0f}}}$"
 
 
 def pretty_fmt_complex(num, digits=2):
@@ -114,7 +110,7 @@ def init_notebook():
     check_versions()
 
     holoviews.notebook_extension("matplotlib")
-    holoviews.output(widget_location='bottom')
+    holoviews.output(widget_location="bottom")
 
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui="inline")
@@ -149,7 +145,9 @@ def init_notebook():
 
     # Set slider label formatting
     for dimension_type in [float, np.float64, np.float32]:
-        holoviews.Dimension.type_formatters[dimension_type] = lambda x: pretty_fmt_complex(x, 4)
+        holoviews.Dimension.type_formatters[dimension_type] = (
+            lambda x: pretty_fmt_complex(x, 4)
+        )
 
     code_dir = os.path.dirname(os.path.realpath(__file__))
     matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
