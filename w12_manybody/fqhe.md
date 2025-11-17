@@ -50,14 +50,14 @@ $$
 Q_{pump}=\sigma_{xy}\Phi_0\equiv \nu e,
 $$
 
-where $\nu=\sigma_{xy}/G_0$ is the Hall conductance in dimensionless units. For the non-interacting system that we studied in the quantum Hall effect, we assumed that only an integer number of electrons could be transferred between the edges - so $\nu$ had to be an integer. 
+where $\nu=\sigma_{xy}/G_0$ is the Hall conductance in dimensionless units. For the non-interacting system that we studied in the quantum Hall effect, we assumed that only an integer number of electrons could be transferred between the edges - so $\nu$ had to be an integer.
 
 The real reason that the charge transferred had to be an integer multiple of the electron charge was that the Hamiltonian for the electrons was identical between flux $\Phi=0$ and flux $\Phi=\Phi_0$. Since the system is incompressible, it is reasonable to assume that all excitations in the system are local. Usually we expect different excited states to differ by rearranging electrons. Within this framework, such excitations can differ by integer multiples of electronic charge.
 
 The existence of fractional values of $\nu$ implies that the edge can have local excitations that differ by a fractional electron charge. In principle, the inner edge of the Corbino geometry can be shrunk to a point, and if we do this, we're forced to conclude that the system can now host excitations that have fractional charge.
 
 The fractional charged excitations are local particles just like the electrons themselves. So we can ask about the statistics under exchange of two such particles. On performing such an exchange, the total many-body wave function of the system returns to itself, but
-the wave function can pick up a Berry phase. For fermions this phase is $\pi$ and for Bosons it is zero. Instead of computing the phase directly, let us consider doing a double exchange, which is topologically equivalent to taking a particle around another one and computing the phase for that. 
+the wave function can pick up a Berry phase. For fermions this phase is $\pi$ and for Bosons it is zero. Instead of computing the phase directly, let us consider doing a double exchange, which is topologically equivalent to taking a particle around another one and computing the phase for that.
 
 ![](figures/exchange.svg)
 
@@ -118,11 +118,11 @@ We have seen an example of ground state degeneracy in Majorana wires, where the 
 
 ## Creating an FQH state
 
-How can we describe a fractional quantum Hall state? Laughlin used a representation of the many-electron wave function in complex coordinates to guess a wave function of an incompressible state. We will instead follow the more intuitive "Composite Fermion" approach due to Jain to understand this state. 
+How can we describe a fractional quantum Hall state? Laughlin used a representation of the many-electron wave function in complex coordinates to guess a wave function of an incompressible state. We will instead follow the more intuitive "Composite Fermion" approach due to Jain to understand this state.
 
 The starting point for the FQH state is of course the same as for the integer quantum Hall states, i.e. electrons in a magnetic field that occupy Landau levels. As we noticed in week 3, every state in a single Landau level is at exactly the same energy. The simplest family of FQH states are ones where the lowest Landau level states are only partially filled. Since there is no kinetic energy, the state is determined entirely by optimizing the Coulomb repulsion such that the electrons are as far away from each other as possible.
 
-The composite fermion theory postulates that electrons manage to space themselves out by associating themselves with "vortex"-like excitations. As you hopefully recall, a vortex in a superconductor is a defect where the superconducting phase $\varphi$ winds by $2\pi$ when going around the vortex. An electron going around the vortex picks up a $\pi$-phase shift. On the other hand, an electron can go around a double vortex and pick up effectively no (i.e. $2\pi$) phase shift. However, the electron feels a phase gradient or a vector potential ${\bf A}={\bf\nabla}\varphi$ as it goes around the vortex. Such a vector potential is like a magnetic field and repels the electron. 
+The composite fermion theory postulates that electrons manage to space themselves out by associating themselves with "vortex"-like excitations. As you hopefully recall, a vortex in a superconductor is a defect where the superconducting phase $\varphi$ winds by $2\pi$ when going around the vortex. An electron going around the vortex picks up a $\pi$-phase shift. On the other hand, an electron can go around a double vortex and pick up effectively no (i.e. $2\pi$) phase shift. However, the electron feels a phase gradient or a vector potential ${\bf A}={\bf\nabla}\varphi$ as it goes around the vortex. Such a vector potential is like a magnetic field and repels the electron.
 
 Of course we have no superconductivity at hand, but we can mimic the vortex properties using a mathematical trick involving complex numbers. First let us introduce complex coordinates for the electrons $z=x+iy$. Then we notice that we can insert a double vortex at $z_0$ in a gas of electrons with wave function $\Psi(z_1,\dots)$ by the transformation
 
@@ -140,7 +140,7 @@ Pictorially the composite fermion transformation is represented as:
 
 The next step in the composite fermion approach to the FQH state is to say that all the correlation effects of the Coulomb interaction are taken care of by the flux attachment. Beyond this, the composite fermions are weakly interacting particles. If we believe in this picture, then the only non-interacting incompressible states that we can get are integer quantum Hall states. This means that the FQH states are integer quantum Hall states of the composite fermions.
 
-How does this explain a fractionally filled state? Well, the original electron is $2m$ flux quanta together with a composite fermion. If we smear out the flux created by the electron density $\nu$, we get a magnetic field of $2m\nu$ flux quanta per unit area. This is in addition to the one flux quantum per unit area of the external magnetic field. Therefore the composite fermions, which are at a density of $\nu$ per unit area, see a magnetic field of $2m\nu+1$ per unit area. We can make the composite fermions form an incompressible state with $p$-Landau levels filled if 
+How does this explain a fractionally filled state? Well, the original electron is $2m$ flux quanta together with a composite fermion. If we smear out the flux created by the electron density $\nu$, we get a magnetic field of $2m\nu$ flux quanta per unit area. This is in addition to the one flux quantum per unit area of the external magnetic field. Therefore the composite fermions, which are at a density of $\nu$ per unit area, see a magnetic field of $2m\nu+1$ per unit area. We can make the composite fermions form an incompressible state with $p$-Landau levels filled if
 $\nu=p(2m\nu+1),$ so that we describe a state of filling
 
 $$

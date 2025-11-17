@@ -245,7 +245,7 @@ Clearly, we can expect to map out some properties of the momentum space scatteri
 In the simulation below. we see that the Fourier transform shows an interesting pattern:
 
 ![](figures/QPI_pic_adapted.png)
-(adapted, copyright Hasan lab, Princeton, see license in the beginning of the chapter)  
+(adapted, copyright Hasan lab, Princeton, see license in the beginning of the chapter)
 
 By comparing the QPI patterns showing spin-dependent and spin-independent scattering (respectively on the left and right column on the right side of the arrow), we see that the intensity at momenta connecting opposite points on the Fermi surface is suppressed in the case of spin-independent scattering.
 

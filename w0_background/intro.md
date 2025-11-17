@@ -48,7 +48,7 @@ So whenever you see a typo, or you would like to suggest an improvement, you can
 
 ### Course structure
 
-The course is separated into 12 topics, each containing 2–3 lectures on related subjects. 
+The course is separated into 12 topics, each containing 2–3 lectures on related subjects.
 Each lecture is introduced by an expert in this subject.
 We end each topic with suggestions of open-ended questions for self-study: numerical simulations or papers to read and review.
 

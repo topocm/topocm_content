@@ -146,12 +146,12 @@ An important thing to note is that the presence of edge states does not depend i
 ```{code-cell} ipython3
 
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
-    """Create a hall bar system. 
+    """Create a hall bar system.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead
     """
 
@@ -294,7 +294,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead, B, phi
     """
     # ring shape

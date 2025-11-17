@@ -144,7 +144,9 @@ def spectrum(
         elif isinstance(title, str):
             plot = plot.relabel(title)
 
-        return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(**{k: v for k, v in ticks.items()})
+        return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(
+            **{k: v for k, v in ticks.items()}
+        )
 
     elif len(variables) == 2:
         # 2D plot.
@@ -224,8 +226,7 @@ def spectrum(
 
 
 def h_k(syst, p, momentum):
-    """Function that returns the Hamiltonian of a kwant 1D system as a momentum.
-    """
+    """Function that returns the Hamiltonian of a kwant 1D system as a momentum."""
     return hamiltonian_array(syst, p, momentum)[0]
 
 
@@ -296,8 +297,7 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
                 k, residuals = lstsq[:2]
                 if np.any(abs(residuals) > 1e-7):
                     raise RuntimeError(
-                        "Requested momentum doesn't correspond"
-                        " to any lattice momentum."
+                        "Requested momentum doesn't correspond to any lattice momentum."
                     )
                 return dict(zip(["k_x", "k_y", "k_z"], list(k)))
 
@@ -318,7 +318,6 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
         if isinstance(value, collections.abc.Iterable):
             changing[key] = value
 
-
     def hamiltonian(**values):
         k = [values.pop("k_x", k_x), values.pop("k_y", k_y), values.pop("k_z", k_z)]
         params.update(values)
@@ -328,12 +327,11 @@ def hamiltonian_array(syst, params=None, k_x=0, k_y=0, k_z=0, return_grid=False)
 
     names, values = zip(*sorted(changing.items()))
 
-
-    hamiltonians = [
-        hamiltonian(**dict(zip(names, value))) for value in itertools.product(*values)
-    ] if changing else [
-        hamiltonian(k_x=k_x, k_y=k_y, k_z=k_z)
-    ]
+    hamiltonians = (
+        [hamiltonian(**dict(zip(names, value))) for value in itertools.product(*values)]
+        if changing
+        else [hamiltonian(k_x=k_x, k_y=k_y, k_z=k_z)]
+    )
     size = list(hamiltonians[0].shape)
 
     hamiltonians = np.array(hamiltonians).reshape(

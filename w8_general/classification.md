@@ -79,7 +79,7 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
     show_symmetries : bool
         Show symmetry information for each symmetry class.
     sort_order : int array or None
-        Ordering to apply to the symmetry classes 
+        Ordering to apply to the symmetry classes
         (can be trivially used to discard entries).
 
     Returns:
@@ -88,7 +88,7 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
         A string array with the entries of the periodic table.
     format_string : str
         An alignment string that can be used to feed the resulting
-        table to a Latex \array environment. 
+        table to a Latex \array environment.
     """
 
     dimensions = np.array([[str(i) for i in range(n)]], dtype="S100")
@@ -247,7 +247,7 @@ Thus, a system can behave in three ways under time-reversal symmetry $\mathcal{T
 
 ### Combining symmetries
 
-How do we arrive to having ten symmetry classes? Let's count all the possible cases carefully. By combining the three cases for $\mathcal{P}$ and the three cases for $\mathcal{T}$ we arrive at nine possible combinations. 
+How do we arrive to having ten symmetry classes? Let's count all the possible cases carefully. By combining the three cases for $\mathcal{P}$ and the three cases for $\mathcal{T}$ we arrive at nine possible combinations.
 
 The important thing to notice now is that $\mathcal{C}$ is not completely independent from $\mathcal{T}$ and $\mathcal{P}$. Whenever a system has both $\mathcal{T}$ and $\mathcal{P}$, there is also a chiral symmetry $\mathcal{C}=\mathcal{P\cdot T}$.
 
@@ -285,7 +285,7 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 
 The somewhat cryptic notations in the leftmost column are just the names of the different symmetry classes. (Also the 'I's appearing there are Roman cardinal numbers, so for instance BDI is 'B D one', and AIII is "A three".)
 
-Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field. 
+Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field.
 The two complex classes are A and AIII.
 
 ```{code-cell} ipython3
@@ -400,7 +400,7 @@ $$
 H_{d+1} = H_d\,\cos k_{d+1}\,\tau_x + \sin k_{d+1}\,\tau_y.
 $$
 
-Note that just like in our previous argument, the topological invariant of $H_{d+1}$ must be the same as that of $H_d$. Also, by construction, $H_{d+1}$ has a chiral symmetry given by $\mathcal{C}=\tau_z$, which anticommutes with all the terms in the Hamiltonian. 
+Note that just like in our previous argument, the topological invariant of $H_{d+1}$ must be the same as that of $H_d$. Also, by construction, $H_{d+1}$ has a chiral symmetry given by $\mathcal{C}=\tau_z$, which anticommutes with all the terms in the Hamiltonian.
 
 What are the symmetries of $H_{d+1}$ in this case? To begin with, $H_d$ cannot have both anti-unitary symmetries, because then it would have $\mathcal{C}$ as well. It either has none (class A) or just one of them (classes AI, AII, C, or D). We thus have two cases:
 

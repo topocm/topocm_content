@@ -71,7 +71,7 @@ We shall now show that the zero mode localized at the edge is a time snaphot of 
 
 ![](figures/kink.png)
 
-To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](https://en.wikipedia.org/wiki/Linkage_%28mechanical%29).  
+To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](https://en.wikipedia.org/wiki/Linkage_%28mechanical%29).
 
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
@@ -171,7 +171,7 @@ The same reference above contains hints on how to build this structure with LEGO
 
 At this point we could expand around the kink solution and find a zero mode localized at its center where the gap closes. Such a zero mode allows the kink to translate as shown in the linkage video.
 
-For now we will simply remark that if one views the orientation along which the rotors lean as a mechanical polarization, then there will be an excess positive ‘‘charge’’ corresponding to a soft mode at the kink center and a negative one at the anti-kink (see the last two figures). Never mind if this electrostatic analogy is not yet clear; we will return to it and show that the antikink harbours a so-called ** state of self stress**, a dual state to the zero mode.  
+For now we will simply remark that if one views the orientation along which the rotors lean as a mechanical polarization, then there will be an excess positive ‘‘charge’’ corresponding to a soft mode at the kink center and a negative one at the anti-kink (see the last two figures). Never mind if this electrostatic analogy is not yet clear; we will return to it and show that the antikink harbours a so-called ** state of self stress**, a dual state to the zero mode.
 
 Before doing that we need to review the Maxwell count which is a **global** relation that stipulates that the number of zero modes $n_\text{m}$, present in an arbitrary mechanical structure, is simply given by the difference between the number of degrees of freedom minus the number of **independent** constraints.
 

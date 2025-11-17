@@ -136,7 +136,7 @@ The product of (approximate) sublattice and time-reversal symmetries yields a fu
 
 ## Making graphene topological
 
-Let's recall that our goal is to make our graphene sheet enter a quantum Hall state, with chiral edge states. The first necessary step is to make the bulk of the system gapped. 
+Let's recall that our goal is to make our graphene sheet enter a quantum Hall state, with chiral edge states. The first necessary step is to make the bulk of the system gapped.
 
 How can we open a gap in graphene? The Dirac points are protected by both sublattice (inversion) and time-reversal symmetry. So there are many ways we can think of to open an energy gap at $\mathbf{K}$ and $\mathbf{K}'$.
 
@@ -277,7 +277,7 @@ Let's imagine the adiabatic time-evolution of an eigenstate $\left|\psi(\mathbf{
 
 ![](figures/bz_path.svg)
 
-We then ask: what is the final quantum state at the time $T$? For a long time people guessed that it would just be given by the initial state $\left|\psi(k_x, k_y+2\pi)\right\rangle\equiv\left|\psi(k_x, k_y)\right\rangle$ times  the usual phase $\exp\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)$, which an eigenstate of the Hamiltonian accumulates with time. 
+We then ask: what is the final quantum state at the time $T$? For a long time people guessed that it would just be given by the initial state $\left|\psi(k_x, k_y+2\pi)\right\rangle\equiv\left|\psi(k_x, k_y)\right\rangle$ times  the usual phase $\exp\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)$, which an eigenstate of the Hamiltonian accumulates with time.
 
 This would be rather boring. Berry instead realized that for a closed loops there is an additional phase $\gamma$, which in our case may depend on $k_x$:
 
@@ -291,7 +291,7 @@ $$
 \exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.
 $$
 
-We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.  
+We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.
 
 ### Flux pumping
 
@@ -335,7 +335,7 @@ $$
 
 We did not denote the Berry connection as $\mathbf{A}(\mathbf{k})$ just by chance. We picked that letter because this vector reminds us a lot of the vector potential $\mathbf{A}(\mathbf{r})$ that is used in electromagnetism.
 
-Just like the vector potential, the definition of $\mathbf{A}(\mathbf{k})$ depends on a particular choice of the person making the calculation. If you decide to multiply the quantum state by a phase, $\left|\psi(\mathbf{k})\right\rangle\,\to \exp\,[i\lambda(\mathbf{k})]\,\left|\psi(\mathbf{k})\right\rangle$, then you get that the Berry connection transforms as $\mathbf{A}(\mathbf{k})\,\to\,\mathbf{A}(\mathbf{k})+\nabla_\mathbf{k} \,\lambda$. However, when you take the integral of $\mathbf{A}(\mathbf{k})$ on a closed path, the result is independent of $\lambda$. That's why the Berry phase is only meaningful for closed paths. 
+Just like the vector potential, the definition of $\mathbf{A}(\mathbf{k})$ depends on a particular choice of the person making the calculation. If you decide to multiply the quantum state by a phase, $\left|\psi(\mathbf{k})\right\rangle\,\to \exp\,[i\lambda(\mathbf{k})]\,\left|\psi(\mathbf{k})\right\rangle$, then you get that the Berry connection transforms as $\mathbf{A}(\mathbf{k})\,\to\,\mathbf{A}(\mathbf{k})+\nabla_\mathbf{k} \,\lambda$. However, when you take the integral of $\mathbf{A}(\mathbf{k})$ on a closed path, the result is independent of $\lambda$. That's why the Berry phase is only meaningful for closed paths.
 
 Now that we have established an analogy with the vector potential, we cannot avoid the idea of taking the curl of the Berry connection, which is known as the **Berry curvature**:
 
@@ -367,7 +367,7 @@ Now let's go back to our analogy with electromagnetism. We know that we cannot c
 
 This analogy suggests the following: that the sources for Berry flux in momentum space are points where two bands touch, just like the Dirac points at the $\mathbf{K}$ and $\mathbf{K}'$ points of the Brillouin zone in graphene.
 
-This may sound a bit abstract and confusing: where are these points located? We are used to thinking about sources of flux in real space, not in momentum space. In fact, just like you do with a two-dimensional sphere surrounding a charge in three-dimensional space, you can think of the Brillouin zone as lying in a three-dimensional space, with two directions given by $k_x$ and $k_y$ and the third given by the **magnitude of the energy gap**. 
+This may sound a bit abstract and confusing: where are these points located? We are used to thinking about sources of flux in real space, not in momentum space. In fact, just like you do with a two-dimensional sphere surrounding a charge in three-dimensional space, you can think of the Brillouin zone as lying in a three-dimensional space, with two directions given by $k_x$ and $k_y$ and the third given by the **magnitude of the energy gap**.
 
 The situation is explained by the following sketch, which also gives a bird's-eye view of the phase diagram of the Haldane model as a function of the ratio $t_2/M$:
 

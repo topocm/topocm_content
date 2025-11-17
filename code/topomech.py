@@ -33,11 +33,9 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-from random import randint
 
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 from numpy.linalg import norm
 from scipy import linalg as la
 
@@ -137,7 +135,7 @@ class Mesh:
 def klbasis(x1, x2, x3, z=0):
     """Calculates the *s* vectors in the Kane-Lubensky parametrization (*Nat Phys 2014*) of the
     deformed kagome lattices.
-    
+
     :param x1,x2,x3,z: The four parameters used by Kane and Lubensky in their parametrization.
     :returns: List of the three vectors *s1,s2,s3* as defined in Fig. 2a of the paper.
     """
@@ -154,8 +152,8 @@ def klbasis(x1, x2, x3, z=0):
 
 def klbasispoints(x1, x2, x3, z=0):
     """Calculate the positions of the three points in the unit cell of the deformed kagome
-    lattice under the Kane-Lubensky parametrization. 
-    
+    lattice under the Kane-Lubensky parametrization.
+
     :param x1,x2,x3,z: Four parameters used in the Kane-Lubensky parametrization.
     :returns: List of three position vectors *d3,d1,d2* of the basis points in the unit cell as
         defined in Fig. 2a of the paper.
@@ -181,18 +179,18 @@ def vis2d(
     quiverwidth=None,
     bondcolor=(0.3, 0.3, 0.3, 1.0),
     pad=1,
-    **kwargs
+    **kwargs,
 ):
     """Function for visualizing a mesh.
-    
+
     :param mesh: Input mesh, a :class:`Mesh` instance.
     :param draw_points: If :const:`True`, draw all points with 'o' markers.
     :param draw_edges: If:const:`True`, draw bonds as lines of thickness ``lw``.
     :param eigenfunction: Pass an eigenmode for visualization. This is a 1D numpy array
         whose length is either ``2*mesh.N`` or ``2*mesh.N+Nb``, where ``N`` and ``Nb`` are the
-        number of points and bonds in ``mesh``. If former, draws arrows corresponding to displacements 
-        at each point (two consecutive numbers per point to give first ``2*mesh.N`` entries). 
-        If latter, also colours bonds according to tensions which are the last ``Nb`` entries. 
+        number of points and bonds in ``mesh``. If former, draws arrows corresponding to displacements
+        at each point (two consecutive numbers per point to give first ``2*mesh.N`` entries).
+        If latter, also colours bonds according to tensions which are the last ``Nb`` entries.
     :param eigenfunctions: List of ``eigenfunction`` arrays to plot simultaneously.
     :param ecolors: Single color or list of colors with which to draw arrows for ``eigenfunction(s)`` visualization.
         Accepts any color specifications recognized by :mod:`matplotlib`.
@@ -203,27 +201,27 @@ def vis2d(
         which to plot the mesh. Useful if you want to predefine a figure and axes to plot in. If :const:`None`,
         a blank figure and axes for the plot are created from scratch.
     :param clear: If :const:`True`, clear pre-existing stuff on ``figidx`` or ``ax``.
-    :param cutoff: Length of the longest bonds that are actually drawn. If :const:`None`, assigned to be 
-        the smaller of ``mesh.lx/2`` or ``mesh.ly/2``, so that bonds that wrap around the system due to 
+    :param cutoff: Length of the longest bonds that are actually drawn. If :const:`None`, assigned to be
+        the smaller of ``mesh.lx/2`` or ``mesh.ly/2``, so that bonds that wrap around the system due to
         periodic boundary conditions are not drawn. Set to some very large number to make sure all bonds are drawn.
-    :param offset: A shift to every point. Can be either a single vector (1D array with two entries) to add 
+    :param offset: A shift to every point. Can be either a single vector (1D array with two entries) to add
         to every point, or a ``Nx2`` array giving a unique shift to each of the ``N`` points.
     :param colormap: Colormap to use for eigenfunction tension visualization as bond colors. String (name) or ColorMap
         instance as recognized by :mod:`matplotlib`.
     :param colorbar: If :const:`True`, show a colorbar of the colormap values.
     :param lw: Line width of bond lines.
     :param quiverwidth: Width of quiver arrows used for eigenmode visualization.
-    :param bondcolor: Color of bonds (if eigenfunction tensions are not defined). Any olor recognized by 
+    :param bondcolor: Color of bonds (if eigenfunction tensions are not defined). Any olor recognized by
         :mod:`matplotlib` will work.
-    :param linecollection: If :const:`True`, uses a slightly slower method to draw the edges which behaves 
+    :param linecollection: If :const:`True`, uses a slightly slower method to draw the edges which behaves
         much better under zooming in an interactive session.
-    :param ptidx: List of specific points to be drawn if ``draw_points`` is :const:`True`. 
+    :param ptidx: List of specific points to be drawn if ``draw_points`` is :const:`True`.
         If :const:`None`, all points are drawn.
-    :param bondforces: A 1D array of length ``Nb`` of scalar values used to color each bond. All parameters that 
+    :param bondforces: A 1D array of length ``Nb`` of scalar values used to color each bond. All parameters that
         affect eigenfunction tension plotting also affect this.
     :param pad: Padding around mesh extremities to make sure all points are visible.
     :param colorbarsymm: if :const:`True`, color bar is symmetric abound zero.
-    
+
     """
 
     fig = plt.figure(figsize=(8, 4))
@@ -265,7 +263,7 @@ def vis2d(
         color=ecolors,
         zorder=zorder,
         width=quiverwidth,
-        **kwargs
+        **kwargs,
     )
     return fig
 
@@ -283,11 +281,11 @@ def makeLattice(
     a, basis, bondlist, n, rectangle=True, periodic=True, boundaryshift=None
 ):
     """
-        Tile a unit cell to get a lattice. General dimensions
-        a: list of primitive lattice vectors (length gives dimension)
-        basis: set of point positions for a lattice
-        bondlist: adjacency list connecting points across respective boundaries
-        n: repeating units in each dimension
+    Tile a unit cell to get a lattice. General dimensions
+    a: list of primitive lattice vectors (length gives dimension)
+    basis: set of point positions for a lattice
+    bondlist: adjacency list connecting points across respective boundaries
+    n: repeating units in each dimension
     """
     dim = len(a)
 
@@ -369,7 +367,7 @@ def to2dlattice(mesh):
 
 def replacepoints(mesh1, mesh2, x1frac=0.33, x2frac=0.66):
     """
-        replace points in mesh1 with points from mesh2 for x between x1 and x2
+    replace points in mesh1 with points from mesh2 for x between x1 and x2
     """
     for i, pt in enumerate(mesh1.Points):
         if x1frac * mesh1.l[0] < pt[0] < x2frac * mesh2.l[0]:

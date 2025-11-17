@@ -85,9 +85,9 @@ $$
 
 +++
 
-The Hall bar can only measure the conductance completely for isotropic or rotationally invariant systems. If we rotate the system by 90 degrees we can transform $x\rightarrow y$ and $y\rightarrow -x$. So we expect $\sigma_{xx}=\sigma_{yy}=\sigma_L$, the longitudinal conductance. If we apply this same rotation transformation we conclude that $\sigma_{xy}=-\sigma_{yx}=\sigma_H$, the *Hall conductance*. 
+The Hall bar can only measure the conductance completely for isotropic or rotationally invariant systems. If we rotate the system by 90 degrees we can transform $x\rightarrow y$ and $y\rightarrow -x$. So we expect $\sigma_{xx}=\sigma_{yy}=\sigma_L$, the longitudinal conductance. If we apply this same rotation transformation we conclude that $\sigma_{xy}=-\sigma_{yx}=\sigma_H$, the *Hall conductance*.
 
-So with rotational invariance the 4 component conductance tensor has only 2 independent components i.e. the longitudinal and Hall conductance. We can calculate these using the two electric fields $E_{x,y}$ that we measure using the Hall bar. 
+So with rotational invariance the 4 component conductance tensor has only 2 independent components i.e. the longitudinal and Hall conductance. We can calculate these using the two electric fields $E_{x,y}$ that we measure using the Hall bar.
 To do this, we solve the set of equations $j_y=\sigma_L E_y - \sigma_H E_x=0$ and $j_x=\sigma_L E_x+\sigma_H E_y$ to obtain $\sigma_{L,H}$. We obtain the Hall conductance
 
 $$
@@ -96,7 +96,7 @@ $$
 
 ## The classical Hall effect is a linear effect
 
-Let's now try to obtain an alternative expression for the Hall conductance $\sigma_H$ of our Hall bar. In general we expect the electric and magnetic fields present in our Hall bar to apply a force to the electrons, and increase their velocity. 
+Let's now try to obtain an alternative expression for the Hall conductance $\sigma_H$ of our Hall bar. In general we expect the electric and magnetic fields present in our Hall bar to apply a force to the electrons, and increase their velocity.
 
 Instead of solving the problem directly, let us make the ansatz that the electrons enter a state, which is obtained from the usual electron ground state by doing a Galilean transformation to a reference frame moving with velocity $\bf{v}$ with respect to the original reference frame.
 
@@ -116,7 +116,7 @@ $$
 
 This relation, which says that $\sigma_H\propto n$, is extremely general in the sense that it does not depend on how the electrons interact with each other or anything else. It is referred to as the Streda relation. If we define the so-called "filling factor" as $\nu=n h/ e B$ the Hall conductance can be written as a multiple of the quantum of conductance as $\sigma_H=\nu \frac{e^2}{h}$.
 
-As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder. 
+As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder.
 
 ```{code-cell} ipython3
 
@@ -139,7 +139,7 @@ Instead, a completely unexpected result was measured for the first time by Klaus
 
 ![](figures/QHE.png)
 
-> As the average density is varied, the Hall conductance $\sigma_H$ appears to form plateaus at integer filling fractions $\nu=1,2,3,\dots$. These plateaus are incredibly sample independent and occur at the same value in many other materials. At the same time, the longitudinal conductivity appears to vanish except at the transition points between the plateaus. This is the integer "Quantum Hall effect". 
+> As the average density is varied, the Hall conductance $\sigma_H$ appears to form plateaus at integer filling fractions $\nu=1,2,3,\dots$. These plateaus are incredibly sample independent and occur at the same value in many other materials. At the same time, the longitudinal conductivity appears to vanish except at the transition points between the plateaus. This is the integer "Quantum Hall effect".
 
 This setup is easy to try to reproduce numerically, but there's one complication:
 
@@ -168,12 +168,12 @@ def make_lead_hop_y(x0):
     return hopping_Ay
 
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
-    """Create a hall bar system. 
+    """Create a hall bar system.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead
     """
 
@@ -296,7 +296,7 @@ To start with, we imagine doing the Hall measurement in a system cut out as an a
 
 We will also try to do the experiment in reverse i.e. apply an electric field along the circumference of the disk and measure the current $I$ in the radial direction, as shown in the figure. The radial current is easy to measure - we just measure the amount of charge $\Delta Q$ transferred between the inner and outer edges of the Corbino geometry and obtain the radial current $I=\Delta Q/\Delta T$, where $\Delta T$ is the time over which this is done.
 
-But how do we apply an electric field in the tangential direction?  The easiest way to do this is to apply a time-dependent magnetic field in the centre of the disc and use the Faraday effect. 
+But how do we apply an electric field in the tangential direction?  The easiest way to do this is to apply a time-dependent magnetic field in the centre of the disc and use the Faraday effect.
 
 We can calculate the electric field from the changing magnetic field using Faraday's law as $\oint d{\bf{r}\cdot\bf{E}}=\partial_t \Phi$, where $\Phi$ is the magnetic flux resulting from the field in the center of the disk. Assuming that the electric field depends only on the radius $R$ we find that the resulting tangential electric field is given by
 
@@ -304,7 +304,7 @@ $$
 E(R,t)=\frac{1}{2\pi R}\,\partial_t \Phi.
 $$
 
-Given $I$, we can also calculate the other component of the measurement of the Hall conductance $\sigma_H$ i.e. the radial current density $j=I/(2\pi R)$ at the same radius $R$ as we calculated the electric field. 
+Given $I$, we can also calculate the other component of the measurement of the Hall conductance $\sigma_H$ i.e. the radial current density $j=I/(2\pi R)$ at the same radius $R$ as we calculated the electric field.
 
 Now that we know both the circumferential electric field and also the radial current density, the Hall conductance can be measured easily in this geometry as
 
@@ -346,7 +346,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead, B, phi
     """
     # ring shape
@@ -456,7 +456,7 @@ MultipleChoice(
 
 The general argument so far is great in that it applies to virtually any complicated electron system with interactions and in a real material, but we would probably feel better if we could calculate the Hall conductance directly for some simple system. So let us try to do this for the simplest case of electrons in a magnetic field.
 
-For starters, let us forget about the Corbino disk and just ask what do quantum mechanical electrons do in a magnetic field. 
+For starters, let us forget about the Corbino disk and just ask what do quantum mechanical electrons do in a magnetic field.
 
 ### Landau levels on the back of an envelope
 
@@ -524,7 +524,7 @@ $$
 
 +++
 
-Comparing the above equation to the quantum harmonic oscillator, we see that the harmonic oscillator levels 
+Comparing the above equation to the quantum harmonic oscillator, we see that the harmonic oscillator levels
 must be centered at
 
 $$

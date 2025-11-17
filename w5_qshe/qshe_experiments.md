@@ -57,7 +57,7 @@ $$
 H({\bf k})=\left(\begin{array}{cc}\epsilon_e({\bf k})&\Delta({\bf k})\\\Delta^\dagger({\bf k})&\epsilon_o({\bf k})\end{array}\right),
 $$
 
-where $\Delta({\bf k})$ is the $2\times 2$ hybridization matrix. Inversion and time-reversal symmetries imply that $\Delta({\bf k})=-\Delta(-{\bf k})$ is odd under inversion and even under time-reversal.  Here we will focus on one such model, $\Delta({\bf k})=\alpha\sigma_z(k_x+i k_y)$, which we call the Bernevig-Hughes-Zhang model. 
+where $\Delta({\bf k})$ is the $2\times 2$ hybridization matrix. Inversion and time-reversal symmetries imply that $\Delta({\bf k})=-\Delta(-{\bf k})$ is odd under inversion and even under time-reversal.  Here we will focus on one such model, $\Delta({\bf k})=\alpha\sigma_z(k_x+i k_y)$, which we call the Bernevig-Hughes-Zhang model.
 
 Since the even band is electron-like, we approximate the even-band dispersion $\epsilon_e({\bf k})$
 as $\epsilon_e({\bf k}) = \delta_e + m_e k^2$, while we take the odd parity dispersion to be $\epsilon_o({\bf k})= \delta_o - m_o k^2$ for simplicity. The band inversion happens when $\delta_e < \delta_o$.
@@ -99,9 +99,9 @@ zticks = [-8, -4, 0, 4, 8]
 )
 ```
 
-In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$. 
+In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$.
 
-The edge modes in this regime are quite different in structure from those near the topological transition. To see this, let us first set $k_y=0$ in the Hamiltonian. If we set $\alpha=0$ then there are two fermi points where the dispersion is roughly linear - let us label these points by $\tau_z=\pm 1$. We can describe the edge of the system, by assigning boundary conditions to the $k_x=\pm k_F$ modes in terms of time-reversal invariant phase-shifts. 
+The edge modes in this regime are quite different in structure from those near the topological transition. To see this, let us first set $k_y=0$ in the Hamiltonian. If we set $\alpha=0$ then there are two fermi points where the dispersion is roughly linear - let us label these points by $\tau_z=\pm 1$. We can describe the edge of the system, by assigning boundary conditions to the $k_x=\pm k_F$ modes in terms of time-reversal invariant phase-shifts.
 
 The bulk solutions near $k_x\sim\pm k_F$ can be written as $\psi_\pm(x)=e^{-x/\xi}\psi_\pm(0)$. Matching boundary conditions, we find that a zero energy pair of edge solutions exists in the case of inverted bands. These solutions differ from the ones in the Dirac limit by the presence of the oscillating part of the wave function.
 
@@ -203,7 +203,7 @@ This difference most likely originates from backscattering. In the quantum Hall 
 
 The exact origin of the backscattering is hard to understand. It could be inelastic scattering that does not preserve energy, or it could also be some residual magnetic impurities, which break time reversal symmetry. In both cases, Kramers theorem does not hold. One of the papers that we suggest for review proposes an interesting theory for the origin of the backscattering, while another reports measurements of InAs/GaSb quantum well, where conductance seems much better quantized.
 
-Regardless of the exact origin of backscattering, at any finite temperature, there is an inelastic scattering length $l_\phi$ beyond which we do not expect any protection from scattering. When the edge length $L$ is larger than $l_\phi$, we expect the edge to turn into an incoherent conductor with resistance of $(e^2/h) l_\phi/L$. 
+Regardless of the exact origin of backscattering, at any finite temperature, there is an inelastic scattering length $l_\phi$ beyond which we do not expect any protection from scattering. When the edge length $L$ is larger than $l_\phi$, we expect the edge to turn into an incoherent conductor with resistance of $(e^2/h) l_\phi/L$.
 
 In principle, this allows us to measure $l_\phi$ for the quantum spin hall edges by looking at the length dependence of the conductance. Indeed, experiments find that small samples have conductance close to $G_0$, while in large samples the conductance is suppressed.
 
@@ -284,11 +284,11 @@ spectra = holoviews.HoloMap(
 ez_conductances * VLines + spectra * holoviews.HLine(0)
 ```
 
-However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers. 
+However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers.
 
 Edges of semiconductors are typically quite disordered - so we expect the random potential at the edge to provide "elastic backscattering" that can change the momentum without changing the energy. Such backscattering, in addition to any other "inelastic backscattering" by phonons etc, would decrease the conductance of the edge from the ideal quantized value. If we set $B=0$, elastic back-scattering that can occur at finite $B$ is forbidden, so we generally expect the application of a magnetic field to reduce conductance of the edge.
 
-We see below that indeed the conductance of the $L=20\,\mu m$ device is strongly reduced by the application of a magnetic field: 
+We see below that indeed the conductance of the $L=20\,\mu m$ device is strongly reduced by the application of a magnetic field:
 
 ![](figures/konig_fig15.png)
 
@@ -333,4 +333,3 @@ MultipleChoice(
 :width: 100%
 :height: 480
 :::
-

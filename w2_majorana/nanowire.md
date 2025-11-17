@@ -49,9 +49,9 @@ We have a special guest to begin this week's lecture, Yuval Oreg from the Weizma
 
 We are now all set to make Majoranas in a real system. Or at least to invent a way to make Majoranas in a real system.
 
-The way we approach this problem is by considering the Kitaev chain a 'skeleton', and 'dressing' it with real physics phenomena until it becomes real. 
+The way we approach this problem is by considering the Kitaev chain a 'skeleton', and 'dressing' it with real physics phenomena until it becomes real.
 
-> Interestingly, this is not at all how the condensed matter community came to this model. 
+> Interestingly, this is not at all how the condensed matter community came to this model.
 > Instead, the path to it was from complex to simple. The whole story started from what we'll consider in the very end of the course, fractional particles.
 
 > Then it was simplified to topological superconductors (that still do not exist in nature, as far as we know).
@@ -203,7 +203,7 @@ There is one disadvantage. The particle-hole symmetry now becomes more complicat
 
 ## s-wave superconductor with magnetic field
 
-Let's look at how our chain looks once we change the superconducting coupling to be $s$-wave. The Zeeman field (or anything of magnetic origin) changes sign under time-reversal symmetry. 
+Let's look at how our chain looks once we change the superconducting coupling to be $s$-wave. The Zeeman field (or anything of magnetic origin) changes sign under time-reversal symmetry.
 
 This means that the Zeeman field has the same form for electrons and for holes in the new basis, and the full Hamiltonian is now:
 
@@ -334,11 +334,11 @@ opts.defaults(
 def find_gap(syst, params, resolution=1e-4):
     """
     Find gap in an infinite system by doing a binary search in energy.
-    
+
     This function assumes that the system has particle-hole symmetry,
     and only searches through positive energies.
     """
-    
+
     def has_modes(energy):
         return bool(len(syst.modes(energy, params=params)[0].momenta))
 

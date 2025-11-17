@@ -84,7 +84,7 @@ In the image below (source: Chambers's Encyclopedia, 1875, via Wikipedia) you se
 
 The changes to the system are clearly periodic, and the pump works the same no matter how slowly we use it (that is, change the parameters), so it is an adiabatic tool.
 
-What about a quantum analog of this pump? 
+What about a quantum analog of this pump?
 
 Let's take a one-dimensional region, coupled to two electrodes on both sides, and apply a strong sine-shaped confining potential in this region. As we move the confining potential, we drag the electrons captured in it.
 
@@ -223,13 +223,13 @@ MultipleChoice(
 
 As we already learned, integers are important, and they could indicate that something topological is happening.
 
-At this point we should ask ourselves these questions: Is the discreteness of the number of electrons $N$ pumped per cycle limited to the deep potential limit, or is the discreteness a more general consequence of topology? 
+At this point we should ask ourselves these questions: Is the discreteness of the number of electrons $N$ pumped per cycle limited to the deep potential limit, or is the discreteness a more general consequence of topology?
 
 ### Thought experiment
 
 Let us consider the reservoirs to be closed finite (but large) boxes. When the potential in the wire is shifted the electrons clearly move from the left to the right reservoir. How do the reservoirs accomodate these electrons?
 
-Since the Hamiltonian is periodic in time, the Hamiltonian together with all its eigenstates return to the initial values at the end of the period. The adiabatic theorem guarantees that when the Hamiltonian changes slowly the eigenstates evolve to an eigenstate that is adjacent in energy. 
+Since the Hamiltonian is periodic in time, the Hamiltonian together with all its eigenstates return to the initial values at the end of the period. The adiabatic theorem guarantees that when the Hamiltonian changes slowly the eigenstates evolve to an eigenstate that is adjacent in energy.
 
 ```{code-cell} ipython3
 
@@ -297,7 +297,7 @@ spectrum_with_reservoirs.options(c="pos", cmap="seismic")
 ```
 
 We see that the states in the gaps between the wire bands belong to either of the two reservoirs.
-States in the left reservoir turn out to move down in energy and ones in the right reservoir move up in energy (right now this is numerical—we will see why later). 
+States in the left reservoir turn out to move down in energy and ones in the right reservoir move up in energy (right now this is numerical—we will see why later).
 
 Let us imagine we park our Fermi energy (i.e. the energy that separates completely occupied and completely empty states) in the gap where there are few states.
 
@@ -305,7 +305,7 @@ With time, an empty level in the left reservoir moves from above the Fermi level
 
 So the electron that was transferred in the wire from the left reservoir to the right came from emptying the highest energy occupied state one the left and occupying the lowest energy unoccupied state on the right.
 
-More generally, while levels do not have to move as shown in the figure, the energy level structure of the periodic in time Hamiltonian has to return to itself. The number (possibly negative) of levels in the left reservoir that crossed from being above the Fermi level to below  must exactly be the change in charge of the left reservoir. This is an INTEGER. 
+More generally, while levels do not have to move as shown in the figure, the energy level structure of the periodic in time Hamiltonian has to return to itself. The number (possibly negative) of levels in the left reservoir that crossed from being above the Fermi level to below  must exactly be the change in charge of the left reservoir. This is an INTEGER.
 
 Therefore, our thoughts about "where the electrons came from" leads us to an interesting conclusion: The number of charges pumped in an adiabatic pumping cycle (independent of the strength $A$) is an integer (possibly $0$).
 
@@ -331,13 +331,13 @@ $$
 \psi_n = \psi_L(x) + \psi_R(x) \propto \exp(ik_n x) + \exp(-ik_n x + i\phi),
 $$
 
-where the wave number $k_n$ is of course a function of energy. The relative phase shift $\phi$ is necessary to satisfy the boundary condition at $x=0$, where $\psi_L = r \psi_R$, and so $\exp(i \phi) = r$. The energies of the levels are determined by requiring that the phases of $\psi_L$ and $\psi_R$ also match at $x = -L$. These boundary conditions lead to the relation 
+where the wave number $k_n$ is of course a function of energy. The relative phase shift $\phi$ is necessary to satisfy the boundary condition at $x=0$, where $\psi_L = r \psi_R$, and so $\exp(i \phi) = r$. The energies of the levels are determined by requiring that the phases of $\psi_L$ and $\psi_R$ also match at $x = -L$. These boundary conditions lead to the relation
 
 $$
 2 k_n L = 2n \pi +\phi.
 $$
 
-Changing the phase continuously in time $t$ by $2\pi$ evolves $k_n$ from $(2 L)^{-1}[2n\pi+\phi]$ to $(2L)^{-1}[2n\pi+2\pi+\phi]=2k_{n+1}L$. This means that the change in phase $\phi$ results in the state with index $n$ evolving 
+Changing the phase continuously in time $t$ by $2\pi$ evolves $k_n$ from $(2 L)^{-1}[2n\pi+\phi]$ to $(2L)^{-1}[2n\pi+2\pi+\phi]=2k_{n+1}L$. This means that the change in phase $\phi$ results in the state with index $n$ evolving
 into an index  $n+1$.
 Thus, the winding of phase $\phi$ by $2\pi$ also changes the wave-function $\psi_n \rightarrow \psi_{n+1}$.
 

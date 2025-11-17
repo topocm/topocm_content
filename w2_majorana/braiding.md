@@ -107,17 +107,17 @@ $$
 $$
 
 Of course, the product above can also be simplified: since $\gamma_2^2=1$, you have that $(\gamma_1\gamma_2)(\gamma_2\gamma_3)=\gamma_1\gamma_3$.
- All $P_n$'s commute with each other, because they all involve a different pair of Majoranas. 
- 
+ All $P_n$'s commute with each other, because they all involve a different pair of Majoranas.
+
 > Thus the  Hilbert space of states $|\Psi\rangle$ of a set of $N$ pairs of Majorana modes is spanned by the simultaneous eigenstates $|s_1,s_2,\dots,s_N\rangle$ of the commuting fermion parity operators $P_n$ and is written as
 >
 > $$
   \left|\Psi\right\rangle= \sum_{s_n=0,1} \alpha_{s_1s_2\dots s_N}\,\left| s_1, s_2, \dots, s_N\right\rangle\,
   $$
 
-with complex coefficients $\alpha_{s_1s_2\dots s_N}$. 
+with complex coefficients $\alpha_{s_1s_2\dots s_N}$.
 
- At this point an important consideration is in order. You will remember learning during the first week that, while a superconducting Hamiltonian may not conserve the total number of electrons due to the creation and annihilation of Cooper pairs, the parity of the number of electrons is always conserved. 
+ At this point an important consideration is in order. You will remember learning during the first week that, while a superconducting Hamiltonian may not conserve the total number of electrons due to the creation and annihilation of Cooper pairs, the parity of the number of electrons is always conserved.
 We can obtain the *total fermion parity* by multiplying all the operators $P_n$,
 
 $$
@@ -163,7 +163,7 @@ Let's now imagine that experimentalists are not only able to build such a networ
 
 ![](figures/nanowire_network_exchange.svg)
 
-Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](https://en.wikipedia.org/wiki/Adiabatic_theorem). 
+Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](https://en.wikipedia.org/wiki/Adiabatic_theorem).
 
 So let's imagine that we are in the adiabatic limit and that we exchange two Majoranas $\gamma_n$ and $\gamma_m$. As usual in quantum mechanics, the initial and final quantum states are connected by a unitary operator $U$ ($U^{-1}=U^\dagger$),
 
@@ -193,7 +193,7 @@ $$
 \gamma_m\,\to\,   \cos (2\beta)\,\gamma_m  + \sin(2\beta)\,\gamma_n\,.
 $$
 
-Now we have to remember that at time $T$ we have completed a closed trajectory, so that the Majorana $\gamma_n$ is now in the place initially occupied by $\gamma_m$, and vice versa. This condition leads to the choice $\beta = \pm \pi/4$. It is not strange that we find that both signs are possible - this distinguishes the clockwise and the counterclockwise exchange of the Majoranas. 
+Now we have to remember that at time $T$ we have completed a closed trajectory, so that the Majorana $\gamma_n$ is now in the place initially occupied by $\gamma_m$, and vice versa. This condition leads to the choice $\beta = \pm \pi/4$. It is not strange that we find that both signs are possible - this distinguishes the clockwise and the counterclockwise exchange of the Majoranas.
 
 >Thus, we can write the unitary operator that exchanges the Majorana modes $\gamma_n$ and $\gamma_m$ in an explicit (and somewhat non-trivial looking!) form as:
 
@@ -296,7 +296,7 @@ The state of the register is encoded in the fermion parity degrees of freedom, w
 
 On the other hand, every step of the algorithm will be extremely accurate because it is given by an exchange of two Majoranas, which corresponds to *exactly* $\exp(\pi\gamma_n\gamma_m/4)$. When you are in the adiabatic limit, this operator does not depend on any of the details on how the exchange between Majoranas is performed. It does not depend on *how* you move the Majoranas, or on the particular trajectory that $\gamma_n$ and $\gamma_m$ followed, or on the timing of the trajectory. So the final result is extremely reliable.
 
-These are the basic ideas of **topological quantum computation**. It is incredible that we can find condensed matter systems, such as networks of Majoranas, which are naturally endowed with these characteristics. 
+These are the basic ideas of **topological quantum computation**. It is incredible that we can find condensed matter systems, such as networks of Majoranas, which are naturally endowed with these characteristics.
 
 ## Summary
 

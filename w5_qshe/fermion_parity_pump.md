@@ -593,4 +593,3 @@ MultipleChoice(
 :width: 100%
 :height: 480
 :::
-

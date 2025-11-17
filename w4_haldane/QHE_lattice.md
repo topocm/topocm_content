@@ -114,7 +114,7 @@ MultipleChoice(
 
 Let us now couple the wires to get the quantum Hall system as promised. We take a stack of chains all extending along the horizontal $x$ direction, like in the figure above. We stack them one next to the other along the $y$ direction, so that we form a square lattice. If we take a large (ideally infinite) stack of chains we have a truly two-dimensional system.
 
-Now let us make this formal by first labeling the chains by an index $n_y$, which takes integer values. Let us also replace $k\rightarrow k_x$ to denote the wave-vector along a chain. Hence a single chain has the Hamiltonian $\left[-(2 t\cos{k_x}+\mu)\,\tau_z+\Delta \sin{k_x}\tau_y\right]\,\otimes\,\left|\,n_y\right\rangle\left\langle n_y\right|$. The projector $\left|\,n_y\right\rangle\left\langle n_y\right|$ is needed to single out one chain from the stack. 
+Now let us make this formal by first labeling the chains by an index $n_y$, which takes integer values. Let us also replace $k\rightarrow k_x$ to denote the wave-vector along a chain. Hence a single chain has the Hamiltonian $\left[-(2 t\cos{k_x}+\mu)\,\tau_z+\Delta \sin{k_x}\tau_y\right]\,\otimes\,\left|\,n_y\right\rangle\left\langle n_y\right|$. The projector $\left|\,n_y\right\rangle\left\langle n_y\right|$ is needed to single out one chain from the stack.
 
 Now all that we have to do is to couple the $\tau_y=-1$ branch of one chain to the $\tau_y=+1$ branch of a neighboring chain,  and we will have a quantum Hall state.
 
@@ -250,7 +250,7 @@ $$
 
 The combination $m=-(\mu +2t+2\gamma)$ serves as the 'mass' in this Dirac model. As before, we see that the gapless phase transition point at $m=0$ is described by a massless Dirac Hamiltonian. The phase transition separates the topological from the trivial phase, and the two phases are characterized by a different sign of the mass (in this case $m>0$ in the topological phase and $m<0$ in the trivial phase).
 
-As with Kitaev chains, the Dirac model gives us another way to construct chiral edge states at the domain wall between topological and non-topological phases. Back in week 1, we saw that for a one dimensional Dirac model, a domain wall in the mass $m$ supports a non-degenerate zero mode. Fixing  $k_y=0$, we see that the one dimensional Dirac Hamiltonian here is identical to the one we saw in week 1, where the zero mode at the domain wall between $m<0$ and $m>0$ was an eigenstate of $\tau_x$ with eigenvalue $+1$. 
+As with Kitaev chains, the Dirac model gives us another way to construct chiral edge states at the domain wall between topological and non-topological phases. Back in week 1, we saw that for a one dimensional Dirac model, a domain wall in the mass $m$ supports a non-degenerate zero mode. Fixing  $k_y=0$, we see that the one dimensional Dirac Hamiltonian here is identical to the one we saw in week 1, where the zero mode at the domain wall between $m<0$ and $m>0$ was an eigenstate of $\tau_x$ with eigenvalue $+1$.
 
 Unlike the one-dimensional case, the zero mode is not stationary in the two dimensional case. By adding $2\gamma k_y\tau_x$ as a perturbation, we see that the energy of the state increases as
 
