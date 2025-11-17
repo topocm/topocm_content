@@ -4,7 +4,7 @@ This repository contains materials for a course on topology in condensed matter 
 
 The course materials are stored in w<number>_<topic> directories in myst markdown format.
 
-The course uses recently released Jupyter Book 2 that is built on top of the mystmd package. If you need the docs, see https://jupyterbook.org/stable/ and https://mystmd.org/.
+The course uses recently released Jupyter Book 2 that is built on top of the mystmd package (important: it does not use sphinx at all). If you need the docs, see https://jupyterbook.org/stable/ and https://mystmd.org/.
 
 The course uses pixi for environment management. If you need the docs, see https://pixi.sh/latest/.
 

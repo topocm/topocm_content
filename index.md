@@ -14,7 +14,7 @@ kernelspec:
 # Online course on topology in condensed matter
 
 This is a open online course on topology in condensed matter.
-Initially developed for the [edX platform](https://www.edx.org/course/topology-in-condensed-matter-tying-quantum-knots) in 2015, its development continues here.
+Initially developed for the edX platform in 2015, its development continues here.
 
 After following this course you will:
 - Discover how topological concepts manifest in condensed matter systems
@@ -48,7 +48,7 @@ When working on the course, we greatly benefitted from support of
 * [University of Maryland](http://umd.edu) and its Physics Department
 * [Joint Quantum Institute](http://jqi.umd.edu)
 
-We thank [M. Wimmer](http://michaelwimmer.org/) and [C. Groth](http://inac.cea.fr/Pisp/christoph.groth/) for letting us use their code in some of the course materials.
+We thank [M. Wimmer](http://michaelwimmer.org/) and C. Groth for letting us use their code in some of the course materials.
 
 For the support with implementing the technical aspects of the course we thank
 
