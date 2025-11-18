@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -20,14 +20,10 @@ kernelspec:
 # It makes the necessary packages available and adjusts various settings.
 # You should execute this cell at the start.
 
-import sys
 
-sys.path.append("../code")
-from init_course import *
+from course.init_course import init_notebook
 
 init_notebook()
-
-from IPython.display import HTML
 ```
 
 ## A welcome word

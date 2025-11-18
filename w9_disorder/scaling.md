@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,11 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
 import os
 
-sys.path.append("../code")
-from init_course import *
+
+import numpy as np
+from matplotlib import pyplot as plt
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 
@@ -115,7 +117,6 @@ What we see is that for dimensions $d=1,2$ the curve stays below $\beta\leq 0$, 
 The situation is different in $d=3$ dimensions. If the conductance $g$ is large enough to begin with, then $\beta > 0$ and the arrow points to larger values of $g$. This means that the conductance grows with increasing system size. On the other hand, if disorder is large enough such that $\beta < 0$ initially, $g$ decreases as the system size increases. The separation point $\beta = 0$ between these two behaviours is the *metal-insulator transition*.
 
 ```{code-cell} ipython3
-
 question = "How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?"
 
 answers = [
@@ -153,7 +154,6 @@ The first thing to observe is that at the critical point, we have $d\ln g/ d\ln 
 In practice, this behavior can be observed at a fixed $L$ by varying one parameter $\alpha$ appearing in the model under study, typically the disorder strength or the chemical potential. The average conductance $\langle g \rangle$ is then computed as a function of $\alpha$ for different values of $L$. One then obtains a plot like the following:
 
 ```{code-cell} ipython3
-
 data = np.loadtxt(data_folder + "data_from_doru.dat")
 
 fig, ax = plt.subplots(figsize=(6, 4))
@@ -219,7 +219,6 @@ $$
 The length $\xi = L_0\,(V-V_c)^{-\nu}\,$ is the localization length, which diverges at the transition point $V=V_c$. The number $\nu$ is known as the *critical exponent*, and determines the scaling behavior of the conductance close to the critical point.
 
 ```{code-cell} ipython3
-
 question = r"What would we see if $\beta$ crossed from positive to negative values?"
 
 answers = [

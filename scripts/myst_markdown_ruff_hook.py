@@ -30,6 +30,8 @@ def run_command(
 
 def process_file(path: Path) -> None:
     """Convert ``path`` to an ipynb, format it with Ruff, and write it back."""
+    # Log which file we're processing to make failures easy to find in CI/hooks
+    print(f"myst_markdown_ruff_hook: Formatting {path}", file=sys.stderr)
     if not path.exists():
         # File might have been deleted between lint selection and execution.
         return

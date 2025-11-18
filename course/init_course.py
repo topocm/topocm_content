@@ -11,14 +11,11 @@ import kwant
 import matplotlib
 import numpy as np
 from holoviews import Options, Store
-from IPython import display
+from IPython import display, get_ipython
 
 # A bunch of functions and modules to pass on, we never use them here
 
-import components
-import functions
-from components import *
-from functions import *
+from . import components, functions
 
 init_course = [
     "np",
@@ -31,10 +28,15 @@ init_course = [
     "pretty_fmt_complex",
     "plt",
     "pf",
-    "display_html",
 ]
 
 __all__ = init_course + components.__all__ + functions.__all__
+
+for _name in components.__all__:
+    globals()[_name] = getattr(components, _name)
+
+for _name in functions.__all__:
+    globals()[_name] = getattr(functions, _name)
 
 
 # Adjust printing of matrices, and numpy printing of numbers.
@@ -72,9 +74,9 @@ def print_information():
     print(
         "Populated the namespace with:\n"
         + ", ".join(init_course)
-        + "\nfrom code/components:\n"
+        + "\nfrom course.components:\n"
         + ", ".join(components.__all__)
-        + "\nfrom code/functions:\n"
+        + "\nfrom course.functions:\n"
         + ", ".join(functions.__all__)
     )
 

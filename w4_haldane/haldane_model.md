@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,15 +16,20 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
 import scipy
 
-holoviews.output(size=150, fig='png')
+import numpy as np
+import holoviews
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+
+init_notebook()
+
+holoviews.output(size=150, fig="png")
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -70,7 +75,6 @@ $$
 The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives rise to the famous band structure of graphene, with the two bands touching at the six corners of the Brillouin zone:
 
 ```{code-cell} ipython3
-
 honeycomb = kwant.lattice.honeycomb()
 a, b = honeycomb.sublattices
 nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
@@ -78,7 +82,7 @@ nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
 
 
 def title(p):
-    return fr"$t={p['t']:.2}$, $t_2={p['t_2']:.2}$, $M={p['M']:.2}$"
+    return rf"$t={p['t']:.2}$, $t_2={p['t_2']:.2}$, $M={p['M']:.2}$"
 
 
 def onsite(site, M):
@@ -182,13 +186,13 @@ The last term changes sign under time-reversal symmetry, breaking it. This is th
 Let's see what happens to the system when these special second neighbor hoppings are turned on:
 
 ```{code-cell} ipython3
-
 p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
 t_2s = np.linspace(0, 0.10, 11)
 holoviews.HoloMap(
-    {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s}, kdims=[r"$t_2$"]
+    {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s},
+    kdims=[r"$t_2$"],
 )
 ```
 
@@ -199,10 +203,10 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
-
-holoviews.output(fig='svg')
+holoviews.output(fig="svg")
 
 W = 20
+
 
 def ribbon_shape_zigzag(site):
     return -0.5 / np.sqrt(3) - 0.1 <= site.pos[1] < np.sqrt(3) * W / 2 + 0.01
@@ -244,7 +248,6 @@ The appearance of edge states means that graphene has entered a topological phas
 As you know, this means we have created a **Chern insulator**. The reason for this name will become obvious in the second part of the lecture.
 
 ```{code-cell} ipython3
-
 question = (
     "What happens if we take a Haldane model in the topological phase and turn "
     "on a weak magnetic field?"
@@ -382,7 +385,6 @@ The Brillouin zones for $|t_2|>M/(3\sqrt{3})$, on the other hand, have Berry cur
 To see this more clearly, we can compute the Berry curvature numerically and plot it over the whole Brillouin zone as a function of $t_2$:
 
 ```{code-cell} ipython3
-
 def berry_curvature(syst, p, ks, num_filled_bands=1):
     """Berry curvature of a system.
 
@@ -415,9 +417,7 @@ def berry_curvature(syst, p, ks, num_filled_bands=1):
         H = syst.hamiltonian_submatrix(params=p, sparse=False)
         return scipy.linalg.eigh(H)[1][:, :num_filled_bands]
 
-    vectors = np.array(
-        [[filled_states(kx, ky) for kx in ks] for ky in ks]
-    )
+    vectors = np.array([[filled_states(kx, ky) for kx in ks] for ky in ks])
 
     # The actual Berry curvature calculation
     vectors_x = np.roll(vectors, 1, 0)
@@ -453,18 +453,14 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
     if callable(title):
         kwargs["label"] = title(p)
 
-    plot = {"xticks": pi_ticks, "yticks": pi_ticks}
-    style = {"clims": [-vmax, vmax]}
-    return holoviews.Image(bc, **kwargs).options(xticks=pi_ticks, yticks=pi_ticks, clim=(-vmax, vmax))
+    ticks = {"xticks": pi_ticks, "yticks": pi_ticks}
+    style = {"clim": (-vmax, vmax)}
+    return holoviews.Image(bc, **kwargs).options(**ticks, **style)
 ```
 
 ```{code-cell} ipython3
-
 p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
-kwargs = {
-    "title": title,
-    "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)
-}
+kwargs = {"title": title, "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)}
 t_2s = np.linspace(-0.1, 0.1, 11)
 holoviews.HoloMap(
     {
@@ -476,7 +472,6 @@ holoviews.HoloMap(
 ```
 
 ```{code-cell} ipython3
-
 question = "How does time-reversal symmetry influence the Berry curvature?"
 
 answers = [
@@ -499,7 +494,6 @@ At the same time it's important to know that the particular distribution of the 
 For instance, here is a slider plot for the Berry curvature for the quantum Hall lattice model studied in the previous chapter.
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.square()
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
@@ -526,15 +520,16 @@ p = dict(t=1.0, delta=1.0, gamma=-0.5, mu=None)
 
 def title_QWZ(p):
     return (
-        fr"$t={p['t']:.2}$, $\mu={p['mu']:.2}$, "
-        fr"$\Delta={p['delta']:.2}$, $\gamma={p['gamma']:.2}$"
+        rf"$t={p['t']:.2}$, $\mu={p['mu']:.2}$, "
+        rf"$\Delta={p['delta']:.2}$, $\gamma={p['gamma']:.2}$"
     )
 
 
 kwargs = {"title": title_QWZ}
 mus = np.linspace(-2, 0, 11)
 holoviews.HoloMap(
-    {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
+    {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus},
+    kdims=[r"$\mu$"],
 )
 ```
 

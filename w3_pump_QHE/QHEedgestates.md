@@ -16,14 +16,18 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
+import holoviews
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import spectrum
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+from matplotlib import pyplot as plt
 
 init_notebook()
 holoviews.output(size=150)
-pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
+pi_ticks = [(-np.pi, r"$-\\pi$"), (0, "0"), (np.pi, r"$\\pi$")]
 ```
 
 ## Where do the pumped electrons come from and go to?

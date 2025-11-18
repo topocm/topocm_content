@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,11 +16,20 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course import init_course as course_init
 import scipy.sparse.linalg as sl
+
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+
+# Bind commonly used names from course modules so ruff can see them
+import numpy as np
+
+import kwant
+from course.functions import pauli
+from matplotlib import pyplot as plt
+
+scientific_number = course_init.scientific_number
 
 init_notebook()
 ```
@@ -69,7 +78,6 @@ We will not repeat our pumping experiment, that is increasing the flux $\Phi$ by
 From the point of view of the superconducting junction, this means that advancing the phase difference $\phi$ by $2\pi$, the ground state fermion parity of the junction changes. Recalling what we learned in the second and third weeks, we can say that the Josephson effect is $4\pi$-periodic.
 
 ```{code-cell} ipython3
-
 question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
 
 answers = [
@@ -123,7 +131,6 @@ The strength of the Zeeman field $m(x)$ and the pairing $\Delta(x)$ both depend 
 This is shown below in a numerical simulation of a quantum spin-Hall disk. The left panel shows the edge state of the disk without any superconductor or magnet. In the right panel we cover one half of the disk by a superconductor and the other by a magnet, and obtain two well-separated Majoranas:
 
 ```{code-cell} ipython3
-
 my = 0.5 * (pauli.sys0 + pauli.sysz)
 s0s0sz = np.kron(pauli.s0s0, pauli.sz)
 s0szsz = np.kron(pauli.s0sz, pauli.sz)
@@ -172,7 +179,9 @@ densities = []
 for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
     vals, vecs = sl.eigsh(
         qshe_circle.hamiltonian_submatrix(params={**p, **gaps}, sparse=True),
-        sigma=0, k=1, ncv=20
+        sigma=0,
+        k=1,
+        ncv=20,
     )
     energies.append(vals[0])
     densities.append(density(vecs[:, 0]))
@@ -180,7 +189,9 @@ for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
 fig = plt.figure(figsize=(9, 3.5))
 
 axes = fig.subplots(1, 2)
-for ax, axis, energy, density in zip(axes, ["Normal", "Superconducting"], energies, densities):
+for ax, axis, energy, density in zip(
+    axes, ["Normal", "Superconducting"], energies, densities
+):
     kwant.plotter.density(qshe_circle, density, ax=ax, colorbar=False)
     for spine in "left right top bottom".split():
         ax.spines[spine].set_visible(False)
@@ -196,8 +207,8 @@ y = np.sqrt(31**2 - x**2)
 gap_B = sc_plot.fill_between(x, 0, y, facecolor="gold", alpha=0.1)
 gap_Sc = sc_plot.fill_between(x, 0, -y, facecolor="blue", alpha=0.1)
 text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor="black", lw=0))
-ax.text(0, R/3, "$E_Z$", ha="center", fontsize=16)
-ax.text(0, -R/3, r"$\Delta$", ha="center", fontsize=16);
+ax.text(0, R / 3, "$E_Z$", ha="center", fontsize=16)
+ax.text(0, -R / 3, r"$\Delta$", ha="center", fontsize=16);
 ```
 
 The density of states plot of the lowest energy state reveals one Majorana mode at each of the two interfaces between the magnet and the superconductor.
@@ -285,7 +296,6 @@ To answer this question, observe that the energy spectrum $E_n = 2 \pi\,n\,\hbar
 Below, we plot the wave function of the lowest energy state in a $p$-wave disk with a vortex in the middle. The lowest energy wavefunction is an equal superposition of the two Majorana modes. Here you can see that half of it is localized close to the vortex core and half of it close to the edge.
 
 ```{code-cell} ipython3
-
 def onsite(site1, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -293,7 +303,7 @@ def onsite(site1, t, mu):
 def hopx(site1, site2, t, delta):
     (x1, y1) = site1.pos
     (x2, y2) = site2.pos
-    phi = np.arctan2(x1+x2, y1+y2)
+    phi = np.arctan2(x1 + x2, y1 + y2)
     return -t * pauli.sz + 1j * delta * (
         np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
     )
@@ -302,10 +312,11 @@ def hopx(site1, site2, t, delta):
 def hopy(site1, site2, t, delta):
     (x1, y1) = site1.pos
     (x2, y2) = site2.pos
-    phi = np.arctan2(x1+x2, y1+y2) + np.pi/2
+    phi = np.arctan2(x1 + x2, y1 + y2) + np.pi / 2
     return -t * pauli.sz - 1j * delta * (
         np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
     )
+
 
 lat = kwant.lattice.square(norbs=2)
 p_wave = kwant.Builder()
@@ -316,13 +327,15 @@ p_wave = p_wave.finalized()
 
 p = dict(t=1.0, mu=0.4, delta=0.5)
 [energy], vecs = sl.eigsh(
-    p_wave.hamiltonian_submatrix(params=p, sparse=True),
-    sigma=0, k=1, ncv=20
+    p_wave.hamiltonian_submatrix(params=p, sparse=True), sigma=0, k=1, ncv=20
 )
 
 
 fig = kwant.plotter.density(
-    p_wave, kwant.operator.Density(p_wave)(vecs[:, 0])**(.5), show=False, colorbar=False
+    p_wave,
+    kwant.operator.Density(p_wave)(vecs[:, 0]) ** (0.5),
+    show=False,
+    colorbar=False,
 )
 ax = fig.axes[0]
 for spine in "left right top bottom".split():
@@ -336,7 +349,6 @@ ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
 
 ```{code-cell} ipython3
-
 question = (
     "What happens if you add a second vortex to the superconductor? "
     "Imagine that the vortices and edge are all very far away from each other"
@@ -389,7 +401,6 @@ In fact, the magnet was only a crutch that we used to make our argument. We can 
 To confirm this conclusion, below we show the result of a simulation of a 3D BHZ model in a cube geometry, with a vortex line passing through the middle of the cube. To make things simple, we have added superconductivity everywhere in the cube, and not just on the surface (nothing prevents us from doing this, even though in real life materials like Bi$_2$Te$_3$ are not naturally superconducting).
 
 ```{code-cell} ipython3
-
 import matplotlib.cm
 import matplotlib.colors as mcolors
 
@@ -401,13 +412,13 @@ gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
 ```
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.cubic(norbs=8)
 
 
 def cylinder(pos, h=25, r=5):
     (x, y, z) = pos
     return (0 <= z < h) and (y**2 + x**2) <= r**2
+
 
 def onsite(site, C, D1, D2, M, B1, B2, delta):
     (x, y, z) = site.pos
@@ -418,14 +429,18 @@ def onsite(site, C, D1, D2, M, B1, B2, delta):
         + delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
     )
 
+
 def hopx(site1, site2, D2, B2, A2):
     return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sxsxsz
+
 
 def hopy(site1, site2, D2, B2, A2):
     return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sysxsz
 
+
 def hopz(site1, site2, D1, B1, A1):
     return -D1 * s0s0sz - B1 * s0szsz + A1 * 0.5j * szsxsz
+
 
 bhz_wire = kwant.Builder()
 bhz_wire[lat.shape(cylinder, (0, 0, 0))] = onsite
@@ -447,16 +462,14 @@ p = dict(
 )
 
 [energy], vecs = sl.eigsh(
-    bhz_wire.hamiltonian_submatrix(params=p, sparse=True),
-    sigma=0, k=1, ncv=20
+    bhz_wire.hamiltonian_submatrix(params=p, sparse=True), sigma=0, k=1, ncv=20
 )
 
 fig = plt.figure(figsize=(9, 3.5))
 
 ax0 = fig.add_subplot(121, projection="3d")
 kwant.plot(
-    bhz_wire, ax=ax0, site_size=0.3, site_lw=0.01,
-    site_color="#2267f5cc", hop_lw=0.1
+    bhz_wire, ax=ax0, site_size=0.3, site_lw=0.01, site_color="#2267f5cc", hop_lw=0.1
 )
 ax0.set_xlim(-6, 6)
 ax0.set_ylim(-6, 6)
@@ -471,7 +484,7 @@ kwant.plotter.plot(
     ax=ax1,
     cmap=gist_heat_r_transparent,
     colorbar=False,
-    site_lw=0
+    site_lw=0,
 )
 
 ax1.set_xlim(-6, 6)

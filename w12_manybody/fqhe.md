@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,8 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 ```
@@ -67,9 +65,7 @@ $$
 \phi_{exch}=\pi\nu.
 $$
 
-
 ```{code-cell} ipython3
-
 question = (
     "The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
     "that must be dropped in order to understand the fractional quantum Hall effect?"
@@ -150,7 +146,6 @@ $$
 Thus the composite fermion theory provides an explanation for how electrons can form incompressible states at a fractional sequence of filling fractions that is known as the "Jain sequence". These states were all seen in experiments.
 
 ```{code-cell} ipython3
-
 question = (
     "Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
     "postulating that:"

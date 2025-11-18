@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,14 +16,17 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from matplotlib.colors import hsv_to_rgb
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
-from matplotlib import cm
-from matplotlib.colors import hsv_to_rgb
 
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 ```
@@ -77,8 +80,7 @@ where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two
 To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This is what the band structure and $\det h$ look like:
 
 ```{code-cell} ipython3
-
-holoviews.output(size=150, fig='png')
+holoviews.output(size=150, fig="png")
 
 
 def plot_dets(syst, p, ks, chiral=False):
@@ -105,14 +107,13 @@ def plot_dets(syst, p, ks, chiral=False):
     V = np.abs(dets)
     H = np.mod(H, 1)
     V /= np.max(V)
-    V = 1 - V ** 2
+    V = 1 - V**2
     S = np.ones_like(H)
     HSV = np.dstack((H, S, V))
     RGB = hsv_to_rgb(HSV)
     bounds = (ks.min(), ks.min(), ks.max(), ks.max())
     pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
     return pl.options(xticks=pi_ticks, yticks=pi_ticks, interpolation=None)
-
 
 
 lat = kwant.lattice.honeycomb()
@@ -126,9 +127,7 @@ graphene[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, t_23: 
 
 p = dict(t_1=1.0, t_23=1.0)
 ks = np.sqrt(3) * np.linspace(-np.pi, np.pi, 80)
-kwargs = dict(
-    title=(lambda p: rf"Graphene, $t_1 = {p['t_1']:.2} \times t$"), zticks=3
-)
+kwargs = dict(title=(lambda p: rf"Graphene, $t_1 = {p['t_1']:.2} \times t$"), zticks=3)
 ts = np.linspace(1, 2.4, 8)
 (
     holoviews.HoloMap(
@@ -196,7 +195,6 @@ This means that a Dirac point at momentum $k$ and positive winding must come tog
 The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac points at $|k_x| = |k_y| = k_F / \sqrt{2}$.
 
 ```{code-cell} ipython3
-
 question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
 
 answers = [
@@ -225,21 +223,25 @@ Whenever the line corresponding to a constant $k_\parallel$ crosses a Dirac poin
 For a $d$-wave superconductor this will only happen for some crystalline orientations, as you can see for yourself:
 
 ```{code-cell} ipython3
-
 from holoviews import opts
+
 opts.defaults(
-    opts.VLine(color='k'),
-    opts.Curve(linestyle='--'),
+    opts.VLine(color="k"),
+    opts.Curve(linestyle="--"),
 )
+
 
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
 
+
 def hopx(site1, site2, t, delta):
     return -t * pauli.sz - delta * pauli.sx
 
+
 def hopy(site1, site2, t, delta):
     return -t * pauli.sz + delta * pauli.sx
+
 
 lat = kwant.lattice.square()
 dwave_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -252,9 +254,7 @@ dwave_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
 dwave_ribbon.fill(dwave_infinite, (lambda site: 0 <= site.pos[1] < W), (0, 0))
 dwave_diagonal = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
 dwave_diagonal.fill(
-    dwave_infinite,
-    (lambda site: 0 <= site.pos[1] - site.pos[0] < W),
-    (0, 0)
+    dwave_infinite, (lambda site: 0 <= site.pos[1] - site.pos[0] < W), (0, 0)
 )
 
 p = dict(mu=2.0, t=1.0, delta=1.0)
@@ -322,9 +322,10 @@ $$
 > So applying the most general perturbation we can think of does not gap out the Weyl point where the energy vanishes. Instead, the perturbation only shifts the Weyl point around in momentum space. This feels like some kind of topological protection.
 
 ```{code-cell} ipython3
-
-holoviews.output(fig='png')
 from holoviews import opts
+
+holoviews.output(fig="png")
+
 opts.defaults(opts.Surface(azimuth=45))
 
 
@@ -337,11 +338,12 @@ def hopx(site1, site2, t):
 
 
 def hopy(site1, site2, t):
-
     return -t * pauli.sz
+
 
 def hopz(site1, site2, t):
     return 0.5j * t * pauli.sy - t * pauli.sz
+
 
 W = 10
 lat = kwant.lattice.cubic(norbs=2)
@@ -362,7 +364,9 @@ kwargs = dict(
     num_bands=4,
 )
 
-holoviews.HoloMap({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"])
+holoviews.HoloMap(
+    {p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
+)
 ```
 
 Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.
@@ -392,7 +396,6 @@ At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z
 ![](figures/weyl.svg)
 
 ```{code-cell} ipython3
-
 question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
 
 answers = [

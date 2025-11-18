@@ -3,11 +3,8 @@ import secrets
 from textwrap import dedent
 from xml.etree.ElementTree import SubElement
 
-from IPython import display
-
 
 __all__ = [
-    "Video",
     "Checkboxes",
     "MultipleChoice",
 ]
@@ -26,20 +23,6 @@ def _add_solution(el, text):
 
 def _replace_latex_delimiters(text):
     return re.sub(r"\$(.+?)\$", (lambda match: rf"\({match.group(1)}\)"), text)
-
-
-class Video(display.YouTubeVideo):
-    def __init__(
-        self,
-        id,
-    ):
-        super().__init__(id, rel=0, cc_load_policy=1)
-
-    def _repr_html_(self):
-        orig = super()._repr_html_()
-        return '<div class="embed-responsive embed-responsive-16by9">{}</div>'.format(
-            orig.replace("<iframe", '<iframe class="embed-responsive-item" ')
-        )
 
 
 class Checkboxes:

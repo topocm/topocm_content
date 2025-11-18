@@ -16,10 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.components import MultipleChoice
+from course.functions import pauli, spectrum
+from course.init_course import init_notebook
+import holoviews
+import kwant
+import numpy as np
+from pfapack import pfaffian as pf
 
 init_notebook()
 ```
@@ -267,18 +270,12 @@ def plot_invariant(p):
     xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.3, np.pi + 0.3)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
     style_overlay = {
-        "xticks": [(0, "0"), (np.pi, "$\pi$")],
+        "xticks": [(0, "0"), (np.pi, "$\\pi$")],
         "yticks": pi_ticks,
         "show_legend": True,
         "legend_position": "top",
     }
-    style_path = {"show_legend": True}
-    return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(
-        xticks=[(0, "0"), (np.pi, "$\pi$")],
-        yticks=pi_ticks,
-        show_legend=True,
-        legend_position="top",
-    )
+    return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(**style_overlay)
 
 
 p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)

@@ -16,10 +16,12 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+import kwant
+from course.functions import spectrum
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 holoviews.output(size=150)

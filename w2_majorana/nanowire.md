@@ -16,14 +16,20 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from holoviews.core.options import Cycle
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+
 
 init_notebook()
 holoviews.output(size=110)
-from holoviews.core.options import Cycle
 
 style = {
     "k_x": np.linspace(-1, 1, 101),
@@ -344,7 +350,7 @@ Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
 from holoviews import opts
-from holoviews.plotting.util import Cycle
+# from holoviews.plotting.util import Cycle
 
 opts.defaults(
     opts.Curve(color=Cycle(values=["r", "g", "b", "y"])),
@@ -397,7 +403,7 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     plot = holoviews.Overlay(plot)
     return plot.options(
         xticks=style["xticks"], yticks=style["yticks"], fig_size=style["fig_size"]
-    )
+    ).relabel(title)
 
 
 Bs = np.linspace(0, 0.3, 71)

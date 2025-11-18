@@ -16,15 +16,20 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-
 from scipy import linalg as la
 from functools import reduce
+
+import holoviews
+
+import kwant
+import numpy as np
+
+from course.init_course import init_notebook
+
+from course.functions import pauli
+from course.components import MultipleChoice
+
+init_notebook()
 
 pi_ticks = [
     (-np.pi, r"$-\pi$"),
@@ -219,8 +224,14 @@ p2 = dict(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
 H1 = finite_nanowire.hamiltonian_submatrix(params=p1)
 H2 = finite_nanowire.hamiltonian_submatrix(params=p2)
 
-h1_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p1, k_x=k_x))
-h2_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p2, k_x=k_x))
+
+def h1_k(k_x):
+    return infinite_nanowire.hamiltonian_submatrix(params=dict(**p1, k_x=k_x))
+
+
+def h2_k(k_x):
+    return infinite_nanowire.hamiltonian_submatrix(params=dict(**p2, k_x=k_x))
+
 
 periods = np.linspace(0.2 / J, 1.6 / J, 100)
 momenta = np.linspace(-np.pi, np.pi)
@@ -337,12 +348,8 @@ def plot_dispersion_2D(T):
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
     return (
-        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(
-            xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3
-        )
-        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(
-            xticks=pi_ticks[::2], yticks=pi_ticks[::2], zticks=3
-        )
+        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(**ticks)
+        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(**ticks)
     ).relabel(title)
 
 

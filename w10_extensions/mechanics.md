@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,13 +16,16 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from course import topomech
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+
+from matplotlib import pyplot as plt
 
 init_notebook()
-import topomech
 ```
 
 ## Introduction
@@ -104,7 +107,6 @@ $$
 where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates between left-leaning ($u<0$ as $x\rightarrow-\infty$) and right-leaning ($u>0$ as $x\rightarrow+\infty$) states.
 
 ```{code-cell} ipython3
-
 question = r"What happens to the kink width $w_0$ when the gap closes?"
 
 answers = ["It goes to zero.", "It does not vary.", "It diverges."]
@@ -200,7 +202,6 @@ dimensions.)
 As a simple test of your knowledge, consider the following question whose answer will prove handy later.
 
 ```{code-cell} ipython3
-
 question = (
     r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
     "where all nodes have the same number of bonds (neglecting boundaries)?"
@@ -301,7 +302,6 @@ defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$)
 A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
 ```{code-cell} ipython3
-
 question = (
     "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
     r"are of equal length and have an angle $\pi/2$ between them, "
@@ -330,7 +330,6 @@ In the numerical simulation below, you can see explicitly that transforming the 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
 ```{code-cell} ipython3
-
 from holoviews.core.element import Element2D
 from holoviews.plotting.mpl import ElementPlot
 

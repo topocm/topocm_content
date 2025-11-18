@@ -33,3 +33,4 @@ pre-commit = ">=4.4.0,<5"
 [pypi-dependencies]
 ruamel-yaml = ">=0.18.16, <0.19"
 jupyter-book = ">=2.0.2, <3"
+topocm-course = { path = ".", editable = true }

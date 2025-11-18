@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,8 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 ```
@@ -65,7 +63,6 @@ Does this have anything to do with the way we have defined topology in this cour
 The topological robustness makes the topologically degenerate states particularly attractive to store quantum information. The main challenge of quantum information is the quantum decoherence problem, where local fluctuations in the Hamiltonian destroy the phase coherence of the quantum system used to store information. The solution proposed by topological quantum computation is to use the topologically degenerate space of a toric code to store the information. In fact, this is in essence what is being attempted by experimentalists who work on superconducting qubits, under the framework of the surface code.
 
 ```{code-cell} ipython3
-
 question = (
     "How would the topological degeneracy of the ground state that comes from the loop configurations "
     "change if we put it on a torus (donut) with two holes?"

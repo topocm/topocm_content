@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,8 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 ```
@@ -135,7 +133,6 @@ In particular, linear combinations of states with different total parity are for
 This consideration only applies to closed systems. It does not apply if we are considering a system which is in contact with a reservoir of electrons, such as a metallic lead, in which case electrons may tunnel in and out of the lead, changing the total parity of the system. Equivalently, it does not apply if we are considering only a part of the total system. You could for instance imagine that, in our sketch, there are more Majorana zero modes in the part of the network which is not drawn explicitly (represented by the dots which “continue” the nanowire). In such a case it is perfectly possible that the *total* network is in, say, a state of even parity, but that the subsystem under consideration is in a superposition of even and odd parity states.
 
 ```{code-cell} ipython3
-
 question = (
     "Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. "
     "What is the ground state degeneracy of the system?"
@@ -152,9 +149,7 @@ explanation = (
     "out of which half have even total parity and half have odd total parity. "
     "So the degeneracy at fixed even parity is 2^6."
 )
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=2, explanation=explanation)
 ```
 
 ## Non-Abelian statistics of Majoranas
@@ -200,7 +195,6 @@ Now we have to remember that at time $T$ we have completed a closed trajectory, 
 $$
 U = \exp \left(\pm\frac{\pi}{4}\gamma_n \gamma_m\right) = \tfrac{1}{\sqrt{2}}\left(1\pm\gamma_n\gamma_m\right)
 $$
-
 
 +++
 
@@ -259,7 +253,6 @@ $$
 Finally, you might object to the fact that the network of nanowires drawn in the figures only allows to exchange neighbouring Majoranas, even though our derivation of $U=\exp(\pi\gamma_n\gamma_m/4)$ seems to hold for any pair of Majoranas. This geometric constraint is not a big problem: by carefully composing many exchanges between neighbours, we can exchange any pair of Majoranas. As an example, you have that $U_{13}\equiv\exp\left(\pi\gamma_1 \gamma_3/4\right) = U_{12}^\dagger\,U^\dagger_{23}\,U_{12}$.
 
 ```{code-cell} ipython3
-
 question = (
     "Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. "
     "What happens when we exchange the pair of Majorana modes, starting from a given fermion parity eigenstate?"
@@ -275,9 +268,7 @@ explanation = (
     "but the two states can pick up a different phase. "
     "This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity."
 )
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=2, explanation=explanation)
 ```
 
 ## Majoranas and quantum computation: basic ideas

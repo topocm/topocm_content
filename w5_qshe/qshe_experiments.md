@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,15 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import warnings
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 holoviews.output(size=150)
 
-import warnings
 warnings.simplefilter("ignore", UserWarning)
 ```
 
@@ -67,7 +73,6 @@ The spectrum of this Hamiltonian is very similar to that of a Chern insulator (a
 So below we see a qualitative band structure of one of the QSHE insulators, HgTe/CdTe quantum well, compared with the band structure of InAs/GaSb quantum well.
 
 ```{code-cell} ipython3
-
 def onsite(site, mu, B, D, M, ez_y):
     return (
         (M - 4 * B) * pauli.s0sz
@@ -116,7 +121,6 @@ When we move the Fermi level outside of the bulk gap, the bulk becomes conductin
 We end up with this situation:
 
 ```{code-cell} ipython3
-
 def bhz_ribbon(W):
     """Translationally invariant BHZ system with a fixed width W."""
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -125,7 +129,7 @@ def bhz_ribbon(W):
 
 
 def two_terminal(L, W):
-    """ Make a two terminal system with the BHZ model."""
+    """Make a two terminal system with the BHZ model."""
     ribbon = bhz_ribbon(W)
 
     syst = kwant.Builder()
@@ -154,8 +158,7 @@ mus = np.linspace(-0.8, 0.8, 50)
 
 spectra = [
     spectrum(ribbon, dict(mu=0, **p), **kwargs).relabel(title)
-    for p["M"], title
-    in zip(masses, ("trivial spectrum", "topological spectrum"))
+    for p["M"], title in zip(masses, ("trivial spectrum", "topological spectrum"))
 ]
 
 ydim = r"$G[e^2/h]$"
@@ -166,12 +169,15 @@ conductance_plots = [
             [
                 kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
                 for p["mu"] in mus
-            ]
+            ],
         ),
-        kdims=[r"$\mu$", ydim], label=label
+        kdims=[r"$\mu$", ydim],
+        label=label,
     ).options(xticks=list(np.linspace(-0.8, 0.8, 5)), color=color)
-    for p["M"], color, label
-    in [(-0.2, "teal", "trivial"), (0.2, "orange", "topological")]
+    for p["M"], color, label in [
+        (-0.2, "teal", "trivial"),
+        (0.2, "orange", "topological"),
+    ]
 ]
 
 G_triv, G_topo = conductance_plots
@@ -252,15 +258,11 @@ If we consider the simple case of a magnetic field ${\bf B}=B {\bf x}$ along the
 We can very easily calculate that this is the case if we plot the conductance of the QSHE model as a function of magnetic field:
 
 ```{code-cell} ipython3
-
 E_zs = np.linspace(0, 0.15, 50)
 p["mu"] = 0
 p["M"] = 1
 
-G = [
-    kwant.smatrix(syst, params=p).transmission(1, 0)
-    for p["ez_y"] in E_zs
-]
+G = [kwant.smatrix(syst, params=p).transmission(1, 0) for p["ez_y"] in E_zs]
 ez_conductances = (
     holoviews.Path((E_zs, np.array(G)), kdims=["$E_z$", ydim], label="Conductance")
     .redim.range(**{ydim: (0, 2)})
@@ -303,7 +305,6 @@ You might be worried that the suppression of conductance is only shown for the l
 Localization of QSHE edge states by magnetic field is relatively poorly understood, and we are not aware of a final experiment that would prove its existence or tell us in details what it is that happens at the QSHE edge in a magnetic field. As you will learn in two weeks, opening the gap by magnetic field opens new pathways for the creation of Majoranas, and so it is still a very important direction of research.
 
 ```{code-cell} ipython3
-
 question = (
     "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
     "the quantum Hall effect in week 3?"

@@ -16,10 +16,7 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.init_course import init_notebook
 
 init_notebook()
 ```

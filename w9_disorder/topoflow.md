@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,16 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
 import os
 
-sys.path.append("../code")
-from init_course import *
+
+from matplotlib.collections import LineCollection
+import matplotlib
+
+
+import numpy as np
+import kwant
+from course.functions import pauli
+from matplotlib import pyplot as plt
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
-from matplotlib.collections import LineCollection
-from matplotlib.colors import ListedColormap, BoundaryNorm
-import scipy.linalg as la
 
 # Set the path to a folder containing data files, to work with filters as well.
 data_folder = (
@@ -76,7 +81,6 @@ Let's try the most obvious thing and see what happens to  $\langle Q\rangle$, as
 So below we see $\mathcal{Q}$ averaged over 100 different realizations in a disordered Kitaev chain with 30 sites as we gradually increase $U$:
 
 ```{code-cell} ipython3
-
 def make_kitaev_chain(L=10):
     lat = kwant.lattice.chain(norbs=2)
     syst = kwant.Builder()
@@ -101,9 +105,7 @@ def make_kitaev_chain(L=10):
     syst.attach_lead(lead)
     syst.attach_lead(lead.reversed())
     syst = syst.finalized()
-    syst = syst.precalculate(
-        params=dict(t=1.0, m=0.0, delta=1.0, disorder=0, salt="")
-    )
+    syst = syst.precalculate(params=dict(t=1.0, m=0.0, delta=1.0, disorder=0, salt=""))
 
     return syst
 
@@ -176,7 +178,6 @@ The second effect, despite looking mysterious, appears just because the disorder
 Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
 
 ```{code-cell} ipython3
-
 question = (
     r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
 )
@@ -221,7 +222,6 @@ Let's try and verify our hypothesis by constructing the scaling flow of the diso
 Here's what we get:
 
 ```{code-cell} ipython3
-
 if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
     data_folder + "scaling_data_ts.dat"
 ):
@@ -230,7 +230,7 @@ if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
 else:
     p = dict(t=1.0, delta=1.0, disorder=0.8)
     Ls = np.array(np.logspace(np.log10(10), np.log10(180), 6), dtype=int)
-    ms = [np.sign(x) * x ** 2 + 0.2 for x in np.linspace(-1, 1, 40)]
+    ms = [np.sign(x) * x**2 + 0.2 for x in np.linspace(-1, 1, 40)]
     qs, ts = zip(*[phase_diagram(int(L), ms, p, num_average=1000) for L in Ls])
     qs = np.array(qs)
     ts = np.array(ts)
@@ -285,7 +285,6 @@ The flow, we just calculated is in fact valid for all one-dimensional topologica
 It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
 
 ```{code-cell} ipython3
-
 question = (
     "What does the 2 parameter flow diagram predict about the infinite size limit?"
 )
@@ -300,9 +299,7 @@ explanation = (
     "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
     "except near $Q=0$ has a slower decay."
 )
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
 ```
 
 ## Critical point

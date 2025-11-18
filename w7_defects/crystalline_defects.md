@@ -16,14 +16,18 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
+import numpy as np
+import holoviews
+import kwant
 import warnings
 
+from course.functions import pauli
+from course.functions import spectrum
+
+from course.components import MultipleChoice
+from course.init_course import init_notebook
+
+init_notebook()
 warnings.simplefilter("ignore", UserWarning)
 ```
 
@@ -238,6 +242,8 @@ The Burgers' vector is parallel to the $z$-axis and has unit length (the disloca
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
 ```{code-cell} ipython3
+from holoviews import opts
+
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -291,8 +297,6 @@ for name, syst in screw_dislocations.items():
     energies[name] = vals[indices]
     densities[name] = [density_array(syst, psi) for psi in vecs.T[indices]]
 
-
-from holoviews import opts
 
 opts.defaults(opts.Raster(cmap="gist_heat_r", interpolation=None, framewise=True))
 
@@ -363,12 +367,8 @@ def edge_dislocation(model, L=10, W=15):
 L, W = 10, 15
 x0, y0, y1 = L // 2, W // 4 + 0.5, 3 * W // 4 - 0.5
 
+
 bzh_edge_dislocation = edge_dislocation(layered_bhz_infinite, L, W)
-
-
-def displacement(x, y):
-    x -= x0
-    return -np.angle(np.sqrt((y - y0 - 1j * x) * (y - y1 + 1j * x))) / (np.pi)
 
 
 fig = kwant.plot(

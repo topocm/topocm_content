@@ -21,6 +21,7 @@ repos:
       language: python
       entry: python scripts/myst_markdown_ruff_hook.py
       files: \.md$
+      exclude: ^[^/]+\.md$
       additional_dependencies:
         - jupytext
         - ruff

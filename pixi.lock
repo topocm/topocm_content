@@ -228,6 +228,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
       - pypi: https://files.pythonhosted.org/packages/46/0d/0a6fdf9587634452b9ced1de89280a3daeb1fee16878ca442dfe76c9b0a8/jupyter_book-2.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/73/bb1bc2529f852e7bf64a2dec885e89ff9f5cc7bbf6c9340eed30ff2c69c5/ruamel.yaml-0.18.16-py3-none-any.whl
+      - pypi: ./
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-6_kmp_llvm.conda
   build_number: 6
@@ -2915,6 +2916,18 @@ packages:
   - pkg:pypi/tomli?source=hash-mapping
   size: 21238
   timestamp: 1753796677376
+- pypi: ./
+  name: topocm-course
+  version: 0.1.0
+  sha256: d2c50c0561401bcb8611ca0e3dbb421698535ebf77f8f68a47fb6c67bfeb74f7
+  requires_dist:
+  - holoviews>=1.22
+  - kwant>=1.5
+  - matplotlib>=3.10
+  - numpy>=1.26
+  - scipy>=1.16
+  requires_python: '>=3.10'
+  editable: true
 - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.2-py314h5bd0f2a_2.conda
   sha256: a4482fff049ad4e2907969b2c11242b712b33cdad9bbf88122a705e179af04da
   md5: 972071a83bc345cb2a13c2c5b662ff5b

@@ -80,17 +80,17 @@ class Bond:
 
 
 class Mesh:
-    def __init__(self, dim=2, l=None):
+    def __init__(self, dim=2, L=None):
         self.Points = []
         self.Bonds = []
         self.N = 0
         self.nbrinfo = []
-        self.l = l
+        self.L = L
         self.dim = dim
         self.dislocations = []
-        if self.l is None:
-            self.l = np.zeros(dim)
-        if len(self.l) != dim:
+        if self.L is None:
+            self.L = np.zeros(dim)
+        if len(self.L) != dim:
             print("error: box lengths must be of correct dimension")
 
     def points(self):
@@ -125,8 +125,8 @@ class Mesh:
         for i in range(self.dim):
             dx[i] = (
                 dx[i]
-                if abs(dx[i]) < 0.5 * self.l[i]
-                else dx[i] - abs(dx[i] + 0.5 * self.l[i]) + abs(dx[i] - 0.5 * self.l[i])
+                if abs(dx[i]) < 0.5 * self.L[i]
+                else dx[i] - abs(dx[i] + 0.5 * self.L[i]) + abs(dx[i] - 0.5 * self.L[i])
             )
         return dx
 
@@ -267,13 +267,13 @@ def vis2d(
     return fig
 
 
-def periodicize(mesh, l, eps=0.101231):
-    mesh += np.ones_like(l) * eps
-    l = np.array(l)
+def periodicize(mesh, L, eps=0.101231):
+    mesh += np.ones_like(L) * eps
+    L = np.array(L)
     for pt in mesh:
-        wrap = np.round((pt - l / 2) / l)
-        pt -= wrap * l
-    mesh -= np.ones_like(l) * eps
+        wrap = np.round((pt - L / 2) / L)
+        pt -= wrap * L
+    mesh -= np.ones_like(L) * eps
 
 
 def makeLattice(
@@ -298,8 +298,8 @@ def makeLattice(
         internalidx = sum([latticept[i] * np.prod(n[i + 1 :]) for i in range(dim)])
         return int(internalidx + basisidx * np.prod(n))
 
-    totalsize = np.prod(n) * len(basis)
-    mesh = Mesh(dim, l=10000 * np.ones(dim))
+    # totalsize = np.prod(n) * len(basis)  # unused; removed to satisfy ruff
+    mesh = Mesh(dim, L=10000 * np.ones(dim))
 
     slices = tuple([slice(0, ni) for ni in n])
     grid = np.mgrid[slices]
@@ -307,9 +307,9 @@ def makeLattice(
     # print lattice.shape
     if rectangle:
         dx = np.max(np.abs(np.array(a)), axis=0)
-        l = dx * np.array(n)
-        periodicize(lattice, l)
-        mesh.l = l
+        L = dx * np.array(n)
+        periodicize(lattice, L)
+        mesh.L = L
     allpts = np.vstack([lattice + b for b in basis])
     for p in allpts:
         mesh.add_point(p)
@@ -336,7 +336,7 @@ def makeLattice(
                     mesh.add_bond(idx1, idx2)
                 else:
                     dx = np.abs(mesh.Points[idx1] - mesh.Points[idx2])
-                    if np.all(dx < mesh.l / 2):
+                    if np.all(dx < mesh.L / 2):
                         mesh.add_bond(idx1, idx2)
 
     return mesh
@@ -359,8 +359,8 @@ def kagome2d(lx, ly, x, rect=True, periodic=True):
 
 
 def to2dlattice(mesh):
-    mesh.lx = mesh.l[0]
-    mesh.ly = mesh.l[1]
+    mesh.lx = mesh.L[0]
+    mesh.ly = mesh.L[1]
     return mesh
 
 
@@ -369,7 +369,7 @@ def replacepoints(mesh1, mesh2, x1frac=0.33, x2frac=0.66):
     replace points in mesh1 with points from mesh2 for x between x1 and x2
     """
     for i, pt in enumerate(mesh1.Points):
-        if x1frac * mesh1.l[0] < pt[0] < x2frac * mesh2.l[0]:
+        if x1frac * mesh1.L[0] < pt[0] < x2frac * mesh2.L[0]:
             mesh1.Points[i] = mesh2.Points[i]
     return mesh1
 

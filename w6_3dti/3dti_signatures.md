@@ -16,15 +16,18 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from course.functions import pauli, spectrum
+from course.init_course import init_notebook
 
-sys.path.append("../code")
-from init_course import *
+import holoviews
+import kwant
+import matplotlib
+import numpy as np
+import warnings
+
+from course.components import MultipleChoice
 
 init_notebook()
-
-
-import warnings
 
 warnings.simplefilter("ignore", UserWarning)
 ```

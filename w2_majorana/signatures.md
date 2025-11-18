@@ -16,10 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
+import holoviews
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import pauli
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 
@@ -199,8 +202,7 @@ def plot_spectroscopy(V_barrier):
         "legend_position": "top",
         "fig_size": 150,
     }
-    style_path = {"show_legend": True}
-    return plot
+    return plot.options(**style_overlay)
 ```
 
 ```{code-cell} ipython3

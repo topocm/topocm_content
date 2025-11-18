@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 holoviews.output(size=150)
@@ -49,7 +52,6 @@ Due to this type of constraint on the Brillouin zone, crystalline symmetries can
 Note however, that sometimes the mere presence of a surface can break a crystalline symmetry of the bulk, so that one should be careful when applying the bulk-boundary correspondence to properties based on crystalline symmetries.
 
 ```{code-cell} ipython3
-
 question = r"In which case can inversion symmetry protect gapless surface states?"
 
 answers = [
@@ -61,9 +63,7 @@ answers = [
 
 explanation = "Any surface would break inversion symmetry of a crystal."
 
-MultipleChoice(
-    question, answers, correct_answer=0, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=0, explanation=explanation)
 ```
 
 ## Reflection symmetry
@@ -87,7 +87,6 @@ The mirror Chern number is a topological invariant in the sense that it cannot c
 Naturally, the same recipe allows to construct a reflection symmetric topological insulator starting from any other topological invariant, not just a Chern number. We will now try to do this.
 
 ```{code-cell} ipython3
-
 question = (
     "How would you attempt to make a model of a topological"
     " insulator with surface states protected by reflection symmetry?"
@@ -106,9 +105,7 @@ explanation = (
     "which is not broken by the presence of a surface parallel to the stacking direction."
 )
 
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
 ```
 
 ## Examples
@@ -126,7 +123,6 @@ On the other hand, if the hopping between the nanowires is reflection invariant,
 If we do everything right (this does require some trial and error in searching for the hopping that actually can couple the two Majoranas from the edge), we get a painfully familiar dispersion:
 
 ```{code-cell} ipython3
-
 def nanowire_chains(length=40, n=2):
     def onsite(site, t, mu, B, delta):
         (x, y) = site.pos
@@ -180,7 +176,6 @@ This means that the Chern number of the alternating layers has to have opposite 
 Once again, coupling the layers we get a familiar Dirac cone on the surface:
 
 ```{code-cell} ipython3
-
 def stacked_qwz(w=50):
     def shape(pos):
         return 0 <= pos[2] < w

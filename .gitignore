@@ -3,6 +3,10 @@
 *~
 \#*\#
 .\#*
+*.egg-info/
+
+# Notebooks themselves
+*.ipynb
 
 # latex auxiliary files:
 *.aux

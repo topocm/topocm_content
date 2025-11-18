@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.10.3
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,17 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from course.components import MultipleChoice
+from course.functions import spectrum
+from course.init_course import init_notebook
 
-sys.path.append("../code")
-from init_course import *
+import holoviews
+from holoviews import opts
+from holoviews.core.options import Cycle
+import kwant
+import matplotlib.pyplot as plt
+import numpy as np
 
 init_notebook()
-from holoviews.core.options import Cycle
-
 holoviews.output(size=120)
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-from holoviews import opts
+
 opts.defaults(
     opts.Path(color=Cycle(values=["r", "g", "b", "y"])),
     opts.HLine(color=Cycle(values=["r", "g", "b", "y"]), linestyle="--"),
@@ -91,7 +95,6 @@ Let's take a one-dimensional region, coupled to two electrodes on both sides, an
 So our system now looks like this:
 
 ```{code-cell} ipython3
-
 # Plot of the potential in the pumping system as a function of coordinate.
 # Some part of the leads is shown with a constant potential.
 # Regions with E < 0 should be shaded to emulate Fermi sea.
@@ -149,13 +152,12 @@ The potential near the bottom of each minimum is approximately quadratic, so the
 We can numerically check how continuous bands in the wire become discrete evenly spaced bands as we increase $A$:
 
 ```{code-cell} ipython3
-
 def hopping(site1, site2, t):
     return -t
 
 
 def onsite(site, t, mu, A, phase, omega):
-    return 2*t - mu + A * (np.cos(omega * site.pos[0] + phase) + 1)
+    return 2 * t - mu + A * (np.cos(omega * site.pos[0] + phase) + 1)
 
 
 def infinite_modulated_wire(L):
@@ -175,7 +177,7 @@ def infinite_modulated_wire(L):
 
 L = 17
 bulk = infinite_modulated_wire(L)
-p = dict(t=1, mu=0.0, phase=0.0, omega=(2*np.pi / L))
+p = dict(t=1, mu=0.0, phase=0.0, omega=(2 * np.pi / L))
 
 
 kwargs = {
@@ -200,7 +202,6 @@ So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an in
 Since electrons do not move between neighboring potential minima, so when we change the potential by one time period, we move exactly $N$ electrons.
 
 ```{code-cell} ipython3
-
 question = "Why are some levels in the band structure flat while some are not?"
 answers = [
     "The flat levels are the ones whose energies are not sensitive to the offset of confining potential.",
@@ -232,7 +233,6 @@ Let us consider the reservoirs to be closed finite (but large) boxes. When the p
 Since the Hamiltonian is periodic in time, the Hamiltonian together with all its eigenstates return to the initial values at the end of the period. The adiabatic theorem guarantees that when the Hamiltonian changes slowly the eigenstates evolve to an eigenstate that is adjacent in energy.
 
 ```{code-cell} ipython3
-
 def modulated_wire(L, dL, bulk):
     """Create a pump.
 
@@ -266,22 +266,27 @@ dL = 80
 syst = modulated_wire(L=L, dL=dL, bulk=bulk).finalized()
 
 p = dict(t=1, mu=0.0, mu_lead=0.1, A=0.3, omega=0.3)
-phases = np.linspace(0, 2*np.pi, 251)
-en, all_vecs = zip(*[np.linalg.eigh(syst.hamiltonian_submatrix(params=p)) for p['phase'] in phases])
-coord_operator = kwant.operator.Density(syst, onsite=(lambda site: site.pos[0] / (L + 2*dL)), sum=True)
-centers = np.array([
-    [coord_operator(vec) for vec in vecs.T]
-    for vecs in all_vecs
-])
+phases = np.linspace(0, 2 * np.pi, 251)
+en, all_vecs = zip(
+    *[np.linalg.eigh(syst.hamiltonian_submatrix(params=p)) for p["phase"] in phases]
+)
+coord_operator = kwant.operator.Density(
+    syst, onsite=(lambda site: site.pos[0] / (L + 2 * dL)), sum=True
+)
+centers = np.array([[coord_operator(vec) for vec in vecs.T] for vecs in all_vecs])
 
 # We use padding with NaNs to plot individual levels separately.
 spectrum_with_reservoirs = holoviews.Path(
-    np.array([
-        np.tile(np.append(phases / (2 * np.pi), np.nan), centers.shape[1]),
-        np.pad(en, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1),
-        np.pad(centers, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1)
-    ]).T, vdims="pos", kdims = ['$t/T$', '$E$']
-)[:, 0:.5]
+    np.array(
+        [
+            np.tile(np.append(phases / (2 * np.pi), np.nan), centers.shape[1]),
+            np.pad(en, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1),
+            np.pad(centers, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1),
+        ]
+    ).T,
+    vdims="pos",
+    kdims=["$t/T$", "$E$"],
+)[:, 0:0.5]
 
 spectrum_with_reservoirs
 ```
@@ -292,7 +297,6 @@ The states that don't shift in energy are the ones trapped in the minima of the 
 To understand better what is happening, let us color each state according to the position of its center of mass, with red corresponding to the left reservoir, blue to the right one, and white to the middle of the system.
 
 ```{code-cell} ipython3
-
 spectrum_with_reservoirs.options(c="pos", cmap="seismic")
 ```
 
@@ -366,11 +370,11 @@ We know now how to calculate the pumped charge during one cycle, so let's just s
 The scattering problem in 1D can be solved quickly, so let's calculate the pumped charge as a function of time for different values of the chemical potential in the pump.
 
 ```{code-cell} ipython3
-
 from holoviews import opts
+
 opts.defaults(
-    opts.Path(color=Cycle(values=['r', 'g', 'b', 'y'])),
-    opts.HLine(color=Cycle(values=['r', 'g', 'b', 'y']), linestyle='--'),
+    opts.Path(color=Cycle(values=["r", "g", "b", "y"])),
+    opts.HLine(color=Cycle(values=["r", "g", "b", "y"]), linestyle="--"),
 )
 
 
@@ -388,7 +392,9 @@ def plot_charge(syst, p, energy):
     plot = holoviews.Path(
         (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"
     )
-    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).options(xticks=[0, 1], yticks=[0, 1, 2, 3])
+    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).options(
+        xticks=[0, 1], yticks=[0, 1, 2, 3]
+    )
 
 
 kwargs = {
@@ -415,7 +421,6 @@ spectrum(bulk, p, **kwargs) * HLines + holoviews.Overlay(
 In the left plot, we show the band structure, where the different colors correspond to different chemical potentials. The right plot shows the corresponding pumped charge. During the pumping cycle the charge may change, and the relation between the offset $\phi$ of the potential isn't always linear. However we see that after a full cycle, the pumped charge exactly matches the number of filled levels in a single potential well.
 
 ```{code-cell} ipython3
-
 question = (
     "What happens to the dependence of the reflection phase shift on time if we "
     "remove one of the reservoirs and leave the other one?"

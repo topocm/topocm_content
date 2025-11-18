@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,15 +16,19 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from pfapack import pfaffian as pf
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import holoviews
+import kwant
+from course.functions import pauli
+from course.functions import spectrum
+from course.init_course import pprint_matrix
+from course.components import MultipleChoice
+from course.init_course import init_notebook
 
 init_notebook()
 holoviews.output(size=150)
-import scipy
-from matplotlib import cm
 ```
 
 ## Introduction
@@ -170,7 +174,6 @@ We are forced to conclude that it is impossible to have $r$ unitary, and therefo
 This is the discovery that Charles Kane described in the introductory video. We can quickly check it by randomly selecting an antisymmetric scattering matrix with odd $N$, like the following one with $N=3$,
 
 ```{code-cell} ipython3
-
 N = 3
 np.random.seed(12)
 S = kwant.rmt.circular(N * 2, sym="AII")
@@ -181,7 +184,6 @@ pprint_matrix(S)
 and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
 
 ```{code-cell} ipython3
-
 r = S[:N, :N]
 print("Reflection eigenvalues")
 pprint_matrix(np.linalg.eigvalsh(r @ r.T.conj()))
@@ -226,7 +228,6 @@ In particular, let's again make the simple assumption that the spin projection a
 However, the quantized spin Hall current is not a general property of a quantum spin Hall insulator. Here, it arises because we have combined time reversal symmetry with a spin conservation law, and as we learned in the first week, conservation laws are boring from a topological point of view.
 
 ```{code-cell} ipython3
-
 question = (
     "Consider the simple case where spin is conserved. "
     "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
@@ -274,7 +275,6 @@ You can see that it is basically two copies of the massive Dirac Hamiltonian we 
 By changing the sign of $M$ from negative to positive, you get a gap closing at $\mathbf{k}=\pmb{0}$:
 
 ```{code-cell} ipython3
-
 # Onsite and hoppings for bhz model
 def onsite(site, M, B, D, del_z):
     return (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 + del_z * pauli.sysy
@@ -289,7 +289,7 @@ def hopy(site1, site2, B, D, A):
 
 
 def title(p):
-    return fr"$A={p['A']:.2}$, $B={p['B']:.2}$, $D={p['D']:.2}$, $M={p['M']:.2}$"
+    return rf"$A={p['A']:.2}$, $B={p['B']:.2}$, $D={p['D']:.2}$, $M={p['M']:.2}$"
 
 
 lat = kwant.lattice.square(norbs=4)
@@ -309,7 +309,7 @@ dispersion_plots = holoviews.HoloMap(
         bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
         for bhz_parameters["M"] in Ms
     },
-    kdims=[r"$M$"]
+    kdims=[r"$M$"],
 )
 dispersion_plots
 ```
@@ -339,7 +339,6 @@ To make things more simple, you may actually imagine that the circumference of t
 So let's look at the energy spectrum of a cylinder as a function of $k$ (or equivalently $\Phi$), and compare a cylinder in the quantum spin Hall phase with a cylinder in the trivial insulating phase.
 
 ```{code-cell} ipython3
-
 W = 20
 
 bhz_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -365,19 +364,22 @@ style = {
 
 
 ribbon_parameters = {
-    "A_slowed": 0.05, "B_slowed": -0.2, "D_slowed": 0.15,
-    "M_slowed": -0.3, "del_z_slowed": 0.5,
-    **bhz_parameters
+    "A_slowed": 0.05,
+    "B_slowed": -0.2,
+    "D_slowed": 0.15,
+    "M_slowed": -0.3,
+    "del_z_slowed": 0.5,
+    **bhz_parameters,
 }
 
 
 (
-    spectrum(
-        bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style
-    ).relabel("Topological") * holoviews.HLine(0)
-    + spectrum(
-        bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style
-    ).relabel("Trivial") * holoviews.HLine(0)
+    spectrum(bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style).relabel(
+        "Topological"
+    )
+    * holoviews.HLine(0)
+    + spectrum(bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style).relabel("Trivial")
+    * holoviews.HLine(0)
 )
 ```
 
@@ -423,8 +425,7 @@ This gives us a curve which starts at $\textrm{Pf}[r(0)]$ and ends at either $\t
 In the plot below, we show how this trajectory changes for our cylinder geometry as the BHZ model is driven through the topological phase transition. In the right panel, the green dots give you the phase of $\textrm{Pf}[r(0)]$ and $\textrm{Pf}[r(\pi)]$, and the blue line the phase of $\det[r(k)]$.
 
 ```{code-cell} ipython3
-
-holoviews.output(fig='png')
+holoviews.output(fig="png")
 
 cylinder_W = 3
 infinite_cylinder = kwant.Builder(kwant.TranslationalSymmetry((1, 0), (0, cylinder_W)))
@@ -432,19 +433,23 @@ infinite_cylinder.fill(bhz_infinite, shape=(lambda site: True), start=(0, 0))
 infinite_cylinder = kwant.wraparound.wraparound(infinite_cylinder, keep=0)
 
 top_invariant_probe = kwant.Builder(kwant.TranslationalSymmetry((0, cylinder_W)))
-top_invariant_probe.fill(bhz_infinite, shape=(lambda site: site.pos[0]==0), start=(0, 0))
-top_invariant_probe = kwant.wraparound.wraparound(top_invariant_probe, coordinate_names='yxz')
+top_invariant_probe.fill(
+    bhz_infinite, shape=(lambda site: site.pos[0] == 0), start=(0, 0)
+)
+top_invariant_probe = kwant.wraparound.wraparound(
+    top_invariant_probe, coordinate_names="yxz"
+)
 
 # Prepare a "probe" lead which is never gapped and respects time-reversal symmetry.
 probe_lead = kwant.Builder(
-    kwant.TranslationalSymmetry((-1, 0)),
-    time_reversal=1j * pauli.sys0
+    kwant.TranslationalSymmetry((-1, 0)), time_reversal=1j * pauli.sys0
 )
 probe_lead[lat.shape((lambda pos: 0 <= pos[1] < cylinder_W), (0, 0))] = 0 * pauli.s0s0
 probe_lead[kwant.HoppingKind((1, 0), lat)] = pauli.s0s0
 top_invariant_probe.attach_lead(probe_lead)
 top_invariant_probe.attach_lead(infinite_cylinder)
 top_invariant_probe = top_invariant_probe.finalized()
+
 
 def scattering_det_pfaff(syst, p):
     pfaffians = []
@@ -454,24 +459,34 @@ def scattering_det_pfaff(syst, p):
         pfaffians.append(pf.pfaffian(s - s.T))
 
     ks = np.linspace(0.0, np.pi, 50)
-    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=p).data) for p["k_y"] in ks]
+    det = [
+        np.linalg.det(kwant.smatrix(syst, energy=0.0, params=p).data) for p["k_y"] in ks
+    ]
     det = np.array(det)
 
     phase = np.angle(pfaffians[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
     kdims = ["$k_y$", "phase"]
     plot = holoviews.Path((ks[1:], phase), kdims=kdims).options(color="b")
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).options(color="g")
+    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).options(
+        color="g"
+    )
     xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    return plot.relabel("Winding", depth=1)[xlims, ylims].options(xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks)
+    return plot.relabel("Winding", depth=1)[xlims, ylims].options(
+        xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks
+    )
+
 
 (
     dispersion_plots
     + holoviews.HoloMap(
         {
-            bhz_parameters["M"]: scattering_det_pfaff(top_invariant_probe, bhz_parameters)
+            bhz_parameters["M"]: scattering_det_pfaff(
+                top_invariant_probe, bhz_parameters
+            )
             for bhz_parameters["M"] in Ms
-        }, kdims=[r"$M$"]
+        },
+        kdims=[r"$M$"],
     )
 )
 ```
@@ -562,7 +577,6 @@ As a bonus, thanks to the previous arguments we can begin to understand how to l
 Such a band inversion is not impossible to achieve in real materials, and can be captured using the BHZ model. But let's leave this to the next lecture.
 
 ```{code-cell} ipython3
-
 question = (
     "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
     "in the topological phase (i.e., both with $Q=-1$)?"
