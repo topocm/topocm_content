@@ -36,5 +36,5 @@ _build
 !.pixi/config.toml
 
 # jupyter data
-.jupyter/
+.jupyter/*
 !.jupyter/jupyter_server_config.py

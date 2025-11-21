@@ -1,35 +1,59 @@
-image: topocourse/topocourse
+image: ghcr.io/prefix-dev/pixi:0.59.0
+
+variables:
+  FF_USE_FASTZIP: "true"
+  CACHE_COMPRESSION_LEVEL: "fastest"
+  SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  JUPYTER_NUM_PROCS: "1"
+
 stages:
   - build
   - deploy
 
+.pixi-job:
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - .pixi
+      - _build
+  before_script:
+    - pixi global install git
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - pixi install
 
-execute_ipynbs:
+build html:
   stage: build
+  extends: .pixi-job
   script:
-    - jupyter-book build .
-    # Workaround of https://github.com/executablebooks/MyST-NB/issues/287
-    - cp _static/mystnb.css _build/html/_static/
+    - pixi run postprocess-html
   artifacts:
     paths:
       - _build/html
+      - _build/site
     expire_in: 7d
-  cache:
-    - key: global
-      paths:
-        - _build/
 
 .upload_website:
   stage: deploy
   image: eeacms/rsync
+  needs:
+    - job: build html
+      artifacts: true
   before_script:
-      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-      - eval $(ssh-agent -s)
-      - echo "$WEBSITE_UPLOAD_KEY" | tr -d '\r' | ssh-add - > /dev/null
-      - mkdir -p ~/.ssh
-      - chmod 700 ~/.ssh
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    - echo "$WEBSITE_UPLOAD_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
   script:
-    - "rsync -ravz _build/html/* -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH"
+    - |
+      if [ -d _build/html ]; then
+        BUILD_DIR=_build/html
+      elif [ -d _build/site/public ]; then
+        BUILD_DIR=_build/site/public
+      else
+        echo "No HTML output found" && exit 1
+      fi
+      rsync -ravz ${BUILD_DIR}/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
 
 upload test website:
   extends: .upload_website
@@ -40,7 +64,6 @@ upload test website:
     - master@qt/topocm
   variables:
     WEBSITE_UPLOAD_PATH: /test
-
 
 upload main website:
   extends: .upload_website

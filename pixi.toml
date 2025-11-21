@@ -36,8 +36,11 @@ ruamel-yaml = ">=0.18.16, <0.19"
 jupyter-book = ">=2.0.2, <3"
 topocm-course = { path = ".", editable = true }
 
+[tasks.build-html]
+cmd = "jupyter book build --execute --html"
+inputs = ["myst.yml", "**/*.md"]
+outputs = ["_build/site", "_build/html"]
+
 [tasks.postprocess-html]
 cmd = "python scripts/postprocess_html.py"
-
-[tasks.book-html]
-cmd = "jupyter book --build --html && python scripts/postprocess_html.py"
+depends-on = ["build-html"]
