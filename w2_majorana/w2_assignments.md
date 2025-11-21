@@ -60,15 +60,15 @@ As we mentioned, there are really hundreds of papers that use the models and con
 
 Here is a small selection of the ones that you may find interesting.
 
-### arXiv:1204.2792',
+### arXiv:1204.2792
 
 **Hint:** Welcome to the real world.
 
-### arXiv:1101.5795',
+### arXiv:1101.5795
 
 **Hint:** Majorana conductance with many modes.
 
-### arXiv:1006.4395',
+### arXiv:1006.4395
 
 **Hint:** To play a nice melody, you just need a keyboard.
 This paper first showed how Majoranas in wire networks can be moved around
