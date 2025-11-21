@@ -37,19 +37,19 @@ Take care however: if you take a topologically nontrivial system and just apply 
 
 ## Review assignment
 
-### arXiv:1010.6126
+### @10.48550/arXiv.1010.6126
 
 **Hint:** Computes topological edge states from Floquet Hamiltonian.
 
-### arXiv:1212.3324
+### @10.48550/arXiv.1212.3324
 
 **Hint:** Points out and explains why the floquet Hamiltonian in momentum space does not capture the presence of Floquet edge states.
 
-### arXiv:1202.1003
+### @10.48550/arXiv.1202.1003
 
 **Hint:** Theoretical prediction of topological crystalline insulator.
 
-### arXiv:1212.6191
+### @10.48550/arXiv.1212.6191
 
 **Hint:** Are topological crystalline surface states stable against disorder?
 

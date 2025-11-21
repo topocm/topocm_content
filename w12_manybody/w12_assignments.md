@@ -23,19 +23,19 @@ init_notebook()
 
 ## Review assignment
 
-### arXiv:0910.2763
+### @10.48550/arXiv.0910.2763
 
 **Hint:** Fractional quantum Hall effect in graphene
 
-### arXiv:1204.5479
+### @10.48550/arXiv.1204.5479
 
 **Hint:** Fractional Majoranas in fractional quantum Hall edges
 
-### arXiv:0803.0272
+### @10.48550/arXiv.0803.0272
 
 **Hint:** A scheme for quantum computation using the toric code
 
-### arXiv:1502.01665
+### @10.48550/arXiv.1502.01665
 
 **Hint:** Making a fractional quantum Hall effect by coupling wires
 

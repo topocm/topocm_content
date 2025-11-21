@@ -49,15 +49,15 @@ We know that Berry curvature is concentrated close to the Dirac points. Do you n
 
 ## Review assignment
 
-### arXiv:1012.4723
+### @10.48550/arXiv.1012.4723
 
 **Hint:** The hunt for flat bands.
 
-### arXiv:1409.6715
+### @10.48550/arXiv.1409.6715
 
 **Hint:** Making a Chern insulator more like quantum Hall effect.
 
-### arXiv:1208.4579
+### @10.48550/arXiv.1208.4579
 
 **Hint:** A Chern insulator without lattice.
 

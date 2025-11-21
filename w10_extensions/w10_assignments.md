@@ -51,21 +51,21 @@ Try to remove the edge states completely by tweaking the sublattice symmetry bre
 
 ## Review assignment
 
-### arXiv:1504.01350
+### @10.48550/arXiv.1504.01350
 
-### arXiv:1503.06808
+### @10.48550/arXiv.1503.06808
 
 **Hint:** Different mechanical TI
 
-### arXiv:1309.5846
+### @10.48550/arXiv.1309.5846
 
 **Hint:** Weyl + disorder
 
-### arXiv:1410.1320
+### @10.48550/arXiv.1410.1320
 
 **Hint:** The best of both worlds
 
-### arXiv:0909.5680
+### @10.48550/arXiv.0909.5680
 
 **Hint:** A general approach to gapless superconductors.
 

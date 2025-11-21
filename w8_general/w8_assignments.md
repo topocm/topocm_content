@@ -55,19 +55,19 @@ Then implement an algorithm which uses this check to find the lowest and the hig
 
 ## Review assignment
 
-### arXiv:1006.0690
+### @10.48550/arXiv.1006.0690
 
 **Hint:** The most general classification.
 
-### arXiv:1310.5281
+### @10.48550/arXiv.1310.5281
 
 **Hint:** Beyond classification.
 
-### arXiv:1012.1019
+### @10.48550/arXiv.1012.1019
 
 **Hint:** The non-commutative invariants.
 
-### arXiv:1106.6351
+### @10.48550/arXiv.1106.6351
 
 **Hint:** All about scattering.
 

@@ -74,24 +74,24 @@ For a more formal and complete source of information on topological insulators a
 
 ### Topological insulator reviews
 
-* arXiv:0801.0901
-* arXiv:1002.3895
-* arXiv:1008.2026
+* @10.48550/arXiv.0801.0901
+* @10.48550/arXiv.1002.3895
+* @10.48550/arXiv.1008.2026
 
 ### Majorana fermion reviews
 
-* arXiv:1112.1950
-* arXiv:1202.1293
-* arXiv:1206.1736
-* arXiv:1407.2131
+* @10.48550/arXiv.1112.1950
+* @10.48550/arXiv.1202.1293
+* @10.48550/arXiv.1206.1736
+* @10.48550/arXiv.1407.2131
 
 ### Advanced topics: Fractional particles and topological quantum computation
 
-* arXiv:0707.1889
-* arXiv:0711.4697
-* arXiv:1404.0897
+* @10.48550/arXiv.0707.1889
+* @10.48550/arXiv.0711.4697
+* @10.48550/arXiv.1404.0897
 
 ### Extra topics
 
-* arXiv:1211.5623
-* arXiv:1501.00531
+* @10.48550/arXiv.1211.5623
+* @10.48550/arXiv.1501.00531

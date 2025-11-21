@@ -477,7 +477,7 @@ def scattering_det_pfaff(syst, p):
 
 We now have a quantity equal to $\pm 1$, which cannot change continuously unless there's a gap closing (when there's a gap closing, $\det r$ becomes equal to $0$). It is relatively hard to prove that this invariant counts the pumping of fermion parity, but if you're interested, check out this paper:
 
-* arXiv:1107.2215
+* @10.48550/arXiv.1107.2215
 
 From reading the paper, or just from the above discussion, you see that it takes a lot of effort to derive an explicit expression for a topological invariant. Even though it is a hard task, sometimes one can guess the right result (one of us was indeed able to guess the above expression for $Q$ before it was known). Other times, one can invoke some simplification and obtain some important insight. This is what we will do in the next unit.
 

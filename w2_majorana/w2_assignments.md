@@ -38,7 +38,7 @@ Plot the band structure for different field directions, and compare to the origi
 
 Compare your results with what you find over here:
 
-* arXiv:1403.4464
+* @10.48550/arXiv.1403.4464
 
 ### From $4\pi$ to $2\pi$.
 
@@ -50,7 +50,7 @@ Study the spectrum of a superconducting ring as a function of magnetic field, as
 
 What do you see? Compare your results with the paper below.
 
-* arXiv:1210.3237
+* @10.48550/arXiv.1210.3237
 
 +++
 
@@ -60,20 +60,20 @@ As we mentioned, there are really hundreds of papers that use the models and con
 
 Here is a small selection of the ones that you may find interesting.
 
-### arXiv:1204.2792
+### @10.48550/arXiv.1204.2792
 
 **Hint:** Welcome to the real world.
 
-### arXiv:1101.5795
+### @10.48550/arXiv.1101.5795
 
 **Hint:** Majorana conductance with many modes.
 
-### arXiv:1006.4395
+### @10.48550/arXiv.1006.4395
 
 **Hint:** To play a nice melody, you just need a keyboard.
 This paper first showed how Majoranas in wire networks can be moved around
 
-### arXiv:1008.0629
+### @10.48550/arXiv.1008.0629
 
 **Hint:** Real nanowires are more complicated.
 

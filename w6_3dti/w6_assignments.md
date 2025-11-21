@@ -44,23 +44,23 @@ The BHZ model is rather rich and allows to produce every possible topological in
 
 ## Review assignment
 
-### arXiv:1410.0655
+### @10.48550/arXiv.1410.0655
 
 **Hint:** What enters the measurement of a Dirac point conductance.
 
-### arXiv:0811.1303
+### @10.48550/arXiv.0811.1303
 
 **Hint:** Consequences of magneto-electric effect.
 
-### arXiv:1401.7461
+### @10.48550/arXiv.1401.7461
 
 **Hint:** Weak and strong topological insulators with disorder.
 
-### arXiv:1311.1758
+### @10.48550/arXiv.1311.1758
 
 **Hint:** Topological, but not insulator.
 
-### arXiv:1005.3762
+### @10.48550/arXiv.1005.3762
 
 **Hint:** Threading flux through a topological insulator.
 

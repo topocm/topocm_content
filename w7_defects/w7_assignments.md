@@ -33,7 +33,7 @@ We are interested in the spectrum below the gap. There are two interesting param
 
 Compare your results to the following paper, particularly Fig. 2.
 
-* arXiv:0804.4469
+* @10.48550/arXiv.0804.4469
 
 ### Majorana in a crystalline defect
 
@@ -51,19 +51,19 @@ Note that Kwant only supports regular lattices, so crystallographic defects can 
 
 ## Review assignment
 
-### arXiv:0707.1692
+### @10.48550/arXiv.0707.1692
 
 **Hint:** In detail, how to create and manipulate Majoranas on the 3D TI surface.
 
-### arXiv:1112.3527
+### @10.48550/arXiv.1112.3527
 
 **Hint:** The Josephson effect on a 3D TI, in real life.
 
-### arXiv:1208.6303
+### @10.48550/arXiv.1208.6303
 
 **Hint:** Disclinations.
 
-### arXiv:1105.4351
+### @10.48550/arXiv.1105.4351
 
 **Hint:** How weak is weak?
 

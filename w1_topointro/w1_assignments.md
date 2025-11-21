@@ -84,17 +84,17 @@ Test your guess about the protecting symmetry by adding to your chain a term whi
 
 For the first week we have these papers:
 
-### arXiv:1103.0780
+### @10.48550/arXiv.1103.0780
 
 **Hint:** Topological classification is not always applied to Hamiltonians.
 Figure out what is the topological quantity in open systems.
-See this idea also applied in arXiv:1405.6896.
+See this idea also applied in @10.48550/arXiv.1405.6896.
 
-### arXiv:1305.2924
+### @10.48550/arXiv.1305.2924
 
 **Hint:** This is a study of statistical properties of topological transitions.
 
-### arXiv:1111.6600
+### @10.48550/arXiv.1111.6600
 
 **Hint:** A toy model may still be useful in practice.
 

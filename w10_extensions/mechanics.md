@@ -67,7 +67,7 @@ The constraint counting does not tell you where the mode will be located, but if
 
 A study of the vibrational modes of this chain was presented in the original paper of Kane and Lubensky, which was mentioned in the introductory video:
 
-* arXiv:1308.0554
+* @10.48550/arXiv.1308.0554
 
 We shall now show that the zero mode localized at the edge is a time snaphot of a non-linear object, the kink that separates regions of left and right leaning rotors, a bit like a domain wall in an Ising model:
 
@@ -150,7 +150,7 @@ show the motion in the linkage limit.
 
 If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper:
 
-* arXiv:1404.2263
+* @10.48550/arXiv.1404.2263
 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](https://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
@@ -263,7 +263,7 @@ The key point in designing the lattice in the video  is that the dislocations mu
 
 More details can be found in this paper:
 
-* arXiv:1406.3323
+* @10.48550/arXiv.1406.3323
 
 Since no lattice point disclinations are used, every lattice point still has exactly four bonds emanating from it (remember the condition for isostaticity from the first control question!).
 
@@ -360,7 +360,7 @@ As you can see, by controlling the position of states of self stress, you can pr
 
 You can find out more details in this paper.
 
-* arXiv:1502.03396
+* @10.48550/arXiv.1502.03396
 
 In summary, states of self stress and zero modes represent **propensities** that a structure has to respond by mechanical failure (triggered by stress concentrations) or free motion respectively. In topological mechanics we control how these states of motion or stress are positioned in a material by lattice geometry and topology, rather than variations in local properties like elastic moduli or local coordination.
 

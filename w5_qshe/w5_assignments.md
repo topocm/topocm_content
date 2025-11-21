@@ -45,23 +45,23 @@ What about conductance in a two terminal geometry: can you see the crossover fro
 
 ## Review assignment
 
-### arXiv:1306.1925
+### @10.48550/arXiv.1306.1925
 
 **Hint:** A better material?
 
-### arXiv:0808.1723
+### @10.48550/arXiv.0808.1723
 
 **Hint:** What happens when edge states meet.
 
-### arXiv:1104.3282
+### @10.48550/arXiv.1104.3282
 
 **Hint:** A completely different approach.
 
-### arXiv:1312.2559
+### @10.48550/arXiv.1312.2559
 
 **Hint:** Adding superconductors.
 
-### arXiv:1303.1766
+### @10.48550/arXiv.1303.1766
 
 **Hint:** Sources of back-scattering in QSHE edge.
 

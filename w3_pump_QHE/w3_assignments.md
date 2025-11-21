@@ -53,21 +53,21 @@ Bonus: See what happens to the edge states as you introduce a constriction in th
 
 For the third week we have these papers:
 
-### arXiv:1109.5983
+### @10.48550/arXiv.1109.5983
 
 **Hint:** Topological pumping can be used to characterize quasicrystals too!
-Whether this is really unique to quasicrystals is debated though arXiv:1307.2577.
+Whether this is really unique to quasicrystals is debated though @10.48550/arXiv.1307.2577.
 
-### arXiv:cond-mat/0602645
+### @10.48550/arXiv.cond-mat/0602645
 
 **Hint:** Quantum Hall effect applies beyond parabolic dispersions with interesting twists.
 Figure out what different features arise from other cases.
 
-### arXiv:1201.4167
+### @10.48550/arXiv.1201.4167
 
 **Hint:** An experiment detecting the interesting consequences of coexistence of quantum Hall and ferromagnetism in graphene.
 
-### arXiv:0710.2806
+### @10.48550/arXiv.0710.2806
 
 **Hint:** Aharonov-Bohm interference using quantum hall edge quasiparticles.
 

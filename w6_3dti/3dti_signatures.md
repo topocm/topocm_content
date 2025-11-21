@@ -243,7 +243,7 @@ It's clear that this shape cannot be explained by the Dirac Hamiltonian with its
 
 This is exactly what was done in this article:
 
-* arXiv:0908.1418
+* @10.48550/arXiv.0908.1418
 
 There Liang Fu made a relatively simple theoretical exercise. He listed all the terms in the Hamiltonian allowed by time-reversal and crystalline symmetries, that are proportional to $k^3.$ This is the result:
 

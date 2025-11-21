@@ -53,7 +53,7 @@ Do so for many disorder realizations, and build a histograph of the density of s
 
 If all goes well, you should observe different behaviors: the density of states in a finite region around $m=0$ has a weak power law divergence, that eventually turns into an actual gap. Check out this paper for details:
 
-* arXiv:cond-mat/0011200
+* @10.48550/arXiv.cond-mat/0011200
 
 +++
 
@@ -63,23 +63,23 @@ If all goes well, you should observe different behaviors: the density of states 
 
 ## Review assignment
 
-### arXiv:0908.0881
+### @10.48550/arXiv.0908.0881
 
 **Hint:** The topological Anderson insulator.
 
-### arXiv:0705.0886
+### @10.48550/arXiv.0705.0886
 
 **Hint:** One-parameter scaling in graphene.
 
-### arXiv:0705.1607
+### @10.48550/arXiv.0705.1607
 
 **Hint:** Scaling with Dirac fermions.
 
-### arXiv:1208.3442
+### @10.48550/arXiv.1208.3442
 
 **Hint:** The average symmetry and weak transitions.
 
-### arXiv:1411.5992
+### @10.48550/arXiv.1411.5992
 
 **Hint:** A technical paper about localization in 1D, but you don't need to follow the calculations.
 
