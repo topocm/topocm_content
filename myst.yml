@@ -85,6 +85,8 @@ project:
   plugins:
     - type: javascript
       path: myst_plugins/youtube.mjs
+    - type: javascript
+      path: myst_plugins/quizzes.mjs
 site:
   options:
     logo: logo_small.jpg

@@ -29,8 +29,15 @@ ipykernel = ">=7.1.0,<8"
 jupyter_server = ">=2.17.0,<3"
 jupytext = ">=1.18.1,<2"
 pre-commit = ">=4.4.0,<5"
+mystmd = ">=1.6.4,<2"
 
 [pypi-dependencies]
 ruamel-yaml = ">=0.18.16, <0.19"
 jupyter-book = ">=2.0.2, <3"
 topocm-course = { path = ".", editable = true }
+
+[tasks.postprocess-html]
+cmd = "python scripts/postprocess_html.py"
+
+[tasks.book-html]
+cmd = "jupyter book --build --html && python scripts/postprocess_html.py"
