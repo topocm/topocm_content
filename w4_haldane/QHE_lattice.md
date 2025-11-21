@@ -22,7 +22,6 @@ import holoviews
 import kwant
 from course.functions import pauli
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -85,28 +84,13 @@ At this point you might worry that the Kitaev model has superconductivity, and s
 
 Finally, before we go on with our plan, keep in mind that considering the phase transition point of a lower dimensional model turns out to be a fairly generic strategy to construct higher dimensional topological models.
 
-```{code-cell} ipython3
-question = (
-    "It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. "
-    "Apart from the two systems having different dimensionality"
-    ", what's the fundamental difference between the two cases?"
-)
-answers = [
-    "The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.",
-    "The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.",
-    "The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.",
-    (
-        "The Kitaev chiral states exist only at specific parameter values, "
-        "while the quantum Hall edge states don't."
-    ),
-]
-explanation = (
-    "The pair of chiral states in the Kitaev model only exists at "
-    "the phase transition point, when the chain becomes gapless. "
-    "On the other hand, chiral edge states are a topological property of the quantum Hall state. "
-    "They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values."
-)
-MultipleChoice(question, answers, correct_answer=3, explanation=explanation)
+```{multiple-choice} It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. Apart from the two systems having different dimensionality, what's the fundamental difference between the two cases?
+:explanation: The pair of chiral states in the Kitaev model only exists at the phase transition point, when the chain becomes gapless. On the other hand, chiral edge states are a topological property of the quantum Hall state. They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values.
+:correct: 3
+- The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.
+- The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.
+- The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.
+- The Kitaev chiral states exist only at specific parameter values, while the quantum Hall edge states don't.
 ```
 
 ## QHE without a magnetic  field
@@ -216,18 +200,13 @@ We see that the crossing is there, and it disappears when the gap closes. So we 
 
 While details such as the bulk spectrum and edge dispersion are different from the case with a magnetic field, the bulk-edge correspondence tells us that the edge states are as robust as those of the quantum Hall effect we studied last week.
 
-```{code-cell} ipython3
-question = "How does our lattice model with no magnetic field differ from the original quantum Hall effect?"
-answers = [
-    "Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.",
-    "Quantum Hall effect in a magnetic field has Landau levels "
-    "that do not disperse in k while they disperse in the lattice.",
-    "Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.",
-    "In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the "
-    "lattice the filling fraction per unit cell is arbitrary.",
-]
-explanation = "In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition."
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} How does our lattice model with no magnetic field differ from the original quantum Hall effect?
+:explanation: In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition.
+:correct: 1
+- Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.
+- Quantum Hall effect in a magnetic field has Landau levels that do not disperse in k while they disperse in the lattice.
+- Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.
+- In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the lattice the filling fraction per unit cell is arbitrary.
 ```
 
 ## Dirac equation at the phase transition
@@ -238,13 +217,9 @@ The two phases around this point are easy to understand. One is the quantum Hall
 
 It is once again useful to write down the effective Hamiltonian near to the transition point at $k_x\approx 0$ and $k_y\approx 0$. It is given by a 2D Dirac Hamiltonian:
 
-+++
-
 $$
 H_{\textrm{Dirac}}=[\Delta k_x\tau_y-2\gamma k_y\tau_x+m\tau_z],
 $$
-
-+++
 
 The combination $m=-(\mu +2t+2\gamma)$ serves as the 'mass' in this Dirac model. As before, we see that the gapless phase transition point at $m=0$ is described by a massless Dirac Hamiltonian. The phase transition separates the topological from the trivial phase, and the two phases are characterized by a different sign of the mass (in this case $m>0$ in the topological phase and $m<0$ in the trivial phase).
 

@@ -24,25 +24,18 @@ const parseAnswerLines = (body) => {
     .filter((line) => line.length > 0);
 };
 
-const parseBase = (value) => {
-  if (value === undefined || value === null) return 0;
-  const baseNum = Number(value);
-  if (baseNum === 0 || baseNum === 1) return baseNum;
-  throw new Error('The :base: option must be 0 or 1.');
-};
-
-const normalizeIndex = (value, base, answersLength) => {
+const normalizeIndex = (value, answersLength) => {
   if (!Number.isFinite(value)) {
     throw new Error('Correct answer indices must be numbers.');
   }
-  const idx = value - base;
+  const idx = value;
   if (idx < 0 || idx >= answersLength) {
     throw new Error(`Correct answer index ${value} is out of range for ${answersLength} answers.`);
   }
   return idx;
 };
 
-const parseIndexList = (raw, base, answersLength) => {
+const parseIndexList = (raw, answersLength) => {
   if (raw === undefined || raw === null) {
     throw new Error('Checkbox quizzes require the :correct: option.');
   }
@@ -59,7 +52,7 @@ const parseIndexList = (raw, base, answersLength) => {
     if (!Number.isFinite(num)) {
       throw new Error(`"${token}" is not a valid number.`);
     }
-    return normalizeIndex(num, base, answersLength);
+    return normalizeIndex(num, answersLength);
   });
   return [...new Set(indices)].sort((a, b) => a - b);
 };
@@ -161,10 +154,6 @@ const multipleChoiceDirective = {
       type: String,
       doc: 'Optional explanation shown alongside the answer.',
     },
-    base: {
-      type: Number,
-      doc: 'Set to 1 to author indices with a one-based convention.',
-    },
   },
   body: {
     type: String,
@@ -177,12 +166,11 @@ const multipleChoiceDirective = {
     if (answers.length < 2) {
       throw new Error('Multiple choice quizzes need at least two answers.');
     }
-    const base = parseBase(data.options?.base);
     const correctRaw = data.options?.correct;
     if (correctRaw === undefined || correctRaw === null) {
       throw new Error('Specify :correct: for multiple-choice quizzes.');
     }
-    const correctIdx = normalizeIndex(Number(correctRaw), base, answers.length);
+    const correctIdx = normalizeIndex(Number(correctRaw), answers.length);
     const explanation = (data.options?.explanation ?? '').trim();
     const html = buildQuizHtml({
       question,
@@ -209,10 +197,6 @@ const checkboxDirective = {
       type: String,
       doc: 'Optional explanation shown alongside the answer.',
     },
-    base: {
-      type: Number,
-      doc: 'Set to 1 to author indices with a one-based convention.',
-    },
   },
   body: {
     type: String,
@@ -225,8 +209,7 @@ const checkboxDirective = {
     if (answers.length < 2) {
       throw new Error('Checkbox quizzes need at least two answers.');
     }
-    const base = parseBase(data.options?.base);
-    const correctIndices = parseIndexList(data.options?.correct, base, answers.length);
+    const correctIndices = parseIndexList(data.options?.correct, answers.length);
     const explanation = (data.options?.explanation ?? '').trim();
     const html = buildQuizHtml({
       question,

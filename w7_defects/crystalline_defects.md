@@ -24,7 +24,6 @@ import warnings
 from course.functions import pauli
 from course.functions import spectrum
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -448,27 +447,13 @@ holoviews.HoloMap(
 ).collate()
 ```
 
-```{code-cell} ipython3
-question = (
-    "What would happen in both simulations above if we changed the dislocation, "
-    "making the Burgers vector twice as long?"
-)
-
-answers = [
-    "The wave function would just spread out a bit more because the dislocation is larger.",
-    "The number of gapless states would double for both models.",
-    "The gapless states would be gapped out for both models.",
-    "The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model.",
-]
-
-explanation = (
-    r"Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
-    r"and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What would happen in both simulations above if we changed the dislocation, making the Burgers vector twice as long?
+:explanation: Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case.
+:correct: 3
+- The wave function would just spread out a bit more because the dislocation is larger.
+- The number of gapless states would double for both models.
+- The gapless states would be gapped out for both models.
+- The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model.
 ```
 
 ## Conclusions

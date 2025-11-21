@@ -25,7 +25,6 @@ import matplotlib
 import numpy as np
 import warnings
 
-from course.components import MultipleChoice
 
 init_notebook()
 
@@ -162,25 +161,13 @@ Therefore, rather than observing a sequence $e^2/h\,(2n+1)$, we observe a more c
 
 So, even by studying the Landau levels experimentally, we do not get a topological signature. But do not despair, luckily there is a much better thing that we can do rather than just measuring conductance: looking at the energy spectrum of the surface states directly.
 
-```{code-cell} ipython3
-question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
-
-answers = [
-    "Increasing the magnetic field.",
-    "Gate voltage difference (which controls difference in electron density) between the surfaces.",
-    "Increasing topological mass.",
-    "Adding an in-plane magnetic field.",
-]
-
-explanation = (
-    "Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. "
-    "This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the "
-    " $0^{th}$ plateau to begin with so cannot eliminate it. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} Which control parameter can remove the 0th plateau in the QHE measurement?
+:explanation: Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the  $0^{th}$ plateau to begin with so cannot eliminate it.
+:correct: 1
+- Increasing the magnetic field.
+- Gate voltage difference (which controls difference in electron density) between the surfaces.
+- Increasing topological mass.
+- Adding an in-plane magnetic field.
 ```
 
 ## Spectroscopy of the surface of a 3D topological insulator
@@ -201,24 +188,13 @@ In the top panel of the figure above, we see that by changing the chemical poten
 
 While the top panels shows where the occupied states lie in the $(k_x, k_y)$ plane, in the second and third rows we see a cross-section of the energy as a function of momentum, where the Dirac cone is clearly visible, emerging from a bulk valence band filled with electrons.
 
-```{code-cell} ipython3
-question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
-
-answers = [
-    "ARPES can only observe occupied states and therefore bulk conductance is not an issue. ",
-    "Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.",
-    "ARPES does not measure conductance and therefore bulk electronic states are not an issue.",
-    "Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap.",
-]
-
-explanation = (
-    "The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out "
-    "surface states from bulk states, which are in different energy ranges. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Why do you think ARPES observes surface states even if there is conductance through the bulk?
+:explanation: The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out surface states from bulk states, which are in different energy ranges.
+:correct: 3
+- ARPES can only observe occupied states and therefore bulk conductance is not an issue.
+- Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.
+- ARPES does not measure conductance and therefore bulk electronic states are not an issue.
+- Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap.
 ```
 
 ## Quasiparticle interference (QPI)

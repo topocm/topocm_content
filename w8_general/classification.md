@@ -21,7 +21,6 @@ from nbconvert.filters.markdown import markdown2html_pandoc
 
 import numpy as np
 from IPython.display import display_html
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -185,8 +184,6 @@ Shinsei Ryu from the University of Illinois will introduce the general classific
 
 ## At a glance: periodic table
 
-+++
-
 Let us now look at all the possible symmetry classes in dimensions from $0$ to $3$, and see what kind of topological insulators are possible.
 
 There are quite a few, here is the full list:
@@ -306,16 +303,13 @@ The somewhat cryptic notations in the leftmost column are just the names of the 
 Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field.
 The two complex classes are A and AIII.
 
-```{code-cell} ipython3
-question = "Which symmetry class do we get if we break Kramers degeneracy in class BDI?"
-
-answers = ["D", "AIII", "DIII", "None, class BDI has no Kramers degeneracy"]
-
-explanation = "Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Which symmetry class do we get if we break Kramers degeneracy in class BDI?
+:explanation: Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI.
+:correct: 3
+- D
+- AIII
+- DIII
+- None, class BDI has no Kramers degeneracy
 ```
 
 Finally, let us make an extra observation:
@@ -558,27 +552,13 @@ You can now view this cylinder as a one-dimensional system whose ends are the tw
 
 We can proceed further with our dimensional reduction. If we take our one dimensional system and make it into a ring, we obtain a zero-dimensional system. Depending on how the two ends are coupled, the two Majorana modes can favour the even or odd fermion parity state, and this quantity cannot change without a Fermi level crossing. This is the $\mathbb{Z}_2$ invariant of zero-dimensional systems in class D.
 
-```{code-cell} ipython3
-question = (
-    "What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
-    "like we did when making a 3D TI out of QSHE?"
-)
-
-answers = [
-    "We get another $Z_2$ topological invariant",
-    "A 4D system with the Chern number as invariant.",
-    "This construction cannot be repeated anymore.",
-    "The topological invariant stays the same.",
-]
-
-explanation = (
-    "A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, "
-    "and it should be the second Chern number."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, like we did when making a 3D TI out of QSHE?
+:explanation: A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, and it should be the second Chern number.
+:correct: 1
+- We get another $Z_2$ topological invariant
+- A 4D system with the Chern number as invariant.
+- This construction cannot be repeated anymore.
+- The topological invariant stays the same.
 ```
 
 ## Conclusions

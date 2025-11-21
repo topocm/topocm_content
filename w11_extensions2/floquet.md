@@ -27,7 +27,6 @@ import numpy as np
 from course.init_course import init_notebook
 
 from course.functions import pauli
-from course.components import MultipleChoice
 
 init_notebook()
 
@@ -119,28 +118,13 @@ If the system is translationally invariant, we can study the effective band stru
 
 Of course, selecting a single quasi-energy as the Fermi level is arbitrary, since the equilibrium state of driven systems doesn't correspond to a Fermi distribution of filling factors, but at least it seems close enough for us to try to apply topological ideas.
 
-```{code-cell} ipython3
-question = (
-    "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
-    "Floquet operator. What if we chose a different one?"
-)
-
-answers = [
-    "The starting time is just an extra parameter of our system, and topology depends on it.",
-    "It doesn't matter, the wave function evolution within one period "
-    "can be neglected, since we are interested in many periods.",
-    "There's only one correct starting point in time.",
-    "It doesn't matter since the quasienergies are independent of the starting point.",
-]
-
-explanation = (
-    "Choosing a different starting point applies a unitary transformation "
-    "to the Floquet evolution operator, and so it keeps the quasienergies the same."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} But wait, we arbitrarily chose the starting point $t$ in time for calculating the Floquet operator. What if we chose a different one?
+:explanation: Choosing a different starting point applies a unitary transformation to the Floquet evolution operator, and so it keeps the quasienergies the same.
+:correct: 3
+- The starting time is just an extra parameter of our system, and topology depends on it.
+- It doesn't matter, the wave function evolution within one period can be neglected, since we are interested in many periods.
+- There's only one correct starting point in time.
+- It doesn't matter since the quasienergies are independent of the starting point.
 ```
 
 ## Driven Majorana wire
@@ -421,24 +405,13 @@ When the driving period is tuned to ensure the absence of bulk dispersion, we ca
 
 So what is happening with bulk-edge correspondence?
 
-```{code-cell} ipython3
-question = "How can you change the chirality of the edge states in the figure above?"
-
-answers = [
-    "By changing the driving period.",
-    "By reversing the driving protocol sequence.",
-    "By changing the sign of the nearest neighbor hopping.",
-    "By making the electrons start from the black sublattice.",
-]
-
-explanation = (
-    "Reversing the driving protocol is the same as applying time-reversal symmetry, "
-    "so it will reverse the direction of the chiral edge modes"
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} How can you change the chirality of the edge states in the figure above?
+:explanation: Reversing the driving protocol is the same as applying time-reversal symmetry, so it will reverse the direction of the chiral edge modes
+:correct: 1
+- By changing the driving period.
+- By reversing the driving protocol sequence.
+- By changing the sign of the nearest neighbor hopping.
+- By making the electrons start from the black sublattice.
 ```
 
 ## Bulk-edge correspondence in driven systems

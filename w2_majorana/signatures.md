@@ -21,7 +21,6 @@ import holoviews
 
 import kwant
 from course.functions import pauli
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -291,26 +290,13 @@ $$
 
 We already saw that unitarity requires that $|r_{ee}|^2+|r_{eh}|^2=1$. There are only two possibilities for both conditions to be true: either $|r_{ee}|=1$ (**perfect  normal reflection**) or $|r_{eh}|=1$ (**perfect Andreev reflection**). The situation cannot change without a phase transition. Thus the quantized conductance of the Majorana mode is topologically robust in this case, and in fact survives past the tunneling limit.
 
-```{code-cell} ipython3
-question = (
-    "Imagine we replace the superconducting electrode with an insulating material, "
-    "and imagine that at the interface with the normal metal there is a bound state. "
-    "How is the current through the interface different with respect "
-    "to that through an NS interface with a Majorana?"
-)
-answers = [
-    "It is not quantized but still non-zero.",
-    "It is zero because there cannot be Andreev reflection without a superconductor.",
-    "It is not symmetric in voltage but it is still non-zero.",
-    "It has a resonance peak whose width is independent of the barrier strength.",
-]
-explanation = (
-    "A current requires an exit path for the charge. "
-    "No current can flow through the insulator, since there are no excitations at the Fermi level in an insulator. "
-    "A superconductor is also gapped with respect to excitations, but is different than a normal insulator. "
-    "It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface."
-)
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} Imagine we replace the superconducting electrode with an insulating material, and imagine that at the interface with the normal metal there is a bound state. How is the current through the interface different with respect to that through an NS interface with a Majorana?
+:explanation: A current requires an exit path for the charge. No current can flow through the insulator, since there are no excitations at the Fermi level in an insulator. A superconductor is also gapped with respect to excitations, but is different than a normal insulator. It has a condensate of Cooper pairs, so a current can develop thanks to Andreev reflection at the interface.
+:correct: 1
+- It is not quantized but still non-zero.
+- It is zero because there cannot be Andreev reflection without a superconductor.
+- It is not symmetric in voltage but it is still non-zero.
+- It has a resonance peak whose width is independent of the barrier strength.
 ```
 
 ## Flux-induced fermion parity switch in topological superconductors
@@ -463,24 +449,13 @@ plot_gse_sc_nanowire(fluxes, spectrum)
 
 At this point, you might be a little worried about how the topological superconductor managed to get around this *conventional wisdom*. The answer is subtle, and relies on the implicit assumption of the ground state fermion parity of the junction being fixed as one changes $\phi$. Topological superconductors violate this assumption and therefore can create the $4\pi$ periodic (or fractional) Josephson effect.
 
-```{code-cell} ipython3
-question = (
-    "Suppose that in your topological nanowire junction, positive energy quasiparticles can escape "
-    "into a reservoir very quickly, making the junction always relax to the ground state. "
-    "How would this affect the periodicity of the Josephson effect?"
-)
-answers = [
-    "It would make the periodicity random because of the quasiparticles jumping around randomly.",
-    "If the system can always relax to the ground state, the current would have a period of $\Phi_0$ (hence $2\pi)$.",
-    "Since the Josephson effect is topologically protected, these processes have no effect on the periodicity.",
-    "The period becomes $\Phi_0/2$ because it is easier for the quasiparticles to jump out at this value of the flux.",
-]
-explanation = (
-    "A particle tunneling out means that the fermion parity of the ground state changes. "
-    "Hence the lowest between the red and black energy levels is always occupied, and both energy and current "
-    "turn out to have a period $\Phi_0$."
-)
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} Suppose that in your topological nanowire junction, positive energy quasiparticles can escape into a reservoir very quickly, making the junction always relax to the ground state. How would this affect the periodicity of the Josephson effect?
+:explanation: A particle tunneling out means that the fermion parity of the ground state changes. Hence the lowest between the red and black energy levels is always occupied, and both energy and current turn out to have a period $\Phi_0$.
+:correct: 1
+- It would make the periodicity random because of the quasiparticles jumping around randomly.
+- If the system can always relax to the ground state, the current would have a period of $\Phi_0$ (hence $2\pi)$.
+- Since the Josephson effect is topologically protected, these processes have no effect on the periodicity.
+- The period becomes $\Phi_0/2$ because it is easier for the quasiparticles to jump out at this value of the flux.
 ```
 
 ## Summary

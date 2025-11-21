@@ -23,7 +23,6 @@ import holoviews
 import kwant
 from course.functions import pauli
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -194,24 +193,13 @@ This means that a Dirac point at momentum $k$ and positive winding must come tog
 
 The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac points at $|k_x| = |k_y| = k_F / \sqrt{2}$.
 
-```{code-cell} ipython3
-question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
-
-answers = [
-    "The Dirac points couple and gap out.",
-    "In 3D you cannot have a $d$-wave pairing.",
-    "There will remain isolated gapless points in the larger 3D Brillouin zone.",
-    "You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone.",
-]
-
-explanation = (
-    r"The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces "
-    r"in the Brillouin zone. The intersection of these two surfaces is a line."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?
+:explanation: The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces in the Brillouin zone. The intersection of these two surfaces is a line.
+:correct: 3
+- The Dirac points couple and gap out.
+- In 3D you cannot have a $d$-wave pairing.
+- There will remain isolated gapless points in the larger 3D Brillouin zone.
+- You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone.
 ```
 
 ### Edge states
@@ -395,22 +383,11 @@ At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z
 
 ![](figures/weyl.svg)
 
-```{code-cell} ipython3
-question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
-
-answers = [
-    "Chiral symmetry.",
-    "The energy gap in the bulk.",
-    "Absence of scattering.",
-    "The non-zero Chern number of the bulk.",
-]
-
-explanation = (
-    r"The bulk has gapless states due to the Weyl point. "
-    "Therefore, only momentum conservation protects surface states from going into the bulk."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?
+:explanation: The bulk has gapless states due to the Weyl point. Therefore, only momentum conservation protects surface states from going into the bulk.
+:correct: 2
+- Chiral symmetry.
+- The energy gap in the bulk.
+- Absence of scattering.
+- The non-zero Chern number of the bulk.
 ```

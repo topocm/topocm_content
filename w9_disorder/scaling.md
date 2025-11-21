@@ -21,7 +21,6 @@ import os
 
 import numpy as np
 from matplotlib import pyplot as plt
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -116,21 +115,13 @@ What we see is that for dimensions $d=1,2$ the curve stays below $\beta\leq 0$, 
 
 The situation is different in $d=3$ dimensions. If the conductance $g$ is large enough to begin with, then $\beta > 0$ and the arrow points to larger values of $g$. This means that the conductance grows with increasing system size. On the other hand, if disorder is large enough such that $\beta < 0$ initially, $g$ decreases as the system size increases. The separation point $\beta = 0$ between these two behaviours is the *metal-insulator transition*.
 
-```{code-cell} ipython3
-question = "How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?"
-
-answers = [
-    "Nothing changes.",
-    r"$\beta$ is multiplied by 10.",
-    "The scaling hypothesis doesn't apply since we don't have a 1D system anymore.",
-    r"$\beta$ is altered in some way, since we have a different disordered system now.",
-]
-
-explanation = "The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=0, explanation=explanation
-)
+```{multiple-choice} How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?
+:explanation: The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same.
+:correct: 0
+- Nothing changes.
+- $\beta$ is multiplied by 10.
+- The scaling hypothesis doesn't apply since we don't have a 1D system anymore.
+- $\beta$ is altered in some way, since we have a different disordered system now.
 ```
 
 The 2D case is special: in the classical limit $g \gg 1$, the scaling flow disappears, $\beta \approx 0$. However, there remain *quantum corrections* to it. These are effects that get weaker with increasing conductance, and they depend on the symmetry class of the Hamiltonian.
@@ -218,26 +209,13 @@ $$
 
 The length $\xi = L_0\,(V-V_c)^{-\nu}\,$ is the localization length, which diverges at the transition point $V=V_c$. The number $\nu$ is known as the *critical exponent*, and determines the scaling behavior of the conductance close to the critical point.
 
-```{code-cell} ipython3
-question = r"What would we see if $\beta$ crossed from positive to negative values?"
-
-answers = [
-    "Small conductances would have a metallic phase, where $g$ grows indefinitely, "
-    "while large $g$ would lead to an insulator.",
-    "We would see a critical phase, where all conductances converge to the same value.",
-    r"This is just the same metal-insulator transition since $\beta(g_c) = 0$",
-    "This is an impossible scaling function.",
-]
-
-explanation = (
-    "Both larger conductances and smaller conductances flow towards the critical value, "
-    "so all systems get the same conductance when their size becomes large enough. "
-    "This is an attractive critical point."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What would we see if $\beta$ crossed from positive to negative values?
+:explanation: Both larger conductances and smaller conductances flow towards the critical value, so all systems get the same conductance when their size becomes large enough. This is an attractive critical point.
+:correct: 1
+- Small conductances would have a metallic phase, where $g$ grows indefinitely, while large $g$ would lead to an insulator.
+- We would see a critical phase, where all conductances converge to the same value.
+- This is just the same metal-insulator transition since $\beta(g_c) = 0$
+- This is an impossible scaling function.
 ```
 
 ## Absence of localization for topological insulators

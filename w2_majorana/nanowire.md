@@ -24,7 +24,6 @@ import holoviews
 import kwant
 from course.functions import pauli
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 
@@ -446,21 +445,13 @@ At $k=0$ the spin-orbit coupling is ineffective, so the electron and hole bands 
 
 The non-monotonous behavior of the gap versus $B$ that we saw earlier is a consequence of this complicated band structure: There are different values of momenta where the dispersion has local minima. When we are close to the phase transition, $k=0$ defines the gap, while for large $B$, it is the gap at finite momentum that becomes smallest.
 
-```{code-cell} ipython3
-question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
-answers = [
-    "Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
-    "Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.",
-    "It's impossible, because a magnetic field can only be applied along $z$.",
-    "Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes.",
-]
-explanation = (
-    "If both the magnetic field and the spin orbit coupling point in the $y$ direction, "
-    + "then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. "
-    + "So we are back to the problem that a gap at finite momentum does not open, "
-    + "and we do not get a topological phase supporting Majoranas."
-)
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?
+:explanation: If both the magnetic field and the spin orbit coupling point in the $y$ direction, then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. So we are back to the problem that a gap at finite momentum does not open, and we do not get a topological phase supporting Majoranas.
+:correct: 1
+- Then we do not need spin-orbit coupling anymore in order to get Majoranas.
+- Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.
+- It's impossible, because a magnetic field can only be applied along $z$.
+- Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes.
 ```
 
 ## Outlook

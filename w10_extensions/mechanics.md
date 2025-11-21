@@ -20,7 +20,6 @@ from course import topomech
 
 import numpy as np
 import holoviews
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 from matplotlib import pyplot as plt
@@ -106,19 +105,12 @@ $$
 
 where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates between left-leaning ($u<0$ as $x\rightarrow-\infty$) and right-leaning ($u>0$ as $x\rightarrow+\infty$) states.
 
-```{code-cell} ipython3
-question = r"What happens to the kink width $w_0$ when the gap closes?"
-
-answers = ["It goes to zero.", "It does not vary.", "It diverges."]
-
-explanation = (
-    r"We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. "
-    r"This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What happens to the kink width $w_0$ when the gap closes?
+:explanation: We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$.
+:correct: 2
+- It goes to zero.
+- It does not vary.
+- It diverges.
 ```
 
 ## Non-linear dynamics
@@ -201,22 +193,13 @@ dimensions.)
 
 As a simple test of your knowledge, consider the following question whose answer will prove handy later.
 
-```{code-cell} ipython3
-question = (
-    r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
-    "where all nodes have the same number of bonds (neglecting boundaries)?"
-)
-
-answers = [r"$z_c=d$.", r"$z_c=2d$.", r"$z_c=d(d-1)$.", r"$z_c=d^2$."]
-
-explanation = (
-    "In an isostatic structure we have equal number of degrees of freedom and number of constraints. "
-    "This gives the equation $d N = z N /2$, because each bond is shared by two sites."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure where all nodes have the same number of bonds (neglecting boundaries)?
+:explanation: In an isostatic structure we have equal number of degrees of freedom and number of constraints. This gives the equation $d N = z N /2$, because each bond is shared by two sites.
+:correct: 1
+- $z_c=d$.
+- $z_c=2d$.
+- $z_c=d(d-1)$.
+- $z_c=d^2$.
 ```
 
 Why do we call redundant constraints with the name *states of self stress*?
@@ -301,24 +284,13 @@ defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$)
 
 A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
-```{code-cell} ipython3
-question = (
-    "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
-    r"are of equal length and have an angle $\pi/2$ between them, "
-    r"$P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. "
-    r"What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?"
-)
-
-answers = [r"$(1,-1)$.", r"$(-1,1)$.", r"$(2,-2)$.", r"$(-2,2)$."]
-
-explanation = (
-    r"$P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. "
-    r"The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ are of equal length and have an angle $\pi/2$ between them, $P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?
+:explanation: $P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$.
+:correct: 2
+- $(1,-1)$.
+- $(-1,1)$.
+- $(2,-2)$.
+- $(-2,2)$.
 ```
 
 ![](figures/square.png)
@@ -385,8 +357,6 @@ You may get the impression that only the zero modes are potentially useful and t
 ```
 
 As you can see, by controlling the position of states of self stress, you can pre-select the region of a material that will fail, for example by buckling. All you have to do is to activate the self stress by pushing on the structure in the same way as you had to activate the zero modes to set them in motion.
-
-+++
 
 You can find out more details in this paper.
 

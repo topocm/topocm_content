@@ -19,7 +19,6 @@ kernelspec:
 from course import init_course as course_init
 import scipy.sparse.linalg as sl
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 # Bind commonly used names from course modules so ruff can see them
@@ -77,27 +76,13 @@ We will not repeat our pumping experiment, that is increasing the flux $\Phi$ by
 
 From the point of view of the superconducting junction, this means that advancing the phase difference $\phi$ by $2\pi$, the ground state fermion parity of the junction changes. Recalling what we learned in the second and third weeks, we can say that the Josephson effect is $4\pi$-periodic.
 
-```{code-cell} ipython3
-question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
-
-answers = [
-    "The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.",
-    "Then you can no longer apply a flux through the disk.",
-    "The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.",
-    "Nothing changes if the inner edge of the Corbino disk is removed.",
-]
-
-explanation = (
-    "Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. "
-    "When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. "
-    "The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken "
-    "Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, "
-    "and Kramers theorem doesn't apply anymore."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?
+:explanation: Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, and Kramers theorem doesn't apply anymore.
+:correct: 3
+- The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.
+- Then you can no longer apply a flux through the disk.
+- The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.
+- Nothing changes if the inner edge of the Corbino disk is removed.
 ```
 
 ### Majoranas on the quantum spin-Hall edge
@@ -348,28 +333,13 @@ ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
 
-```{code-cell} ipython3
-question = (
-    "What happens if you add a second vortex to the superconductor? "
-    "Imagine that the vortices and edge are all very far away from each other"
-)
-
-answers = [
-    "The second vortex has no Majorana.",
-    "Both vortices have a Majorana, and the edge has two Majoranas.",
-    "The Majorana mode at the edge goes away, and each vortex has its own Majorana.",
-    "Vortices can only be added in pairs because Majoranas only come in pairs.",
-]
-
-explanation = (
-    "The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, "
-    "so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. "
-    "And so, of course, the second vortex must have a Majorana as well."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What happens if you add a second vortex to the superconductor? Imagine that the vortices and edge are all very far away from each other
+:explanation: The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. And so, of course, the second vortex must have a Majorana as well.
+:correct: 2
+- The second vortex has no Majorana.
+- Both vortices have a Majorana, and the edge has two Majoranas.
+- The Majorana mode at the edge goes away, and each vortex has its own Majorana.
+- Vortices can only be added in pairs because Majoranas only come in pairs.
 ```
 
 ## Vortices in 3D topological insulator

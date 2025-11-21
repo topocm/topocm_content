@@ -16,7 +16,6 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -62,29 +61,13 @@ Does this have anything to do with the way we have defined topology in this cour
 
 The topological robustness makes the topologically degenerate states particularly attractive to store quantum information. The main challenge of quantum information is the quantum decoherence problem, where local fluctuations in the Hamiltonian destroy the phase coherence of the quantum system used to store information. The solution proposed by topological quantum computation is to use the topologically degenerate space of a toric code to store the information. In fact, this is in essence what is being attempted by experimentalists who work on superconducting qubits, under the framework of the surface code.
 
-```{code-cell} ipython3
-question = (
-    "How would the topological degeneracy of the ground state that comes from the loop configurations "
-    "change if we put it on a torus (donut) with two holes?"
-)
-
-answers = [
-    "Since there is still an infinite number of loop configurations, the degeneracy would be infinite.",
-    "Since there is one additional hole there are two more distinct cycles. "
-    "So  the number of ground states increases by a factor of 4.",
-    "It still remains 4 since the loops is topologically forbidden from going around the extra loops.",
-    "Since there is one additional hole the loops can go around this hole an even or an odd number of time, "
-    "so the degeneracy increases from 4 to 8.",
-]
-
-explanation = (
-    "The additional hole introduces the possibility of 2 values of parity on each extra cycle. This adds a "
-    "factor of $2 \\times 2=4$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} How would the topological degeneracy of the ground state that comes from the loop configurations change if we put it on a torus (donut) with two holes?
+:explanation: The additional hole introduces the possibility of 2 values of parity on each extra cycle. This adds a factor of $2 \times 2=4$.
+:correct: 1
+- Since there is still an infinite number of loop configurations, the degeneracy would be infinite.
+- Since there is one additional hole there are two more distinct cycles. So  the number of ground states increases by a factor of 4.
+- It still remains 4 since the loops is topologically forbidden from going around the extra loops.
+- Since there is one additional hole the loops can go around this hole an even or an odd number of time, so the degeneracy increases from 4 to 8.
 ```
 
 ## Particle-like excitations

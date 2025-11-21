@@ -16,7 +16,6 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.components import MultipleChoice
 from course.functions import pauli, spectrum
 from course.init_course import init_notebook
 import holoviews
@@ -41,8 +40,6 @@ Joel Moore from the University of California, Berkeley will introduce this week'
 Let us follow the direction explained by Joel Moore and construct a three-dimensional topological state from the two-dimensional topological state. This time, we'll do this by studying the system in momentum space rather than in real space as we did before. As with two dimensional systems, time-reversal invariant momenta (TRIMs) play an important role in three dimensions.
 
 For illustrative purposes, consider the three dimensional irreducible Brillouin Zone (i.e. $k_j\in [0,\pi]$) of a cubic system shown below. Fixing one of the three momenta $k_{x,y,z}$ to a TRIM, say $k_x=0$ without loss of generality, we can think of the Hamiltonian in the $(k_y,k_z)$ plane as a two dimensional Hamiltonian, which may either be topologically trivial ($\mathbb{Z}_2$-index $=0$) or non-trivial ($\mathbb{Z}_2$-index $=1$).
-
-+++
 
 ![](figures/3dbz.svg)
 
@@ -306,24 +303,13 @@ We see the values of the invariants change several times:
 * When $M$ is lowered further, two new Dirac cones appear at $k = (0,\pi)$ and $k = (\pi, 0)$. This changes the invariants to $\mathcal{Q}(k_x=0) = 0$ and $\mathcal{Q}(k_x=\pi) = 1$.
 * Finally one more Dirac cone appears at $k = (\pi, \pi)$, accompanied by both invariants becoming trivial.
 
-```{code-cell} ipython3
-question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
-
-answers = [
-    "There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
-    "There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.",
-    "There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.",
-    "There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
-]
-
-explanation = (
-    "We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. "
-    "The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?
+:explanation: We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd.
+:correct: 3
+- There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.
+- There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.
+- There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.
+- There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$.
 ```
 
 ## Quantum Hall conductance and the magneto-electric effect
@@ -357,30 +343,13 @@ spectrum(wire, p, k_x=k, **kwargs)
 
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.
 
-```{code-cell} ipython3
-question = (
-    "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
-    "a very thick Corbino disk. "
-    "You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top "
-    "and bottom surfaces. "
-    "What happens if you throw an additional flux quantum through the inner hole of the disk?"
-)
-
-answers = [
-    "A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-    "An integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-    "An integer number of charges is transferred from the top to the bottom surface of the disk.",
-    "The bulk gap closes.",
-]
-
-explanation = (
-    "The top and bottom surfaces combined form an integer quantum Hall state. "
-    "Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into a very thick Corbino disk. You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top and bottom surfaces. What happens if you throw an additional flux quantum through the inner hole of the disk?
+:explanation: The top and bottom surfaces combined form an integer quantum Hall state. Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case.
+:correct: 1
+- A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.
+- An integer number of electron charges is transferred from the inner to the outer surface of the disk.
+- An integer number of charges is transferred from the top to the bottom surface of the disk.
+- The bulk gap closes.
 ```
 
 ## Conclusion: integers, half-integers, and two types of electromagnetic response

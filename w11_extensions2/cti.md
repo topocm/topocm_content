@@ -21,7 +21,6 @@ import holoviews
 import kwant
 from course.functions import pauli
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -51,19 +50,13 @@ Due to this type of constraint on the Brillouin zone, crystalline symmetries can
 
 Note however, that sometimes the mere presence of a surface can break a crystalline symmetry of the bulk, so that one should be careful when applying the bulk-boundary correspondence to properties based on crystalline symmetries.
 
-```{code-cell} ipython3
-question = r"In which case can inversion symmetry protect gapless surface states?"
-
-answers = [
-    "Never.",
-    "In the case of 2D TIs with inversion symmetry.",
-    "Only in three dimensions.",
-    "Only in combination with particle-hole or time-reversal symmetry. ",
-]
-
-explanation = "Any surface would break inversion symmetry of a crystal."
-
-MultipleChoice(question, answers, correct_answer=0, explanation=explanation)
+```{multiple-choice} In which case can inversion symmetry protect gapless surface states?
+:explanation: Any surface would break inversion symmetry of a crystal.
+:correct: 0
+- Never.
+- In the case of 2D TIs with inversion symmetry.
+- Only in three dimensions.
+- Only in combination with particle-hole or time-reversal symmetry.
 ```
 
 ## Reflection symmetry
@@ -86,26 +79,13 @@ The mirror Chern number is a topological invariant in the sense that it cannot c
 
 Naturally, the same recipe allows to construct a reflection symmetric topological insulator starting from any other topological invariant, not just a Chern number. We will now try to do this.
 
-```{code-cell} ipython3
-question = (
-    "How would you attempt to make a model of a topological"
-    " insulator with surface states protected by reflection symmetry?"
-)
-
-answers = [
-    "By using the interface of a material with reflection symmetry, and that of one without it.",
-    "By stacking many layers of a lower dimensional topological insulator, "
-    "and coupling them in a reflection-symmetric fashion.",
-    "Reflection symmetry alone cannot protect any gapless surface state.",
-    "By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero.",
-]
-
-explanation = (
-    "Such a stack would have a reflection symmetry around any of the layers, "
-    "which is not broken by the presence of a surface parallel to the stacking direction."
-)
-
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} How would you attempt to make a model of a topological insulator with surface states protected by reflection symmetry?
+:explanation: Such a stack would have a reflection symmetry around any of the layers, which is not broken by the presence of a surface parallel to the stacking direction.
+:correct: 1
+- By using the interface of a material with reflection symmetry, and that of one without it.
+- By stacking many layers of a lower dimensional topological insulator, and coupling them in a reflection-symmetric fashion.
+- Reflection symmetry alone cannot protect any gapless surface state.
+- By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero.
 ```
 
 ## Examples

@@ -25,7 +25,6 @@ import kwant
 from course.functions import pauli
 from course.functions import spectrum
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -304,28 +303,13 @@ You might be worried that the suppression of conductance is only shown for the l
 
 Localization of QSHE edge states by magnetic field is relatively poorly understood, and we are not aware of a final experiment that would prove its existence or tell us in details what it is that happens at the QSHE edge in a magnetic field. As you will learn in two weeks, opening the gap by magnetic field opens new pathways for the creation of Majoranas, and so it is still a very important direction of research.
 
-```{code-cell} ipython3
-question = (
-    "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
-    "the quantum Hall effect in week 3?"
-)
-
-answers = [
-    "The quantum Hall effect appeared in much higher quality samples.",
-    "There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.",
-    "The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin "
-    "Hall edges.",
-    "The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case.",
-]
-
-explanation = (
-    "The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  "
-    "required for the protection of edge states in the quantum spin Hall effect. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Why did we not see a similar suppression of conductance with magnetic field in the case of  the quantum Hall effect in week 3?
+:explanation: The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  required for the protection of edge states in the quantum spin Hall effect.
+:correct: 2
+- The quantum Hall effect appeared in much higher quality samples.
+- There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.
+- The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin Hall edges.
+- The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case.
 ```
 
 ## Summary

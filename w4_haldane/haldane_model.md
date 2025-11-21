@@ -24,7 +24,6 @@ import kwant
 from course.functions import pauli
 from course.functions import spectrum
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -247,25 +246,13 @@ The appearance of edge states means that graphene has entered a topological phas
 
 As you know, this means we have created a **Chern insulator**. The reason for this name will become obvious in the second part of the lecture.
 
-```{code-cell} ipython3
-question = (
-    "What happens if we take a Haldane model in the topological phase and turn "
-    "on a weak magnetic field?"
-)
-
-answers = [
-    "Magnetic field introduces Landau levels, which change the number of edge states.",
-    "Since the magnetic field is weak, nothing changes as long as it doesn't close the gap",
-    "The bulk gap closes and there are no edge states anymore.",
-    "The gap doesn't close but the edge states may change direction "
-    "of propagation, depending on the sign of magnetic field.",
-]
-
-explanation = "Topological robustness is still present, so the number of edge states cannot change unless the gap closes."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What happens if we take a Haldane model in the topological phase and turn on a weak magnetic field?
+:explanation: Topological robustness is still present, so the number of edge states cannot change unless the gap closes.
+:correct: 1
+- Magnetic field introduces Landau levels, which change the number of edge states.
+- Since the magnetic field is weak, nothing changes as long as it doesn't close the gap
+- The bulk gap closes and there are no edge states anymore.
+- The gap doesn't close but the edge states may change direction of propagation, depending on the sign of magnetic field.
 ```
 
 ## Pumping in terms of Berry phase
@@ -471,18 +458,12 @@ holoviews.HoloMap(
 )
 ```
 
-```{code-cell} ipython3
-question = "How does time-reversal symmetry influence the Berry curvature?"
-
-answers = [
-    "The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.",
-    "Time reversal symmetry doesn't constrain Berry curvature at all.",
-    "There is no constraint, only the integral of Berry curvature (Chern number) should be zero.",
-    "The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature "
-    "at one momentum becomes opposite to the Berry curvature at opposite momentum.",
-]
-
-MultipleChoice(question=question, answers=answers, correct_answer=3)
+```{multiple-choice} How does time-reversal symmetry influence the Berry curvature?
+:correct: 3
+- The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.
+- Time reversal symmetry doesn't constrain Berry curvature at all.
+- There is no constraint, only the integral of Berry curvature (Chern number) should be zero.
+- The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature at one momentum becomes opposite to the Berry curvature at opposite momentum.
 ```
 
 You can see that the Berry curvature is really located around the Dirac points. Around $t_2=0$, the two Dirac points give canceling contributions. After a gap closing however, the contribution of one of the two Dirac points changes sign, so that the two add to $\pm 1$ instead of canceling each other.

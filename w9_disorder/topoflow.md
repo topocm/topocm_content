@@ -27,7 +27,6 @@ import numpy as np
 import kwant
 from course.functions import pauli
 from matplotlib import pyplot as plt
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -177,26 +176,13 @@ The second effect, despite looking mysterious, appears just because the disorder
 
 Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
 
-```{code-cell} ipython3
-question = (
-    r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
-)
-answers = [
-    "We would get a step function instead of a smooth curve.",
-    r"Not well-defined because $\det r$ becomes complex.",
-    "The $Q=\pm 1$ plateaus cancel and give $Q=0$.",
-    "The curve is qualitatively the same.",
-]
-
-explanation = (
-    r"Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect "
-    "the invariant for most disorder realizations. The intermediate values result from averaging over different "
-    "realizations."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What would happen if instead of $\det r$ we use $sign \det r$ for invariant?
+:explanation: Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect the invariant for most disorder realizations. The intermediate values result from averaging over different realizations.
+:correct: 3
+- We would get a step function instead of a smooth curve.
+- Not well-defined because $\det r$ becomes complex.
+- The $Q=\pm 1$ plateaus cancel and give $Q=0$.
+- The curve is qualitatively the same.
 ```
 
 ## Two parameter scaling in one dimension
@@ -284,22 +270,13 @@ The flow, we just calculated is in fact valid for all one-dimensional topologica
 
 It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
 
-```{code-cell} ipython3
-question = (
-    "What does the 2 parameter flow diagram predict about the infinite size limit?"
-)
-answers = [
-    "Always topological for all parameters.",
-    "There's a localized topological and non-topological phase separated by a transition point.",
-    "Always localized for every parameter.",
-    "Almost always conducting except at a transition point.",
-]
-explanation = (
-    "The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small T"
-    "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
-    "except near $Q=0$ has a slower decay."
-)
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} What does the 2 parameter flow diagram predict about the infinite size limit?
+:explanation: The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small Ti.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) except near $Q=0$ has a slower decay.
+:correct: 1
+- Always topological for all parameters.
+- There's a localized topological and non-topological phase separated by a transition point.
+- Always localized for every parameter.
+- Almost always conducting except at a transition point.
 ```
 
 ## Critical point

@@ -20,7 +20,6 @@ import numpy as np
 import holoviews
 import kwant
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -84,8 +83,6 @@ $$
 E_y \equiv \frac{V_1+V_2-V_4-V_3}{2W}.
 $$
 
-+++
-
 The Hall bar can only measure the conductance completely for isotropic or rotationally invariant systems. If we rotate the system by 90 degrees we can transform $x\rightarrow y$ and $y\rightarrow -x$. So we expect $\sigma_{xx}=\sigma_{yy}=\sigma_L$, the longitudinal conductance. If we apply this same rotation transformation we conclude that $\sigma_{xy}=-\sigma_{yx}=\sigma_H$, the *Hall conductance*.
 
 So with rotational invariance the 4 component conductance tensor has only 2 independent components i.e. the longitudinal and Hall conductance. We can calculate these using the two electric fields $E_{x,y}$ that we measure using the Hall bar.
@@ -119,16 +116,13 @@ This relation, which says that $\sigma_H\propto n$, is extremely general in the 
 
 As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder.
 
-```{code-cell} ipython3
-question = "What is the longitudinal conductance for the ideal electron gas in a magnetic field?"
-answers = [
-    "Infinity since there are no impurities in the system.",
-    "Finite and inversely proportional to the magnetic field like the Hall conductance.",
-    "Finite and proportional to density but independent of magnetic field.",
-    "Zero since current is perpendicular to electric field.",
-]
-explanation = "As we saw the velocity is related to the cross-product of the electric and magnetic field."
-MultipleChoice(question, answers, correct_answer=3, explanation=explanation)
+```{multiple-choice} What is the longitudinal conductance for the ideal electron gas in a magnetic field?
+:explanation: As we saw the velocity is related to the cross-product of the electric and magnetic field.
+:correct: 3
+- Infinity since there are no impurities in the system.
+- Finite and inversely proportional to the magnetic field like the Hall conductance.
+- Finite and proportional to density but independent of magnetic field.
+- Zero since current is perpendicular to electric field.
 ```
 
 ## The quantum Hall effect: experimental data
@@ -431,22 +425,13 @@ pumping_map = holoviews.HoloMap(
 pumping_map
 ```
 
-```{code-cell} ipython3
-question = (
-    "Experimentally the quantum Hall conductance jumps - what does this mean about the "
-    "robustness of the Laughlin pumping argument?"
-)
-answers = [
-    "The Laughlin argument breaks down because it assumes specific values of the magnetic field.",
-    "The Laughlin argument assumes there is no longitudinal conductivity.",
-    "The Hall conductance is not a topological invariant since it changes.",
-    "The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum.",
-]
-explanation = (
-    "The key ingredient in the Laughlin argument was that there is no states at the fermi level in "
-    "the bulk which is equivalent to no longitudinal conductivity"
-)
-MultipleChoice(question, answers, correct_answer=1, explanation=explanation)
+```{multiple-choice} Experimentally the quantum Hall conductance jumps - what does this mean about the robustness of the Laughlin pumping argument?
+:explanation: The key ingredient in the Laughlin argument was that there is no states at the fermi level in the bulk which is equivalent to no longitudinal conductivity
+:correct: 1
+- The Laughlin argument breaks down because it assumes specific values of the magnetic field.
+- The Laughlin argument assumes there is no longitudinal conductivity.
+- The Hall conductance is not a topological invariant since it changes.
+- The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum.
 ```
 
 ## Landau levels: a microscopic model for the quantum hall effect
@@ -468,8 +453,6 @@ $$
 These quantized energy levels of electrons in a magnetic field are called **Landau levels**.
 
 You can put many electrons in the same Landau level: one for every flux quantum of the magnetic flux passing through the system. Therefore Landau levels have a huge degeneracy, proportional to the area of the sample.
-
-+++
 
 ### Landau levels from the Hamiltonian
 
@@ -518,8 +501,6 @@ $$
 H=p_y^2+\left(\frac{\hbar 2\pi n}{L}-e B y-\frac{e\Phi}{L}\right)^2\,.
 $$
 
-+++
-
 Comparing the above equation to the quantum harmonic oscillator, we see that the harmonic oscillator levels
 must be centered at
 
@@ -561,15 +542,13 @@ landau_levels = holoviews.HoloMap(
 pumping_map + landau_levels * HLine
 ```
 
-```{code-cell} ipython3
-question = (
-    "Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, "
-    "and with 2 Landau levels filled. "
-    "Approximately, how many electrons does it contain?"
-)
-answers = ["$2.\,$", "$2 W/L\,.$", "$2 B WL / \Phi_0\, $.", "$ B L^2/\Phi_0\,$."]
-explanation = "Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$."
-MultipleChoice(question, answers, correct_answer=2, explanation=explanation)
+```{multiple-choice} Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, and with 2 Landau levels filled. Approximately, how many electrons does it contain?
+:explanation: Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$.
+:correct: 2
+- $2.\,$
+- $2 W/L\,.$
+- $2 B WL / \Phi_0\, $.
+- $ B L^2/\Phi_0\,$.
 ```
 
 ## Summary

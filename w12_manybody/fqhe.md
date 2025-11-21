@@ -16,7 +16,6 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -65,28 +64,14 @@ $$
 \phi_{exch}=\pi\nu.
 $$
 
-```{code-cell} ipython3
-question = (
-    "The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumption"
-    "that must be dropped in order to understand the fractional quantum Hall effect?"
-)
-
-answers = [
-    "Allow electrons to have fractional statistics.",
-    "Allow quasiparticles with fractional charge.",
-    "Require that the system forms an incompressible fluid.",
-    "Allow electrons to have fractional charge.",
-    "Allow quasiparticles to have fractional statistics.",
-]
-
-explanation = (
-    "The key assumption in the Laughlin argument for the integer case was that the charge that was added by pumping could"
-    "only be an integer multiple of an electronic charge."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} The Laughlin argument was used to prove that the Hall effect must be quantized in integers. What is the key assumptionthat must be dropped in order to understand the fractional quantum Hall effect?
+:explanation: The key assumption in the Laughlin argument for the integer case was that the charge that was added by pumping couldonly be an integer multiple of an electronic charge.
+:correct: 1
+- Allow electrons to have fractional statistics.
+- Allow quasiparticles with fractional charge.
+- Require that the system forms an incompressible fluid.
+- Allow electrons to have fractional charge.
+- Allow quasiparticles to have fractional statistics.
 ```
 
 ## Topological degeneracy
@@ -145,28 +130,13 @@ $$
 
 Thus the composite fermion theory provides an explanation for how electrons can form incompressible states at a fractional sequence of filling fractions that is known as the "Jain sequence". These states were all seen in experiments.
 
-```{code-cell} ipython3
-question = (
-    "Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by "
-    "postulating that:"
-)
-
-answers = [
-    "The quantum Hall system forms an incompressible liquid.",
-    "The fractionally charged quasiparticles bind to fluxes to reduce the filling.",
-    "The electrons become fractionally charged.",
-    "The electrons bind to fluxes and reduce the effective magnetic field.",
-]
-
-explanation = (
-    "Composite fermions are electrons bound to fluxes. Electrons are the fundamental particles and they cannot change "
-    "their charge. The fractional charged quasiparticles are invoked by composite fermions not explained by the theory. "
-    " The incompressible liquid is true for either integer or fractional quantum Hall."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Composite fermions allow one to explain incompressible states at fractional filling of the Landau levels by postulating that:
+:explanation: Composite fermions are electrons bound to fluxes. Electrons are the fundamental particles and they cannot change their charge. The fractional charged quasiparticles are invoked by composite fermions not explained by the theory.  The incompressible liquid is true for either integer or fractional quantum Hall.
+:correct: 3
+- The quantum Hall system forms an incompressible liquid.
+- The fractionally charged quasiparticles bind to fluxes to reduce the filling.
+- The electrons become fractionally charged.
+- The electrons bind to fluxes and reduce the effective magnetic field.
 ```
 
 ## Classification and fractional topological insulators

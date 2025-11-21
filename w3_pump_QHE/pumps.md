@@ -16,7 +16,6 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.components import MultipleChoice
 from course.functions import spectrum
 from course.init_course import init_notebook
 
@@ -201,23 +200,13 @@ So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an in
 
 Since electrons do not move between neighboring potential minima, so when we change the potential by one time period, we move exactly $N$ electrons.
 
-```{code-cell} ipython3
-question = "Why are some levels in the band structure flat while some are not?"
-answers = [
-    "The flat levels are the ones whose energies are not sensitive to the offset of confining potential.",
-    "Destructive interference of the wave functions in neighboring minima suppresses the dispersion.",
-    "The flat levels are localized deep in the potential minima, "
-    "so the bandwidth is exponentially small.",
-    "The flat levels correspond to filled states, and the rest to empty states.",
-]
-explanation = (
-    "The dispersion of the bands in a perodic potential appears "
-    "when the wave functions from neighboring minima overlap."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Why are some levels in the band structure flat while some are not?
+:explanation: The dispersion of the bands in a perodic potential appears when the wave functions from neighboring minima overlap.
+:correct: 2
+- The flat levels are the ones whose energies are not sensitive to the offset of confining potential.
+- Destructive interference of the wave functions in neighboring minima suppresses the dispersion.
+- The flat levels are localized deep in the potential minima, so the bandwidth is exponentially small.
+- The flat levels correspond to filled states, and the rest to empty states.
 ```
 
 ## Quantization of pumped charge
@@ -420,28 +409,13 @@ spectrum(bulk, p, **kwargs) * HLines + holoviews.Overlay(
 
 In the left plot, we show the band structure, where the different colors correspond to different chemical potentials. The right plot shows the corresponding pumped charge. During the pumping cycle the charge may change, and the relation between the offset $\phi$ of the potential isn't always linear. However we see that after a full cycle, the pumped charge exactly matches the number of filled levels in a single potential well.
 
-```{code-cell} ipython3
-question = (
-    "What happens to the dependence of the reflection phase shift on time if we "
-    "remove one of the reservoirs and leave the other one?"
-)
-answers = [
-    "It becomes constant.",
-    "For most of the cycle it stays the same, but there appear "
-    "sharp jumps such that the total winding becomes zero.",
-    "Nothing changes, since the two ends of the pump are "
-    "far apart from each other, and the pump is not conducting.",
-    "The reflection phase gets a new time dependence with zero winding, unrelated to the original one.",
-]
-explanation = (
-    "The total pumped charge must become equal to zero since there's nowhere to place the charge, but "
-    "since the pump is insulating, the phase cannot change "
-    "for most of the cycle unless a sharp resonance appears"
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What happens to the dependence of the reflection phase shift on time if we remove one of the reservoirs and leave the other one?
+:explanation: The total pumped charge must become equal to zero since there's nowhere to place the charge, but since the pump is insulating, the phase cannot change for most of the cycle unless a sharp resonance appears
+:correct: 1
+- It becomes constant.
+- For most of the cycle it stays the same, but there appear sharp jumps such that the total winding becomes zero.
+- Nothing changes, since the two ends of the pump are far apart from each other, and the pump is not conducting.
+- The reflection phase gets a new time dependence with zero winding, unrelated to the original one.
 ```
 
 ## Quantized charge and scattering invariant

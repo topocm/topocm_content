@@ -24,7 +24,6 @@ import kwant
 from course.functions import pauli
 from course.functions import spectrum
 from course.init_course import pprint_matrix
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 
 init_notebook()
@@ -227,28 +226,13 @@ In particular, let's again make the simple assumption that the spin projection a
 
 However, the quantized spin Hall current is not a general property of a quantum spin Hall insulator. Here, it arises because we have combined time reversal symmetry with a spin conservation law, and as we learned in the first week, conservation laws are boring from a topological point of view.
 
-```{code-cell} ipython3
-question = (
-    "Consider the simple case where spin is conserved. "
-    "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
-    "you manage to apply a *spin-polarized* current between terminals 1 and 2?"
-)
-
-answers = [
-    "The system will develop an opposite spin-polarized current to compensate the effect.",
-    "A spin-polarized current will develop between terminals 3 and 4.",
-    "A voltage difference will develop between terminals 3 and 4.",
-    "It is impossible to apply such a current unless the bulk gap closes.",
-]
-
-explanation = (
-    "The spin-polarized current will create an electron population imbalance between terminals 3 and 4. "
-    "Hence, similar to the Hall effect, a voltage will develop orthogonal to the current."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider the simple case where spin is conserved. In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, you manage to apply a *spin-polarized* current between terminals 1 and 2?
+:explanation: The spin-polarized current will create an electron population imbalance between terminals 3 and 4. Hence, similar to the Hall effect, a voltage will develop orthogonal to the current.
+:correct: 2
+- The system will develop an opposite spin-polarized current to compensate the effect.
+- A spin-polarized current will develop between terminals 3 and 4.
+- A voltage difference will develop between terminals 3 and 4.
+- It is impossible to apply such a current unless the bulk gap closes.
 ```
 
 ## A model for the quantum spin Hall insulator
@@ -518,8 +502,6 @@ Let's imagine that the helical edge runs along the $y$ direction, and that the d
 
 ![](figures/qsh_domain_wall.svg)
 
-+++
-
 In this configuration, $k_y$ is still a good quantum number, and we can study the energy dispersion of states bound to the domain wall as a function of $k_y$. If the edge is gapless there must be a momentum, say $\bar{k}_y$, where counterpropagating modes cross at the Fermi level. Let's fix $k_y=\bar{k}_y$, and write down an effective Hamiltonian for the motion transverse to the domain wall.
 
 We have in total four states, distinguished by two quantum numbers: their direction of propagation, which we denote with $b=\pm$, and their pseudospin $\sigma$. Inversion symmetry $\mathcal{P}$ flips the direction of propagation $b$, while the pseudo-spin degeneracy $\sigma$ is related to the combination of inversion and time-reversal $\mathcal{T}\otimes\mathcal{P}.$ To lowest order in the momentum $k_x$ perpendicular to the domain wall, the states at the transition point disperse linearly with $k_x$, and are two-fold degenerate. In fact, as we noted from Kramers degeneracy, the Hamiltonian must be chosen such that none of the terms break the two-fold degeneracy associated with the pseudospin $\sigma$. This means that the domain wall cannot couple states with different values of $\sigma$, which leads us to an effective Hamiltonian
@@ -576,29 +558,13 @@ As a bonus, thanks to the previous arguments we can begin to understand how to l
 
 Such a band inversion is not impossible to achieve in real materials, and can be captured using the BHZ model. But let's leave this to the next lecture.
 
-```{code-cell} ipython3
-question = (
-    "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
-    "in the topological phase (i.e., both with $Q=-1$)?"
-)
-
-answers = [
-    "The system has edge states and is therefore topologically non-trivial.",
-    "The total number of odd parity occupied orbitals must be even, so you get $Q=1$.",
-    "It depends on whether the helical states in the two layers have same "
-    "or opposite spin for a given direction.",
-    "The invariant depends on the number of edge Dirac points at $k$ away from 0.",
-]
-
-explanation = (
-    "Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  "
-    "we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be "
-    "$Q=1$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  in the topological phase (i.e., both with $Q=-1$)?
+:explanation: Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be $Q=1$.
+:correct: 1
+- The system has edge states and is therefore topologically non-trivial.
+- The total number of odd parity occupied orbitals must be even, so you get $Q=1$.
+- It depends on whether the helical states in the two layers have same or opposite spin for a given direction.
+- The invariant depends on the number of edge Dirac points at $k$ away from 0.
 ```
 
 ## Summary

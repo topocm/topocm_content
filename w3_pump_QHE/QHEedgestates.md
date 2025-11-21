@@ -21,7 +21,6 @@ import holoviews
 
 import kwant
 from course.functions import spectrum
-from course.components import MultipleChoice
 from course.init_course import init_notebook
 from matplotlib import pyplot as plt
 
@@ -63,8 +62,6 @@ In practice, in order to confine the electrons in this region there must be a po
 $$
 H=p_y^2+(\hbar k-e B y-\Phi)^2\,+V(y).
 $$
-
-+++
 
 Let's recall that $k=2\pi n/L$ because of periodic boundary conditions over $x$. We do not really care about the particular shape of the potential. Generically, it will be very flat in the middle of the ribbon and very steep right at its boundaries:
 
@@ -238,20 +235,13 @@ kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
-```{code-cell} ipython3
-question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
-answers = [
-    "They go at the same velocity.",
-    "The one more towards the bulk, because it is not slowed by the confining potential.",
-    "The one closer to the edge, because the local electric field there is stronger.",
-    "One cannot tell, because it depends on microscopic details.",
-]
-explanation = (
-    "The drift velocity is given by the ratio of the local electric field and the magnetic field. "
-    "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
-    "is stronger there."
-)
-MultipleChoice(question, answers, correct_answer=2, explanation=explanation)
+```{multiple-choice} In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?
+:explanation: The drift velocity is given by the ratio of the local electric field and the magnetic field. The slope of the confinement potential increases sharply at the edge, hence the local electric field is stronger there.
+:correct: 2
+- They go at the same velocity.
+- The one more towards the bulk, because it is not slowed by the confining potential.
+- The one closer to the edge, because the local electric field there is stronger.
+- One cannot tell, because it depends on microscopic details.
 ```
 
 ## The harmless anomaly of the chiral edges
@@ -373,24 +363,15 @@ $$
 I_\circlearrowleft = n \,\frac{e^2}{h} V\,.
 $$
 
-+++
-
 > Thus, the relevant electromagnetic responses, namely the longitudinal and Hall conductivities $\sigma_L=0$ and $\sigma_H=ne^2/h$, can both be derived directly by only considering the chiral edge states.
 
-```{code-cell} ipython3
-question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
-answers = [
-    "It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
-    "Exactly at the same energy as the third Landau level.",
-    "Between the second and the third Landau levels.",
-    "Between the third and the fourth Landau levels.",
-]
-explanation = (
-    "There are three edge states visible in the figure. "
-    "Hence there are three filled Landau levels in the bulk, "
-    "so the Fermi level lies somewhere above the third, but below the fourth Landau level."
-)
-MultipleChoice(question, answers, correct_answer=3, explanation=explanation)
+```{multiple-choice} At which energy did we set the Fermi level in the density of states plot for the Corbino disk?
+:explanation: There are three edge states visible in the figure. Hence there are three filled Landau levels in the bulk, so the Fermi level lies somewhere above the third, but below the fourth Landau level.
+:correct: 3
+- It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.
+- Exactly at the same energy as the third Landau level.
+- Between the second and the third Landau levels.
+- Between the third and the fourth Landau levels.
 ```
 
 ## Important things to know about edge states
