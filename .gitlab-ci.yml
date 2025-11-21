@@ -5,6 +5,7 @@ variables:
   CACHE_COMPRESSION_LEVEL: "fastest"
   SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
   JUPYTER_NUM_PROCS: "1"
+  HOST: "127.0.0.1"  # Needed to avoid binding to ::1.
 
 stages:
   - build
