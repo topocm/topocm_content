@@ -2,7 +2,6 @@
 
 from importlib import metadata as _metadata
 
-from . import components as components
 from . import functions as functions
 from . import init_course as init_course
 
@@ -14,7 +13,6 @@ except _metadata.PackageNotFoundError:  # pragma: no cover
 
 
 __all__ = [
-    "components",
     "functions",
     "init_course",
     "__version__",

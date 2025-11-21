@@ -15,7 +15,7 @@ from IPython import display, get_ipython
 
 # A bunch of functions and modules to pass on, we never use them here
 
-from . import components, functions
+from . import functions
 
 init_course = [
     "np",
@@ -30,10 +30,7 @@ init_course = [
     "pf",
 ]
 
-__all__ = init_course + components.__all__ + functions.__all__
-
-for _name in components.__all__:
-    globals()[_name] = getattr(components, _name)
+__all__ = init_course + functions.__all__
 
 for _name in functions.__all__:
     globals()[_name] = getattr(functions, _name)
@@ -74,8 +71,6 @@ def print_information():
     print(
         "Populated the namespace with:\n"
         + ", ".join(init_course)
-        + "\nfrom course.components:\n"
-        + ", ".join(components.__all__)
         + "\nfrom course.functions:\n"
         + ", ".join(functions.__all__)
     )
