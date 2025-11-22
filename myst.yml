@@ -9,6 +9,8 @@ project:
     - src
     - '**.ipynb_checkpoints'
     - readme.md
+  settings:
+    output_stderr: remove-error
   github: topocm/topocm_content
   toc:
     - file: index.md

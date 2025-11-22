@@ -37,7 +37,7 @@ jupyter-book = ">=2.0.2, <3"
 topocm-course = { path = ".", editable = true }
 
 [tasks.build-html]
-cmd = "jupyter book build --execute --html"
+cmd = "jupyter book build --execute --html --strict"
 inputs = ["myst.yml", "**/*.md"]
 outputs = ["_build/site", "_build/html"]
 
