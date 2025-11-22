@@ -16,8 +16,6 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import warnings
-
 import numpy as np
 import holoviews
 
@@ -29,8 +27,6 @@ from course.init_course import init_notebook
 
 init_notebook()
 holoviews.output(size=150)
-
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction

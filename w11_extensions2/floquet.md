@@ -192,7 +192,7 @@ def hopping(site1, site2, t, alpha):
     return -t * pauli.szs0 + 0.5 * 1j * alpha * pauli.szsx
 
 
-lat = kwant.lattice.chain()
+lat = kwant.lattice.chain(norbs=4)
 infinite_nanowire = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
 infinite_nanowire[lat(0)] = onsite
 infinite_nanowire[kwant.HoppingKind((1,), lat)] = hopping

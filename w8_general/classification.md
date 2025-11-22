@@ -174,6 +174,8 @@ Let us now look at all the possible symmetry classes in dimensions from $0$ to $
 There are quite a few, here is the full list:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 full_table, format_string = make_table(
     show_symmetries=False, sort_order=np.argsort(symmetry_classes)
 )
@@ -190,6 +192,8 @@ Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 This table has a lot of logic in it, but to you it most likely looks no better than this:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(1)
 
 full_table, format_string = make_table(
@@ -269,6 +273,8 @@ The second term in the sum covers the two cases when there are no anti-unitary s
 Let's have another look at the 10 rows in the table, this time specifying which combination of the three fundamental symmetries each row has:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(1)
 
 full_table, format_string = make_table(
@@ -308,6 +314,8 @@ To get some confidence with the table and these obscure names, it is useful to s
 Every red entry in the table below corresponds to something which we already know and studied in the previous weeks of the course, as you can discover by moving the mouse over it.
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 tooltips = {
     (1, 6): "Chern insulator: no symmetries, d=2",
     (9, 5): "Majorana wire: spinful particle-hole, d=1",
@@ -421,6 +429,8 @@ The grey entries in the table are the chiral classes, and the arrows show which 
 Finally, let's see what the table looks like when we order the rows according to the Bott clock above:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(5)
 n = 8
 
@@ -460,6 +470,8 @@ The first thing to observe is that the complex classes only have $\mathbb{Z}$ in
 The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](https://arxiv.org/abs/1104.1602).
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 n = 8
 
 periodic_table, format_string = make_table(n=n, show_symmetries=True, sort_order=None)
@@ -480,6 +492,8 @@ Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 Another useful feature of the table is that in a given column, all $\mathbb{Z}$ or $2\mathbb{Z}$ entries, which are grouped by the color gradients below, have the same topological invariant.
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(15)
 n = 8
 
@@ -506,6 +520,8 @@ We can check this statement for some cases we know. For instance, in $d=0$ the $
 An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionaility twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 np.random.seed(4)
 n = 8
 

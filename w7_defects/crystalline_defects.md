@@ -19,7 +19,6 @@ kernelspec:
 import numpy as np
 import holoviews
 import kwant
-import warnings
 
 from course.functions import pauli
 from course.functions import spectrum
@@ -27,7 +26,6 @@ from course.functions import spectrum
 from course.init_course import init_notebook
 
 init_notebook()
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction: weak topological phases

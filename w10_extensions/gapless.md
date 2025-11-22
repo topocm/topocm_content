@@ -115,7 +115,7 @@ def plot_dets(syst, p, ks, chiral=False):
     return pl.options(xticks=pi_ticks, yticks=pi_ticks, interpolation=None)
 
 
-lat = kwant.lattice.honeycomb()
+lat = kwant.lattice.honeycomb(norbs=1)
 a, b = lat.sublattices
 graphene = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 graphene[lat.shape(lambda pos: True, (0, 0))] = 0
@@ -231,7 +231,7 @@ def hopy(site1, site2, t, delta):
     return -t * pauli.sz + delta * pauli.sx
 
 
-lat = kwant.lattice.square()
+lat = kwant.lattice.square(norbs=2)
 dwave_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 dwave_infinite[lat(0, 0)] = onsite
 dwave_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
@@ -258,7 +258,7 @@ det_plot1 = (
     * holoviews.Curve(([-np.pi, np.pi], [np.pi, -np.pi]))
     * holoviews.Curve(([-np.pi, np.pi - 2 * k], [np.pi - 2 * k, -np.pi]))
     * holoviews.Curve(([-np.pi + 2 * k, np.pi], [np.pi, -np.pi + 2 * k]))
-).relabel("$\det(h)$")
+).relabel(r"$\det(h)$")
 
 det_plot2 = det_plot * holoviews.VLine(k) * holoviews.VLine(-k)
 
@@ -348,7 +348,7 @@ mus = np.linspace(-0.4, 2, 13)
 kwargs = dict(
     k_x=np.linspace(-np.pi, 0),
     k_y=np.linspace(-np.pi, np.pi),
-    title=lambda p: f"Weyl semimetal, $\mu = {p['mu']:.2}$",
+    title=lambda p: rf"Weyl semimetal, $\mu = {p['mu']:.2}$",
     num_bands=4,
 )
 

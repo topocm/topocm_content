@@ -28,6 +28,7 @@ In this chapter, we briefly review the concepts most relevant to this course.
 If you think you know how you would proceed if you are given to compute the bandstructure of graphene then you can likely skip this chapter.
 
 ### Quantum mechanics: electrons as waves
+
 Quantum mechanics begins with stating that particles such as electrons should really be treated
 as waves. These waves are described by the famous Schrodinger equation
 
@@ -40,6 +41,7 @@ The problem of analyzing this Schrodinger equation can be reduced to the eigenva
 In the following, we assume familiarity with basic finite dimensional linear (matrix) algebra.
 
 #### Schrodinger equation besides electrons
+
 Our main focus is quantum-mechanical systems, however, as we will see, many ideas apply also in completely classical context of sound propagation and elasticity.
 To see this, let us  convert a familiar wave-equation for a string in to a Schrodinger-like form.
 You must have seen a wave-equation for a string that looks like
@@ -67,6 +69,7 @@ Now those of you who know basic quantum mechanics might say this is a very stran
 But this indeed is the wave-function for helical Majorana particles that we encounter later on.
 
 #### Applying the Schrodinger equation
+
 The wave-function $\Psi$ in the Schrodinger equation that describes electrons is typically a complex though the Hamiltonian is not a matrix (thankfully):
 
 $$
@@ -100,8 +103,9 @@ In this case, the Hamiltonian $H$ becomes a matrix with components $H_{ab}$.
 These definitions transform the time-independent Schrodinger equation into a matrix eigenvalue problem from linear algebra.
 Once we know how to set-up the matrix $H_{ab}$ to model a particular material, we can extract the properties of the material from the wave-function components $\psi_a$ and energy (eigenvalue) $E$.
 A few key properties of the Schrodinger equation $H\psi^{(n)}=E^{(n)}\psi^{(n)}$ are:
+
 * if $H$ is an $N\times N$ matrix, the eigenvalue index $n$ goes from $n=1,\dots,N$.
-*  $H$ is Hermitian i.e. $H_{ab}=H_{ba}^*$.
+* $H$ is Hermitian i.e. $H_{ab}=H_{ba}^*$.
 * Eigenstates are orthogonal i.e. $\psi^{(n)\dagger} \psi^{(m)}=0$ for $m\neq n$.
 
 +++
@@ -131,6 +135,7 @@ $$
 which can be checked to be the same equation as the linear algebra form.
 
 #### Example: Atomic triangle
+
 Let's now work out the simple example of electrons moving in a triangle of atoms, where each atom has one orbital. We label the orbitals as $|0\rangle,|1\rangle,|2\rangle$.
 With this labeling, the **hopping** amplitude $t$ of electrons between orbitals has the Hamiltonian
 

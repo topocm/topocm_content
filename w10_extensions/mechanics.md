@@ -78,6 +78,8 @@ To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
 ```{code-cell} ipython3
+:tags: [remove-input]
+
 # We display latex as a workaround to force MathJax rather than KaTeX rendering
 
 Latex(r"""$$

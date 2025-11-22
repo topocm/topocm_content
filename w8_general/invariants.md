@@ -92,7 +92,7 @@ def two_terminal(L, W):
         (x, y) = pos
         return 0 <= y < W
 
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     # definition of system

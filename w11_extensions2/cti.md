@@ -125,7 +125,7 @@ def nanowire_chains(length=40, n=2):
         (x, y) = pos
         return (0 <= x < n) and (0 <= y < length)
 
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=4)
     sym = kwant.TranslationalSymmetry((n, 0))
     syst = kwant.Builder(sym)
 
@@ -172,7 +172,7 @@ def stacked_qwz(w=50):
     def onsite(site, t, mu):
         return pauli.sz * (4 * t + mu)
 
-    lat = kwant.lattice.general(np.eye(3))
+    lat = kwant.lattice.general(np.eye(3), norbs=4)
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0), (0, 2, 0)))
 
     syst[lat.shape(shape, (0, 0, 0))] = onsite

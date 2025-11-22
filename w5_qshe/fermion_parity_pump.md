@@ -457,7 +457,7 @@ def scattering_det_pfaff(syst, p):
     xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
     return plot.relabel("Winding", depth=1)[xlims, ylims].options(
-        xticks=[(0, "0"), (np.pi, "$\pi$")], yticks=pi_ticks
+        xticks=[(0, "0"), (np.pi, r"$\pi$")], yticks=pi_ticks
     )
 
 

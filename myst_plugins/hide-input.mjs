@@ -11,10 +11,19 @@ const ensureTags = (data = {}) => {
   return { ...data, tags: [...tags] };
 };
 
+const hasTag = (tags = [], name) => tags.map((t) => String(t).toLowerCase()).includes(name);
+
 const visit = (node) => {
   if (!node || typeof node !== 'object') return;
 
   if (node.type === 'block' && node.kind === 'notebook-code') {
+    const blockTags = toTagList(node.data?.tags);
+    const childCode = node.children?.find((child) => child?.type === 'code');
+    const codeTags = toTagList(childCode?.data?.tags);
+    const allTags = [...blockTags, ...codeTags];
+
+    if (hasTag(allTags, 'remove-cell') || hasTag(allTags, 'remove-input')) return;
+
     node.data = ensureTags(node.data);
 
     node.children?.forEach((child) => {

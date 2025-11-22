@@ -18,16 +18,10 @@ from IPython import display, get_ipython
 from . import functions
 
 init_course = [
-    "np",
-    "matplotlib",
-    "kwant",
-    "holoviews",
     "init_notebook",
     "pprint_matrix",
     "scientific_number",
     "pretty_fmt_complex",
-    "plt",
-    "pf",
 ]
 
 __all__ = init_course + functions.__all__
@@ -155,5 +149,24 @@ def init_notebook():
 
     # Silence Kwant warnings from color scale overflow
     warnings.filterwarnings(
-        "ignore", category=RuntimeWarning, message="The plotted data contains"
+        "ignore",
+        category=RuntimeWarning,
+        message="The plotted data contains",
     )
+    # Already fixed in newer Kwant versions
+    warnings.filterwarnings(
+        "ignore",
+        category=matplotlib.MatplotlibDeprecationWarning,
+        message="The proj_transform_clip function was deprecated",
+    )
+    # We don't use plotly
+    warnings.filterwarnings(
+        "ignore",
+        category=RuntimeWarning,
+        message="plotly is not available",
+    )
+
+    # Circumvent a deprecation warning in Kwant
+    from mpl_toolkits.mplot3d import proj3d
+
+    proj3d.proj_transform_clip = proj3d.proj_transform

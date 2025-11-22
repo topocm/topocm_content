@@ -376,7 +376,7 @@ def plot_charge(syst, p, energy):
     charge = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
     charge -= charge[0]
 
-    title = f"$\mu={mu:.2}$"
+    title = rf"$\mu={mu:.2}$"
     kdims = [r"$t/T$", r"$q/e$"]
     plot = holoviews.Path(
         (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"

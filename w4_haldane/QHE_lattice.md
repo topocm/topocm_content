@@ -134,7 +134,7 @@ $$
 Aside from special points, this spectrum is gapped, just like we wanted. For instance it is gapped if $\mu<-2t-2\gamma$. If we start from this point and increase the value of $\mu$, the gap closes at the point $\mu = -2t-2\gamma$ and then reopens:
 
 ```{code-cell} ipython3
-lat = kwant.lattice.square()
+lat = kwant.lattice.square(norbs=2)
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 

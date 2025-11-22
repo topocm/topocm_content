@@ -190,7 +190,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
         return -t * np.exp(-0.5j * B * (x1 + x2) * (y1 - y2))
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(bar, (0, 0))] = onsite
@@ -358,7 +358,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
         return hopping(site1, site2, t, B) * np.exp(1j * phi)
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(ring, (0, r_in + 1))] = onsite
@@ -514,7 +514,7 @@ We can now look again at the Laughlin pump, monitoring at the same time the Land
 
 ```{code-cell} ipython3
 def qhe_cylinder(W):
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
 
     syst[lat.shape((lambda pos: 0 <= pos[1] < W), (0, 0))] = onsite

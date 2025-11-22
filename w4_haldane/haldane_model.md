@@ -74,7 +74,7 @@ $$
 The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives rise to the famous band structure of graphene, with the two bands touching at the six corners of the Brillouin zone:
 
 ```{code-cell} ipython3
-honeycomb = kwant.lattice.honeycomb()
+honeycomb = kwant.lattice.honeycomb(norbs=1)
 a, b = honeycomb.sublattices
 nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
 nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
@@ -475,7 +475,7 @@ At the same time it's important to know that the particular distribution of the 
 For instance, here is a slider plot for the Berry curvature for the quantum Hall lattice model studied in the previous chapter.
 
 ```{code-cell} ipython3
-lat = kwant.lattice.square()
+lat = kwant.lattice.square(norbs=2)
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 

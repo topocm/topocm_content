@@ -23,12 +23,9 @@ import holoviews
 import kwant
 import matplotlib
 import numpy as np
-import warnings
 
 
 init_notebook()
-
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction: searching the periodic table for topological materials
