@@ -16,18 +16,11 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from IPython.display import HTML
-from nbconvert.filters.markdown import markdown2html_pandoc
-
 import numpy as np
-from IPython.display import display_html
+from IPython.display import Latex
 from course.init_course import init_notebook
 
 init_notebook()
-
-
-def displaymd(markdown):
-    return display_html(HTML(markdown2html_pandoc(markdown)))
 
 
 # Markdown tables are ugly, and Mathjax doesn't support \tabular,
@@ -35,24 +28,16 @@ def displaymd(markdown):
 # the \array rows less dense.
 
 table_header = r"""$$
-colordefs
-\newcommand\T{\Rule{0pt}{1em}{.3em}}
-\begin{array}{fmt}
+\require{{color}}
+\require{{action}}
+{colordefs}
+\newcommand\T{{\Rule{{0pt}}{{1em}}{{.3em}}}}
+\begin{{array}}{{{fmt}}}
 \hline
-body\\
+{body}\\
 \hline
-\end{array}
+\end{{array}}
 $$"""
-
-replacements = [
-    ("{", "{{"),
-    ("}", "}}"),
-    ("colordefs", "{colordefs}"),
-    ("fmt", "{fmt}"),
-    ("body", "{body}"),
-]
-for i, j in replacements:
-    table_header = table_header.replace(i, j)
 
 # Symmetry classes names and their symmetry properties
 symmetry_classes = ("A", "AIII", "AI", "BDI", "D", "DIII", "AII", "CII", "C", "CI")
@@ -199,7 +184,7 @@ rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 colordefs = "{}"
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 This table has a lot of logic in it, but to you it most likely looks no better than this:
@@ -218,7 +203,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in full_table]
 rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 But don't worry, we are going to learn exactly what these tables mean.
@@ -295,7 +280,7 @@ rows[1] = r"\hline " + rows[1]
 
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 The somewhat cryptic notations in the leftmost column are just the names of the different symmetry classes. (Also the 'I's appearing there are Roman cardinal numbers, so for instance BDI is 'B D one', and AIII is "A three".)
@@ -355,11 +340,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in table]
 rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
-HTML(
-    markdown2html_pandoc(
-        table_header.format(colordefs=colordefs, fmt=format_string, body=block)
-    )
-)
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 As you can see, the Majorana wire and the $p$-wave superconductor are in class D, the Chern insulators in class A, and the time-reversal invariant topological insulators in class AII. These names occur quite often in the literature.
@@ -459,7 +440,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 Finally some order appears!
@@ -491,7 +472,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
 rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 ### Reading the table by columns
@@ -515,7 +496,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 We can check this statement for some cases we know. For instance, in $d=0$ the $\mathbb{Z}$ topological invariant is the number of filled energy levels, which applies to quantum dots with broken time-reversal symmetry (class A), spinless time-reversal symmetry (class AI) and spinful time-reversal symmetry (class AII, which has $2\mathbb{Z}$ because of Kramers degeneracy). In $d=2$, the $\mathbb{Z}$ topological invariant is the Chern number, and we saw how it applies to both the Chern insulators in class A and the $p$-wave superconductor in class D.
@@ -541,7 +522,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 Again, this dimensional reduction can best be understood with an example we already know. Consider the symmetry class $D$. In $d=2$ it has a $\mathbb{Z}$ topological phase, the $p$-wave superconductor.

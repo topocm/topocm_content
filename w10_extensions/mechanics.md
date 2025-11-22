@@ -16,13 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course import topomech
-
+from IPython.display import Latex
 import numpy as np
 import holoviews
-from course.init_course import init_notebook
-
 from matplotlib import pyplot as plt
+
+from course import topomech
+from course.init_course import init_notebook
 
 init_notebook()
 ```
@@ -77,7 +77,11 @@ To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{
 
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
-$$
+```{code-cell} ipython3
+# We display latex as a workaround to force MathJax rather than KaTeX rendering
+
+Latex(r"""$$
+\require{action}
 \toggle{
 \cos(\theta _{n} + \theta _{n+1}) - \cos(2\bar{\theta}) + \frac{a}{r}(\sin\theta _{n} - \sin\theta _{n+1})=0
 \textit{ (click for explanation)}.}{
@@ -88,7 +92,8 @@ l^2 = 2 r^2 + a^2 + 2r^2 \cos\theta_1\cos\theta_2 - 2r^2\sin\theta_1\sin\theta_2
 (l^2 - 2r^2 - a^2)/2r = \color{red}{r\cos(\theta_1 + \theta_2) + a(\sin\theta_1 - \sin\theta_2) = r\cos(2\bar{\theta})}
 }
 \endtoggle
-$$
+$$""")
+```
 
 To take the continuum limit of the above equation, we define a slowly-varying angular field $\theta (x)$ and subsequently define the field $u(x)=r\sin\theta (x)$, the $x$-component of the position of the mass. When $r/a$ is sufficiently small, we obtain
 
