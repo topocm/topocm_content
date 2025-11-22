@@ -58,6 +58,7 @@ class LimitingKernelManager(AsyncMappingKernelManager):
 
 c = get_config()  # noqa: F821
 c.ServerApp.ip = "127.0.0.1"  # Needed to specify explicitly to avoid binding to ::1.
+c.ServerApp.allow_root = True  # CI often runs as root inside containers.
 c.ServerApp.kernel_manager_class = LimitingKernelManager
 
 # Respect JUPYTER_NUM_PROCS environment variable if set. This allows CI (e.g.
