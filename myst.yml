@@ -89,6 +89,8 @@ project:
       path: myst_plugins/youtube.mjs
     - type: javascript
       path: myst_plugins/quizzes.mjs
+    - type: javascript
+      path: myst_plugins/hide-input.mjs
 site:
   options:
     logo: logo_small.jpg
