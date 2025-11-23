@@ -7,6 +7,14 @@ variables:
   JUPYTER_NUM_PROCS: "10"
   HOST: "127.0.0.1"  # Needed to avoid binding to ::1.
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        BASE_URL: "/branch_${CI_COMMIT_REF_SLUG}"
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - when: never
+
 stages:
   - build
   - deploy
@@ -47,28 +55,42 @@ build html:
     - chmod 700 ~/.ssh
   script:
     - |
-      if [ -d _build/html ]; then
-        BUILD_DIR=_build/html
-      elif [ -d _build/site/public ]; then
-        BUILD_DIR=_build/site/public
-      else
-        echo "No HTML output found" && exit 1
-      fi
-      rsync -ravz ${BUILD_DIR}/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
+      rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
 
-upload test website:
+upload branch website:
   extends: .upload_website
-  environment: test
-  only:
-    - branches@qt/topocm
-  except:
-    - master@qt/topocm
+  environment:
+    name: branch/$CI_COMMIT_REF_SLUG
+    on_stop: stop branch website
+    url: https://topocondmat.org/branch_${CI_COMMIT_REF_SLUG}/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   variables:
-    WEBSITE_UPLOAD_PATH: /test
+    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
+
+stop branch website:
+  extends: .upload_website
+  stage: deploy
+  needs: []
+  script:
+    - mkdir -p /tmp/empty_dir
+    - rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
+  when: manual
+  environment:
+    name: branch/$CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+  variables:
+    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
+  allow_failure: false
 
 upload main website:
   extends: .upload_website
-  environment: published
+  environment:
+    name: published
+    url: https://topocondmat.org/
   only:
     - master@qt/topocm
   variables:
