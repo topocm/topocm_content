@@ -2,8 +2,28 @@ version: 1
 project:
   title: 'Topology in condensed matter: tying quantum knots'
   authors:
-    - name: Topology course team
-  copyright: 2021, TU Delft, CC-BY-SA 4.0 (materials) & BSD (code)
+    - name: Anton Akhmerov
+      affiliation: TU Delft
+      email: topocondmat@antonakhmerov.org
+      orcid: 0000-0001-8031-1340
+    - name: Jay Sau
+      affiliation: University of Maryland
+    - name: Bernard van Heck
+      affiliation: Leiden University
+    - name: Sebastian Rubbert
+      affiliation: TU Delft
+    - name: Rafał Skolasiński
+      affiliation: TU Delft
+    - name: Bas Nijholt
+      affiliation: TU Delft
+    - name: Irfan Muhammad
+      affiliation: TU Delft
+    - name: Tómas Örn Rosdahl
+      affiliation: TU Delft
+  copyright: 2025, TU Delft
+  license:
+    code: BSD-3-Clause
+    content: CC-BY-SA-4.0
   exclude:
     - _build
     - src
@@ -14,6 +34,8 @@ project:
   github: topocm/topocm_content
   toc:
     - file: index.md
+    - file: license.md
+      hidden: true
     - title: Before you begin
       children:
         - file: w0_background/intro.md
