@@ -35,6 +35,9 @@ _build
 .pixi/*
 !.pixi/config.toml
 
+# Node
+node_modules/
+
 # jupyter data
 .jupyter/*
 !.jupyter/jupyter_server_config.py
