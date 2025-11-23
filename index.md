@@ -53,8 +53,7 @@ Built for curious students, educators, and researchers.
 This is a [open](license.md) online course on topology in condensed matter.
 Initially developed for the edX platform in 2015, its development continues here.
 
-:::{admonition} Learning goals
-:info:
+:::{important} Learning goals
 
 After following this course you will
 
