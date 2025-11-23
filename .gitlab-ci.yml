@@ -38,7 +38,6 @@ build html:
   artifacts:
     paths:
       - _build/html
-      - _build/site
     expire_in: 7d
 
 .upload_website:
