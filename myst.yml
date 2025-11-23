@@ -98,4 +98,5 @@ site:
   options:
     logo: logo_small.jpg
     folders: true
+    style: "styles/holoviews.css"
   template: book-theme

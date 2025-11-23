@@ -1,0 +1,35 @@
+/* Keep Holoviews/Panel outputs responsive so HoloMaps don't overflow. */
+.article img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.article .pn-column,
+.article .pn-row,
+.article .pn-FlexBox,
+.article .pn-GridBox,
+.article .pn-Column,
+.article .pn-Row,
+.article .pn-GridStack,
+.article .pn-FloatPanel,
+.article .pn-react,
+.article .pn-ReactComponent,
+.article .pn-HTML,
+.article .pn-js-plotly-plot {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 0 !important;
+}
+
+.article .bk-Row {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Holoviews matplotlib exports ship width/height inline; override them. */
+.article img[style*="object-fit"],
+.article .pn-HTML img,
+.article .output img {
+  width: 100% !important;
+}

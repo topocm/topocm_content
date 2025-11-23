@@ -101,7 +101,7 @@ def init_notebook():
     check_versions()
 
     holoviews.notebook_extension("matplotlib")
-    holoviews.output(widget_location="bottom")
+    holoviews.output(widget_location="bottom", size=80)
 
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui="inline")
@@ -117,6 +117,16 @@ def init_notebook():
 
     # Set plot style.
     options = Store.options(backend="matplotlib")
+    options.Layout = Options("plot", tight=True, fig_size=60)
+    options.Overlay = Options("plot", fig_size=60)
+    base_plot_opts = Options(
+        "plot",
+        fig_size=60,
+        fontsize={"title": 9, "labels": 9, "ticks": 7},
+    )
+    options.Curve = base_plot_opts
+    options.Path = base_plot_opts
+    options.Image = base_plot_opts
     options.Contours = Options("style", linewidth=2, color="k")
     options.Contours = Options("plot", padding=0, aspect="square")
     options.HLine = Options("style", linestyle="--", color="b", linewidth=2)
