@@ -9,6 +9,25 @@ kernelspec:
   display_name: Python 3
   language: python
   name: python3
+authors:
+- name: Anton Akhmerov
+  affiliation: TU Delft
+  email: topocondmat@antonakhmerov.org
+  orcid: 0000-0001-8031-1340
+- name: Jay Sau
+  affiliation: University of Maryland
+- name: Bernard van Heck
+  affiliation: Leiden University
+- name: Sebastian Rubbert
+  affiliation: TU Delft
+- name: Rafał Skolasiński
+  affiliation: TU Delft
+- name: Bas Nijholt
+  affiliation: TU Delft
+- name: Irfan Muhammad
+  affiliation: TU Delft
+- name: Tómas Örn Rosdahl
+  affiliation: TU Delft
 ---
 
 # Online course on topology in condensed matter
