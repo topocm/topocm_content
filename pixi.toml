@@ -20,11 +20,9 @@ matplotlib-base = ">=3.10.7,<4"
 kwant = ">=1.5.0,<2"
 scipy = ">=1.16.3,<2"
 holoviews = ">=1.22.0,<2"
-feedparser = ">=6.0.12,<7"
 sympy = ">=1.14.0,<2"
 pfapack = ">=0.3.1,<0.4"
 ipython = ">=9.7.0,<10"
-markdown = ">=3.10,<4"
 ipykernel = ">=7.1.0,<8"
 jupyter_server = ">=2.17.0,<3"
 jupytext = ">=1.18.1,<2"
@@ -32,14 +30,19 @@ pre-commit = ">=4.4.0,<5"
 mystmd = ">=1.6.4,<2"
 
 [pypi-dependencies]
-ruamel-yaml = ">=0.18.16, <0.19"
 jupyter-book = ">=2.0.2, <3"
 topocm-course = { path = ".", editable = true }
+
+[tasks.clean-cache]
+# Cache busting task to force rebuilds when the package or the env changes
+cmd = "jupyter book clean --execute -y"
+inputs = ["course/*.py", "course/matplotlibrc"]
 
 [tasks.build-html]
 cmd = "jupyter book build --execute --html --strict"
 inputs = ["myst.yml", "**/*.md"]
 outputs = ["_build/site", "_build/html"]
+depends-on = ["clean-cache"]
 
 [tasks.postprocess-html]
 cmd = "python scripts/postprocess_html.py"
