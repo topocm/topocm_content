@@ -28,6 +28,9 @@ jupyter_server = ">=2.17.0,<3"
 jupytext = ">=1.18.1,<2"
 pre-commit = ">=4.4.0,<5"
 mystmd = ">=1.6.4,<2"
+plotly = ">=6.5.0,<7"
+openssh = ">=10.2p1,<11"
+rsync = ">=3.4.1,<4"
 
 [pypi-dependencies]
 jupyter-book = ">=2.0.2, <3"

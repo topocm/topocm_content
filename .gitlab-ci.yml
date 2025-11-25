@@ -30,50 +30,59 @@ stages:
     - git config --global --add safe.directory $CI_PROJECT_DIR
     - pixi install
 
-build html:
+build branch website:
   stage: build
   extends: .pixi-job
-  script:
-    - pixi run postprocess-html
-  artifacts:
-    paths:
-      - _build/html
-    expire_in: 7d
-
-.upload_website:
-  stage: deploy
-  image: eeacms/rsync
-  needs:
-    - job: build html
-      artifacts: true
-  before_script:
-    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-    - eval $(ssh-agent -s)
-    - echo "$WEBSITE_UPLOAD_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-  script:
-    - |
-      rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
-
-upload branch website:
-  extends: .upload_website
-  environment:
-    name: branch/$CI_COMMIT_REF_SLUG
-    on_stop: stop branch website
-    url: https://topocondmat.org/branch_${CI_COMMIT_REF_SLUG}/
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   variables:
     WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
+  environment:
+    name: branch/$CI_COMMIT_REF_SLUG
+    on_stop: stop branch website
+    url: https://topocondmat.org/branch_${CI_COMMIT_REF_SLUG}/
+  script:
+    - pixi run postprocess-html
+    - pixi run bash -lc '
+        eval "$(ssh-agent -s)";
+        echo "$WEBSITE_UPLOAD_KEY" | tr -d "\r" | ssh-add - >/dev/null;
+        mkdir -p ~/.ssh;
+        chmod 700 ~/.ssh;
+        rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
+      '
+
+build main website:
+  stage: build
+  extends: .pixi-job
+  only:
+    - master@qt/topocm
+  variables:
+    WEBSITE_UPLOAD_PATH: /
+  environment:
+    name: published
+    url: https://topocondmat.org/
+  script:
+    - pixi run postprocess-html
+    - pixi run bash -lc '
+        eval "$(ssh-agent -s)";
+        echo "$WEBSITE_UPLOAD_KEY" | tr -d "\r" | ssh-add - >/dev/null;
+        mkdir -p ~/.ssh;
+        chmod 700 ~/.ssh;
+        rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
+      '
 
 stop branch website:
-  extends: .upload_website
+  extends: .pixi-job
   stage: deploy
-  needs: []
   script:
-    - mkdir -p /tmp/empty_dir
-    - rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
+    - pixi run bash -lc '
+        eval "$(ssh-agent -s)";
+        echo "$WEBSITE_UPLOAD_KEY" | tr -d "\r" | ssh-add - >/dev/null;
+        mkdir -p ~/.ssh;
+        chmod 700 ~/.ssh;
+        mkdir -p /tmp/empty_dir;
+        rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
+      '
   when: manual
   environment:
     name: branch/$CI_COMMIT_REF_SLUG
@@ -84,13 +93,3 @@ stop branch website:
   variables:
     WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
   allow_failure: false
-
-upload main website:
-  extends: .upload_website
-  environment:
-    name: published
-    url: https://topocondmat.org/
-  only:
-    - master@qt/topocm
-  variables:
-    WEBSITE_UPLOAD_PATH: /
