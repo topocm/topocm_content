@@ -17,13 +17,18 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
+
 import kwant
-from course.functions import spectrum
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import init_notebook
 
 init_notebook()
-holoviews.output(size=150)
 ```
 
 ## Introduction
@@ -261,15 +266,15 @@ Bs = np.linspace(0.02, 0.15, 200)
 ```{code-cell} ipython3
 sigmasxx, sigmasxy = zip(*[conductivities(syst, p) for p["B"] in Bs])
 
-kdims = [r"$B^{-1} [a.u.]$", r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$"]
-plot_xx = holoviews.Path(
-    (1 / Bs, sigmasxx), label=r"$\sigma_{xx}$", kdims=kdims
-).options(color="k")
-plot_xy = holoviews.Path(
-    (1 / Bs, sigmasxy), label=r"$\sigma_{xy}$", kdims=kdims
-).options(color="r")
-
-(plot_xx * plot_xy).options(xticks=0, yticks=list(range(8)))
+line_plot(
+    1 / Bs,
+    np.vstack([sigmasxx, sigmasxy]).T,
+    labels=[r"$\sigma_{xx}$", r"$\sigma_{xy}$"],
+    x_label=r"$B^{-1} [a.u.]$",
+    y_label=r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$",
+    y_ticks=list(range(8)),
+    show_legend=True,
+)
 ```
 
 Numerical systems are so good that the longitudinal conductivity always stays low even at the transition.
@@ -406,12 +411,20 @@ def plot_pumping(syst, p):
     charges = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
     charges -= charges[0]
 
-    kdims = [r"$\phi/2\pi$", r"$q_{pump}$"]
     title = f"$\\mu = {p['mu']:.2f}, \\sigma_H = {round(charges[-1])} \\cdot e^2/h$"
 
-    return holoviews.Path(
-        (phis / (2 * np.pi), charges), kdims=kdims, label=title
-    ).options(xticks=[0, 1], yticks=[0, 1, 2, 3], aspect="square")[:, 0:3.1]
+    fig = line_plot(
+        phis / (2 * np.pi),
+        charges,
+        x_label=r"$\phi/2\pi$",
+        y_label=r"$q_{pump}$",
+        x_ticks=[0, 1],
+        y_ticks=[0, 1, 2, 3],
+        show_legend=False,
+    )
+    fig.update_xaxes(range=[0, 3.1])
+    fig.update_layout(title=title, height=350)
+    return fig
 ```
 
 ```{code-cell} ipython3
@@ -419,8 +432,8 @@ W = 20
 p = dict(t=1, B=(2 * np.pi / W))
 syst = qhe_corbino(r_out=(2 * W), r_in=20, w_lead=10)
 mus = np.linspace(0.4, 1.5, 11)
-pumping_map = holoviews.HoloMap(
-    {p["mu"]: plot_pumping(syst, p) for p["mu"] in mus}, kdims=[r"$\mu$"]
+pumping_map = slider_plot(
+    {p["mu"]: plot_pumping(syst, p) for p["mu"] in mus}, label="μ"
 )
 pumping_map
 ```
@@ -534,12 +547,11 @@ kwargs = {
 }
 
 sys1 = qhe_cylinder(W)
-HLine = holoviews.HLine(0).options(linestyle="--", color="r")
-
-landau_levels = holoviews.HoloMap(
-    {p["mu"]: spectrum(sys1, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
-)
-pumping_map + landau_levels * HLine
+landau_level_frames = {p["mu"]: spectrum(sys1, p, **kwargs) for p["mu"] in mus}
+for fig in landau_level_frames.values():
+    add_reference_lines(fig, y=0, line_color="red", line_dash="dash")
+landau_levels = slider_plot(landau_level_frames, label="μ")
+combine_plots([pumping_map, landau_levels], cols=2)
 ```
 
 ```{multiple-choice} Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, and with 2 Landau levels filled. Approximately, how many electrons does it contain?

@@ -17,11 +17,11 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 import kwant
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-from course.functions import pauli
-from course.functions import spectrum
+from course.functions import add_reference_lines, combine_plots, pauli, slider_plot, spectrum
 
 from course.init_course import init_notebook
 
@@ -239,8 +239,6 @@ The Burgers' vector is parallel to the $z$-axis and has unit length (the disloca
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
 ```{code-cell} ipython3
-from holoviews import opts
-
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -264,8 +262,8 @@ parameters = dict(
 )
 
 screw_dislocation_spectra = {
-    name: spectrum(syst, p=parameters[name], **kwargs).relabel(
-        f"Band structure, {name}"
+    name: spectrum(syst, p=parameters[name], **kwargs).update_layout(
+        title=f"Band structure, {name}"
     )
     for name, syst in screw_dislocations.items()
 }
@@ -295,25 +293,52 @@ for name, syst in screw_dislocations.items():
     densities[name] = [density_array(syst, psi) for psi in vecs.T[indices]]
 
 
-opts.defaults(opts.Raster(cmap="gist_heat_r", interpolation=None, framewise=True))
-
-holoviews.HoloMap(
-    {
-        (n, name): (
-            (
-                spectrum
-                * holoviews.Points((k_z, energy)).options(s=50)
-                * holoviews.VLine(k_z)
-            )
-            + holoviews.Raster(density.T, label=r"$\left|\psi\right|^2$").options(
-                cmap="gist_heat_r", interpolation=None
-            )
+frames = {}
+for name, spec_fig in screw_dislocation_spectra.items():
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
+        fig = make_subplots(rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1)
+        for trace in spec_fig.data:
+            fig.add_trace(trace, row=1, col=1)
+        fig.add_trace(
+            go.Scatter(
+                x=[k_z],
+                y=[energy],
+                mode="markers",
+                marker=dict(color="blue", size=8),
+                showlegend=False,
+            ),
+            row=1,
+            col=1,
         )
-        for name, spectrum in screw_dislocation_spectra.items()
-        for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
-    },
-    kdims=["n", "model"],
-).collate()
+        fig.update_xaxes(
+            title=spec_fig.layout.xaxis.title.text,
+            tickvals=spec_fig.layout.xaxis.tickvals,
+            ticktext=spec_fig.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec_fig.layout.yaxis.title.text,
+            range=spec_fig.layout.yaxis.range,
+            tickvals=spec_fig.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+        fig.add_trace(
+            go.Heatmap(
+                z=density.T,
+                colorscale="YlOrRd",
+                colorbar=dict(title=r"$|\psi|^2$"),
+            ),
+            row=1,
+            col=2,
+        )
+        fig.update_xaxes(title="x", row=1, col=2)
+        fig.update_yaxes(title="y", row=1, col=2)
+        fig.update_layout(title=f"{name}: state {n}")
+        frames[f"{name} n={n}"] = fig
+
+slider_plot(frames, label="state")
 ```
 
 You see that the band structure is gapless: because of the presence of the dislocation, there are states dispersing below the bulk gap along the $z$ direction.
@@ -406,8 +431,8 @@ edge_dislocations = dict(
 )
 
 edge_dislocation_spectra = {
-    name: spectrum(syst, p=parameters[name], **kwargs).relabel(
-        f"Band structure, {name}"
+    name: spectrum(syst, p=parameters[name], **kwargs).update_layout(
+        title=f"Band structure, {name}"
     )
     for name, syst in edge_dislocations.items()
 }
@@ -426,23 +451,52 @@ for name, syst in edge_dislocations.items():
     densities[name] = [density_array(syst, psi).T for psi in vecs.T[indices]]
 
 
-holoviews.HoloMap(
-    {
-        (n, name): (
-            (
-                spectrum
-                * holoviews.Points((k_z, energy)).options(s=50)
-                * holoviews.VLine(k_z)
-            )
-            + holoviews.Raster(density, label=r"$\left|\psi\right|^2$").options(
-                cmap="gist_heat_r", interpolation=None
-            )
+frames = {}
+for name, spec_fig in edge_dislocation_spectra.items():
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
+        fig = make_subplots(rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1)
+        for trace in spec_fig.data:
+            fig.add_trace(trace, row=1, col=1)
+        fig.add_trace(
+            go.Scatter(
+                x=[k_z],
+                y=[energy],
+                mode="markers",
+                marker=dict(color="blue", size=8),
+                showlegend=False,
+            ),
+            row=1,
+            col=1,
         )
-        for name, spectrum in edge_dislocation_spectra.items()
-        for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
-    },
-    kdims=["n", "model"],
-).collate()
+        fig.update_xaxes(
+            title=spec_fig.layout.xaxis.title.text,
+            tickvals=spec_fig.layout.xaxis.tickvals,
+            ticktext=spec_fig.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec_fig.layout.yaxis.title.text,
+            range=spec_fig.layout.yaxis.range,
+            tickvals=spec_fig.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+        fig.add_trace(
+            go.Heatmap(
+                z=density,
+                colorscale="YlOrRd",
+                colorbar=dict(title=r"$|\psi|^2$"),
+            ),
+            row=1,
+            col=2,
+        )
+        fig.update_xaxes(title="x", row=1, col=2)
+        fig.update_yaxes(title="y", row=1, col=2)
+        fig.update_layout(title=f"{name}: state {n}")
+        frames[f"{name} n={n}"] = fig
+
+slider_plot(frames, label="state")
 ```
 
 ```{multiple-choice} What would happen in both simulations above if we changed the dislocation, making the Burgers vector twice as long?

@@ -16,13 +16,13 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.functions import pauli, spectrum
+from course.functions import add_reference_lines, combine_plots, line_plot, pauli, spectrum
 from course.init_course import init_notebook
 
-import holoviews
 import kwant
 import matplotlib
 import numpy as np
+import plotly.graph_objects as go
 
 
 init_notebook()
@@ -107,12 +107,17 @@ conductances = [
 ]
 
 xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
-conductance_plot = (
-    holoviews.Path((mus, conductances), kdims=[xdim, ydim])
-    .options(xticks=3, yticks=[0, 2, 4, 6, 8])
-    .redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)})
-    .relabel("Conductance")
+conductance_plot = line_plot(
+    mus,
+    conductances,
+    x_label=xdim,
+    y_label=ydim,
+    x_range=(-0.4, 0.4),
+    y_range=(0, 8),
+    y_ticks=[0, 2, 4, 6, 8],
+    show_legend=False,
 )
+conductance_plot.update_layout(title="Conductance")
 
 kwargs = {
     "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
@@ -121,7 +126,10 @@ kwargs = {
     "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
 }
 
-conductance_plot + spectrum(wire, {**p, "mu_lead": 0}, **kwargs).relabel("Spectrum")
+spec_fig = spectrum(wire, {**p, "mu_lead": 0}, **kwargs).update_layout(
+    title="Spectrum"
+)
+combine_plots([conductance_plot, spec_fig], cols=2)
 ```
 
 It is also the behavior that is observed experimentally. In the figure below, you see that the resistance of a 3D TI slab reaches a maximum and then decreases as the chemical potential difference between its top and bottom surfaces is varied.
@@ -253,8 +261,6 @@ You see a correction to the Dirac velocity proportional to $\alpha \mathbf{k}^2$
 Let's plot the spectrum of this extended effective Hamiltonian:
 
 ```{code-cell} ipython3
-holoviews.output(fig="png")
-
 A = 1.2
 B = 1.8
 C = 1.5
@@ -290,7 +296,6 @@ vdims = [r"E"]
 xy_ticks = [-1.2, 0, 1.2]
 zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
 style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
-# TriSurface expects flat arrays of x,y,z; pass only data and rely on holoviews defaults
 kwargs = {"extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1])}
 
 # Custom colormap for the hexagonal warping plot
@@ -300,15 +305,30 @@ cmap_list = [
 ]
 hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
 
-# hex_cmap colormap is defined below.
-holoviews.Overlay(
-    [
-        holoviews.TriSurface(
-            (k_x.flat, k_y.flat, band.flat),
-        ).options(cmap=hex_cmap, linewidth=0)
-        for band in energies
-    ]
-).options(fig_size=350)
+fig = go.Figure()
+colorscale = [
+    [pos, matplotlib.colors.to_hex(hex_cmap(pos))] for pos in np.linspace(0, 1, 7)
+]
+for band in energies:
+    fig.add_surface(
+        x=k_x.squeeze(),
+        y=k_y.squeeze(),
+        z=band.squeeze(),
+        colorscale=colorscale,
+        showscale=False,
+        opacity=0.9,
+    )
+fig.update_layout(
+    title="Hexagonal warping",
+    scene=dict(
+        xaxis=dict(title=r"$k_x$", range=xylims, tickvals=xy_ticks),
+        yaxis=dict(title=r"$k_y$", range=xylims, tickvals=xy_ticks),
+        zaxis=dict(title="E", range=zlims, tickvals=zticks),
+    ),
+    width=700,
+    height=500,
+)
+fig
 ```
 
 This Hamiltonian reproduces correctly the *hexagonal warping* of the Fermi surface. In particular, independently of the parameters $\lambda$ and $\alpha$, the vertices of the hexagon are always aligned with the $x$ crystal axis, as is observed experimentally.

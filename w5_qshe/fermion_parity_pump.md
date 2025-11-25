@@ -19,15 +19,20 @@ kernelspec:
 from pfapack import pfaffian as pf
 
 import numpy as np
-import holoviews
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    pauli,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import pprint_matrix
 from course.init_course import init_notebook
 
 init_notebook()
-holoviews.output(size=150)
 ```
 
 ## Introduction
@@ -288,14 +293,11 @@ bhz_parameters = {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0}
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
 Ms = np.linspace(-1, 1, 12)
-dispersion_plots = holoviews.HoloMap(
-    {
-        bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
-        for bhz_parameters["M"] in Ms
-    },
-    kdims=[r"$M$"],
-)
-dispersion_plots
+dispersion_frames = {
+    bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
+    for bhz_parameters["M"] in Ms
+}
+slider_plot(dispersion_frames, label="M")
 ```
 
 This gap closing turns your trivial insulator into a topologically non-trivial quantum spin Hall insulator.
@@ -358,12 +360,23 @@ ribbon_parameters = {
 
 
 (
-    spectrum(bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style).relabel(
-        "Topological"
+    combine_plots(
+        [
+            add_reference_lines(
+                spectrum(bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style),
+                y=0,
+                line_dash="dash",
+                line_color="#666",
+            ).update_layout(title="Topological"),
+            add_reference_lines(
+                spectrum(bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style),
+                y=0,
+                line_dash="dash",
+                line_color="#666",
+            ).update_layout(title="Trivial"),
+        ],
+        cols=1,
     )
-    * holoviews.HLine(0)
-    + spectrum(bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style).relabel("Trivial")
-    * holoviews.HLine(0)
 )
 ```
 
@@ -409,8 +422,6 @@ This gives us a curve which starts at $\textrm{Pf}[r(0)]$ and ends at either $\t
 In the plot below, we show how this trajectory changes for our cylinder geometry as the BHZ model is driven through the topological phase transition. In the right panel, the green dots give you the phase of $\textrm{Pf}[r(0)]$ and $\textrm{Pf}[r(\pi)]$, and the blue line the phase of $\det[r(k)]$.
 
 ```{code-cell} ipython3
-holoviews.output(fig="png")
-
 cylinder_W = 3
 infinite_cylinder = kwant.Builder(kwant.TranslationalSymmetry((1, 0), (0, cylinder_W)))
 infinite_cylinder.fill(bhz_infinite, shape=(lambda site: True), start=(0, 0))
@@ -449,30 +460,93 @@ def scattering_det_pfaff(syst, p):
     det = np.array(det)
 
     phase = np.angle(pfaffians[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    kdims = ["$k_y$", "phase"]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims).options(color="b")
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).options(
-        color="g"
-    )
-    xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    return plot.relabel("Winding", depth=1)[xlims, ylims].options(
-        xticks=[(0, "0"), (np.pi, r"$\pi$")], yticks=pi_ticks
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=ks[1:],
+            y=phase,
+            mode="lines",
+            line=dict(color="blue"),
+            name="Phase",
+        )
     )
+    fig.add_trace(
+        go.Scatter(
+            x=[0, np.pi],
+            y=np.angle(pfaffians),
+            mode="markers",
+            marker=dict(color="green", size=8),
+            name="Pfaffian phase",
+        )
+    )
+    fig.update_layout(
+        title="Winding",
+        xaxis=dict(
+            title="$k_y$",
+            tickvals=[0, np.pi],
+            ticktext=["0", r"$\pi$"],
+            range=[-0.2, np.pi + 0.2],
+        ),
+        yaxis=dict(
+            title="phase",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+            range=[-np.pi - 0.2, np.pi + 0.2],
+        ),
+        showlegend=False,
+    )
+    return fig
 
 
-(
-    dispersion_plots
-    + holoviews.HoloMap(
-        {
-            bhz_parameters["M"]: scattering_det_pfaff(
-                top_invariant_probe, bhz_parameters
-            )
-            for bhz_parameters["M"] in Ms
-        },
-        kdims=[r"$M$"],
+combined = {}
+for M in Ms:
+    disp_fig = dispersion_frames[M]
+    params = dict(bhz_parameters)
+    params["M"] = M
+    pfaff_fig = scattering_det_pfaff(top_invariant_probe, params)
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        column_widths=[0.55, 0.45],
+        horizontal_spacing=0.1,
+        specs=[[{"type": "scene"}, {"type": "xy"}]],
     )
-)
+    for trace in disp_fig.data:
+        fig.add_trace(trace, row=1, col=1)
+    if hasattr(disp_fig.layout, "scene"):
+        fig.update_scenes(
+            xaxis_title=disp_fig.layout.scene.xaxis.title.text,
+            yaxis_title=disp_fig.layout.scene.yaxis.title.text,
+            zaxis_title=disp_fig.layout.scene.zaxis.title.text,
+            row=1,
+            col=1,
+        )
+    else:
+        fig.update_xaxes(title=disp_fig.layout.xaxis.title.text, row=1, col=1)
+        fig.update_yaxes(title=disp_fig.layout.yaxis.title.text, row=1, col=1)
+    for trace in pfaff_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+    fig.update_xaxes(
+        title=pfaff_fig.layout.xaxis.title.text,
+        range=pfaff_fig.layout.xaxis.range,
+        tickvals=pfaff_fig.layout.xaxis.tickvals,
+        ticktext=pfaff_fig.layout.xaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    fig.update_yaxes(
+        title=pfaff_fig.layout.yaxis.title.text,
+        range=pfaff_fig.layout.yaxis.range,
+        tickvals=pfaff_fig.layout.yaxis.tickvals,
+        ticktext=pfaff_fig.layout.yaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    fig.update_layout(title=rf"$M={M:.2f}$")
+    combined[M] = fig
+
+slider_plot(combined, label="M")
 ```
 
 We now have a quantity equal to $\pm 1$, which cannot change continuously unless there's a gap closing (when there's a gap closing, $\det r$ becomes equal to $0$). It is relatively hard to prove that this invariant counts the pumping of fermion parity, but if you're interested, check out this paper:

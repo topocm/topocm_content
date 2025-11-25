@@ -16,11 +16,16 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.functions import pauli, spectrum
+from course.functions import (
+    pauli,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import init_notebook
-import holoviews
 import kwant
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from pfapack import pfaffian as pf
 
 init_notebook()
@@ -128,9 +133,6 @@ $$
 Let's have a quick look at it to get a more concrete understanding:
 
 ```{code-cell} ipython3
-holoviews.output(fig="png")
-
-
 def onsite(site, C, D1, D2, M, B1, B2):
     return (C + 2 * D1 + 4 * D2) * pauli.s0s0 + (M + 2 * B1 + 4 * B2) * pauli.s0sz
 
@@ -171,12 +173,12 @@ p = dict(A1=1, A2=1.5, B1=1, B2=1, C=0, D1=0, D2=0, M=None, Bz=0)
 
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-1, 1, 5)
-holoviews.HoloMap(
+slider_plot(
     {
         p["M"]: spectrum(slab, p, k_x=k, k_y=k, title=f"$M={p['M']:.3}$", num_bands=2)
         for p["M"] in Ms
     },
-    kdims=[r"$M$"],
+    label=r"$M$",
 )
 ```
 
@@ -207,8 +209,6 @@ As a final illustration of the relation between weak and strong invariants, let'
 We determine the topological invariant in the same way as for QSHE: we see if the phase of the reflection matrix connects the Pfaffians of $r(k_y=0)$ and $r(k_y=\pi)$.
 
 ```{code-cell} ipython3
-holoviews.output(fig="png")
-
 # A system for computing the topological invariant
 probe_lead = kwant.Builder(
     kwant.TranslationalSymmetry((-1, 0, 0)), time_reversal=1j * pauli.sys0
@@ -253,26 +253,59 @@ def invariant_at_k_x(p, k_x, k_x_label, col):
         ]
     )
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    xdim, ydim = "$k_y$", "phase"
-    kdims = [xdim, ydim]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=f"$k_x={k_x_label}$")
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims)
-    return plot
+    return {
+        "line": (ks[1:], phase),
+        "points": ([0, np.pi], np.angle(pfaff)),
+        "label": f"$k_x={k_x_label}$",
+    }
 
 
 def plot_invariant(p):
-    xdim, ydim = "$k_y$", "phase"
-
-    plot = invariant_at_k_x(p, 0, "0", "g") * invariant_at_k_x(p, np.pi, r"\pi", "b")
-    xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.3, np.pi + 0.3)
+    curves = [
+        invariant_at_k_x(p, 0, "0", "g"),
+        invariant_at_k_x(p, np.pi, r"\pi", "b"),
+    ]
+    fig = go.Figure()
+    colors = ["green", "blue"]
+    for entry, color in zip(curves, colors):
+        x_line, y_line = entry["line"]
+        fig.add_trace(
+            go.Scatter(
+                x=x_line,
+                y=y_line,
+                mode="lines",
+                name=entry["label"],
+                line=dict(color=color),
+            )
+        )
+        x_pts, y_pts = entry["points"]
+        fig.add_trace(
+            go.Scatter(
+                x=x_pts,
+                y=y_pts,
+                mode="markers",
+                marker=dict(color=color, size=8),
+                showlegend=False,
+            )
+        )
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    style_overlay = {
-        "xticks": [(0, "0"), (np.pi, "$\\pi$")],
-        "yticks": pi_ticks,
-        "show_legend": True,
-        "legend_position": "top",
-    }
-    return plot.redim.range(**{xdim: xlims, ydim: ylims}).options(**style_overlay)
+    fig.update_layout(
+        title="Reflection phase winding",
+        xaxis=dict(
+            title="$k_y$",
+            range=[-0.2, np.pi + 0.2],
+            tickvals=[0, np.pi],
+            ticktext=["0", r"$\pi$"],
+        ),
+        yaxis=dict(
+            title="phase",
+            range=[-np.pi - 0.3, np.pi + 0.3],
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+        showlegend=True,
+    )
+    return fig
 
 
 p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)
@@ -280,20 +313,73 @@ p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)
 slab = make_slab(15)
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-2.75, 0.75, 11)
-spectra = holoviews.HoloMap(
-    {
-        p["M"]: spectrum(
-            slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2
-        )
-        for p["M"] in Ms
-    },
-    kdims=["$M$"],
-)
+spectra = {
+    p["M"]: spectrum(
+        slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2
+    )
+    for p["M"] in Ms
+}
 
-invariant_plots = holoviews.HoloMap(
-    {p["M"]: plot_invariant(p) for p["M"] in Ms}, kdims=[r"$M$"]
-)
-spectra + invariant_plots
+invariant_plots = {p["M"]: plot_invariant(p) for p["M"] in Ms}
+
+frames = {}
+for M in Ms:
+    spec_fig = spectra[M]
+    inv_fig = invariant_plots[M]
+    fig = go.Figure()
+    subplot = make_subplots(
+        rows=1,
+        cols=2,
+        column_widths=[0.6, 0.4],
+        horizontal_spacing=0.12,
+        specs=[[{"type": "scene"}, {"type": "xy"}]],
+    )
+    for trace in spec_fig.data:
+        subplot.add_trace(trace, row=1, col=1)
+    if hasattr(spec_fig.layout, "scene"):
+        subplot.update_scenes(
+            xaxis_title=spec_fig.layout.scene.xaxis.title.text,
+            yaxis_title=spec_fig.layout.scene.yaxis.title.text,
+            zaxis_title=spec_fig.layout.scene.zaxis.title.text,
+            row=1,
+            col=1,
+        )
+    else:
+        subplot.update_xaxes(
+            title=spec_fig.layout.xaxis.title.text,
+            range=spec_fig.layout.xaxis.range,
+            row=1,
+            col=1,
+        )
+        subplot.update_yaxes(
+            title=spec_fig.layout.yaxis.title.text,
+            range=spec_fig.layout.yaxis.range,
+            row=1,
+            col=1,
+        )
+    for trace in inv_fig.data:
+        subplot.add_trace(trace, row=1, col=2)
+    subplot.update_xaxes(
+        title=inv_fig.layout.xaxis.title.text,
+        range=inv_fig.layout.xaxis.range,
+        tickvals=inv_fig.layout.xaxis.tickvals,
+        ticktext=inv_fig.layout.xaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    subplot.update_yaxes(
+        title=inv_fig.layout.yaxis.title.text,
+        range=inv_fig.layout.yaxis.range,
+        tickvals=inv_fig.layout.yaxis.tickvals,
+        ticktext=inv_fig.layout.yaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    subplot.update_layout(title=f"M={M:.3f}")
+    fig = subplot
+    frames[M] = fig
+
+slider_plot(frames, label="M")
 ```
 
 We see the values of the invariants change several times:
@@ -327,7 +413,6 @@ In total we thus get $\sigma_{xy} = (2n + 1) e^2/h$: an integer, which resolves 
 Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```{code-cell} ipython3
-holoviews.output(size=150)
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
 
 wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))

@@ -16,24 +16,22 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.functions import spectrum
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import init_notebook
 
-import holoviews
-from holoviews import opts
-from holoviews.core.options import Cycle
+import plotly.graph_objects as go
 import kwant
 import matplotlib.pyplot as plt
 import numpy as np
 
 init_notebook()
-holoviews.output(size=120)
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
-
-opts.defaults(
-    opts.Path(color=Cycle(values=["r", "g", "b", "y"])),
-    opts.HLine(color=Cycle(values=["r", "g", "b", "y"]), linestyle="--"),
-)
 ```
 
 ## Thouless pumps
@@ -186,13 +184,13 @@ kwargs = {
     "xdim": r"$k$",
     "ydim": r"$E$",
     "k_x": np.linspace(-np.pi, np.pi, 101),
-    "title": (lambda p: f"Band structure, $A={p['A']:.2}$"),
+    "title": (lambda p: f"Band structure, A={p['A']:.2}"),
 }
 
 
-holoviews.HoloMap(
+slider_plot(
     {p["A"]: spectrum(bulk, p, **kwargs) for p["A"] in np.linspace(0, 0.8, 10)},
-    kdims=[r"$A$"],
+    label="A",
 )
 ```
 
@@ -264,30 +262,35 @@ coord_operator = kwant.operator.Density(
 )
 centers = np.array([[coord_operator(vec) for vec in vecs.T] for vecs in all_vecs])
 
-# We use padding with NaNs to plot individual levels separately.
-spectrum_with_reservoirs = holoviews.Path(
-    np.array(
-        [
-            np.tile(np.append(phases / (2 * np.pi), np.nan), centers.shape[1]),
-            np.pad(en, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1),
-            np.pad(centers, [[0, 1], [0, 0]], constant_values=np.nan).T.reshape(-1),
-        ]
-    ).T,
-    vdims="pos",
-    kdims=["$t/T$", "$E$"],
-)[:, 0:0.5]
+phase_scaled = phases / (2 * np.pi)
+phase_flat = np.repeat(phase_scaled, centers.shape[1])
+energy_flat = np.array(en).reshape(-1)
+center_flat = centers.reshape(-1)
 
-spectrum_with_reservoirs
+go.Figure(
+    data=[
+        go.Scatter(
+            x=phase_flat,
+            y=energy_flat,
+            mode="markers",
+            marker=dict(
+                color=center_flat,
+                colorscale="RdBu",
+                colorbar=dict(title="Center position"),
+                size=4,
+            ),
+            showlegend=False,
+        )
+    ],
+    layout=dict(
+        xaxis=dict(title="$t/T$", range=[0, 0.5]),
+        yaxis=dict(title="$E$", range=[-0.2, 1.3]),
+    ),
+)
 ```
 
 We indeed see that the levels move up and down in energies.
 The states that don't shift in energy are the ones trapped in the minima of the periodic potential.
-
-To understand better what is happening, let us color each state according to the position of its center of mass, with red corresponding to the left reservoir, blue to the right one, and white to the middle of the system.
-
-```{code-cell} ipython3
-spectrum_with_reservoirs.options(c="pos", cmap="seismic")
-```
 
 We see that the states in the gaps between the wire bands belong to either of the two reservoirs.
 States in the left reservoir turn out to move down in energy and ones in the right reservoir move up in energy (right now this is numerical—we will see why later).
@@ -359,14 +362,6 @@ We know now how to calculate the pumped charge during one cycle, so let's just s
 The scattering problem in 1D can be solved quickly, so let's calculate the pumped charge as a function of time for different values of the chemical potential in the pump.
 
 ```{code-cell} ipython3
-from holoviews import opts
-
-opts.defaults(
-    opts.Path(color=Cycle(values=["r", "g", "b", "y"])),
-    opts.HLine(color=Cycle(values=["r", "g", "b", "y"]), linestyle="--"),
-)
-
-
 def plot_charge(syst, p, energy):
     phases = np.linspace(0, 2 * np.pi, 100)
     determinants = [
@@ -376,14 +371,7 @@ def plot_charge(syst, p, energy):
     charge = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
     charge -= charge[0]
 
-    title = rf"$\mu={mu:.2}$"
-    kdims = [r"$t/T$", r"$q/e$"]
-    plot = holoviews.Path(
-        (phases / (2 * np.pi), charge), kdims=kdims, label=title, group="Q"
-    )
-    return plot.redim.range(**{r"$q/e$": (-0.5, 3.5)}).options(
-        xticks=[0, 1], yticks=[0, 1, 2, 3]
-    )
+    return phases / (2 * np.pi), charge
 
 
 kwargs = {
@@ -401,10 +389,23 @@ p.update(mu_lead=0.0, A=0.6, phase=0)
 pump = modulated_wire(L=100, dL=0, bulk=bulk).finalized()
 
 energies = [0.1, 0.3, 0.6, 0.9]
-HLines = holoviews.Overlay([holoviews.HLine(energy) for energy in energies])
-spectrum(bulk, p, **kwargs) * HLines + holoviews.Overlay(
-    [plot_charge(pump, p, energy) for energy in energies]
-).relabel("Pumped charge")
+base_spectrum = spectrum(bulk, p, **kwargs)
+for energy in energies:
+    add_reference_lines(base_spectrum, y=energy, line_color="#888", line_dash="dash")
+
+charge_phases, charge_vals = zip(*(plot_charge(pump, p, energy) for energy in energies))
+charge_fig = line_plot(
+    charge_phases[0],
+    np.vstack(charge_vals).T,
+    labels=[f"E={energy:.1f}" for energy in energies],
+    x_label=r"$t/T$",
+    y_label=r"$q/e$",
+    x_ticks=[0, 1],
+    y_ticks=[0, 1, 2, 3],
+    show_legend=True,
+)
+charge_fig.update_yaxes(range=[-0.5, 3.5])
+combine_plots([base_spectrum, charge_fig], cols=2)
 ```
 
 In the left plot, we show the band structure, where the different colors correspond to different chemical potentials. The right plot shows the corresponding pumped charge. During the pumping cycle the charge may change, and the relation between the offset $\phi$ of the potential isn't always linear. However we see that after a full cycle, the pumped charge exactly matches the number of filled levels in a single potential well.

@@ -17,18 +17,17 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 
 import kwant
-from course.functions import pauli
+from course.functions import combine_plots, line_plot, pauli, slider_plot
 from course.init_course import init_notebook
 
 init_notebook()
 
 dims = dict(
-    G=holoviews.Dimension(r"$G/G_0$"),
-    V_bias=holoviews.Dimension("$V_{bias}$"),
-    phi=holoviews.Dimension(r"$\Phi/\Phi_0$"),
+    G=r"$G/G_0$",
+    V_bias="$V_{bias}$",
+    phi=r"$\Phi/\Phi_0$",
 )
 ```
 
@@ -187,27 +186,28 @@ def plot_spectroscopy(V_barrier):
         Andreev_conductance(tunnel_spectroscopy_device, params, energy)
         for energy in energies
     ]
-    kdims = [dims["V_bias"], dims["G"]]
-    plot = holoviews.Path((energies, Gs_trivial), kdims=kdims, label="trivial").options(
-        color="k"
-    )
-    plot *= holoviews.Path(
-        (energies, Gs_topological), kdims=kdims, label="topological"
-    ).options(color="r")
+    ys = np.vstack([Gs_trivial, Gs_topological]).T
     style_overlay = {
         "xticks": [-0.1, 0.0, 0.1],
         "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
-        "show_legend": True,
-        "legend_position": "top",
-        "fig_size": 150,
     }
-    return plot.options(**style_overlay)
+    return line_plot(
+        energies,
+        ys,
+        labels=["trivial", "topological"],
+        x_label=dims["V_bias"],
+        y_label=dims["G"],
+        x_ticks=style_overlay["xticks"],
+        y_ticks=style_overlay["yticks"],
+        show_legend=True,
+        add_zero_line=True,
+    )
 ```
 
 ```{code-cell} ipython3
-holoviews.HoloMap(
+slider_plot(
     {V: plot_spectroscopy(V) for V in np.arange(1, 4.25, 0.25)},
-    kdims=[r"$V_{barrier}$"],
+    label="V_barrier",
 )
 ```
 
@@ -345,13 +345,31 @@ ring = ring.finalized()
 
 def plot_spectrum_nanowire(fluxes, spectrum, ylim=[-0.2, 0.2]):
     N = spectrum.shape[1] // 2
-    kdims = [dims["phi"], "$E$"]
-    plot = holoviews.Path((fluxes, spectrum), kdims=kdims).options(color="k", alpha=0.4)
-    plot *= holoviews.Path((fluxes, spectrum[:, N - 1]), kdims=kdims).options(color="r")
-    plot *= holoviews.Path((fluxes, spectrum[:, N]), kdims=kdims).options(color="k")
-    return plot.redim.range(**{"$E$": (-0.11, 0.11)}).options(
-        xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")]
+    fig = line_plot(
+        fluxes,
+        spectrum,
+        x_label=dims["phi"],
+        y_label="$E$",
+        x_ticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")],
+        y_range=ylim,
+        show_legend=False,
     )
+    fig.add_scatter(
+        x=fluxes,
+        y=spectrum[:, N - 1],
+        mode="lines",
+        line=dict(color="red", width=2),
+        showlegend=False,
+    )
+    fig.add_scatter(
+        x=fluxes,
+        y=spectrum[:, N],
+        mode="lines",
+        line=dict(color="black", width=2),
+        showlegend=False,
+    )
+    fig.update_layout(title="Spectrum vs flux")
+    return fig
 
 
 def plot_gse_sc_nanowire(fluxes, spectrum):
@@ -363,14 +381,24 @@ def plot_gse_sc_nanowire(fluxes, spectrum):
     xdim = dims["phi"]
     ydim = r"$E_{tot}(\Phi)$"
 
-    plot = holoviews.Path(
-        (fluxes, energy_gs), kdims=[xdim, ydim], label="Energy"
-    ).options(xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")])
-    ydim = r"$I(\Phi)$"
-    plot += holoviews.Path(
-        ((fluxes[1:] + fluxes[:-1]) / 2, current), kdims=[xdim, ydim], label="Current"
-    ).options(xticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")])
-    return plot
+    energy_plot = line_plot(
+        fluxes,
+        energy_gs,
+        x_label=xdim,
+        y_label=ydim,
+        x_ticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")],
+        show_legend=False,
+    )
+    current_plot = line_plot(
+        (fluxes[1:] + fluxes[:-1]) / 2,
+        current,
+        x_label=xdim,
+        y_label=r"$I(\Phi)$",
+        x_ticks=[(0, "0"), (2 * np.pi, "1"), (4 * np.pi, "2")],
+        show_legend=False,
+        add_zero_line=True,
+    )
+    return combine_plots([energy_plot, current_plot], cols=1)
 ```
 
 ```{code-cell} ipython3

@@ -19,14 +19,14 @@ kernelspec:
 from scipy import linalg as la
 from functools import reduce
 
-import holoviews
-
 import kwant
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 from course.init_course import init_notebook
 
-from course.functions import pauli
+from course.functions import add_reference_lines, line_plot, slider_plot, pauli
 
 init_notebook()
 
@@ -150,11 +150,6 @@ $$
 with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ and $\mu_2$. A peculiar property of driven systems is that as the period becomes large, the band structure 'folds': if the driving is very weak, and the original Hamiltonian has energy $E$, the Floquet Hamiltonian has a much smaller quasienergy $(E\bmod 2\pi /T)$. This means that even when $H_1$ and $H_2$ correspond to trivial systems, we can still obtain nontrivial topology if we make the period large enough, as you can see for yourself:
 
 ```{code-cell} ipython3
-from holoviews import opts
-
-opts.defaults(opts.Path(axiswise=True))
-
-
 def evolution_operator(hamiltonians, T):
     n = len(hamiltonians)
     exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
@@ -227,21 +222,64 @@ spectrum = np.array([calculate_bands(momenta, [h1_k, h2_k], T) for T in periods]
 def plot(n):
     T = J * periods[n]
 
-    plot_1 = holoviews.Path(
-        (J * periods, energies),
-        kdims=[r"Driving period $(JT)$", r"Quasi-energy $(ET)$"],
-        label="Finite system",
-    ).options(xticks=5, yticks=pi_ticks)
+    left = line_plot(
+        J * periods,
+        energies,
+        x_label=r"Driving period $(JT)$",
+        y_label=r"Quasi-energy $(ET)$",
+        x_ticks=5,
+        y_ticks=pi_ticks,
+        show_legend=False,
+    )
+    y_min, y_max = energies.min(), energies.max()
+    add_reference_lines(left, x=T, line_color="blue", line_dash="dash")
+    right = line_plot(
+        momenta,
+        spectrum[n],
+        x_label="$k$",
+        y_label="$E_kT$",
+        x_ticks=pi_ticks,
+        y_ticks=pi_ticks,
+        show_legend=False,
+    )
+    fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12)
+    for trace in left.data:
+        fig.add_trace(trace, row=1, col=1)
+    fig.update_xaxes(
+        title=left.layout.xaxis.title.text,
+        nticks=left.layout.xaxis.nticks,
+        row=1,
+        col=1,
+    )
+    fig.update_yaxes(
+        title=left.layout.yaxis.title.text,
+        tickvals=[v for v, _ in pi_ticks],
+        ticktext=[t for _, t in pi_ticks],
+        row=1,
+        col=1,
+        range=[y_min, y_max],
+    )
+    for trace in right.data:
+        fig.add_trace(trace, row=1, col=2)
+    fig.update_xaxes(
+        title=right.layout.xaxis.title.text,
+        tickvals=[v for v, _ in pi_ticks],
+        ticktext=[t for _, t in pi_ticks],
+        row=1,
+        col=2,
+    )
+    fig.update_yaxes(
+        title=right.layout.yaxis.title.text,
+        tickvals=[v for v, _ in pi_ticks],
+        ticktext=[t for _, t in pi_ticks],
+        row=1,
+        col=2,
+    )
+    fig.update_layout(title=rf"$JT={T:.2f}$")
+    return fig
 
-    VLine = holoviews.VLine(T).options(color="b", linestyle="--")
 
-    plot_2 = holoviews.Path(
-        (momenta, spectrum[n]), kdims=["$k$", "$E_kT$"], label="Floquet bands"
-    ).options(xticks=pi_ticks, yticks=pi_ticks, aspect="equal")
-    return plot_1 * VLine + plot_2
-
-
-holoviews.HoloMap({n: plot(n) for n in np.arange(0, 100, 10)}, kdims=["n"]).collate()
+slider_plot({n: plot(n) for n in np.arange(0, 100, 10)}, label="n")
 ```
 
 On the left you see the Floquet spectrum of a finite system as a function of the driving period measured in units of the hopping strength, and on the right you see the Floquet dispersion in momentum space.
@@ -277,8 +315,6 @@ Every electron makes a closed loop and ends up back at its origin. After every s
 Let's have a look at the dispersion, and also see what happens as we tune the driving period:
 
 ```{code-cell} ipython3
-holoviews.output(size=200)
-
 lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
 a, b = lat.sublattices
 infinite_checkerboard = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -319,26 +355,44 @@ def plot_dispersion_2D(T):
     K = np.linspace(-np.pi, np.pi, 50)
     energies = np.array([[get_energies(k_x, k_y) for k_x in K] for k_y in K])
 
-    ticks = {"xticks": pi_ticks[::2], "yticks": pi_ticks[::2], "zticks": 3}
-    kwargs = {
-        "extents": (-np.pi, -np.pi, -4, np.pi, np.pi, 4),
-        "kdims": ["$k_x$", "$k_y$"],
-        "vdims": ["$E$"],
-    }
-
     title = rf"$T = {T / np.pi:.2} \pi$"
 
     xs = np.linspace(-np.pi, np.pi, energies.shape[1])
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
-    return (
-        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).options(**ticks)
-        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).options(**ticks)
-    ).relabel(title)
+    fig = go.Figure()
+    for band in range(energies.shape[-1]):
+        fig.add_surface(
+            x=xs,
+            y=ys,
+            z=energies[:, :, band],
+            colorscale="RdBu",
+            showscale=False,
+            opacity=0.9,
+        )
+    fig.update_layout(
+        title=title,
+        scene=dict(
+            xaxis=dict(
+                title="$k_x$",
+                tickvals=[v for v, _ in pi_ticks[::2]],
+                ticktext=[t for _, t in pi_ticks[::2]],
+                range=[-np.pi, np.pi],
+            ),
+            yaxis=dict(
+                title="$k_y$",
+                tickvals=[v for v, _ in pi_ticks[::2]],
+                ticktext=[t for _, t in pi_ticks[::2]],
+                range=[-np.pi, np.pi],
+            ),
+            zaxis=dict(title="$E$", range=[-4, 4], nticks=4),
+        ),
+    )
+    return fig
 
 
 Ts = np.linspace(1, 3, 11, endpoint=True)
-holoviews.HoloMap({T: plot_dispersion_2D(np.pi * T) for T in Ts}, kdims=["$T$"])
+slider_plot({T: plot_dispersion_2D(np.pi * T) for T in Ts}, label="T")
 ```
 
 Now, there isn't a Hamiltonian which is more topologically trivial than the zero Hamiltonian. We may be tempted to conclude that our system is trivial and, by bulk-boundary correspondence, has no edge states.
@@ -346,11 +400,6 @@ Now, there isn't a Hamiltonian which is more topologically trivial than the zero
 That's something we can also very easily verify by computing the dispersion of a finite size ribbon:
 
 ```{code-cell} ipython3
-from holoviews import opts
-
-holoviews.output(size=200)
-opts.defaults(opts.Path(axiswise=True))
-
 W = 10
 ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
 ribbon.fill(
@@ -389,12 +438,19 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 def plot(n):
     T = periods[n]
     title = rf"spectrum: $T={T / np.pi:.2} \pi$"
-    return holoviews.Path(
-        (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
-    ).options(xticks=pi_ticks, yticks=pi_ticks, aspect=3)
+    return line_plot(
+        momenta,
+        spectrum[n],
+        x_label="$k$",
+        y_label="$E_kT$",
+        x_ticks=pi_ticks,
+        y_ticks=pi_ticks,
+        show_legend=False,
+        title=title,
+    )
 
 
-holoviews.HoloMap({n: plot(n) for n in range(11)}, kdims=["n"])
+slider_plot({n: plot(n) for n in range(11)}, label="n")
 ```
 
 We see something very different from our expectations. All the bulk states are indeed at $E=0$, but there are two branches of dispersion that are clearly propagating. These can only belong to the edges, and since the two edges look identical, these two modes have to belong to the opposite edges. We seem to conclude that even though the bulk Hamiltonian is trivial, the edges carry chiral edge states, as if there was a finite Chern number.

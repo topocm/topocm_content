@@ -17,16 +17,14 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 
 import kwant
-from course.functions import spectrum
+from course.functions import add_reference_lines, spectrum
 from course.init_course import init_notebook
 from matplotlib import pyplot as plt
 
 init_notebook()
-holoviews.output(size=150)
-pi_ticks = [(-np.pi, r"$-\\pi$"), (0, "0"), (np.pi, r"$\\pi$")]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
 ## Where do the pumped electrons come from and go to?
@@ -119,7 +117,9 @@ kwargs = {
     "ylims": [-0.5, 0.5],
 }
 
-spectrum(syst, p, **kwargs) * holoviews.HLine(0)
+spectrum_plot = spectrum(syst, p, **kwargs)
+add_reference_lines(spectrum_plot, y=0, line_dash="dash", line_color="#555")
+spectrum_plot
 ```
 
 You can see that, as a consequence of this bending of the Landau levels, even if the Fermi level is placed in the middle of a bulk gap as in the figure, there are states crossing it. We can associate the levels at negative $k$ with states localized at the bottom edge of the ribbon, and those at positive $k$ with states localized at the top edge. For each edge, there are as many edge states as there are filled Landau levels in the bulk of the system.

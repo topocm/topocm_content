@@ -19,10 +19,16 @@ kernelspec:
 from matplotlib.colors import hsv_to_rgb
 
 import numpy as np
-import holoviews
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    pauli,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import init_notebook
 
 init_notebook()
@@ -79,9 +85,6 @@ where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two
 To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This is what the band structure and $\det h$ look like:
 
 ```{code-cell} ipython3
-holoviews.output(size=150, fig="png")
-
-
 def plot_dets(syst, p, ks, chiral=False):
     B = np.array(syst.symmetry.periods).T
     A = B @ np.linalg.inv(B.T @ B)
@@ -110,9 +113,39 @@ def plot_dets(syst, p, ks, chiral=False):
     S = np.ones_like(H)
     HSV = np.dstack((H, S, V))
     RGB = hsv_to_rgb(HSV)
-    bounds = (ks.min(), ks.min(), ks.max(), ks.max())
-    pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
-    return pl.options(xticks=pi_ticks, yticks=pi_ticks, interpolation=None)
+    dx = (ks.max() - ks.min()) / RGB.shape[1]
+    dy = (ks.max() - ks.min()) / RGB.shape[0]
+    fig = go.Figure(
+        data=[
+            go.Image(
+                z=(RGB * 255).astype(np.uint8),
+                x0=ks.min(),
+                y0=ks.min(),
+                dx=dx,
+                dy=dy,
+            )
+        ]
+    )
+    fig.update_layout(
+        title=r"$\det(h)$",
+        xaxis=dict(
+            title="$k_x$",
+            range=[ks.min(), ks.max()],
+            tickvals=[val for val, _ in pi_ticks],
+            ticktext=[txt for _, txt in pi_ticks],
+        ),
+        yaxis=dict(
+            title="$k_y$",
+            range=[ks.min(), ks.max()],
+            tickvals=[val for val, _ in pi_ticks],
+            ticktext=[txt for _, txt in pi_ticks],
+        ),
+    )
+    fig.update_layout(
+        xaxis=dict(scaleanchor="y", scaleratio=1, constrain="domain"),
+        yaxis=dict(constrain="domain"),
+    )
+    return fig
 
 
 lat = kwant.lattice.honeycomb(norbs=1)
@@ -126,17 +159,50 @@ graphene[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, t_23: 
 
 p = dict(t_1=1.0, t_23=1.0)
 ks = np.sqrt(3) * np.linspace(-np.pi, np.pi, 80)
-kwargs = dict(title=(lambda p: rf"Graphene, $t_1 = {p['t_1']:.2} \times t$"), zticks=3)
+kwargs = dict(title=(lambda p: f"Graphene, t₁ = {p['t_1']:.2} × t"), zticks=3)
 ts = np.linspace(1, 2.4, 8)
-(
-    holoviews.HoloMap(
-        {p["t_1"]: spectrum(graphene, p, k_x=ks, k_y=ks, **kwargs) for p["t_1"] in ts},
-        kdims=["$t_1$"],
+frames = {}
+for p["t_1"] in ts:
+    spec = spectrum(graphene, p, k_x=ks, k_y=ks, **kwargs)
+    det_fig = plot_dets(graphene, p, ks)
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        column_widths=[0.6, 0.4],
+        horizontal_spacing=0.1,
+        specs=[[{"type": "scene"}, {"type": "xy"}]],
     )
-    + holoviews.HoloMap(
-        {p["t_1"]: plot_dets(graphene, p, ks) for p["t_1"] in ts}, kdims=["$t_1$"]
-    )
-)
+    for trace in spec.data:
+        fig.add_trace(trace, row=1, col=1)
+    if hasattr(spec.layout, "scene"):
+        fig.update_scenes(
+            xaxis_title=spec.layout.scene.xaxis.title.text,
+            yaxis_title=spec.layout.scene.yaxis.title.text,
+            zaxis_title=spec.layout.scene.zaxis.title.text,
+            row=1,
+            col=1,
+        )
+    else:
+        fig.update_xaxes(
+            title=spec.layout.xaxis.title.text,
+            tickvals=spec.layout.xaxis.tickvals,
+            ticktext=spec.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec.layout.yaxis.title.text,
+            range=spec.layout.yaxis.range,
+            tickvals=spec.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+    for trace in det_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+    fig.update_layout(title=kwargs["title"](p))
+    frames[p["t_1"]] = fig
+
+slider_plot(frames, label="t₁")
 ```
 
 The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see 6, but this is because we plot more than one Brillouin zone).
@@ -211,14 +277,6 @@ Whenever the line corresponding to a constant $k_\parallel$ crosses a Dirac poin
 For a $d$-wave superconductor this will only happen for some crystalline orientations, as you can see for yourself:
 
 ```{code-cell} ipython3
-from holoviews import opts
-
-opts.defaults(
-    opts.VLine(color="k"),
-    opts.Curve(linestyle="--"),
-)
-
-
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -253,28 +311,73 @@ ks = np.linspace(-np.pi, np.pi, 51)
 
 det_plot = plot_dets(dwave_infinite, p, ks, chiral=True)
 
-det_plot1 = (
-    det_plot
-    * holoviews.Curve(([-np.pi, np.pi], [np.pi, -np.pi]))
-    * holoviews.Curve(([-np.pi, np.pi - 2 * k], [np.pi - 2 * k, -np.pi]))
-    * holoviews.Curve(([-np.pi + 2 * k, np.pi], [np.pi, -np.pi + 2 * k]))
-).relabel(r"$\det(h)$")
+det_plot1 = go.Figure(det_plot)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi, np.pi],
+        y=[np.pi, -np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi, np.pi - 2 * k],
+        y=[np.pi - 2 * k, -np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi + 2 * k, np.pi],
+        y=[np.pi, -np.pi + 2 * k],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
 
-det_plot2 = det_plot * holoviews.VLine(k) * holoviews.VLine(-k)
+det_plot2 = go.Figure(det_plot)
+det_plot2.update_layout(title="det(h) with k∥ markers")
+det_plot2.add_trace(
+    go.Scatter(
+        x=[k, k],
+        y=[-np.pi, np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot2.add_trace(
+    go.Scatter(
+        x=[-k, -k],
+        y=[-np.pi, np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
 
 kwargs = dict(k_x=ks, ylims=[-2, 2], xticks=pi_ticks, yticks=3)
 
-(
-    spectrum(dwave_diagonal, p, title="Ribbon with edge states", **kwargs)
-    * holoviews.VLine(-2 * k)
-    * holoviews.VLine(0)
-    * holoviews.VLine(2 * k)
-    + det_plot1
-    + spectrum(dwave_ribbon, p, title="Ribbon without edge states", **kwargs)
-    * holoviews.VLine(-k)
-    * holoviews.VLine(k)
-    + det_plot2
-).cols(2)
+spec_with_edges = spectrum(dwave_diagonal, p, title="Ribbon with edge states", **kwargs)
+add_reference_lines(spec_with_edges, x=-2 * k)
+add_reference_lines(spec_with_edges, x=0)
+add_reference_lines(spec_with_edges, x=2 * k)
+
+spec_without_edges = spectrum(
+    dwave_ribbon, p, title="Ribbon without edge states", **kwargs
+)
+add_reference_lines(spec_without_edges, x=-k)
+add_reference_lines(spec_without_edges, x=k)
+
+combine_plots(
+    [spec_with_edges, det_plot1, spec_without_edges, det_plot2],
+    cols=2,
+)
 ```
 
 On the right panels you once again see $\det h$, with added lines denoting different the values of $k_{\parallel}$ crossing the Dirac points. If the sample boundary is along the $(1, 0)$ axis, the Dirac points have coinciding $k_{\parallel}$, and their windings cancel, so that no single value of $k_{\parallel}$ carries an edge state.
@@ -310,13 +413,6 @@ $$
 > So applying the most general perturbation we can think of does not gap out the Weyl point where the energy vanishes. Instead, the perturbation only shifts the Weyl point around in momentum space. This feels like some kind of topological protection.
 
 ```{code-cell} ipython3
-from holoviews import opts
-
-holoviews.output(fig="png")
-
-opts.defaults(opts.Surface(azimuth=45))
-
-
 def onsite(site, t, mu):
     return 6 * t * pauli.sz - mu * pauli.sz
 
@@ -348,13 +444,11 @@ mus = np.linspace(-0.4, 2, 13)
 kwargs = dict(
     k_x=np.linspace(-np.pi, 0),
     k_y=np.linspace(-np.pi, np.pi),
-    title=lambda p: rf"Weyl semimetal, $\mu = {p['mu']:.2}$",
+    title=lambda p: f"Weyl semimetal, μ = {p['mu']:.2}",
     num_bands=4,
 )
 
-holoviews.HoloMap(
-    {p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
-)
+slider_plot({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, label="μ")
 ```
 
 Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.

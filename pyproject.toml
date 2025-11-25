@@ -13,11 +13,11 @@ authors = [
   { name = "Topocondmat authors" }
 ]
 dependencies = [
-  "holoviews>=1.22",
   "kwant>=1.5",
   "matplotlib>=3.10",
   "numpy>=1.26",
   "scipy>=1.16",
+  "plotly>=6.5",
 ]
 
 [tool.setuptools]

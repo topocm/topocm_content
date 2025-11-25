@@ -17,16 +17,14 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 
 import kwant
 from course.functions import pauli
-from course.functions import spectrum
+from course.functions import slider_plot, spectrum
 from course.init_course import init_notebook
 
 init_notebook()
-holoviews.output(size=150)
-pi_ticks = [(-np.pi, r"$-\\pi$"), (0, "0"), (np.pi, r"$\\pi$")]
+pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
 ## Introduction: stacking wires
@@ -156,18 +154,18 @@ QWZ_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 
 def title(p):
-    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
+    title = r"$t={:.2},\ \mu={:.2},\ \Delta={:.2},\ \gamma={:.2}$"
     return title.format(p["t"], p["mu"], p["delta"], p["gamma"])
 
 
 p = dict(t=1.0, delta=0.3, gamma=-0.5, mu=None)
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap(
+slider_plot(
     {
         p["mu"]: spectrum(QWZ_infinite, p, zticks=[-4, -2, 0, 2, 4], title=title)
         for p["mu"] in mus
     },
-    kdims=[r"$\mu$"],
+    label="μ",
 )
 ```
 
@@ -191,9 +189,7 @@ style = {
     "title": title,
 }
 
-holoviews.HoloMap(
-    {p["mu"]: spectrum(ribbon, p, **style) for p["mu"] in mus}, kdims=[r"$\mu$"]
-)
+slider_plot({p["mu"]: spectrum(ribbon, p, **style) for p["mu"] in mus}, label="μ")
 ```
 
 We see that the crossing is there, and it disappears when the gap closes. So we can identify the point $\mu=-2t-2\gamma$ as a critical point at which the quantum Hall state becomes topologically trivial.

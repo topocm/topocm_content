@@ -19,16 +19,13 @@ kernelspec:
 import scipy
 
 import numpy as np
-import holoviews
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
-
+import plotly.graph_objects as go
+from course.functions import pauli, slider_plot, spectrum
 from course.init_course import init_notebook
 
 init_notebook()
 
-holoviews.output(size=150, fig="png")
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -81,7 +78,7 @@ nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
 
 
 def title(p):
-    return rf"$t={p['t']:.2}$, $t_2={p['t_2']:.2}$, $M={p['M']:.2}$"
+    return rf"$t={p['t']:.2},\ t_2={p['t_2']:.2},\ M={p['M']:.2}$"
 
 
 def onsite(site, M):
@@ -189,9 +186,9 @@ p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
 t_2s = np.linspace(0, 0.10, 11)
-holoviews.HoloMap(
+slider_plot(
     {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s},
-    kdims=[r"$t_2$"],
+    label="t₂",
 )
 ```
 
@@ -202,8 +199,6 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
-holoviews.output(fig="svg")
-
 W = 20
 
 
@@ -239,7 +234,7 @@ plots = {
     for p["t_2"] in t_2s
     for boundary, ribbon in [("zigzag", zigzag_ribbon), ("armchair", armchair_ribbon)]
 }
-holoviews.HoloMap(plots, kdims=[r"$t_2$", "Boundary"])
+slider_plot(plots, label="t₂")
 ```
 
 The appearance of edge states means that graphene has entered a topological phase after the gap closing. This phase is akin to the quantum Hall phase - the edge states are of the same kind. However, as Duncan Haldane explained in the introduction, it is realized without a strong magnetic field.
@@ -432,29 +427,50 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
         ks = np.linspace(-np.pi, np.pi, 150, endpoint=False)
     bc = berry_curvature(syst, p, ks)[1:-1, 1:-1]
     vmax = max(np.abs(bc).min(), np.abs(bc).max())
-    kwargs = {
-        "bounds": (ks.min(), ks.min(), ks.max(), ks.max()),
-        "kdims": [r"$k_x$", r"$k_y$"],
-    }
-
-    if callable(title):
-        kwargs["label"] = title(p)
-
-    ticks = {"xticks": pi_ticks, "yticks": pi_ticks}
-    style = {"clim": (-vmax, vmax)}
-    return holoviews.Image(bc, **kwargs).options(**ticks, **style)
+    fig = go.Figure(
+        data=[
+            go.Heatmap(
+                z=bc,
+                x=ks[1:-1],
+                y=ks[1:-1],
+                colorscale="RdBu",
+                zmid=0,
+                zmin=-vmax,
+                zmax=vmax,
+                colorbar=dict(title="Berry curvature"),
+            )
+        ]
+    )
+    fig.update_layout(
+        title=title(p) if callable(title) else title,
+        xaxis=dict(
+            title=r"$k_x$",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+        yaxis=dict(
+            title=r"$k_y$",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+    )
+    fig.update_layout(
+        xaxis=dict(scaleanchor="y", scaleratio=1, constrain="domain"),
+        yaxis=dict(constrain="domain"),
+    )
+    return fig
 ```
 
 ```{code-cell} ipython3
 p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
 kwargs = {"title": title, "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)}
 t_2s = np.linspace(-0.1, 0.1, 11)
-holoviews.HoloMap(
+slider_plot(
     {
         p["t_2"]: plot_berry_curvature(haldane_infinite, p, **kwargs)
         for p["t_2"] in t_2s
     },
-    kdims=[r"$t_2$"],
+    label="t₂",
 )
 ```
 
@@ -500,17 +516,14 @@ p = dict(t=1.0, delta=1.0, gamma=-0.5, mu=None)
 
 
 def title_QWZ(p):
-    return (
-        rf"$t={p['t']:.2}$, $\mu={p['mu']:.2}$, "
-        rf"$\Delta={p['delta']:.2}$, $\gamma={p['gamma']:.2}$"
-    )
+    return rf"$t={p['t']:.2},\ \mu={p['mu']:.2},\ \Delta={p['delta']:.2},\ \gamma={p['gamma']:.2}$"
 
 
 kwargs = {"title": title_QWZ}
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap(
+slider_plot(
     {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus},
-    kdims=[r"$\mu$"],
+    label="μ",
 )
 ```
 

@@ -17,14 +17,11 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
+from course.functions import pauli, spectrum
 from course.init_course import init_notebook
 
 init_notebook()
-holoviews.output(size=150)
 ```
 
 ## Introduction

@@ -16,19 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from holoviews.core.options import Cycle
-
 import numpy as np
-import holoviews
 
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    pauli,
+    slider_plot,
+    spectrum,
+)
 from course.init_course import init_notebook
 
 
 init_notebook()
-holoviews.output(size=110)
 
 style = {
     "k_x": np.linspace(-1, 1, 101),
@@ -112,14 +114,11 @@ spinful_kitaev_chain[kwant.HoppingKind((1,), lat)] = hop
 params_trivial = dict(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
 params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
-(
-    spectrum(spinful_kitaev_chain, params_trivial, **style).relabel(
-        "Trivial bandstructure"
-    )
-    + spectrum(spinful_kitaev_chain, params_topological, **style).relabel(
-        "Topological bandstructure"
-    )
-)
+trivial_band = spectrum(spinful_kitaev_chain, params_trivial, **style)
+trivial_band.update_layout(title="Trivial bandstructure")
+topological_band = spectrum(spinful_kitaev_chain, params_topological, **style)
+topological_band.update_layout(title="Topological bandstructure")
+combine_plots([trivial_band, topological_band], cols=1)
 ```
 
 ## The need for spin
@@ -144,17 +143,17 @@ Let's look at what happens with the dispersion as we increase the magnetic field
 
 ```{code-cell} ipython3
 def title(params):
-    return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+    return r"$\mu={mu:.2},\ B={B:.2},\ \Delta={delta:.2}$".format(**params)
 
 
 params = dict(t=1.0, delta=0.1, mu=0.3, B=None)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["B"]: spectrum(spinful_kitaev_chain, params, title=title, **style)
         for params["B"] in Bs
     },
-    kdims=[r"$B$"],
+    label="B",
 )
 ```
 
@@ -261,21 +260,19 @@ nanowire_chain[kwant.HoppingKind((1,), lat)] = hop
 
 
 def title(params):
-    return (
-        r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(
-            **params
-        )
+    return r"$\alpha={alpha:.2},\ \mu={mu:.2},\ B={B:.2},\ \Delta={delta:.2}$".format(
+        **params
     )
 
 
 params = dict(t=1.0, mu=0.0, delta=0.1, alpha=0.0)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["B"]: spectrum(nanowire_chain, params, **style, title=title)
         for params["B"] in Bs
     },
-    kdims=[r"$B$"],
+    label="B",
 )
 ```
 
@@ -310,12 +307,12 @@ Let's now check that it does what we want, namely open the gap at a finite momen
 ```{code-cell} ipython3
 params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["alpha"]: spectrum(nanowire_chain, params, **style, title=title)
         for params["alpha"] in alphas
     },
-    kdims=[r"$\alpha$"],
+    label="α",
 )
 ```
 
@@ -348,15 +345,6 @@ The smaller the gap, the worse the protection of Majoranas, and the more we need
 Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
-from holoviews import opts
-# from holoviews.plotting.util import Cycle
-
-opts.defaults(
-    opts.Curve(color=Cycle(values=["r", "g", "b", "y"])),
-    opts.Overlay(show_legend=True, legend_position="top"),
-)
-
-
 def find_gap(syst, params, resolution=1e-4):
     """
     Find gap in an infinite system by doing a binary search in energy.
@@ -391,25 +379,28 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     gaps = np.array(
         [[find_gap(syst, params) for params["B"] in Bs] for params["alpha"] in alphas]
     )
-    dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
-    B_crit = holoviews.VLine(np.sqrt(delta**2 + mu**2))
-    plot = [
-        holoviews.Curve((Bs, gap), label=rf"$\{alpha=}$", **dims) * B_crit
-        for gap, alpha in zip(gaps, alphas)
-    ]
-    title = rf"$\Delta={delta:.2}$, $\mu={mu:.2}$"
-    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
-    plot = holoviews.Overlay(plot)
-    return plot.options(
-        xticks=style["xticks"], yticks=style["yticks"], fig_size=style["fig_size"]
-    ).relabel(title)
+    title = rf"$\Delta={delta:.2},\ \mu={mu:.2}$"
+    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1]}
+    fig = line_plot(
+        Bs,
+        gaps.T,
+        labels=[rf"$\\alpha={alpha:.2f}$" for alpha in alphas],
+        x_label=r"$B$",
+        y_label="Band gap",
+        x_ticks=style["xticks"],
+        y_ticks=style["yticks"],
+        show_legend=True,
+    )
+    add_reference_lines(fig, x=np.sqrt(delta**2 + mu**2), line_color="#555")
+    fig.update_layout(title=title)
+    return fig
 
 
 Bs = np.linspace(0, 0.3, 71)
 mus = np.linspace(-0.05, 0.15, 5)
-holoviews.HoloMap(
+slider_plot(
     {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus},
-    kdims=[r"$\mu$"],
+    label="μ",
 )
 ```
 
@@ -426,12 +417,12 @@ We finish our investigation of this model for now with a final simple picture of
 ```{code-cell} ipython3
 params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["mu"]: spectrum(nanowire_chain, params, **style, title=title)
         for params["mu"] in mus
     },
-    kdims=[r"$\mu$"],
+    label="μ",
 )
 ```
 

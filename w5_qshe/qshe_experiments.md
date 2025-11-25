@@ -17,16 +17,21 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
-import holoviews
 
 import kwant
-from course.functions import pauli
-from course.functions import spectrum
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    spectrum,
+    pauli,
+)
 
 from course.init_course import init_notebook
 
 init_notebook()
-holoviews.output(size=150)
 ```
 
 ## Introduction
@@ -93,10 +98,32 @@ bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 p = dict(mu=0, ez_y=0.0, A=0.5, B=1.0, D=-0.1)
 zticks = [-8, -4, 0, 4, 8]
-(
-    spectrum(bhz_infinite, dict(M=0.2, **p), zticks=zticks).relabel("HgTe/CdTe")
-    + spectrum(bhz_infinite, dict(M=1.5, **p), zticks=zticks).relabel("InAs/GaSb")
+spec_hgte = spectrum(bhz_infinite, dict(M=0.2, **p), zticks=zticks)
+spec_inas = spectrum(bhz_infinite, dict(M=1.5, **p), zticks=zticks)
+band_compare = make_subplots(
+    rows=1,
+    cols=2,
+    specs=[[{"type": "surface"}, {"type": "surface"}]],
+    subplot_titles=["HgTe/CdTe", "InAs/GaSb"],
 )
+for trace in spec_hgte.data:
+    band_compare.add_trace(trace, row=1, col=1)
+for trace in spec_inas.data:
+    band_compare.add_trace(trace, row=1, col=2)
+band_compare.update_layout(
+    scene=dict(
+        xaxis=spec_hgte.layout.scene.xaxis,
+        yaxis=spec_hgte.layout.scene.yaxis,
+        zaxis=spec_hgte.layout.scene.zaxis,
+    ),
+    scene2=dict(
+        xaxis=spec_inas.layout.scene.xaxis,
+        yaxis=spec_inas.layout.scene.yaxis,
+        zaxis=spec_inas.layout.scene.zaxis,
+    ),
+    height=550,
+)
+band_compare
 ```
 
 In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$.
@@ -152,32 +179,41 @@ masses = [-0.2, 0.2]
 mus = np.linspace(-0.8, 0.8, 50)
 
 spectra = [
-    spectrum(ribbon, dict(mu=0, **p), **kwargs).relabel(title)
+    spectrum(ribbon, dict(mu=0, **p), **kwargs)
     for p["M"], title in zip(masses, ("trivial spectrum", "topological spectrum"))
 ]
+for fig, ttl in zip(spectra, ("Trivial spectrum", "Topological spectrum")):
+    fig.update_layout(title=ttl)
 
 ydim = r"$G[e^2/h]$"
-conductance_plots = [
-    holoviews.Path(
-        (
-            mus,
-            [
-                kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
-                for p["mu"] in mus
-            ],
-        ),
-        kdims=[r"$\mu$", ydim],
-        label=label,
-    ).options(xticks=list(np.linspace(-0.8, 0.8, 5)), color=color)
-    for p["M"], color, label in [
-        (-0.2, "teal", "trivial"),
-        (0.2, "orange", "topological"),
-    ]
-]
+conductance_values = []
+labels = []
+for M, color, label in [
+    (-0.2, "teal", "trivial"),
+    (0.2, "orange", "topological"),
+]:
+    p["M"] = M
+    labels.append(label)
+    conductance_values.append(
+        [
+            kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
+            for p["mu"] in mus
+        ]
+    )
 
-G_triv, G_topo = conductance_plots
+conductance_fig = line_plot(
+    mus,
+    np.vstack(conductance_values).T,
+    labels=[lab.title() for lab in labels],
+    x_label=r"$\mu$",
+    y_label=ydim,
+    x_ticks=list(np.linspace(-0.8, 0.8, 5)),
+    y_ticks=[0, 0.5, 1.0, 1.5, 2.0],
+    show_legend=True,
+)
+conductance_fig.update_layout(title="Conductance")
 
-(G_triv * G_topo).relabel("Conductance") + spectra[0] + spectra[1]
+combine_plots([conductance_fig, spectra[0], spectra[1]], cols=3)
 ```
 
 Here on the left we see a comparison between the conductances of a trivial (blue curve) and a topological (red curve) insulator as a function of chemical potential. The other two panels show the spectra of a quantum spin Hall insulator in the topological and trivial phases. As we expected, conductance is quantized when the chemical potential is inside the band gap of a topological system.
@@ -258,10 +294,15 @@ p["mu"] = 0
 p["M"] = 1
 
 G = [kwant.smatrix(syst, params=p).transmission(1, 0) for p["ez_y"] in E_zs]
-ez_conductances = (
-    holoviews.Path((E_zs, np.array(G)), kdims=["$E_z$", ydim], label="Conductance")
-    .redim.range(**{ydim: (0, 2)})
-    .options(xticks=[0, 0.05, 0.10, 0.15], yticks=[0, 0.5, 1.0, 1.5, 2.0])
+conductance_curve = line_plot(
+    E_zs,
+    np.array(G),
+    x_label="$E_z$",
+    y_label=ydim,
+    x_ticks=[0, 0.05, 0.10, 0.15],
+    y_ticks=[0, 0.5, 1.0, 1.5, 2.0],
+    y_range=(0, 2),
+    show_legend=False,
 )
 
 kwargs = {
@@ -270,15 +311,49 @@ kwargs = {
     "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
     "yticks": [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
     "title": lambda p: "Band structure",
+    "xdim": r"$k$",
+    "ydim": r"$E$",
 }
 
-VLines = holoviews.HoloMap(
-    {ez_y: holoviews.VLine(ez_y) for ez_y in E_zs}, kdims=[r"$E_z$"]
-)
-spectra = holoviews.HoloMap(
-    {p["ez_y"]: spectrum(ribbon, p, **kwargs) for p["ez_y"] in E_zs}, kdims=[r"$E_z$"]
-)
-ez_conductances * VLines + spectra * holoviews.HLine(0)
+
+def frame(ez):
+    spec = spectrum(ribbon, p, **kwargs)
+    add_reference_lines(spec, y=0, line_dash="dash", line_color="#555")
+    fig = make_subplots(
+        rows=1, cols=2, column_widths=[0.4, 0.6], horizontal_spacing=0.12
+    )
+    for trace in conductance_curve.data:
+        fig.add_trace(trace, row=1, col=1)
+    fig.add_trace(
+        dict(
+            x=[ez, ez],
+            y=[0, 2],
+            mode="lines",
+            line=dict(color="black", dash="dot"),
+            showlegend=False,
+        ),
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title="$E_z$", range=[0, 0.15], row=1, col=1)
+    fig.update_yaxes(title=ydim, range=[0, 2], row=1, col=1)
+    for trace in spec.data:
+        fig.add_trace(trace, row=1, col=2)
+    tickvals, ticktext = zip(*kwargs["xticks"])
+    fig.update_xaxes(
+        title=kwargs["xdim"], tickvals=tickvals, ticktext=ticktext, row=1, col=2
+    )
+    fig.update_yaxes(
+        title=kwargs["ydim"],
+        range=kwargs["ylims"],
+        tickvals=kwargs["yticks"],
+        row=1,
+        col=2,
+    )
+    return fig
+
+
+slider_plot({ez: frame(ez) for ez in E_zs}, label="E_z")
 ```
 
 However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers.

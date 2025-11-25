@@ -6,12 +6,12 @@ import sys
 import warnings
 
 # 2. External package imports
-import holoviews
 import kwant
 import matplotlib
 import numpy as np
-from holoviews import Options, Store
+import plotly
 from IPython import display, get_ipython
+from IPython.display import HTML
 
 # A bunch of functions and modules to pass on, we never use them here
 
@@ -69,30 +69,19 @@ def print_information():
         + ", ".join(functions.__all__)
     )
 
-    print(
-        "Using kwant {} and holoviews {}".format(
-            kwant.__version__, holoviews.__version__
-        )
-    )
+    print(f"Using kwant {kwant.__version__} and plotly {plotly.__version__}")
 
     now = datetime.datetime.now()
     print("Executed on {} at {}.".format(now.date(), now.time()))
 
 
 def check_versions():
-    from distutils.version import LooseVersion
+    if sys.version_info < (3, 10):
+        raise Exception("Install Python 3.10 or higher, we recommend using pixi.")
 
-    if sys.version_info < (3, 5):
-        raise Exception("Install Python 3.5 or higher, we recommend using conda.")
-
-    if tuple(LooseVersion(str(holoviews.__version__)).version) < (1, 7):
+    if tuple(int(part) for part in kwant.__version__.split(".")[:2]) < (1, 5):
         raise Exception(
-            "Install holoviews 1.7 or higher. If you are using conda, do: `conda install -c conda-forge holoviews`"
-        )
-
-    if tuple(LooseVersion(str(kwant.__version__)).version) < (1, 3):
-        raise Exception(
-            "Install kwant 1.3 or higher. If you are using conda, do: `conda install -c conda-forge kwant`"
+            "Install kwant 1.5 or higher. If you are using conda, do: `conda install -c conda-forge kwant`"
         )
 
 
@@ -100,58 +89,23 @@ def init_notebook():
     print_information()
     check_versions()
 
-    holoviews.notebook_extension("matplotlib")
-    holoviews.output(widget_location="bottom", size=80)
+    functions.set_default_plotly_template()
+
+    # Ensure MathJax is available for Plotly LaTeX rendering in all contexts.
+    mathjax_loader = """
+    <script type="text/javascript">
+    if (!window.MathJax) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+      document.head.appendChild(script);
+    }
+    </script>
+    """
+    display.display(HTML(mathjax_loader))
 
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui="inline")
-
-    Store.renderers["matplotlib"].fig = "svg"
-    Store.renderers["matplotlib"].dpi = 100
-
-    holoviews.plotting.mpl.MPLPlot.fig_rcparams["text.usetex"] = False
-
-    latex_packs = "\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage{bm}"
-
-    holoviews.plotting.mpl.MPLPlot.fig_rcparams["text.latex.preamble"] = latex_packs
-
-    # Set plot style.
-    options = Store.options(backend="matplotlib")
-    options.Layout = Options("plot", tight=True, fig_size=60)
-    options.Overlay = Options("plot", fig_size=60)
-    base_plot_opts = Options(
-        "plot",
-        fig_size=60,
-        fontsize={"title": 9, "labels": 9, "ticks": 7},
-    )
-    options.Curve = base_plot_opts
-    options.Path = base_plot_opts
-    options.Image = base_plot_opts
-    options.Contours = Options("style", linewidth=2, color="k")
-    options.Contours = Options("plot", padding=0, aspect="square")
-    options.HLine = Options("style", linestyle="--", color="b", linewidth=2)
-    options.VLine = Options("style", linestyle="--", color="r", linewidth=2)
-    options.Image = Options("style", cmap="RdBu_r")
-    options.Image = Options("plot", padding=0, title="{label}")
-    options.Path = Options("style", linewidth=1.2, color="black")
-    options.Path = Options("plot", padding=0, aspect="square", title="{label}")
-    options.Curve = Options("style", linewidth=2, color="black")
-    options.Curve = Options("plot", padding=0, aspect="square", title="{label}")
-    options.Overlay = Options("plot", padding=0, show_legend=False, title="{label}")
-    options.Layout = Options("plot", tight=True)
-    options.Surface = Options(
-        "style", cmap="RdBu_r", rstride=2, cstride=2, lw=0.2, edgecolor="black"
-    )
-    options.Surface = Options("plot", azimuth=20, elevation=8)
-
-    # Set slider label formatting
-    for dimension_type in [float, np.float64, np.float32]:
-        holoviews.Dimension.type_formatters[dimension_type] = (
-            lambda x: pretty_fmt_complex(x, 4)
-        )
-
-    code_dir = os.path.dirname(os.path.realpath(__file__))
-    matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))
 
     np.set_printoptions(
         precision=2, suppress=True, formatter={"complexfloat": pretty_fmt_complex}
@@ -169,14 +123,11 @@ def init_notebook():
         category=matplotlib.MatplotlibDeprecationWarning,
         message="The proj_transform_clip function was deprecated",
     )
-    # We don't use plotly
-    warnings.filterwarnings(
-        "ignore",
-        category=RuntimeWarning,
-        message="plotly is not available",
-    )
 
     # Circumvent a deprecation warning in Kwant
     from mpl_toolkits.mplot3d import proj3d
 
     proj3d.proj_transform_clip = proj3d.proj_transform
+
+    code_dir = os.path.dirname(os.path.realpath(__file__))
+    matplotlib.rc_file(os.path.join(code_dir, "matplotlibrc"))

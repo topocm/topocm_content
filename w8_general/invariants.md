@@ -21,12 +21,11 @@ from time import time
 import scipy.linalg as sla
 
 import numpy as np
-import holoviews
 import kwant
 from matplotlib import pyplot as plt
-from holoviews import opts
+import plotly.graph_objects as go
 
-from course.functions import pauli
+from course.functions import pauli, slider_plot
 from course.init_course import init_notebook
 
 init_notebook()
@@ -257,13 +256,41 @@ def winding_plot(onsite, lefthopping, righthopping):
     winding = sum(abs(singularities) < 1) - len(onsite)
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
     title = f"Winding number: ${winding}$"
-    kdims = [r"$\operatorname{Re}(z)$", r"$\operatorname{Im}(z)$"]
-    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).options(
-        color="k", linestyle="--"
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=circle.real,
+            y=circle.imag,
+            mode="lines",
+            line=dict(color="black", dash="dash"),
+            showlegend=False,
+        )
     )
-    pl *= holoviews.Points((singularities.real, singularities.imag)).options(color="r")
-    pl *= holoviews.Points((0, 0)).options(color="b")
-    return pl[-2:2, -2:2].relabel(title).options(xticks=3, yticks=3)
+    fig.add_trace(
+        go.Scatter(
+            x=singularities.real,
+            y=singularities.imag,
+            mode="markers",
+            marker=dict(color="red", size=8),
+            name="zeros",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=[0],
+            y=[0],
+            mode="markers",
+            marker=dict(color="blue", size=8),
+            showlegend=False,
+        )
+    )
+    fig.update_layout(
+        title=title,
+        xaxis=dict(title=r"$\operatorname{Re}(z)$", range=[-2, 2]),
+        yaxis=dict(title=r"$\operatorname{Im}(z)$", range=[-2, 2]),
+        showlegend=True,
+    )
+    return fig
 
 
 np.random.seed(30)
@@ -278,9 +305,7 @@ def winding_scale(scale):
     )
 
 
-holoviews.HoloMap(
-    {scale: winding_scale(scale) for scale in range(-10, 10)}, kdims=[r"$\alpha$"]
-)
+slider_plot({scale: winding_scale(scale) for scale in range(-10, 10)}, label="α")
 ```
 
 In the graph above, we see the zeros (red) and poles (blue) of $h(z)$ for some randomly generated system, while we tune a parameter $\alpha$ that gradually changes the topology of the system.
@@ -330,9 +355,6 @@ So the **Bott index** $m$ looks like a Chern number, behaves like a Chern number
 To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $\log\varPhi_x \varPhi_y \varPhi_x^\dagger \varPhi_y^\dagger$, taking a disordered Chern insulator as a sample system:
 
 ```{code-cell} ipython3
-opts.defaults(opts.Points(framewise=True), opts.Path(framewise=True))
-
-
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -391,21 +413,36 @@ def evaluate_m(syst, p, energy=0):
     y = np.append([0], ys)
     title = f"$m={p['mu']:.2}$, Chern number $={res:1.0f}$"
     window_widening = (max(x) - min(x)) * 0.05
-    pl = holoviews.Path((x, y)).options(color="b")
-    pl *= holoviews.Points((x, y)).options(color="b")
-    xlim = slice(min(x) - window_widening, max(x) + window_widening)
-    ylim = slice(-2 * np.pi - 0.5, 0.5)
-    return (
-        pl[xlim, ylim]
-        .relabel(title)
-        .options(xticks=2, yticks=[(-2 * np.pi, r"$-2\pi$"), (0, r"$0$")])
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode="lines+markers",
+            line=dict(color="blue"),
+            marker=dict(size=6),
+            showlegend=False,
+        )
     )
+    fig.update_layout(
+        title=title,
+        xaxis=dict(
+            title="", range=[min(x) - window_widening, max(x) + window_widening]
+        ),
+        yaxis=dict(
+            title="",
+            range=[-2 * np.pi - 0.5, 0.5],
+            tickvals=[-2 * np.pi, 0],
+            ticktext=[r"$-2\pi$", r"$0$"],
+        ),
+    )
+    return fig
 
 
 p = dict(t=1.0, mu=0.1, delta=0.1, k_x=0, k_y=0)
-holoviews.HoloMap(
+slider_plot(
     {p["mu"]: evaluate_m(chern_torus, p) for p["mu"] in np.linspace(-0.2, 0.4, 16)},
-    kdims=[r"$m$"],
+    label="m",
 )
 ```
 

@@ -18,10 +18,11 @@ kernelspec:
 
 from IPython.display import Latex
 import numpy as np
-import holoviews
 from matplotlib import pyplot as plt
+import plotly.graph_objects as go
 
 from course import topomech
+from course.functions import slider_plot
 from course.init_course import init_notebook
 
 init_notebook()
@@ -309,31 +310,11 @@ In the numerical simulation below, you can see explicitly that transforming the 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
 ```{code-cell} ipython3
-from holoviews.core.element import Element2D
-from holoviews.plotting.mpl import ElementPlot
-
-
-class Figure(Element2D):
-    pass
-
-
-class FigurePlot(ElementPlot):
-    def initialize_plot(self, ranges=None):
-        element = self.hmap.last
-        self.handles["fig"] = element.data
-        return self.handles["fig"]
-
-    def _init_axis(self, fig, ax):
-        """Override this method to avoid creating a useless figure."""
-        return None, None
-
-    def update_frame(self, key, ranges=None, element=None):
-        element = self._get_frame(key)
-        self.handles["fig"] = element.data
-        return self.handles["fig"]
-
-
-holoviews.Store.register({Figure: FigurePlot}, "matplotlib")
+def matplotlib_to_plotly(fig):
+    fig.canvas.draw()
+    image = np.asarray(fig.canvas.renderer.buffer_rgba())
+    plt.close(fig)
+    return go.Figure(go.Image(z=image))
 
 
 def get_figure(x):
@@ -341,11 +322,10 @@ def get_figure(x):
     x2 = (x, -x, -x)
     mesh = topomech.dwallslab(x1, x2)
     fig = topomech.showlocalizedmode(mesh)
-    plt.close(fig)
-    return fig
+    return matplotlib_to_plotly(fig)
 
 
-holoviews.HoloMap({i: Figure(get_figure(i)) for i in np.linspace(-0.1, 0.1, 21)})
+slider_plot({i: get_figure(i) for i in np.linspace(-0.1, 0.1, 21)}, label="deformation")
 ```
 
 (We thank Jayson Paulose for providing the simulation.)
