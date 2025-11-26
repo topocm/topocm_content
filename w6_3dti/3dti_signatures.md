@@ -16,7 +16,7 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from course.functions import add_reference_lines, combine_plots, line_plot, pauli, spectrum
+from course.functions import combine_plots, line_plot, pauli, spectrum
 from course.init_course import init_notebook
 
 import kwant
@@ -126,9 +126,7 @@ kwargs = {
     "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
 }
 
-spec_fig = spectrum(wire, {**p, "mu_lead": 0}, **kwargs).update_layout(
-    title="Spectrum"
-)
+spec_fig = spectrum(wire, {**p, "mu_lead": 0}, **kwargs).update_layout(title="Spectrum")
 combine_plots([conductance_plot, spec_fig], cols=2)
 ```
 
@@ -321,8 +319,8 @@ for band in energies:
 fig.update_layout(
     title="Hexagonal warping",
     scene=dict(
-        xaxis=dict(title=r"$k_x$", range=xylims, tickvals=xy_ticks),
-        yaxis=dict(title=r"$k_y$", range=xylims, tickvals=xy_ticks),
+        xaxis=dict(title="kₓ", range=xylims, tickvals=xy_ticks),
+        yaxis=dict(title="kᵧ", range=xylims, tickvals=xy_ticks),
         zaxis=dict(title="E", range=zlims, tickvals=zticks),
     ),
     width=700,

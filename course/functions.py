@@ -43,8 +43,18 @@ def set_default_plotly_template():
     pio.templates.default = template_name
 
 
-def _axis_config(label=None, ticks=None, limits=None):
-    label = _validate_plot_text(label, where="axis title")
+def _validate_plain_text(text, *, where="text"):
+    """Ensure text contains no LaTeX, for contexts that disallow math rendering."""
+    if not isinstance(text, str):
+        return text
+    if "$" in text:
+        raise ValueError(f"{where} does not support LaTeX: {text}")
+    return text
+
+
+def _axis_config(label=None, ticks=None, limits=None, *, allow_latex=True):
+    validate = _validate_plot_text if allow_latex else _validate_plain_text
+    label = validate(label, where="axis title")
     if isinstance(ticks, np.ndarray):
         ticks = ticks.tolist()
     axis = {}
@@ -55,6 +65,7 @@ def _axis_config(label=None, ticks=None, limits=None):
             axis["nticks"] = int(ticks)
         elif ticks and isinstance(ticks[0], (tuple, list)):
             vals, texts = zip(*ticks)
+            texts = [validate(t, where="axis tick label") for t in texts]
             axis.update(tickmode="array", tickvals=list(vals), ticktext=list(texts))
         else:
             axis.update(tickmode="array", tickvals=list(ticks))
@@ -395,6 +406,23 @@ pauli.szsy = np.kron(pauli.sz, pauli.sy)
 pauli.szsz = np.kron(pauli.sz, pauli.sz)
 
 
+_faux_subscripts = {
+    "k_x": "kₓ",
+    "k_y": "kᵧ",
+    "k_z": "k_z",  # No dedicated subscript z in Unicode; keep plain suffix.
+    "E": "E",
+}
+
+
+def _faux_label(name):
+    """Return a LaTeX-free label, using faux Unicode subscripts when available."""
+    if not isinstance(name, str):
+        return name
+    if name in _faux_subscripts:
+        return _faux_subscripts[name]
+    return name
+
+
 def spectrum(
     syst,
     p=None,
@@ -457,7 +485,7 @@ def spectrum(
         return fig
 
     if len(variables) == 2:
-        pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
+        pi_ticks = [(-np.pi, "−π"), (0, "0"), (np.pi, "π")]
         xticks = (
             xticks
             if xticks is not None
@@ -469,17 +497,12 @@ def spectrum(
             else (pi_ticks if variables[1][0] in "k_x k_y k_z".split() else None)
         )
 
-        xdim = xdim or (
-            r"${}$".format(variables[0][0])
-            if variables[0][0] in "k_x k_y k_z".split()
-            else variables[0][0]
-        )
-        ydim = ydim or (
-            r"${}$".format(variables[1][0])
-            if variables[1][0] in "k_x k_y k_z".split()
-            else variables[1][0]
-        )
-        zdim = zdim or r"$E$"
+        xdim = _faux_label(xdim) if xdim is not None else _faux_label(variables[0][0])
+        ydim = _faux_label(ydim) if ydim is not None else _faux_label(variables[1][0])
+        zdim = _faux_label(zdim) if zdim is not None else _faux_label("E")
+        xdim = _validate_plain_text(xdim, where="3D x-axis label")
+        ydim = _validate_plain_text(ydim, where="3D y-axis label")
+        zdim = _validate_plain_text(zdim, where="3D z-axis label")
 
         if xlims is None:
             xlims = np.round([min(variables[0][1]), max(variables[0][1])], 2)
@@ -510,16 +533,16 @@ def spectrum(
                 **kwargs,
             )
 
-        fig.update_layout(
-            title=title(p) if callable(title) else title,
-            scene=dict(
-                xaxis=_axis_config(xdim, xticks, xlims),
-                yaxis=_axis_config(ydim, yticks, ylims),
-                zaxis=_axis_config(zdim, zticks, zlims),
-            ),
-            template=pio.templates.default,
-        )
-        return fig
+            fig.update_layout(
+                title=title(p) if callable(title) else title,
+                scene=dict(
+                    xaxis=_axis_config(xdim, xticks, xlims, allow_latex=False),
+                    yaxis=_axis_config(ydim, yticks, ylims, allow_latex=False),
+                    zaxis=_axis_config(zdim, zticks, zlims, allow_latex=False),
+                ),
+                template=pio.templates.default,
+            )
+            return fig
 
     raise ValueError("Cannot make 4D plots.")
 

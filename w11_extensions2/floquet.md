@@ -31,11 +31,11 @@ from course.functions import add_reference_lines, line_plot, slider_plot, pauli
 init_notebook()
 
 pi_ticks = [
-    (-np.pi, r"$-\pi$"),
-    (-np.pi / 2, r"$-\pi/2$"),
-    (0, r"$0$"),
-    (np.pi / 2, r"$\pi/2$"),
-    (np.pi, r"$\pi$"),
+    (-np.pi, "−π"),
+    (-np.pi / 2, "−π/2"),
+    (0, "0"),
+    (np.pi / 2, "π/2"),
+    (np.pi, "π"),
 ]
 ```
 
@@ -374,18 +374,18 @@ def plot_dispersion_2D(T):
         title=title,
         scene=dict(
             xaxis=dict(
-                title="$k_x$",
+                title="kₓ",
                 tickvals=[v for v, _ in pi_ticks[::2]],
                 ticktext=[t for _, t in pi_ticks[::2]],
                 range=[-np.pi, np.pi],
             ),
             yaxis=dict(
-                title="$k_y$",
+                title="kᵧ",
                 tickvals=[v for v, _ in pi_ticks[::2]],
                 ticktext=[t for _, t in pi_ticks[::2]],
                 range=[-np.pi, np.pi],
             ),
-            zaxis=dict(title="$E$", range=[-4, 4], nticks=4),
+            zaxis=dict(title="E", range=[-4, 4], nticks=4),
         ),
     )
     return fig
