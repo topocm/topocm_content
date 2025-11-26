@@ -355,15 +355,17 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
             }
         )
     fig = go.Figure(data=base_fig.data, layout=base_fig.layout, frames=frames)
-    template_margin = pio.templates[
-        pio.templates.default
-    ].layout.margin.to_plotly_json()
-    template_margin["b"] = template_margin.get("b", 0) + 30
+    base_margin = (
+        base_fig.layout.margin.to_plotly_json()
+        if getattr(base_fig.layout, "margin", None)
+        else pio.templates[pio.templates.default].layout.margin.to_plotly_json()
+    )
+    base_margin["b"] = base_margin.get("b", 0) + 30
     fig.update_layout(
         sliders=[slider],
         updatemenus=updatemenus,
         template=pio.templates.default,
-        margin=template_margin,
+        margin=base_margin,
     )
     return fig
 

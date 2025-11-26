@@ -557,16 +557,16 @@ for mu in mus:
     landau_level_frames[mu] = fig
 combined_frames = {}
 for mu in mus:
+    title_text = getattr(pumping_frames[mu].layout.title, "text", None)
     combined = combine_plots(
         [pumping_frames[mu], landau_level_frames[mu]],
         cols=2,
         titles=["Pumped charge", "Landau levels"],
     )
     margin = combined.layout.margin.to_plotly_json()
-    margin["t"] = max(margin.get("t", 0), 150)
+    margin["t"] = max(margin.get("t", 0), 105)
     combined.update_layout(
-        title=pumping_frames[mu].layout.title,
-        title_y=0.975,
+        title=dict(text=title_text, y=0.955, yanchor="top", pad=dict(t=5)),
         margin=margin,
     )
     combined_frames[mu] = combined
