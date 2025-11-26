@@ -64,7 +64,18 @@ def _axis_config(label=None, ticks=None, limits=None):
 
 
 def _copy_axis_settings(source_axis):
-    keys = ["range", "tickmode", "tickvals", "ticktext", "dtick", "tickformat", "title"]
+    keys = [
+        "range",
+        "tickmode",
+        "tickvals",
+        "ticktext",
+        "dtick",
+        "tickformat",
+        "title",
+        "showline",
+        "linecolor",
+        "ticks",
+    ]
     return {
         k: getattr(source_axis, k, None) for k in keys if getattr(source_axis, k, None)
     }
@@ -190,7 +201,7 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
     set_default_plotly_template()
     cols = max(1, int(cols))
     rows = math.ceil(len(figures) / cols)
-    height = max(350, 320 * rows)
+    height = max(420, 380 * rows)
     subplot_titles = titles or [
         getattr(fig.layout.title, "text", "") for fig in figures
     ]
@@ -203,7 +214,7 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
         shared_xaxes=shared_x,
         shared_yaxes=shared_y,
         subplot_titles=subplot_titles,
-        vertical_spacing=0.12,
+        vertical_spacing=0.25,
     )
     for idx, src in enumerate(figures):
         r, c = divmod(idx, cols)
@@ -211,6 +222,19 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
         c += 1
         for trace in src.data:
             fig.add_trace(trace, row=r, col=c)
+        # Copy shapes (like reference lines) to the subplot
+        if hasattr(src.layout, "shapes") and src.layout.shapes:
+            for shape in src.layout.shapes:
+                # Create a copy of the shape and adjust it for the subplot
+                shape_dict = shape.to_plotly_json()
+                # Update xref and yref to target the correct subplot
+                if "xref" in shape_dict:
+                    if shape_dict["xref"] == "x":
+                        shape_dict["xref"] = f"x{idx + 1}" if idx > 0 else "x"
+                if "yref" in shape_dict:
+                    if shape_dict["yref"] == "y":
+                        shape_dict["yref"] = f"y{idx + 1}" if idx > 0 else "y"
+                fig.add_shape(**shape_dict)
         if hasattr(src.layout, "xaxis"):
             fig.update_xaxes(**_copy_axis_settings(src.layout.xaxis), row=r, col=c)
         if hasattr(src.layout, "yaxis"):
@@ -218,7 +242,11 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
     template_margin = pio.templates[
         pio.templates.default
     ].layout.margin.to_plotly_json()
-    template_margin["b"] = template_margin.get("b", 0) + 30
+    # Only add bottom padding for multi-row layouts
+    if rows == 1:
+        template_margin["b"] = template_margin.get("b", 0)
+    else:
+        template_margin["b"] = template_margin.get("b", 0) + 30
     fig.update_layout(
         template=pio.templates.default, height=height, margin=template_margin
     )

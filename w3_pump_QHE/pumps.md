@@ -28,6 +28,7 @@ from course.init_course import init_notebook
 import plotly.graph_objects as go
 import kwant
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
 
 init_notebook()
@@ -112,26 +113,57 @@ def f(x):
 
 
 x = np.linspace(-5, 15, 1000)
-y = [f(i) for i in x]
+y = np.array([f(i) for i in x])
 
-plt.figure(figsize=(6, 4))
-plt.plot(x, y, "k", lw=1.2)
+# Create plotly figure
+fig_potential = go.Figure()
 
-plt.xlim(-2.5, 12.5)
-plt.ylim(-2, 2)
-
-y = [i if i <= 0 else 0 for i in y]
-plt.fill_between(
-    x, y, 0, color="r", where=(np.array(y) < 0.0), alpha=0.5, edgecolor="k", lw=1.5
+# Plot the potential
+fig_potential.add_trace(
+    go.Scatter(
+        x=x, y=y, mode="lines", line=dict(color="black", width=2), showlegend=False
+    )
 )
 
-plt.arrow(2.0, 1.25, 5, 0, head_width=0.15, head_length=1.0, fc="k", ec="k")
+# Fill the Fermi sea
+y_fill = np.where(y <= 0, y, 0)
+fig_potential.add_trace(
+    go.Scatter(
+        x=x,
+        y=y_fill,
+        fill="tozeroy",
+        fillcolor="rgba(255, 0, 0, 0.5)",
+        line=dict(color="black", width=1.5),
+        mode="lines",
+        showlegend=False,
+    )
+)
 
-plt.xlabel("$x$")
-plt.ylabel("$U(x)$")
-plt.xticks([])
-plt.yticks([])
-plt.show()
+# Add arrow using annotation
+fig_potential.add_annotation(
+    x=7.0,
+    y=1.25,
+    ax=2.0,
+    ay=1.25,
+    xref="x",
+    yref="y",
+    axref="x",
+    ayref="y",
+    showarrow=True,
+    arrowhead=2,
+    arrowsize=1.5,
+    arrowwidth=2,
+    arrowcolor="black",
+)
+
+fig_potential.update_layout(
+    xaxis=dict(title="$x$", range=[-2.5, 12.5], showticklabels=False),
+    yaxis=dict(title="$U(x)$", range=[-2, 2], showticklabels=False),
+    height=300,
+    showlegend=False,
+)
+
+fig_potential
 ```
 
 It is described by the Hamiltonian
@@ -253,7 +285,7 @@ dL = 80
 syst = modulated_wire(L=L, dL=dL, bulk=bulk).finalized()
 
 p = dict(t=1, mu=0.0, mu_lead=0.1, A=0.3, omega=0.3)
-phases = np.linspace(0, 2 * np.pi, 251)
+phases = np.linspace(0, 2 * np.pi, 101)
 en, all_vecs = zip(
     *[np.linalg.eigh(syst.hamiltonian_submatrix(params=p)) for p["phase"] in phases]
 )
@@ -263,30 +295,122 @@ coord_operator = kwant.operator.Density(
 centers = np.array([[coord_operator(vec) for vec in vecs.T] for vecs in all_vecs])
 
 phase_scaled = phases / (2 * np.pi)
-phase_flat = np.repeat(phase_scaled, centers.shape[1])
-energy_flat = np.array(en).reshape(-1)
-center_flat = centers.reshape(-1)
 
-go.Figure(
-    data=[
-        go.Scatter(
-            x=phase_flat,
-            y=energy_flat,
-            mode="markers",
-            marker=dict(
-                color=center_flat,
-                colorscale="RdBu",
-                colorbar=dict(title="Center position"),
-                size=4,
-            ),
-            showlegend=False,
+# Create figure with continuous colored lines by grouping into color buckets
+n_buckets = 50
+# Use a divergent colormap with dark middle
+colormap = plt.get_cmap("coolwarm")
+norm = mcolors.Normalize(vmin=centers.min(), vmax=centers.max())
+
+
+# Convert matplotlib colormap to plotly format
+def mpl_to_plotly_colorscale(cmap_name, n_samples=256):
+    cmap = plt.get_cmap(cmap_name)
+    return [
+        [
+            i / (n_samples - 1),
+            f"rgb({int(cmap(i / (n_samples - 1))[0] * 255)},"
+            f"{int(cmap(i / (n_samples - 1))[1] * 255)},"
+            f"{int(cmap(i / (n_samples - 1))[2] * 255)})",
+        ]
+        for i in range(n_samples)
+    ]
+
+
+plotly_colorscale = mpl_to_plotly_colorscale("coolwarm")
+
+fig = go.Figure()
+
+# Group energy levels by their average color value
+for i in range(centers.shape[1]):
+    # Get the trajectory of this energy level
+    x_vals = phase_scaled
+    y_vals = np.array(en)[:, i]
+    color_vals = centers[:, i]
+
+    # Discretize color values into buckets
+    color_indices = np.digitize(
+        color_vals, np.linspace(centers.min(), centers.max(), n_buckets)
+    )
+
+    # Group consecutive points with the same color bucket
+    segments_start = [0]
+    for j in range(1, len(color_indices)):
+        if color_indices[j] != color_indices[j - 1]:
+            segments_start.append(j)
+    segments_start.append(len(color_indices))
+
+    # Plot each segment with its color, overlapping by one point to avoid gaps
+    for k in range(len(segments_start) - 1):
+        start_idx = segments_start[k]
+        end_idx = segments_start[k + 1]
+        # Extend to the next point to avoid gaps
+        if k < len(segments_start) - 2:
+            end_idx = min(end_idx + 1, len(x_vals))
+
+        avg_color_val = np.mean(color_vals[start_idx:end_idx])
+        rgba = colormap(norm(avg_color_val))
+        color_str = (
+            f"rgba({int(rgba[0] * 255)},{int(rgba[1] * 255)},"
+            f"{int(rgba[2] * 255)},{rgba[3]})"
         )
-    ],
-    layout=dict(
-        xaxis=dict(title="$t/T$", range=[0, 0.5]),
-        yaxis=dict(title="$E$", range=[-0.2, 1.3]),
-    ),
+
+        fig.add_trace(
+            go.Scatter(
+                x=x_vals[start_idx:end_idx],
+                y=y_vals[start_idx:end_idx],
+                mode="lines",
+                line=dict(color=color_str, width=1.5),
+                showlegend=False,
+                hoverinfo="skip",
+            )
+        )
+
+cmin = float(centers.min())
+cmax = float(centers.max())
+
+# put the (invisible) markers *inside* the y-range so plotly lays out the colorbar normally
+y0 = 0.0  # within yaxis range [0, 0.3]
+
+fig.add_trace(
+    go.Scatter(
+        x=[phase_scaled[0], phase_scaled[-1]],
+        y=[y0, y0],
+        mode="markers",
+        marker=dict(
+            size=6,
+            opacity=0,  # invisible markers
+            color=[cmin, cmax],  # spans full range
+            colorscale=plotly_colorscale,
+            cmin=cmin,
+            cmax=cmax,
+            showscale=True,
+            colorbar=dict(
+                title=dict(text=r"$\langle x \rangle$", side="right"),
+                ticks="outside",
+                nticks=6,
+                tickformat=".1g",
+                thickness=15,
+                len=0.7,
+                x=1.02,
+                xanchor="left",
+                y=0.5,
+                yanchor="middle",
+            ),
+        ),
+        showlegend=False,
+        hoverinfo="skip",
+    )
 )
+
+fig.update_layout(
+    margin=dict(l=60, r=140, t=30, b=50),
+    xaxis=dict(title="$t/T$", range=[0, 1]),
+    yaxis=dict(title="$E$", range=[0, 0.3]),
+    height=400,
+)
+
+fig
 ```
 
 We indeed see that the levels move up and down in energies.
@@ -389,9 +513,14 @@ p.update(mu_lead=0.0, A=0.6, phase=0)
 pump = modulated_wire(L=100, dL=0, bulk=bulk).finalized()
 
 energies = [0.1, 0.3, 0.6, 0.9]
+# Define colors for each energy level
+colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+
 base_spectrum = spectrum(bulk, p, **kwargs)
-for energy in energies:
-    add_reference_lines(base_spectrum, y=energy, line_color="#888", line_dash="dash")
+for energy, color in zip(energies, colors):
+    add_reference_lines(
+        base_spectrum, y=energy, line_color=color, line_dash="dash", line_width=2
+    )
 
 charge_phases, charge_vals = zip(*(plot_charge(pump, p, energy) for energy in energies))
 charge_fig = line_plot(
@@ -402,8 +531,14 @@ charge_fig = line_plot(
     y_label=r"$q/e$",
     x_ticks=[0, 1],
     y_ticks=[0, 1, 2, 3],
-    show_legend=True,
+    show_legend=False,
+    title="Pumped charge",
 )
+# Update line colors to match the band structure
+for i, color in enumerate(colors):
+    charge_fig.data[i].line.color = color
+    charge_fig.data[i].line.width = 2
+
 charge_fig.update_yaxes(range=[-0.5, 3.5])
 combine_plots([base_spectrum, charge_fig], cols=2)
 ```
