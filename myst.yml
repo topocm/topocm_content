@@ -26,67 +26,67 @@ project:
         - file: w1_topointro/0d.md
         - file: w1_topointro/1D.md
         - file: w1_topointro/w1_assignments.md
-    # - title: Majoranas I
-    #   children:
-    #     - file: w2_majorana/nanowire.md
-    #     - file: w2_majorana/signatures.md
-    #     - file: w2_majorana/braiding.md
-    #     - file: w2_majorana/w2_assignments.md
-    # - title: 'More parameters: charge pumping'
-    #   children:
-    #     - file: w3_pump_QHE/pumps.md
-    #     - file: w3_pump_QHE/Laughlinargument.md
-    #     - file: w3_pump_QHE/QHEedgestates.md
-    #     - file: w3_pump_QHE/w3_assignments.md
-    # - title: Chern insulators
-    #   children:
-    #     - file: w4_haldane/QHE_lattice.md
-    #     - file: w4_haldane/haldane_model.md
-    #     - file: w4_haldane/w4_assignments.md
-    # - title: Quantum spin Hall effect
-    #   children:
-    #     - file: w5_qshe/fermion_parity_pump.md
-    #     - file: w5_qshe/qshe_experiments.md
-    #     - file: w5_qshe/w5_assignments.md
-    # - title: Three-dimensional topological insulators
-    #   children:
-    #     - file: w6_3dti/bhz.md
-    #     - file: w6_3dti/3dti_signatures.md
-    #     - file: w6_3dti/w6_assignments.md
-    # - title: Topological defects
-    #   children:
-    #     - file: w7_defects/ti_majoranas.md
-    #     - file: w7_defects/crystalline_defects.md
-    #     - file: w7_defects/w7_assignments.md
-    # - title: General approach to topological classification
-    #   children:
-    #     - file: w8_general/classification.md
-    #     - file: w8_general/invariants.md
-    #     - file: w8_general/w8_assignments.md
-    # - title: Anderson localization and topology
-    #   children:
-    #     - file: w9_disorder/scaling.md
-    #     - file: w9_disorder/topoflow.md
-    #     - file: w9_disorder/w9_assignments.md
-    # - title: "Extensions of classification\_I"
-    #   children:
-    #     - file: w10_extensions/gapless.md
-    #     - file: w10_extensions/mechanics.md
-    #     - file: w10_extensions/w10_assignments.md
-    # - title: "Extensions of classification\_II"
-    #   children:
-    #     - file: w11_extensions2/floquet.md
-    #     - file: w11_extensions2/cti.md
-    #     - file: w11_extensions2/w11_assignments.md
-    # - title: Beyond single-particle physics
-    #   children:
-    #     - file: w12_manybody/fqhe.md
-    #     - file: w12_manybody/topoorder.md
-    #     - file: w12_manybody/w12_assignments.md
-    # - title: Appendices
-    #   children:
-    #     - file: w2_majorana/Peierls.md
-    #     - file: w4_haldane/ComputingChern.md
+    - title: Majoranas I
+      children:
+        - file: w2_majorana/nanowire.md
+        - file: w2_majorana/signatures.md
+        - file: w2_majorana/braiding.md
+        - file: w2_majorana/w2_assignments.md
+    - title: 'More parameters: charge pumping'
+      children:
+        - file: w3_pump_QHE/pumps.md
+        - file: w3_pump_QHE/Laughlinargument.md
+        - file: w3_pump_QHE/QHEedgestates.md
+        - file: w3_pump_QHE/w3_assignments.md
+    - title: Chern insulators
+      children:
+        - file: w4_haldane/QHE_lattice.md
+        - file: w4_haldane/haldane_model.md
+        - file: w4_haldane/w4_assignments.md
+    - title: Quantum spin Hall effect
+      children:
+        - file: w5_qshe/fermion_parity_pump.md
+        - file: w5_qshe/qshe_experiments.md
+        - file: w5_qshe/w5_assignments.md
+    - title: Three-dimensional topological insulators
+      children:
+        - file: w6_3dti/bhz.md
+        - file: w6_3dti/3dti_signatures.md
+        - file: w6_3dti/w6_assignments.md
+    - title: Topological defects
+      children:
+        - file: w7_defects/ti_majoranas.md
+        - file: w7_defects/crystalline_defects.md
+        - file: w7_defects/w7_assignments.md
+    - title: General approach to topological classification
+      children:
+        - file: w8_general/classification.md
+        - file: w8_general/invariants.md
+        - file: w8_general/w8_assignments.md
+    - title: Anderson localization and topology
+      children:
+        - file: w9_disorder/scaling.md
+        - file: w9_disorder/topoflow.md
+        - file: w9_disorder/w9_assignments.md
+    - title: "Extensions of classification\_I"
+      children:
+        - file: w10_extensions/gapless.md
+        - file: w10_extensions/mechanics.md
+        - file: w10_extensions/w10_assignments.md
+    - title: "Extensions of classification\_II"
+      children:
+        - file: w11_extensions2/floquet.md
+        - file: w11_extensions2/cti.md
+        - file: w11_extensions2/w11_assignments.md
+    - title: Beyond single-particle physics
+      children:
+        - file: w12_manybody/fqhe.md
+        - file: w12_manybody/topoorder.md
+        - file: w12_manybody/w12_assignments.md
+    - title: Appendices
+      children:
+        - file: w2_majorana/Peierls.md
+        - file: w4_haldane/ComputingChern.md
   plugins:
     - type: javascript
       path: myst_plugins/youtube.mjs
