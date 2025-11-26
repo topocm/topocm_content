@@ -224,16 +224,25 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
             fig.add_trace(trace, row=r, col=c)
         # Copy shapes (like reference lines) to the subplot
         if hasattr(src.layout, "shapes") and src.layout.shapes:
+            axis_idx = idx + 1
+            xref = "x" if axis_idx == 1 else f"x{axis_idx}"
+            yref = "y" if axis_idx == 1 else f"y{axis_idx}"
+            xdomain = "x domain" if axis_idx == 1 else f"x{axis_idx} domain"
+            ydomain = "y domain" if axis_idx == 1 else f"y{axis_idx} domain"
             for shape in src.layout.shapes:
                 # Create a copy of the shape and adjust it for the subplot
                 shape_dict = shape.to_plotly_json()
                 # Update xref and yref to target the correct subplot
                 if "xref" in shape_dict:
-                    if shape_dict["xref"] == "x":
-                        shape_dict["xref"] = f"x{idx + 1}" if idx > 0 else "x"
+                    if shape_dict["xref"] in ("x", "x1"):
+                        shape_dict["xref"] = xref
+                    elif shape_dict["xref"] in ("paper", "x domain"):
+                        shape_dict["xref"] = xdomain
                 if "yref" in shape_dict:
-                    if shape_dict["yref"] == "y":
-                        shape_dict["yref"] = f"y{idx + 1}" if idx > 0 else "y"
+                    if shape_dict["yref"] in ("y", "y1"):
+                        shape_dict["yref"] = yref
+                    elif shape_dict["yref"] in ("paper", "y domain"):
+                        shape_dict["yref"] = ydomain
                 fig.add_shape(**shape_dict)
         if hasattr(src.layout, "xaxis"):
             fig.update_xaxes(**_copy_axis_settings(src.layout.xaxis), row=r, col=c)
@@ -289,7 +298,10 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
     def _frame_layout(fig):
         title = getattr(fig.layout, "title", None)
         text = getattr(title, "text", title)
-        return {"title": {"text": text}} if text else {}
+        layout = {"title": {"text": text}} if text else {}
+        if getattr(fig.layout, "shapes", None):
+            layout["shapes"] = [s.to_plotly_json() for s in fig.layout.shapes]
+        return layout
 
     frames = [
         go.Frame(name=str(v), data=f.data, layout=_frame_layout(f)) for v, f in items

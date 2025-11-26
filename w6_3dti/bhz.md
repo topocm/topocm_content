@@ -178,7 +178,7 @@ slider_plot(
         p["M"]: spectrum(slab, p, k_x=k, k_y=k, title=f"$M={p['M']:.3}$", num_bands=2)
         for p["M"] in Ms
     },
-    label=r"$M$",
+    label=r"M",
 )
 ```
 

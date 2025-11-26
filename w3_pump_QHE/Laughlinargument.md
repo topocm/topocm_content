@@ -17,6 +17,7 @@ kernelspec:
 :tags: [remove-cell]
 
 import numpy as np
+from copy import deepcopy
 
 import kwant
 from course.functions import (
@@ -274,6 +275,7 @@ line_plot(
     y_label=r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$",
     y_ticks=list(range(8)),
     show_legend=True,
+    color=["#1f77b4", "#d62728"],
 )
 ```
 
@@ -422,19 +424,18 @@ def plot_pumping(syst, p):
         y_ticks=[0, 1, 2, 3],
         show_legend=False,
     )
-    fig.update_xaxes(range=[0, 3.1])
+    fig.update_yaxes(range=[0, 3.1])
     fig.update_layout(title=title, height=350)
     return fig
 ```
 
 ```{code-cell} ipython3
 W = 20
-p = dict(t=1, B=(2 * np.pi / W))
+base_params = dict(t=1, B=(2 * np.pi / W))
 syst = qhe_corbino(r_out=(2 * W), r_in=20, w_lead=10)
 mus = np.linspace(0.4, 1.5, 11)
-pumping_map = slider_plot(
-    {p["mu"]: plot_pumping(syst, p) for p["mu"] in mus}, label="μ"
-)
+pumping_frames = {mu: plot_pumping(syst, {**base_params, "mu": mu}) for mu in mus}
+pumping_map = slider_plot(pumping_frames, label="μ")
 pumping_map
 ```
 
@@ -537,21 +538,40 @@ def qhe_cylinder(W):
 
 
 kwargs = {
-    "ylims": [-1.1, 1.1],
+    "ylims": [0, 1.7],
     "xticks": 0,
-    "yticks": [-1, 0, 1],
+    "yticks": [0, 1],
     "xdim": r"$k$",
     "ydim": r"$E$",
-    "k_x": np.linspace(-np.pi, np.pi, 10),
+    "k_x": np.linspace(-np.pi, np.pi, 2),
     "title": lambda p: "Landau levels",
 }
 
 sys1 = qhe_cylinder(W)
-landau_level_frames = {p["mu"]: spectrum(sys1, p, **kwargs) for p["mu"] in mus}
-for fig in landau_level_frames.values():
-    add_reference_lines(fig, y=0, line_color="red", line_dash="dash")
-landau_levels = slider_plot(landau_level_frames, label="μ")
-combine_plots([pumping_map, landau_levels], cols=2)
+landau_params = {**base_params, "mu": 0}
+base_landau_levels = spectrum(sys1, landau_params, **kwargs)
+landau_level_frames = {}
+for mu in mus:
+    fig = deepcopy(base_landau_levels)
+    add_reference_lines(fig, y=mu, line_color="red", line_dash="dash")
+    landau_level_frames[mu] = fig
+combined_frames = {}
+for mu in mus:
+    combined = combine_plots(
+        [pumping_frames[mu], landau_level_frames[mu]],
+        cols=2,
+        titles=["Pumped charge", "Landau levels"],
+    )
+    margin = combined.layout.margin.to_plotly_json()
+    margin["t"] = max(margin.get("t", 0), 150)
+    combined.update_layout(
+        title=pumping_frames[mu].layout.title,
+        title_y=0.975,
+        margin=margin,
+    )
+    combined_frames[mu] = combined
+
+slider_plot(combined_frames, label="μ")
 ```
 
 ```{multiple-choice} Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, and with 2 Landau levels filled. Approximately, how many electrons does it contain?

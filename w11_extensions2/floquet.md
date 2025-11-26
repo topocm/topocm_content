@@ -225,8 +225,8 @@ def plot(n):
     left = line_plot(
         J * periods,
         energies,
-        x_label=r"Driving period $(JT)$",
-        y_label=r"Quasi-energy $(ET)$",
+        x_label=r"$\textrm{Driving period }(JT)$",
+        y_label=r"$\textrm{Quasi-energy }(ET)$",
         x_ticks=5,
         y_ticks=pi_ticks,
         show_legend=False,
