@@ -22,20 +22,25 @@ from functools import reduce
 import kwant
 import numpy as np
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from course.init_course import init_notebook
 
-from course.functions import add_reference_lines, line_plot, slider_plot, pauli
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    pauli,
+)
 
 init_notebook()
 
 pi_ticks = [
-    (-np.pi, "−π"),
-    (-np.pi / 2, "−π/2"),
-    (0, "0"),
-    (np.pi / 2, "π/2"),
-    (np.pi, "π"),
+    (-np.pi, r"$-\pi$"),
+    (-np.pi / 2, r"$-\pi/2$"),
+    (0, r"$0$"),
+    (np.pi / 2, r"$\pi/2$"),
+    (np.pi, r"$\pi$"),
 ]
 ```
 
@@ -225,13 +230,13 @@ def plot(n):
     left = line_plot(
         J * periods,
         energies,
-        x_label=r"$\textrm{Driving period }(JT)$",
-        y_label=r"$\textrm{Quasi-energy }(ET)$",
+        x_label=r"$JT$",
+        y_label=r"$ET$",
         x_ticks=5,
         y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
         show_legend=False,
     )
-    y_min, y_max = energies.min(), energies.max()
     add_reference_lines(left, x=T, line_color="blue", line_dash="dash")
     right = line_plot(
         momenta,
@@ -240,46 +245,15 @@ def plot(n):
         y_label="$E_kT$",
         x_ticks=pi_ticks,
         y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
         show_legend=False,
     )
-    fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.12)
-    for trace in left.data:
-        fig.add_trace(trace, row=1, col=1)
-    fig.update_xaxes(
-        title=left.layout.xaxis.title.text,
-        nticks=left.layout.xaxis.nticks,
-        row=1,
-        col=1,
-    )
-    fig.update_yaxes(
-        title=left.layout.yaxis.title.text,
-        tickvals=[v for v, _ in pi_ticks],
-        ticktext=[t for _, t in pi_ticks],
-        row=1,
-        col=1,
-        range=[y_min, y_max],
-    )
-    for trace in right.data:
-        fig.add_trace(trace, row=1, col=2)
-    fig.update_xaxes(
-        title=right.layout.xaxis.title.text,
-        tickvals=[v for v, _ in pi_ticks],
-        ticktext=[t for _, t in pi_ticks],
-        row=1,
-        col=2,
-    )
-    fig.update_yaxes(
-        title=right.layout.yaxis.title.text,
-        tickvals=[v for v, _ in pi_ticks],
-        ticktext=[t for _, t in pi_ticks],
-        row=1,
-        col=2,
-    )
-    fig.update_layout(title=rf"$JT={T:.2f}$")
-    return fig
+    return combine_plots([left, right], cols=2)
 
 
-slider_plot({n: plot(n) for n in np.arange(0, 100, 10)}, label="n")
+slider_plot(
+    {float(J * periods[idx]): plot(idx) for idx in range(len(periods))}, label="JT"
+)
 ```
 
 On the left you see the Floquet spectrum of a finite system as a function of the driving period measured in units of the hopping strength, and on the right you see the Floquet dispersion in momentum space.
@@ -381,16 +355,16 @@ def plot_dispersion_2D(T):
             xaxis=dict(
                 title="kₓ",
                 tickvals=[v for v, _ in pi_ticks[::2]],
-                ticktext=[t for _, t in pi_ticks[::2]],
+                ticktext=["−π", "0", "π"],
                 range=[-np.pi, np.pi],
             ),
             yaxis=dict(
                 title="kᵧ",
                 tickvals=[v for v, _ in pi_ticks[::2]],
-                ticktext=[t for _, t in pi_ticks[::2]],
+                ticktext=["−π", "0", "π"],
                 range=[-np.pi, np.pi],
             ),
-            zaxis=dict(title="E", range=[-4, 4], nticks=4),
+            zaxis=dict(title="E", range=[-np.pi, np.pi], nticks=5),
             aspectmode="cube",
         ),
         width=680,
@@ -401,7 +375,7 @@ def plot_dispersion_2D(T):
 
 
 Ts = np.linspace(1, 3, 11, endpoint=True)
-slider_plot({T: plot_dispersion_2D(np.pi * T) for T in Ts}, label="T")
+slider_plot({T: plot_dispersion_2D(np.pi * T) for T in Ts}, label="T/π")
 ```
 
 Now, there isn't a Hamiltonian which is more topologically trivial than the zero Hamiltonian. We may be tempted to conclude that our system is trivial and, by bulk-boundary correspondence, has no edge states.
@@ -445,8 +419,6 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 
 
 def plot(n):
-    T = periods[n]
-    title = rf"$\textrm{{spectrum: }}T={T / np.pi:.2} \pi$"
     return line_plot(
         momenta,
         spectrum[n],
@@ -454,12 +426,12 @@ def plot(n):
         y_label="$E_kT$",
         x_ticks=pi_ticks,
         y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
         show_legend=False,
-        title=title,
     )
 
 
-slider_plot({n: plot(n) for n in range(11)}, label="n")
+slider_plot({(T / np.pi): plot(idx) for idx, T in enumerate(periods)}, label="T/π")
 ```
 
 We see something very different from our expectations. All the bulk states are indeed at $E=0$, but there are two branches of dispersion that are clearly propagating. These can only belong to the edges, and since the two edges look identical, these two modes have to belong to the opposite edges. We seem to conclude that even though the bulk Hamiltonian is trivial, the edges carry chiral edge states, as if there was a finite Chern number.

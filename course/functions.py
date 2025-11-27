@@ -75,25 +75,23 @@ def _axis_config(label=None, ticks=None, limits=None, *, allow_latex=True):
 
 
 def _copy_axis_settings(source_axis):
-    keys = [
-        "range",
-        "autorange",
-        "scaleanchor",
-        "scaleratio",
-        "constrain",
-        "fixedrange",
-        "tickmode",
-        "tickvals",
-        "ticktext",
-        "dtick",
-        "tickformat",
-        "title",
-        "showline",
-        "linecolor",
-        "ticks",
-    ]
     return {
-        k: getattr(source_axis, k, None) for k in keys if getattr(source_axis, k, None)
+        "range": source_axis.range,
+        "autorange": source_axis.autorange,
+        "nticks": source_axis.nticks,
+        "scaleanchor": source_axis.scaleanchor,
+        "scaleratio": source_axis.scaleratio,
+        "constrain": source_axis.constrain,
+        "fixedrange": source_axis.fixedrange,
+        "tickmode": source_axis.tickmode,
+        "tickvals": source_axis.tickvals,
+        "ticktext": source_axis.ticktext,
+        "dtick": source_axis.dtick,
+        "tickformat": source_axis.tickformat,
+        "title": source_axis.title,
+        "showline": source_axis.showline,
+        "linecolor": source_axis.linecolor,
+        "ticks": source_axis.ticks,
     }
 
 
@@ -106,14 +104,23 @@ def _enforce_equal_aspect(fig, xaxis="x", yaxis="y"):
     )
 
 
-def add_reference_lines(fig, x=None, y=None, **style):
+def add_reference_lines(
+    fig, x=None, y=None, *, row=None, col=None, secondary_y=None, **style
+):
     """Add vertical and/or horizontal reference lines to a figure."""
     line_defaults = dict(line_width=1.4, line_dash="dash", line_color="#444")
     line_style = {**line_defaults, **style}
+    line_opts = {}
+    if row is not None:
+        line_opts["row"] = row
+    if col is not None:
+        line_opts["col"] = col
+    if secondary_y is not None:
+        line_opts["secondary_y"] = secondary_y
     if y is not None:
-        fig.add_hline(y=y, **line_style)
+        fig.add_hline(y=y, **line_style, **line_opts)
     if x is not None:
-        fig.add_vline(x=x, **line_style)
+        fig.add_vline(x=x, **line_style, **line_opts)
     return fig
 
 
@@ -218,9 +225,7 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
     cols = max(1, int(cols))
     rows = math.ceil(len(figures) / cols)
     height = max(420, 380 * rows)
-    subplot_titles = titles or [
-        getattr(fig.layout.title, "text", "") for fig in figures
-    ]
+    subplot_titles = titles or [fig.layout.title.text or "" for fig in figures]
     subplot_titles = [
         _validate_plot_text(t, where="subplot title") for t in subplot_titles
     ]
@@ -239,7 +244,7 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
         for trace in src.data:
             fig.add_trace(trace, row=r, col=c)
         # Copy shapes (like reference lines) to the subplot
-        if hasattr(src.layout, "shapes") and src.layout.shapes:
+        if src.layout.shapes:
             axis_idx = idx + 1
             xref = "x" if axis_idx == 1 else f"x{axis_idx}"
             yref = "y" if axis_idx == 1 else f"y{axis_idx}"
@@ -260,9 +265,9 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
                     elif shape_dict["yref"] in ("paper", "y domain"):
                         shape_dict["yref"] = ydomain
                 fig.add_shape(**shape_dict)
-        if hasattr(src.layout, "xaxis"):
+        if src.layout.xaxis:
             fig.update_xaxes(**_copy_axis_settings(src.layout.xaxis), row=r, col=c)
-        if hasattr(src.layout, "yaxis"):
+        if src.layout.yaxis:
             fig.update_yaxes(**_copy_axis_settings(src.layout.yaxis), row=r, col=c)
     template_margin = pio.templates[
         pio.templates.default
@@ -312,15 +317,18 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
     base_value, base_fig = next((v, f) for v, f in items if v == initial)
 
     def _frame_layout(fig):
-        title = getattr(fig.layout, "title", None)
-        text = getattr(title, "text", title)
+        text = fig.layout.title.text
         layout = {"title": {"text": text}} if text else {}
-        if hasattr(fig.layout, "xaxis"):
-            layout["xaxis"] = _copy_axis_settings(fig.layout.xaxis)
-        if hasattr(fig.layout, "yaxis"):
-            layout["yaxis"] = _copy_axis_settings(fig.layout.yaxis)
-        if getattr(fig.layout, "shapes", None):
-            layout["shapes"] = [s.to_plotly_json() for s in fig.layout.shapes]
+        layout["xaxis"] = _copy_axis_settings(fig.layout.xaxis)
+        layout["yaxis"] = _copy_axis_settings(fig.layout.yaxis)
+        shapes = fig.layout.shapes or []
+        if shapes:
+            layout["shapes"] = []
+            for shp in shapes:
+                if isinstance(shp, dict):
+                    layout["shapes"].append(shp)
+                else:
+                    layout["shapes"].append(shp.to_plotly_json())
         return layout
 
     frames = [
@@ -375,11 +383,7 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
             }
         )
     fig = go.Figure(data=base_fig.data, layout=base_fig.layout, frames=frames)
-    base_margin = (
-        base_fig.layout.margin.to_plotly_json()
-        if getattr(base_fig.layout, "margin", None)
-        else pio.templates[pio.templates.default].layout.margin.to_plotly_json()
-    )
+    base_margin = base_fig.layout.margin.to_plotly_json()
     base_margin["b"] = base_margin.get("b", 0) + 8
     fig.update_layout(
         sliders=[slider],

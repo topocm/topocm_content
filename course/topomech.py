@@ -239,10 +239,16 @@ def vis2d(
             scaleanchor="y",
             scaleratio=1,
             fixedrange=True,
+            autorange=False,
         ),
-        yaxis=dict(visible=False, range=[ymin, ymax], fixedrange=True),
+        yaxis=dict(
+            visible=False,
+            range=[ymin, ymax],
+            fixedrange=True,
+            autorange=False,
+        ),
         margin=dict(l=0, r=0, t=0, b=0),
-        height=500,
+        height=120,
     )
     return fig
 

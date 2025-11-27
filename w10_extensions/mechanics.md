@@ -314,9 +314,15 @@ def get_figure(x):
     mesh = topomech.dwallslab(x1, x2)
     fig = topomech.showlocalizedmode(mesh)
     fig.update_layout(
-        height=520,
-        xaxis=dict(range=base_xrange, visible=False, scaleanchor="y", scaleratio=1),
-        yaxis=dict(range=base_yrange, visible=False),
+        height=420,
+        xaxis=dict(
+            range=base_xrange,
+            visible=False,
+            scaleanchor="y",
+            scaleratio=1,
+            autorange=False,
+        ),
+        yaxis=dict(range=base_yrange, visible=False, autorange=False),
         margin=dict(l=0, r=0, t=0, b=0),
     )
     return fig
@@ -327,7 +333,22 @@ base_fig = topomech.showlocalizedmode(base_mesh)
 base_xrange = base_fig.layout.xaxis.range
 base_yrange = base_fig.layout.yaxis.range
 
-slider_plot({i: get_figure(i) for i in np.linspace(-0.1, 0.1, 21)}, label="deformation")
+figs = {i: get_figure(i) for i in np.linspace(-0.1, 0.1, 21)}
+# ensure consistent layout across frames
+for f in figs.values():
+    f.update_layout(
+        xaxis=dict(
+            range=base_xrange,
+            visible=False,
+            scaleanchor="y",
+            scaleratio=1,
+            autorange=False,
+        ),
+        yaxis=dict(range=base_yrange, visible=False, autorange=False),
+        height=420,
+        margin=dict(l=0, r=0, t=0, b=0),
+    )
+slider_plot(figs, label="deformation")
 ```
 
 (We thank Jayson Paulose for providing the simulation.)

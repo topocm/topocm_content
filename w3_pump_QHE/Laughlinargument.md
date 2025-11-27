@@ -557,7 +557,7 @@ for mu in mus:
     landau_level_frames[mu] = fig
 combined_frames = {}
 for mu in mus:
-    title_text = getattr(pumping_frames[mu].layout.title, "text", None)
+    title_text = pumping_frames[mu].layout.title.text
     combined = combine_plots(
         [pumping_frames[mu], landau_level_frames[mu]],
         cols=2,
