@@ -23,3 +23,7 @@ dependencies = [
 [tool.setuptools]
 packages = ["course"]
 include-package-data = true
+
+[tool.codespell]
+skip = ["*.ipynb", "*.lock"]
+ignore-words-list = "nwo,groth,ket,bra,ket,inout,oint,te"

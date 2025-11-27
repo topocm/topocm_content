@@ -82,7 +82,7 @@ Of course, if we want systems with bulk-edge correspondence, then in addition to
 
 In the image below (source: Chambers's Encyclopedia, 1875, via Wikipedia) you see a very simple periodic time-dependent system, an Archimedes screw pump.
 
-![](figures/Archimedes_screw.jpg)
+![Archimedes screw pump illustration](figures/Archimedes_screw.jpg)
 
 The changes to the system are clearly periodic, and the pump works the same no matter how slowly we use it (that is, change the parameters), so it is an adiabatic tool.
 
@@ -231,7 +231,7 @@ So unless $\mu = E_n$ for some $n$, each minimum of the potential contains an in
 Since electrons do not move between neighboring potential minima, so when we change the potential by one time period, we move exactly $N$ electrons.
 
 ```{multiple-choice} Why are some levels in the band structure flat while some are not?
-:explanation: The dispersion of the bands in a perodic potential appears when the wave functions from neighboring minima overlap.
+:explanation: The dispersion of the bands in a periodic potential appears when the wave functions from neighboring minima overlap.
 :correct: 2
 - The flat levels are the ones whose energies are not sensitive to the offset of confining potential.
 - Destructive interference of the wave functions in neighboring minima suppresses the dispersion.
@@ -247,7 +247,7 @@ At this point we should ask ourselves these questions: Is the discreteness of th
 
 ### Thought experiment
 
-Let us consider the reservoirs to be closed finite (but large) boxes. When the potential in the wire is shifted the electrons clearly move from the left to the right reservoir. How do the reservoirs accomodate these electrons?
+Let us consider the reservoirs to be closed finite (but large) boxes. When the potential in the wire is shifted the electrons clearly move from the left to the right reservoir. How do the reservoirs accommodate these electrons?
 
 Since the Hamiltonian is periodic in time, the Hamiltonian together with all its eigenstates return to the initial values at the end of the period. The adiabatic theorem guarantees that when the Hamiltonian changes slowly the eigenstates evolve to an eigenstate that is adjacent in energy.
 
@@ -437,7 +437,7 @@ So without doing any calculations, we can conclude that:
 > The number of electrons pumped per cycle of a quantum pump is an integer as long as
 > the bulk of the pump is gapped. Therefore it is a **topological invariant**.
 
-## Counting electrons through reflection.
+## Counting electrons through reflection
 
 The expression for the pumped charge in terms of the bulk Hamiltonian $H(k, t)$ is complicated.
 

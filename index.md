@@ -50,12 +50,12 @@ Built for curious students, educators, and researchers.
 
 ## About the course
 
-This is a [open](license.md) online course on topology in condensed matter.
+This is an [open](license.md) online course on topology in condensed matter.
 Initially developed for the edX platform in 2015, its development continues here.
 
 :::{important} Learning goals
 
-After following this course you will
+After following this course, you will:
 
 - Discover how topological concepts manifest in condensed matter systems
 - Get an overview of different research directions and important developments
@@ -106,7 +106,7 @@ The course videos were generously contributed by multiple experts in the field:
 
 +++ { "part": "acknowledgments" }
 
-When working on the course, we greatly benefitted from support of:
+When working on the course, we greatly benefited from the support of:
 
 - [Delft University of Technology](http://tudelft.nl) and its Extension School
 - [QuTech](http://qutech.nl)
@@ -116,13 +116,13 @@ When working on the course, we greatly benefitted from support of:
 
 We thank [M. Wimmer](http://michaelwimmer.org/) and C. Groth for letting us use their code in some of the course materials.
 
-For the support with implementing the technical aspects of the course we thank
+For support with implementing the technical aspects of the course, we thank
 
 - The [Jupyter project](https://jupyter.org) and its developer team, especially Min Ragan-Kelley.
 - [SageMathCloud](https://cloud.sagemath.org) and its creator W. Stein.
 - The [Plotly](https://plotly.com/python/) community for the open-source plotting tools.
 - The [Executable books](https://executablebooks.org/) project, powering the current website.
 
-Finally, we thank all the external speakers for contributing the videos for the course.
+Finally, we thank all the external speakers for contributing the course videos.
 
 +++

@@ -61,7 +61,7 @@ So we are left with only two symmetry classes: A and AIII (no symmetry at all or
 
 ## Graphene and protected Dirac cones
 
-We've already analysed the 0D Chern number that stabilizes the usual Fermi surfaces. Let's go one dimension higher, and study winding numbers in systems with sublattice symmetry around 1D loops.
+We've already analyzed the 0D Chern number that stabilizes the usual Fermi surfaces. Let's go one dimension higher and study winding numbers in systems with sublattice symmetry around 1D loops.
 
 For a winding number to be nonzero, we need to consider 1D loops in momentum space. As a reminder, with sublattice symmetry the Hamiltonian can always be brought to the form
 
@@ -74,10 +74,10 @@ $$
 
 The topological invariant is a nonzero winding of $\det h(\mathbf{k})$ when $\mathbf{k}$ goes around some contour. Since $h(\mathbf{k})$ is continuous, this means that its determinant also has to vanish somewhere inside this contour.
 
-To study a particular example where this appears, let's return to graphene, which we studied as a simple limit of Haldane model. For graphene we have the Hamiltonian
+To study a particular example where this appears, let's return to graphene, which we studied as a simple limit of the Haldane model. For graphene we have the Hamiltonian
 
 $$
-h(k_x, k_y) = t_1 e^{i \mathbf{k} \cdot \mathbf{a_1}} + t_2 e^{i \mathbf{k} \cdot \mathbf{a_2}} + t_3 e^{i \mathbf{k} \cdot \mathbf{a_3}},
+h(k_x, k_y) = t_1 e^{i \mathbf{k} \cdot \mathbf{a}_1} + t_2 e^{i \mathbf{k} \cdot \mathbf{a}_2} + t_3 e^{i \mathbf{k} \cdot \mathbf{a}_3},
 $$
 
 where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two graphene sublattices, and $a_1, a_2, a_3$ are the lattice vectors connecting one unit cell to its neighbors.
@@ -205,7 +205,7 @@ for p["t_1"] in ts:
 slider_plot(frames, label="t₁")
 ```
 
-The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see 6, but this is because we plot more than one Brillouin zone).
+The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see six, but this is because we plot more than one Brillouin zone).
 
 We also see that the winding numbers around these two Dirac points have opposite signs (because by going around them clockwise you encounter red, blue and green colors in opposite orders). This must always be the case since the winding number around the edges of the complete Brillouin zone must vanish - as you walk down every edge of the Brillouin zone twice in opposite directions, their contributions always cancel.
 
@@ -237,7 +237,7 @@ such that for $m>0$ we have a fully gapped Hamiltonian, and for $m<0$ there are 
 
 ## $d$-wave superconductors and edge states
 
-Gapless points with Dirac dispersion were known for quite some time before graphene. They exist in the cuprate family of high temperature superconductors, known to have a $d$-wave order parameter. These materials are layered, with weak couplings between the layers, so in the study of these complicated systems, one often starts with a simplified two-dimensional Hamiltonian.
+Gapless points with Dirac dispersion were known for quite some time before graphene. They exist in the cuprate family of high-temperature superconductors, known to have a $d$-wave order parameter. These materials are layered, with weak couplings between the layers, so in the study of these complicated systems, one often starts with a simplified two-dimensional Hamiltonian.
 
 This Hamiltonian just has the usual kinetic energy term of a single particle band and a superconducting pairing proportional to $k_x^2 - k_y^2$, namely
 
@@ -388,9 +388,9 @@ These edge states were known to exist long before the discovery of topological i
 
 ## Weyl points
 
-So far we've seen two examples of Dirac points in two dimensions, the surface of a 3D topological insulator and graphene. You might wonder, why don't we have such cones in three dimensions? These do indeed exist and are called Weyl points instead of Dirac points. The reason is historical - Dirac's equation for the electron (which  is in 3D) involves states with four components, two for the electron and two for the hole. The direct generalization of graphene to $3D$ that we will discuss involves states with two electron component. Such electron states with linear dispersion were studied first by Weyl, and have strange properties as we will illustrate below.
+So far we've seen two examples of Dirac points in two dimensions, the surface of a 3D topological insulator and graphene. You might wonder why we don't have such cones in three dimensions. They do exist and are called Weyl points instead of Dirac points. The reason is historical: Dirac's equation for the electron (which is in 3D) involves states with four components, two for the electron and two for the hole. The direct generalization of graphene to 3D that we will discuss involves states with two electron components. Such electron states with linear dispersion were first studied by Weyl and have strange properties, as we'll illustrate below.
 
-Let us start by writing the low-energy Hamiltonian for the three dimensional generalization of graphene:
+Let us start by writing the low-energy Hamiltonian for the three-dimensional generalization of graphene:
 
 $$
 H({\bf k})=(\sigma_x k_x+\sigma_y k_y+\sigma_z k_z).
@@ -451,7 +451,7 @@ kwargs = dict(
 slider_plot({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, label="μ")
 ```
 
-Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.
+Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless systems becomes apparent by looking at the Hamiltonian in lower-dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three-dimensional, so let us look at two-dimensional subspaces of momentum space.
 
 A natural subspace to choose is to fix $k_z=m$. The Weyl Hamiltonian then becomes that of a massive 2D Dirac cone
 
@@ -471,13 +471,13 @@ $$
 
 We can consider the edge states over a range of $k_z$ together to visualize the "surface states".
 
-> The unique property of the surface states is that if we set $k_x=0$ then the energy vanishes on a line in the surface spectrum. This line actually terminates at $k_z=0$, where the Chern number changes. Such lines, which are referred to as "Fermi arcs," are the unique bounday properties (hence the bulk-boundary correspondence) of Weyl semimetals.
+> The unique property of the surface states is that if we set $k_x=0$ then the energy vanishes on a line in the surface spectrum. This line actually terminates at $k_z=0$, where the Chern number changes. Such lines, which are referred to as "Fermi arcs," are the unique boundary properties (hence the bulk-boundary correspondence) of Weyl semimetals.
 
-At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z)$ becomes trivial i.e. $n_{Ch}(|k_z|\rightarrow \infty)=0$. This means that if the Chern number is $n_{Ch}=1$ in a range of $k_z$, then $n_{Ch}(k_z)$ must change twice resulting in two Weyl points. So Weyl points come in pairs. These points map onto the ends of the Fermi arcs on the surface.
+At large enough $k_z$, the two-dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z)$ becomes trivial, i.e. $n_{Ch}(|k_z|\rightarrow \infty)=0$. This means that if the Chern number is $n_{Ch}=1$ in a range of $k_z$, then $n_{Ch}(k_z)$ must change twice, resulting in two Weyl points. So Weyl points come in pairs. These points map onto the ends of the Fermi arcs on the surface.
 
-![](figures/weyl.svg)
+![Surface Fermi arc connecting bulk Weyl points](figures/weyl.svg)
 
-```{multiple-choice} What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?
+```{multiple-choice} What protects the surface state of Weyl semimetals from scattering inside the bulk Weyl point?
 :explanation: The bulk has gapless states due to the Weyl point. Therefore, only momentum conservation protects surface states from going into the bulk.
 :correct: 2
 - Chiral symmetry.

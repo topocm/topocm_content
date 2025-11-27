@@ -515,7 +515,7 @@ We can check this statement for some cases we know. For instance, in $d=0$ the $
 
 ### Dimensional reduction
 
-An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionaility twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
+An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionality twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
 
 ```{code-cell} ipython3
 :tags: [remove-input]

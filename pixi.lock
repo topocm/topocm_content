@@ -2778,7 +2778,7 @@ packages:
 - pypi: ./
   name: topocm-course
   version: 0.1.0
-  sha256: 6cc6e633cac6cca9650a64664ba91f6f20a093780e4d4a4caf2387cca2d0a0cd
+  sha256: b262f8e6d29ce79fceda10f2567cc8dc442c299108a386c744b0312953a27801
   requires_dist:
   - kwant>=1.5
   - matplotlib>=3.10

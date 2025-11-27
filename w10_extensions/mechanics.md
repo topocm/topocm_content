@@ -68,7 +68,7 @@ A study of the vibrational modes of this chain was presented in the original pap
 
 * @10.48550/arXiv.1308.0554
 
-We shall now show that the zero mode localized at the edge is a time snaphot of a non-linear object, the kink that separates regions of left and right leaning rotors, a bit like a domain wall in an Ising model:
+We shall now show that the zero mode localized at the edge is a time snapshot of a non-linear object, the kink that separates regions of left and right leaning rotors, a bit like a domain wall in an Ising model:
 
 ![](figures/kink.png)
 
@@ -359,7 +359,7 @@ These examples show how to insert topologically protected mechanical modes anywh
 
 ## States of self-stress and selective buckling
 
-You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
+You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookkeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
 
 ```{youtube} RbJTxKFqO7I
 :width: 560

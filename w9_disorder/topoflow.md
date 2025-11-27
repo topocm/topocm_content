@@ -35,7 +35,7 @@ data_folder = (
 
 ## Introduction
 
-The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne
+The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne.
 
 :::{youtube} 8gkERY6hXTU
 :width: 100%
@@ -47,7 +47,7 @@ The scaling flow of topological insulators is introduced by Alexander Altland fr
 
 Before we learn what happens to topological insulators in the presence of disorder, let's decide on a specific example for concreteness.
 
-Topology makes the behavior of disordered systems richer, however a careful simulation of properties of disordered topological insulators may take weeks, since we need not only to take large system sizes (we need to consider the lengths much larger than mean free path), but also we need to average over disorder.
+Topology makes the behavior of disordered systems richer; however, a careful simulation of properties of disordered topological insulators may take weeks, since we not only need to take large system sizes (the lengths must be much larger than the mean free path), but also need to average over disorder.
 
 Luckily, unlike in the non-topological case, a one-dimensional system can already show interesting properties in the presence of disorder, so we can just reuse the familiar Kitaev chain and add disorder to it.
 
@@ -59,19 +59,19 @@ $$
 
 For convenience, we introduced a mass $m$ that corresponds to the gap in the Dirac equation. The phase transition happens at $m=0$, and $m<0$ corresponds to the topological phase with Majorana modes at the end.
 
-The only difference from what we used before is that now the chemical potential $\mu_n$ varies randomly from site to site. For example, we can sample the values $\mu_n$ from a Gaussian distribution with mean value $\mu_0 $ and standard deviation $U$.
+The only difference from what we used before is that now the chemical potential $\mu_n$ varies randomly from site to site. For example, we can sample the values $\mu_n$ from a Gaussian distribution with mean value $\mu_0$ and standard deviation $U$.
 
 ## The simpler effect of disorder
 
-In addition to transmission through a finite chain we can now compute its topological invariant $\mathcal{Q}$.
+In addition to transmission through a finite chain, we can now compute its topological invariant $\mathcal{Q}$.
 
-Just as a reminder: $\mathcal{Q} = \det r$, with $r$ is the reflection matrix from one end of a finite Kitaev chain.
+Just as a reminder: $\mathcal{Q} = \det r$, where $r$ is the reflection matrix from one end of a finite Kitaev chain.
 
 We know that $\mathcal{Q}=-1$ in the topological phase and $\mathcal{Q}=+1$ in the trivial phase. Now, in the presence of disorder, the value of $\mathcal{Q}$ in a finite size system can in principle depend on the particular disorder realization. So just like calculating average conductance, we can average the topological invariant over disorder to describe how topological properties depend on it.
 
 Whenever $\langle Q\rangle = \pm 1$, we know that the system is in one of the two insulating phases and there is no reflection whatsoever.
 
-Let's try the most obvious thing and see what happens to  $\langle Q\rangle$, as we increase disorder strength.
+Let's try the most obvious thing and see what happens to $\langle Q\rangle$ as we increase disorder strength.
 
 So below we see $\mathcal{Q}$ averaged over 100 different realizations in a disordered Kitaev chain with 30 sites as we gradually increase $U$:
 
@@ -164,15 +164,16 @@ fig
 What you see is that far away from the transition, when the gap in the clean limit is very large, disorder does not matter. Around the transition, the average value of $\mathcal{Q}$ changes from $-1$ and $+1$.
 
 Increasing disorder changes two things:
+
 * It makes the width of the region where the transition happens larger. This we can understand relatively well, in a finite system adding fluctuations just means we can be (un)lucky and get an opposite value of the topological invariant.
 * It shifts the separation point between trivial and topological phases towards positive $m$. This looks much more curious: if we start with a trivial and insulating system and add disorder, it appears we can make this system topological!
 
-The second effect, despite looking mysterious, appears just because the disorder changes the effective values of the Hamiltonian parameters. For small $U$, this can be understood in terms of the [Born approximation](https://en.wikipedia.org/wiki/Born_approximation), which allows to compute *effective* disorder-averaged band structure parameters, given the properties of disorder. The lowest order correction to $m$ for the disorder Kitaev chain is simply $m_\textrm{eff} - m \sim -U^2$, and weak disorder indeed drives the system to a topologically nontrivial state by lowering the effective value of the mass.
+The second effect, despite looking mysterious, appears just because the disorder changes the effective values of the Hamiltonian parameters. For small $U$, this can be understood in terms of the [Born approximation](https://en.wikipedia.org/wiki/Born_approximation), which allows us to compute *effective* disorder-averaged band structure parameters, given the properties of disorder. The lowest order correction to $m$ for the disorder Kitaev chain is simply $m_\textrm{eff} - m \sim -U^2$, and weak disorder indeed drives the system to a topologically nontrivial state by lowering the effective value of the mass.
 
-Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
+Since this phenomenon appears with disorder, it was initially dubbed the "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of the mean free path, and before the Anderson scaling flow begins.
 
-```{multiple-choice} What would happen if instead of $\det r$ we use $sign \det r$ for invariant?
-:explanation: Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect the invariant for most disorder realizations. The intermediate values result from averaging over different realizations.
+```{multiple-choice} What would happen if instead of $\det r$ we use $\operatorname{sign}\det r$ for the invariant?
+:explanation: Each disorder realization gets $\det r\sim \pm 1$ except near the transition, so adding the sign does not affect the invariant for most realizations. The intermediate values result from averaging over different samples.
 :correct: 3
 - We would get a step function instead of a smooth curve.
 - Not well-defined because $\det r$ becomes complex.
@@ -180,17 +181,17 @@ Since this phenomenon appears with disorder, it was initially dubbed "topologica
 - The curve is qualitatively the same.
 ```
 
-## Two parameter scaling in one dimension
+## Two-parameter scaling in one dimension
 
-Speaking of the scaling flow: the scaling hypothesis appears to be very powerful, does the topology have any impact on it?
+Speaking of the scaling flow, the scaling hypothesis appears to be very powerful. Does topology have any impact on it?
 
 We can understand some limits. First of all, if $g\gg 1$, the system is a metal, and there can hardly be any trace of topology left. However when $g \lesssim 1$, the system can become one out of several topologically distinct types of insulators, and we can expect some sort of transition between different insulating phases.
 
-The rational assumption at this point is to assume that the scaling hypothesis still holds, but in addition to $g$ it depends on the average topological invariant of the disordered ensemble $\langle \mathcal{Q} \rangle$.
+The natural assumption at this point is that the scaling hypothesis still holds, but in addition to $g$ it depends on the average topological invariant of the disordered ensemble $\langle \mathcal{Q} \rangle$.
 
 Just like in the case of the non-topological phases, there is no universal proof that this form of scaling flow is correct. Instead, there is a vast amount of mixed numerical and analytical evidence that this is correct.
 
-Let's try and verify our hypothesis by constructing the scaling flow of the disordered Kitaev chain. We can do it in the following way:
+Let's try to verify our hypothesis by constructing the scaling flow of the disordered Kitaev chain. We can do it in the following way:
 
 * Choose a given disorder strength $U$, a given length $L$, and a set of values $\{\mu\}$ for the chemical potential. For each of these values, we compute $\langle \mathcal{Q} \rangle$ and the average transmission $\langle T \rangle$ over a large number of disorder realizations (as large as possible, in our case 1000). This gives us a set of starting points on the $(\langle \mathcal{Q} \rangle, \langle T \rangle)$ plane.
 
@@ -198,7 +199,7 @@ Let's try and verify our hypothesis by constructing the scaling flow of the diso
 
 * Join the points corresponding to the same value of $\mu$.
 
-* Increase again the length $L$, and so on...
+* Increase the length $L$ again, and so on...
 
 Here's what we get:
 
@@ -253,14 +254,14 @@ You can also see that the flow is roughly separated around a vertical *critical 
 
 Finally, the point $(0, 0)$ is a saddle point: the flow goes towards it along the vertical axis, and away from it along the horizontal axis.
 
-We now understand better why two parameter scaling is necessary in the presence of a topological invariant. Even in the presence of disorder, there can be topologically distinct insulating phases. Therefore, saying that every system flows to an insulator is not enough anymore. Including the average topological invariant as a second scaling parameter allows to predict towards *which* insulating phase the system will flow.
+We now understand better why two-parameter scaling is necessary in the presence of a topological invariant. Even in the presence of disorder, there can be topologically distinct insulating phases. Therefore, saying that every system flows to an insulator is not enough anymore. Including the average topological invariant as a second scaling parameter allows us to predict towards *which* insulating phase the system will flow.
 
-The flow, we just calculated is in fact valid for all one-dimensional topological insulators and superconductors. In the case of a $\mathbb{Z}$ invariant, the saddle points are located at $(\langle \mathcal{Q} \rangle, \langle T\rangle) = (n+1/2, 0)$.
+The flow we just calculated is in fact valid for all one-dimensional topological insulators and superconductors. In the case of a $\mathbb{Z}$ invariant, the saddle points are located at $(\langle \mathcal{Q} \rangle, \langle T\rangle) = (n+1/2, 0)$.
 
-It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
+It is important to notice that a key result of the standard scaling theory regarding one-dimensional systems remains true: in the plot above all lines flow to zero transmission, or in other words there are no metallic phases in the flow diagram.
 
-```{multiple-choice} What does the 2 parameter flow diagram predict about the infinite size limit?
-:explanation: The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small Ti.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) except near $Q=0$ has a slower decay.
+```{multiple-choice} What does the two-parameter flow diagram predict about the infinite size limit?
+:explanation: The long-length (dark) parts of each curve end at small $T$, so states flow to localized phases with $Q=\pm 1$ except near the critical line where the decay slows.
 :correct: 1
 - Always topological for all parameters.
 - There's a localized topological and non-topological phase separated by a transition point.
@@ -318,13 +319,13 @@ $$
 \left\langle T \right \rangle \propto 1/\sqrt{L}\,.
 $$
 
-## Two parameter scaling in higher dimensions
+## Two-parameter scaling in higher dimensions
 
 Just like the regular scaling flow, the topological one is also richer in $d>1$.
 
-The oldest known example of the two parameter flow is unsurprisingly the quantum Hall effect. The flow looks similar to what we just calculated in 1D, here:
+The oldest known example of the two-parameter flow is unsurprisingly the quantum Hall effect. The flow looks similar to what we just calculated in 1D, here:
 
-![](figures/Three_Dimensional_RG_Flowdiagram_of_the_QHE.png)
+![Renormalization-group flow diagram for the quantum Hall effect](figures/Three_Dimensional_RG_Flowdiagram_of_the_QHE.png)
 
 By Wout Neutkens (Own work) [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0), via Wikimedia Commons
 

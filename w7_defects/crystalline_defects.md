@@ -50,7 +50,7 @@ Let us now go through the main points that lead to this conclusion, and argue fo
 There are many different types of [defects in crystals](https://en.wikipedia.org/wiki/Crystallographic_defect): vacancies, substitutions, grain boundaries, dislocations, and many more.
 
 What kinds of defects are important for topology? Consider a vacancy for example:
-![](figures/Formation_Point_Defect.png)
+![Illustration of vacancy formation](figures/Formation_Point_Defect.png)
 (By Safe cracker (Own work) [CC BY 3.0 (https://creativecommons.org/licenses/by/3.0)], via Wikimedia Commons)
 
 To create a vacancy, we need to remove a single atom (or all the atoms following one line). Can this type of defect carry a topologically protected state?
@@ -61,7 +61,7 @@ A simple vacancy is therefore not interesting from a topological point of view. 
 
 Examples of such defects are dislocations:
 
-![](figures/burgers_vectors.png)
+![Burgers vector diagram](figures/burgers_vectors.png)
 (By David Gabriel García Andrade (Own work) [Public domain], via Wikimedia Commons)
 
 In order to create a dislocation we need to cut a crystal along one plane and displace all the atoms along that plane by the *Burgers vector*. This has to be done all the way to the crystal boundary (or infinity in an infinite crystal), so the dislocation affects the entire system. This means that a dislocation cannot be removed locally.
@@ -88,7 +88,7 @@ In a $d$-dimensional bulk, the strong invariant is responsible for the appearanc
 
 This is where the weak invariants come into play.
 
-First of all, we know that the dimensionality $d_\textrm{egde}$ of a protected state at a defect must match the dimensionality of the defect. Secondly, we know the dimensionality of the topological invariant that controls this protected state: it is the topological invariant in the dimension $d_\textrm{edge}+1$.
+First of all, we know that the dimensionality $d_\textrm{edge}$ of a protected state at a defect must match the dimensionality of the defect. Secondly, we know the dimensionality of the topological invariant that controls this protected state: it is the topological invariant in the dimension $d_\textrm{edge}+1$.
 
 The topological invariants with dimensionality $d_{edge}+1$ form a vector or a tensor of the weak indices. The last thing we need to figure out is how to extract information about what happens at the defect from the weak indices.
 
@@ -98,7 +98,7 @@ We have almost arrived at the criterion for the appearance of protected states i
 
 To see how the weak topological invariant relates to the number of states in the dislocation, we start by deforming a weak topological insulator into a set of disconnected planes, each carrying protected states. If there is a single state approaching the dislocation, as is shown in the figure below, it cannot backscatter and must therefore continue through the dislocation core.
 
-![](figures/dislocation_helical.svg)
+![Helical dislocation carrying edge states](figures/dislocation_helical.svg)
 
 (adapted from Cdang (Own work), via Wikimedia Commons, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0).)
 

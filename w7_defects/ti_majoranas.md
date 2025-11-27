@@ -62,7 +62,7 @@ In the past weeks, we have studied two systems that appear very different, but w
 
 First, let's consider the quantum spin-Hall insulator. As we saw two weeks ago, it is characterized by a fermion parity pump: if you take a Corbino disk made out of a quantum spin-Hall insulator and change the flux by half a normal flux quantum, that is by $h/2e$, one unit of fermion parity is transferred from one edge of the sample to the other.
 
-Secondly, let us consider a one-dimensional topological superconductor, like we studied in weeks two and three. If such a system is closed into a Josephson ring, and the flux through the ring is advanced by one superconducting flux quantum $h/2e$, the fermion parity at the Josephson junction connecting the two ends changes from even to odd, or viceversa. This is the $4π$ Josephson effect, one of the main signatures of topological superconductivity.
+Secondly, let us consider a one-dimensional topological superconductor, like we studied in weeks two and three. If such a system is closed into a Josephson ring, and the flux through the ring is advanced by one superconducting flux quantum $h/2e$, the fermion parity at the Josephson junction connecting the two ends changes from even to odd, or vice versa. This is the $4π$ Josephson effect, one of the main signatures of topological superconductivity.
 
 Note that the change in flux is equal to $h/2e$ in both cases, since a superconducting flux quantum $h/2e$ is half of the normal flux quantum $h/e$.
 
@@ -264,7 +264,7 @@ To compute the spectrum of the vortex we could introduce a position dependent-ph
 
 Our shortcut comes from answering the following question: how is the spectrum of the chiral edge states affected by introducing a vortex in the middle of the superconductor?
 
-From week one, we know that changing the flux through a superconducting ring by a flux quantum changes the boundary condition from periodic to antiperiodic, or viceversa.
+From week one, we know that changing the flux through a superconducting ring by a flux quantum changes the boundary condition from periodic to antiperiodic, or vice versa.
 
 A vortex has precisely the same effect on the chiral edge states. Therefore, in the presence of a vortex, the allowed values $k_n$ of momentum in a disk shift by $\pi/L$, with $L$ the length of the edge. The energy levels depend linearly on momentum and are shifted accordingly,
 

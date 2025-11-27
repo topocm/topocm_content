@@ -24,7 +24,7 @@ Test your guess by plotting the spectrum and calculating the Pfaffian invariant.
 
 ### Second task: Su-Schrieffer-Heeger (SSH) model
 
-Similar to the Kitaev chain, the SSH model is simple a one-dimensional model where you can see all the essential aspects of topological systems. Unlike the Kitaev chain it does correspond to a physical system: electrons in a polyacetylene chain.
+Similar to the Kitaev chain, the SSH model is simply a one-dimensional model where you can see all the essential aspects of topological systems. Unlike the Kitaev chain, it does correspond to a physical system: electrons in a polyacetylene chain.
 
 Here's such a chain:
 
@@ -42,16 +42,16 @@ We can choose to start a unit cell from an even-numbered site, so $t_1$ becomes 
 
 Now get the notebook with the Kitaev chain and transform a Kitaev chain into an SSH chain.
 
-Now repeat the calculations we've done with Majoranas using SSH chain. Keep $t_1 = 1$ and vary $t_2$.
+Now repeat the calculations we've done with Majoranas using the SSH chain. Keep $t_1 = 1$ and vary $t_2$.
 You should see something very similar to what you saw with the Kitaev chain.
 
 As you can guess, this is because the chain is topological.
-Think for a moment: what kind of symmetry protects the states at the edges of the chain.
+Think for a moment: what kind of symmetry protects the states at the edges of the chain?
 *(Hint: you did encounter this symmetry in our course.)*
 
-The particle-hole symmetry, is a consequence of a mathematical transformation, and cannot be broken.
+The particle-hole symmetry is a consequence of a mathematical transformation, and cannot be broken.
 The symmetry protecting the SSH chain, however, can be broken.
-Test your guess about the protecting symmetry by adding to your chain a term which breaks this symmetry and checking what it does to the spectrum of a finite chain and to its dispersion (especially as chain goes through a phase transition).
+Test your guess about the protecting symmetry by adding to your chain a term which breaks this symmetry and checking what it does to the spectrum of a finite chain and to its dispersion (especially as the chain goes through a phase transition).
 
 +++
 

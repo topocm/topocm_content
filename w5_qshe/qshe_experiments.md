@@ -269,7 +269,7 @@ As shown in the lower panel, this particular feature is due to the unique struct
 
 The Landau levels of an electron-like band have a positive slope as a function of magnetic field, while those of a hole-like band have a negative slope. In a trivial bandstructure, all negative energy levels would bend down as a function of magnetic field, while all positive energy levels would bend up. As a consequence, if you place the Fermi level in the middle of the band gap and increase the magnetic field, no Landau level will ever cross the Fermi level.
 
-However, in the presence of a band inversion, you obtain what is shown in the figure: the lowest Landau levels coming from the inverted bands go in the “wrong” direction. At some value of the magnetic field, they must cross. Furthemore, they will both cross the Fermi level if it is in the middle of the zero-field band gap.
+However, in the presence of a band inversion, you obtain what is shown in the figure: the lowest Landau levels coming from the inverted bands go in the “wrong” direction. At some value of the magnetic field, they must cross. Furthermore, they will both cross the Fermi level if it is in the middle of the zero-field band gap.
 
 Due to this fact, one observes a Hall effect in a certain range of fields, even when the Fermi level is placed in the middle of the zero-field band gap. And indeed, by comparing the experimental results with the expected behavior of the Landau levels, you see that the positions of the Fermi-level crossings coincide with the re-entrant Hall plateaus of the experimental traces - as marked by the green and red arrows.
 

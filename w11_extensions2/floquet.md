@@ -453,7 +453,7 @@ So what is happening with bulk-edge correspondence?
 
 ## Bulk-edge correspondence in driven systems
 
-The two examples we've studied reveal an imporant feature of topological Floquet insulators. It seems that knowing the bulk Floquet Hamiltonian is sufficient to calculate the topological invariant, by just applying the known expression to the Floquet Hamiltonian. However, that's not enough.
+The two examples we've studied reveal an important feature of topological Floquet insulators. It seems that knowing the bulk Floquet Hamiltonian is sufficient to calculate the topological invariant, by just applying the known expression to the Floquet Hamiltonian. However, that's not enough.
 
 In rough terms, the reason for this insufficiency is due to Floquet topological insulators missing a topologically trivial state which can be taken as a reference. With any regular 2D Hamiltonian, we know that if we take $E \rightarrow -\infty$, we will get a trivial system with the Chern number zero. In a Floquet system, the only thing that lowering the energy tells us is that the Chern number is periodic in quasienergy, like any other observable property.
 
