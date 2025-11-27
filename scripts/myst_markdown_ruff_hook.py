@@ -36,6 +36,14 @@ def process_file(path: Path) -> None:
         # File might have been deleted between lint selection and execution.
         return
 
+    # Skip files that are not marked for jupytext conversion.
+    if "jupytext" not in path.read_text(encoding="utf-8").lower():
+        print(
+            f"myst_markdown_ruff_hook: Skipping {path} (no jupytext header)",
+            file=sys.stderr,
+        )
+        return
+
     notebook = jupytext.read(path, fmt="myst")
 
     with tempfile.NamedTemporaryFile(suffix=".ipynb", delete=False) as tmp:
