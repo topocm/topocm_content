@@ -56,6 +56,8 @@ build main website:
     - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
 
 stop branch website:
+  needs:
+    - build branch website
   script:
     - mkdir -p /tmp/empty_dir
     - pixi run rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
@@ -68,4 +70,4 @@ stop branch website:
       when: manual
   variables:
     WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
-  allow_failure: false
+  allow_failure: true
