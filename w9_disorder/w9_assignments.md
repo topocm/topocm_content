@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations
 
@@ -56,7 +32,7 @@ Do so for many disorder realizations, and build a histograph of the density of s
 
 If all goes well, you should observe different behaviors: the density of states in a finite region around $m=0$ has a weak power law divergence, that eventually turns into an actual gap. Check out this paper for details:
 
-* arXiv:cond-mat/0011200
+* @10.48550/arXiv.cond-mat/0011200
 
 +++
 
@@ -66,23 +42,23 @@ If all goes well, you should observe different behaviors: the density of states 
 
 ## Review assignment
 
-### arXiv:0908.0881
+### @10.48550/arXiv.0908.0881
 
 **Hint:** The topological Anderson insulator.
 
-### arXiv:0705.0886
+### @10.48550/arXiv.0705.0886
 
 **Hint:** One-parameter scaling in graphene.
 
-### arXiv:0705.1607
+### @10.48550/arXiv.0705.1607
 
 **Hint:** Scaling with Dirac fermions.
 
-### arXiv:1208.3442
+### @10.48550/arXiv.1208.3442
 
 **Hint:** The average symmetry and weak transitions.
 
-### arXiv:1411.5992
+### @10.48550/arXiv.1411.5992
 
 **Hint:** A technical paper about localization in 1D, but you don't need to follow the calculations.
 
@@ -90,5 +66,3 @@ If all goes well, you should observe different behaviors: the density of states 
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

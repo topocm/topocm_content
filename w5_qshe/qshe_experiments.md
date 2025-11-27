@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,24 +16,31 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    spectrum,
+    pauli,
+)
+
+from course.init_course import init_notebook
 
 init_notebook()
-%output size = 150
-
-import warnings
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction
 
-```{code-cell} ipython3
+:::{youtube} -HRBuCgOUvs
+:width: 100%
+:height: 480
+:::
 
-Video("-HRBuCgOUvs")
-```
 
 This topic is special, since in order to meaningfully discuss experimental progress we need to do something we didn't do before in the course: we will show you the measurements and compare them with the *simple* theoretical expectations. Like this we will see what agrees and what doesn't.
 
@@ -56,7 +63,7 @@ $$
 H({\bf k})=\left(\begin{array}{cc}\epsilon_e({\bf k})&\Delta({\bf k})\\\Delta^\dagger({\bf k})&\epsilon_o({\bf k})\end{array}\right),
 $$
 
-where $\Delta({\bf k})$ is the $2\times 2$ hybridization matrix. Inversion and time-reversal symmetries imply that $\Delta({\bf k})=-\Delta(-{\bf k})$ is odd under inversion and even under time-reversal.  Here we will focus on one such model, $\Delta({\bf k})=\alpha\sigma_z(k_x+i k_y)$, which we call the Bernevig-Hughes-Zhang model. 
+where $\Delta({\bf k})$ is the $2\times 2$ hybridization matrix. Inversion and time-reversal symmetries imply that $\Delta({\bf k})=-\Delta(-{\bf k})$ is odd under inversion and even under time-reversal.  Here we will focus on one such model, $\Delta({\bf k})=\alpha\sigma_z(k_x+i k_y)$, which we call the Bernevig-Hughes-Zhang model.
 
 Since the even band is electron-like, we approximate the even-band dispersion $\epsilon_e({\bf k})$
 as $\epsilon_e({\bf k}) = \delta_e + m_e k^2$, while we take the odd parity dispersion to be $\epsilon_o({\bf k})= \delta_o - m_o k^2$ for simplicity. The band inversion happens when $\delta_e < \delta_o$.
@@ -66,7 +73,6 @@ The spectrum of this Hamiltonian is very similar to that of a Chern insulator (a
 So below we see a qualitative band structure of one of the QSHE insulators, HgTe/CdTe quantum well, compared with the band structure of InAs/GaSb quantum well.
 
 ```{code-cell} ipython3
-
 def onsite(site, mu, B, D, M, ez_y):
     return (
         (M - 4 * B) * pauli.s0sz
@@ -92,15 +98,37 @@ bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 p = dict(mu=0, ez_y=0.0, A=0.5, B=1.0, D=-0.1)
 zticks = [-8, -4, 0, 4, 8]
-(
-    spectrum(bhz_infinite, dict(M=0.2, **p), zticks=zticks).relabel("HgTe/CdTe")
-    + spectrum(bhz_infinite, dict(M=1.5, **p), zticks=zticks).relabel("InAs/GaSb")
+spec_hgte = spectrum(bhz_infinite, dict(M=0.2, **p), zticks=zticks)
+spec_inas = spectrum(bhz_infinite, dict(M=1.5, **p), zticks=zticks)
+band_compare = make_subplots(
+    rows=1,
+    cols=2,
+    specs=[[{"type": "surface"}, {"type": "surface"}]],
+    subplot_titles=["HgTe/CdTe", "InAs/GaSb"],
 )
+for trace in spec_hgte.data:
+    band_compare.add_trace(trace, row=1, col=1)
+for trace in spec_inas.data:
+    band_compare.add_trace(trace, row=1, col=2)
+band_compare.update_layout(
+    scene=dict(
+        xaxis=spec_hgte.layout.scene.xaxis,
+        yaxis=spec_hgte.layout.scene.yaxis,
+        zaxis=spec_hgte.layout.scene.zaxis,
+    ),
+    scene2=dict(
+        xaxis=spec_inas.layout.scene.xaxis,
+        yaxis=spec_inas.layout.scene.yaxis,
+        zaxis=spec_inas.layout.scene.zaxis,
+    ),
+    height=550,
+)
+band_compare
 ```
 
-In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$. 
+In the last unit, we understood the nature of the edge modes near the topological phase transition, where a doubled Dirac model was appropriate. Deep in the strongly band-inverted topological regime, the bulk band structure has a mexican hat structure with the gap proportional to $\alpha$.
 
-The edge modes in this regime are quite different in structure from those near the topological transition. To see this, let us first set $k_y=0$ in the Hamiltonian. If we set $\alpha=0$ then there are two fermi points where the dispersion is roughly linear - let us label these points by $\tau_z=\pm 1$. We can describe the edge of the system, by assigning boundary conditions to the $k_x=\pm k_F$ modes in terms of time-reversal invariant phase-shifts. 
+The edge modes in this regime are quite different in structure from those near the topological transition. To see this, let us first set $k_y=0$ in the Hamiltonian. If we set $\alpha=0$ then there are two fermi points where the dispersion is roughly linear - let us label these points by $\tau_z=\pm 1$. We can describe the edge of the system, by assigning boundary conditions to the $k_x=\pm k_F$ modes in terms of time-reversal invariant phase-shifts.
 
 The bulk solutions near $k_x\sim\pm k_F$ can be written as $\psi_\pm(x)=e^{-x/\xi}\psi_\pm(0)$. Matching boundary conditions, we find that a zero energy pair of edge solutions exists in the case of inverted bands. These solutions differ from the ones in the Dirac limit by the presence of the oscillating part of the wave function.
 
@@ -115,7 +143,6 @@ When we move the Fermi level outside of the bulk gap, the bulk becomes conductin
 We end up with this situation:
 
 ```{code-cell} ipython3
-
 def bhz_ribbon(W):
     """Translationally invariant BHZ system with a fixed width W."""
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -124,7 +151,7 @@ def bhz_ribbon(W):
 
 
 def two_terminal(L, W):
-    """ Make a two terminal system with the BHZ model."""
+    """Make a two terminal system with the BHZ model."""
     ribbon = bhz_ribbon(W)
 
     syst = kwant.Builder()
@@ -152,35 +179,44 @@ masses = [-0.2, 0.2]
 mus = np.linspace(-0.8, 0.8, 50)
 
 spectra = [
-    spectrum(ribbon, dict(mu=0, **p), **kwargs).relabel(title)
-    for p["M"], title
-    in zip(masses, ("trivial spectrum", "topological spectrum"))
+    spectrum(ribbon, dict(mu=0, **p), **kwargs)
+    for p["M"], title in zip(masses, ("trivial spectrum", "topological spectrum"))
 ]
+for fig, ttl in zip(spectra, ("Trivial spectrum", "Topological spectrum")):
+    fig.update_layout(title=ttl)
 
 ydim = r"$G[e^2/h]$"
-conductance_plots = [
-    holoviews.Path(
-        (
-            mus,
-            [
-                kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
-                for p["mu"] in mus
-            ]
-        ),
-        kdims=[r"$\mu$", ydim], label=label)
-            .opts(
-                plot={
-                    "xticks": list(np.linspace(-0.8, 0.8, 5)),
-                },
-                style={"color": color}
+conductance_values = []
+labels = []
+for M, color, label in [
+    (-0.2, "teal", "trivial"),
+    (0.2, "orange", "topological"),
+]:
+    params = {**p, "M": M}
+    labels.append(label)
+    conductance_values.append(
+        [
+            kwant.smatrix(syst, energy=0.0, params={**params, "mu": mu}).transmission(
+                1, 0
             )
-    for p["M"], color, label
-    in [(-0.2, "teal", "trivial"), (0.2, "orange", "topological")]
-]
+            for mu in mus
+        ]
+    )
 
-G_triv, G_topo = conductance_plots
+conductance_fig = line_plot(
+    mus,
+    np.vstack(conductance_values).T,
+    labels=[lab.title() for lab in labels],
+    x_label=r"$\mu$",
+    y_label=ydim,
+    x_ticks=list(np.linspace(-0.8, 0.8, 5)),
+    y_ticks=[0, 0.5, 1.0, 1.5, 2.0],
+    show_legend=True,
+    color=["teal", "orange"],
+)
+conductance_fig.update_layout(title="Conductance")
 
-(G_triv * G_topo).relabel("Conductance") + spectra[0] + spectra[1]
+combine_plots([conductance_fig, spectra[0], spectra[1]], cols=3)
 ```
 
 Here on the left we see a comparison between the conductances of a trivial (blue curve) and a topological (red curve) insulator as a function of chemical potential. The other two panels show the spectra of a quantum spin Hall insulator in the topological and trivial phases. As we expected, conductance is quantized when the chemical potential is inside the band gap of a topological system.
@@ -207,7 +243,7 @@ This difference most likely originates from backscattering. In the quantum Hall 
 
 The exact origin of the backscattering is hard to understand. It could be inelastic scattering that does not preserve energy, or it could also be some residual magnetic impurities, which break time reversal symmetry. In both cases, Kramers theorem does not hold. One of the papers that we suggest for review proposes an interesting theory for the origin of the backscattering, while another reports measurements of InAs/GaSb quantum well, where conductance seems much better quantized.
 
-Regardless of the exact origin of backscattering, at any finite temperature, there is an inelastic scattering length $l_\phi$ beyond which we do not expect any protection from scattering. When the edge length $L$ is larger than $l_\phi$, we expect the edge to turn into an incoherent conductor with resistance of $(e^2/h) l_\phi/L$. 
+Regardless of the exact origin of backscattering, at any finite temperature, there is an inelastic scattering length $l_\phi$ beyond which we do not expect any protection from scattering. When the edge length $L$ is larger than $l_\phi$, we expect the edge to turn into an incoherent conductor with resistance of $(e^2/h) l_\phi/L$.
 
 In principle, this allows us to measure $l_\phi$ for the quantum spin hall edges by looking at the length dependence of the conductance. Indeed, experiments find that small samples have conductance close to $G_0$, while in large samples the conductance is suppressed.
 
@@ -256,19 +292,22 @@ If we consider the simple case of a magnetic field ${\bf B}=B {\bf x}$ along the
 We can very easily calculate that this is the case if we plot the conductance of the QSHE model as a function of magnetic field:
 
 ```{code-cell} ipython3
-
 E_zs = np.linspace(0, 0.15, 50)
-p["mu"] = 0
-p["M"] = 1
+base_params = {**p, "mu": 0, "M": 1}
 
 G = [
-    kwant.smatrix(syst, params=p).transmission(1, 0)
-    for p["ez_y"] in E_zs
+    kwant.smatrix(syst, params={**base_params, "ez_y": ez}).transmission(1, 0)
+    for ez in E_zs
 ]
-ez_conductances = (
-    holoviews.Path((E_zs, np.array(G)), kdims=["$E_z$", ydim], label="Conductance")
-    .redim.range(**{ydim: (0, 2)})
-    .opts(plot={"xticks": [0, 0.05, 0.10, 0.15], "yticks": [0, 0.5, 1.0, 1.5, 2.0]})
+conductance_curve = line_plot(
+    E_zs,
+    np.array(G),
+    x_label="$E_z$",
+    y_label=ydim,
+    x_ticks=[0, 0.05, 0.10, 0.15],
+    y_ticks=[0, 0.5, 1.0, 1.5, 2.0],
+    y_range=(0, 2),
+    show_legend=False,
 )
 
 kwargs = {
@@ -277,22 +316,57 @@ kwargs = {
     "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
     "yticks": [-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5],
     "title": lambda p: "Band structure",
+    "xdim": r"$k$",
+    "ydim": r"$E$",
 }
 
-VLines = holoviews.HoloMap(
-    {ez_y: holoviews.VLine(ez_y) for ez_y in E_zs}, kdims=[r"$E_z$"]
-)
-spectra = holoviews.HoloMap(
-    {p["ez_y"]: spectrum(ribbon, p, **kwargs) for p["ez_y"] in E_zs}, kdims=[r"$E_z$"]
-)
-ez_conductances * VLines + spectra * holoviews.HLine(0)
+
+def frame(ez):
+    params = {**base_params, "ez_y": ez}
+    spec = spectrum(ribbon, params, **kwargs)
+    add_reference_lines(spec, y=0, line_dash="dash", line_color="#555")
+    fig = make_subplots(
+        rows=1, cols=2, column_widths=[0.4, 0.6], horizontal_spacing=0.12
+    )
+    for trace in conductance_curve.data:
+        fig.add_trace(trace, row=1, col=1)
+    fig.add_trace(
+        dict(
+            x=[ez, ez],
+            y=[0, 2],
+            mode="lines",
+            line=dict(color="black", dash="dot"),
+            showlegend=False,
+        ),
+        row=1,
+        col=1,
+    )
+    fig.update_xaxes(title="$E_z$", range=[0, 0.15], row=1, col=1)
+    fig.update_yaxes(title=ydim, range=[0, 2], row=1, col=1)
+    for trace in spec.data:
+        fig.add_trace(trace, row=1, col=2)
+    tickvals, ticktext = zip(*kwargs["xticks"])
+    fig.update_xaxes(
+        title=kwargs["xdim"], tickvals=tickvals, ticktext=ticktext, row=1, col=2
+    )
+    fig.update_yaxes(
+        title=kwargs["ydim"],
+        range=kwargs["ylims"],
+        tickvals=kwargs["yticks"],
+        row=1,
+        col=2,
+    )
+    return fig
+
+
+slider_plot({ez: frame(ez) for ez in E_zs}, label="E_z")
 ```
 
-However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers. 
+However, even if we consider energies $E>B$ above the gap, the eigenstates at $\pm k_x$ are no longer Kramers' pairs, i.e. related by time-reversal symmetry. Therefore, any mechanism which changes momentum by $2 k_x$ can backscatter electrons from left movers to right movers.
 
 Edges of semiconductors are typically quite disordered - so we expect the random potential at the edge to provide "elastic backscattering" that can change the momentum without changing the energy. Such backscattering, in addition to any other "inelastic backscattering" by phonons etc, would decrease the conductance of the edge from the ideal quantized value. If we set $B=0$, elastic back-scattering that can occur at finite $B$ is forbidden, so we generally expect the application of a magnetic field to reduce conductance of the edge.
 
-We see below that indeed the conductance of the $L=20\,\mu m$ device is strongly reduced by the application of a magnetic field: 
+We see below that indeed the conductance of the $L=20\,\mu m$ device is strongly reduced by the application of a magnetic field:
 
 ![](figures/konig_fig15.png)
 
@@ -306,34 +380,18 @@ You might be worried that the suppression of conductance is only shown for the l
 
 Localization of QSHE edge states by magnetic field is relatively poorly understood, and we are not aware of a final experiment that would prove its existence or tell us in details what it is that happens at the QSHE edge in a magnetic field. As you will learn in two weeks, opening the gap by magnetic field opens new pathways for the creation of Majoranas, and so it is still a very important direction of research.
 
-```{code-cell} ipython3
-
-question = (
-    "Why did we not see a similar suppression of conductance with magnetic field in the case of  "
-    "the quantum Hall effect in week 3?"
-)
-
-answers = [
-    "The quantum Hall effect appeared in much higher quality samples.",
-    "There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.",
-    "The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin "
-    "Hall edges.",
-    "The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case.",
-]
-
-explanation = (
-    "The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  "
-    "required for the protection of edge states in the quantum spin Hall effect. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Why did we not see a similar suppression of conductance with magnetic field in the case of  the quantum Hall effect in week 3?
+:explanation: The magnetic field dependence here arises from the fact that B breaks time-reversal symmetry, which is  required for the protection of edge states in the quantum spin Hall effect.
+:correct: 2
+- The quantum Hall effect appeared in much higher quality samples.
+- There was no spin in the quantum Hall effect, so the magnetic field could not couple to anything.
+- The topological protection of quantum Hall edges does not rely on time-reversal, unlike quantum spin Hall edges.
+- The suppression here arises from inelastic scattering, which could not arise in the quantum Hall case.
 ```
 
 ## Summary
 
-```{code-cell} ipython3
-
-Video("Kop4zXWQ1Zc")
-```
+:::{youtube} Kop4zXWQ1Zc
+:width: 100%
+:height: 480
+:::

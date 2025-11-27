@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,25 +16,25 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
+import kwant
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-sys.path.append("../code")
-from init_course import *
+from course.functions import pauli, slider_plot, spectrum
+
+from course.init_course import init_notebook
 
 init_notebook()
-import itertools
-import warnings
-
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction: weak topological phases
 
 Taylor Hughes from the University of Illinois at Urbana-Champaign will describe the interplay between defects in crystals and weak topological insulators.
 
-```{code-cell} ipython3
-
-Video("k3ZKCg7jtTs")
+```{youtube} k3ZKCg7jtTs
+:width: 560
+:height: 315
 ```
 
 As you can see, there is a simple and universal connection between weak topological phases and the ability of defects to carry topologically protected states. The topological invariant $\mathcal{Q}$ of a dislocation is the number of protected states that it carries. It can be determined from the vector of weak topological invariants, $\mathbf{\mathcal{Q}}_\textrm{weak}$, and the Burgers vector of the dislocation $\mathbf{B}$:
@@ -119,14 +119,12 @@ We will create a 3D weak topological insulators by stacking many layers of 2D to
 Let's start with a screw dislocation connecting two layers. The system looks like this:
 
 ```{code-cell} ipython3
-
 # Layered BHZ and QAH models
+
 
 def onsite(site, M, B, D, field):
     return (
-        (M - 4 * B) * pauli.s0sz
-        - 4 * D * pauli.s0s0
-        + field * site.pos[1] * pauli.s0s0
+        (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 + field * site.pos[1] * pauli.s0s0
     )
 
 
@@ -175,28 +173,27 @@ layered_qah_infinite[kwant.HoppingKind((0, 0, 1), lat)] = hopz
 
 
 def screw_dislocation(model, L=10, W=15):
-    syst = kwant.Builder(
-        kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1))
-    )
+    syst = kwant.Builder(kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1)))
     syst.fill(
         model,
-        shape=(
-            lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W
-        ),
-        start=(0, 0, 0)
+        shape=(lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W),
+        start=(0, 0, 0),
     )
 
     def crosses_branch_cut(hop):
         x1, y1, _ = hop[0].pos
         x2, *_ = hop[1].pos
-        return (x1 - L//2 + .5) * (x2 - L//2 + .5) < 0 and W//4 < y1 < 3*W//4
+        return (x1 - L // 2 + 0.5) * (
+            x2 - L // 2 + 0.5
+        ) < 0 and W // 4 < y1 < 3 * W // 4
 
-    to_delete = [tuple(sorted(hop)) for hop in syst.hoppings() if crosses_branch_cut(hop)]
+    to_delete = [
+        tuple(sorted(hop)) for hop in syst.hoppings() if crosses_branch_cut(hop)
+    ]
     hopping_values = [syst[hop] for hop in to_delete]
     del syst[to_delete]
     diagonal_hops = [
-        (hop[0].family(*(hop[0].tag - [0, 0, 1])), hop[1])
-        for hop in to_delete
+        (hop[0].family(*(hop[0].tag - [0, 0, 1])), hop[1]) for hop in to_delete
     ]
     for hop, value in zip(diagonal_hops, hopping_values):
         syst[hop] = value
@@ -205,27 +202,50 @@ def screw_dislocation(model, L=10, W=15):
 
 
 L, W = 10, 15
-x0, y0, y1 = L//2 - 0.5, W//4 + 0.5, 3*W//4 - 0.5
+x0, y0, y1 = L // 2 - 0.5, W // 4 + 0.5, 3 * W // 4 - 0.5
 
 bzh_screw_dislocation = screw_dislocation(layered_bhz_infinite, L, W)
+
+
 def displacement(x, y):
     x -= x0
-    return -np.angle(np.sqrt((y - y0 - 1j*x) * (y - y1 + 1j*x))) / (np.pi)
+    return -np.angle(np.sqrt((y - y0 - 1j * x) * (y - y1 + 1j * x))) / (np.pi)
 
-fig = kwant.plot(
+
+kwant.plotter.set_engine("plotly")
+fig = kwant.plotter.plot(
     bzh_screw_dislocation,
-    site_size=.02, hop_lw=.05, fig_size=(9, 9), show=False,
-    pos_transform=(
-        lambda pos: [pos[0], pos[1], pos[2] + displacement(pos[0], pos[1])]
+    site_size=0.2,
+    hop_lw=0.12,
+    show=False,
+    pos_transform=(lambda pos: [pos[0], pos[1], pos[2] + displacement(pos[0], pos[1])]),
+)
+# Workaround for a Kwant plotly backend bug.
+for tr in fig.data:
+    if tr.mode == "lines":
+        tr.update(line=dict(width=3))
+fig.add_trace(
+    go.Scatter3d(
+        x=[x0, x0, None, x0, x0],
+        y=[y0, y0, None, y1, y1],
+        z=[-2, 2, None, -2, 2],
+        mode="lines",
+        line=dict(color="orange", width=10),
+        showlegend=False,
     )
 )
-ax = fig.axes[0]
-ax.view_init(elev=40, azim=60)
-ax.plot(
-    [x0, x0, np.nan, x0, x0], [y0, y0, np.nan, y1, y1], [-2, 2, np.nan, -2, 2],
-    lw=3, linestyle=":"
+
+fig.update_layout(
+    showlegend=False,
+    scene=dict(
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        zaxis=dict(visible=False),
+        aspectmode="data",
+    ),
+    margin=dict(l=0, r=0, t=0, b=0),
 )
-ax.axis("off");
+fig
 ```
 
 The figure above shows a single unit cell in the $z$-direction that is infinitely repeated to obtain the dispersion relation. Along the $x$ and $y$ directions the system has periodic boundary conditions.
@@ -235,7 +255,6 @@ The Burgers' vector is parallel to the $z$-axis and has unit length (the disloca
 Let's look at the band structure along the $z$ direction, and the wave functions of the corresponding states.
 
 ```{code-cell} ipython3
-
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -251,17 +270,20 @@ kwargs = {
 
 screw_dislocations = dict(
     BHZ=screw_dislocation(layered_bhz_infinite, L, W),
-    QAH=screw_dislocation(layered_qah_infinite, L, W)
+    QAH=screw_dislocation(layered_qah_infinite, L, W),
 )
 parameters = dict(
-    BHZ=dict(A=1.0, B=1.0, D=0.0, M=0.8, field=0.01, t_inter=-.1),
-    QAH=dict(A=1.0, B=1.0, mu=0.8, field=0.005, t_inter=-0.1)
+    BHZ=dict(A=1.0, B=1.0, D=0.0, M=0.8, field=0.01, t_inter=-0.1),
+    QAH=dict(A=1.0, B=1.0, mu=0.8, field=0.005, t_inter=-0.1),
 )
 
 screw_dislocation_spectra = {
-    name: spectrum(syst, p=parameters[name], **kwargs).relabel(f"Band structure, {name}")
+    name: spectrum(syst, p=parameters[name], **kwargs).update_layout(
+        title=f"Band structure, {name}"
+    )
     for name, syst in screw_dislocations.items()
 }
+
 
 def density_array(syst, psi):
     """Convert a wave function into a 2D array suitable for plotting."""
@@ -277,30 +299,72 @@ k_z = np.pi + 0.1
 energies, densities = {}, {}
 for name, syst in screw_dislocations.items():
     syst = kwant.wraparound.wraparound(syst).finalized()
-    H = syst.hamiltonian_submatrix(params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name]))
+    H = syst.hamiltonian_submatrix(
+        params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name])
+    )
     vals, vecs = np.linalg.eigh(H)
     # Select the energies close to the middle of the spectrum
-    indices = slice(len(vals)//2 - 3, len(vals)//2 + 3)
+    indices = slice(len(vals) // 2 - 3, len(vals) // 2 + 3)
     energies[name] = vals[indices]
     densities[name] = [density_array(syst, psi) for psi in vecs.T[indices]]
 
 
-# %opts Raster(cmap='gist_heat_r' interpolation=None) {+framewise}
+frames = {}
+for name, spec_fig in screw_dislocation_spectra.items():
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
+        fig = make_subplots(
+            rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1
+        )
+        for trace in spec_fig.data:
+            fig.add_trace(trace, row=1, col=1)
+        fig.add_trace(
+            go.Scatter(
+                x=[k_z],
+                y=[energy],
+                mode="markers",
+                marker=dict(color="blue", size=8),
+                showlegend=False,
+            ),
+            row=1,
+            col=1,
+        )
+        fig.update_xaxes(
+            title=spec_fig.layout.xaxis.title.text,
+            tickvals=spec_fig.layout.xaxis.tickvals,
+            ticktext=spec_fig.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec_fig.layout.yaxis.title.text,
+            range=spec_fig.layout.yaxis.range,
+            tickvals=spec_fig.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+        fig.add_trace(
+            go.Heatmap(
+                z=density.T,
+                colorscale="YlOrRd",
+                colorbar=dict(title=r"$|\psi|^2$"),
+            ),
+            row=1,
+            col=2,
+        )
+        fig.update_xaxes(
+            title="x",
+            showticklabels=False,
+            showgrid=False,
+            scaleanchor="y2",
+            scaleratio=1,
+            row=1,
+            col=2,
+        )
+        fig.update_yaxes(title="y", showticklabels=False, showgrid=False, row=1, col=2)
+        fig.update_layout(title=f"{name}: state {n}")
+        frames[f"{name} n={n}"] = fig
 
-holoviews.HoloMap({
-    (n, name): (
-        (
-            spectrum
-            * holoviews.Points((k_z, energy)).opts(s=50)
-            * holoviews.VLine(k_z)
-        )
-        + holoviews.Raster(density.T, label=r"$\left|\psi\right|^2$").opts(
-            cmap='gist_heat_r', interpolation=None
-        )
-    )
-    for name, spectrum in screw_dislocation_spectra.items()
-    for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
-}, kdims=["n", "model"]).collate()
+slider_plot(frames, label="state")
 ```
 
 You see that the band structure is gapless: because of the presence of the dislocation, there are states dispersing below the bulk gap along the $z$ direction.
@@ -312,71 +376,88 @@ Here, the fundamental difference between the BHZ model and the quantum anomalous
 We can also look at an edge dislocation:
 
 ```{code-cell} ipython3
-
 def edge_dislocation(model, L=10, W=15):
-    syst = kwant.Builder(
-        kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1))
-    )
+    syst = kwant.Builder(kwant.TranslationalSymmetry((L, 0, 0), (0, W, 0), (0, 0, 1)))
 
     # Interchange x- and z- hopping
     lat = list(model.sites())[0].family
     rotated = kwant.Builder(model.symmetry)
     rotated[lat(0, 0, 0)] = model[lat(0, 0, 0)]
-    rotated[kwant.HoppingKind((1, 0, 0), lat)] = model[next(kwant.HoppingKind((0, 0, 1), lat)(model))]
-    rotated[kwant.HoppingKind((0, 1, 0), lat)] = model[next(kwant.HoppingKind((0, 1, 0), lat)(model))]
-    rotated[kwant.HoppingKind((0, 0, 1), lat)] = model[next(kwant.HoppingKind((1, 0, 0), lat)(model))]
+    rotated[kwant.HoppingKind((1, 0, 0), lat)] = model[
+        next(kwant.HoppingKind((0, 0, 1), lat)(model))
+    ]
+    rotated[kwant.HoppingKind((0, 1, 0), lat)] = model[
+        next(kwant.HoppingKind((0, 1, 0), lat)(model))
+    ]
+    rotated[kwant.HoppingKind((0, 0, 1), lat)] = model[
+        next(kwant.HoppingKind((1, 0, 0), lat)(model))
+    ]
     syst.fill(
         rotated,
-        shape=(
-            lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W
-        ),
-        start=(0, 0, 0)
+        shape=(lambda site: 0 <= site.pos[0] < L and 0 <= site.pos[1] < W),
+        start=(0, 0, 0),
     )
 
     def removed_layer(site):
         x, y, _ = site.pos
-        return x == L//2 and W//4 < y < 3*W//4
+        return x == L // 2 and W // 4 < y < 3 * W // 4
 
     to_delete = [site for site in syst.sites() if removed_layer(site)]
     for site in to_delete:
         syst[
-            site.family(*(site.tag - (1, 0, 0))),
-            site.family(*(site.tag + (1, 0, 0)))
-        ] = syst[
-            site, site.family(*(site.tag + (1, 0, 0)))
-        ]
+            site.family(*(site.tag - (1, 0, 0))), site.family(*(site.tag + (1, 0, 0)))
+        ] = syst[site, site.family(*(site.tag + (1, 0, 0)))]
     del syst[to_delete]
 
     return syst
 
+
 L, W = 10, 15
-x0, y0, y1 = L//2, W//4 + 0.5, 3*W//4 - 0.5
+x0, y0, y1 = L // 2, W // 4 + 0.5, 3 * W // 4 - 0.5
+
 
 bzh_edge_dislocation = edge_dislocation(layered_bhz_infinite, L, W)
-def displacement(x, y):
-    x -= x0
-    return -np.angle(np.sqrt((y - y0 - 1j*x) * (y - y1 + 1j*x))) / (np.pi)
 
-fig = kwant.plot(
+
+kwant.plotter.set_engine("plotly")
+fig = kwant.plotter.plot(
     bzh_edge_dislocation,
-    site_size=.02, hop_lw=.05, fig_size=(9, 9), show=False,
-    pos_transform=(
-        lambda pos: [pos[0] + displacement(pos[0], pos[1]), pos[1], pos[2]]
+    site_size=0.2,
+    hop_lw=0.12,
+    show=False,
+    pos_transform=(lambda pos: [pos[0] + displacement(pos[0], pos[1]), pos[1], pos[2]]),
+)
+# Workaround for a Kwant plotly backend bug.
+for tr in fig.data:
+    if tr.mode == "lines":
+        tr.update(line=dict(width=3))
+fig.add_trace(
+    go.Scatter3d(
+        x=[x0, x0, None, x0, x0],
+        y=[y0, y0, None, y1, y1],
+        z=[-2, 2, None, -2, 2],
+        mode="lines",
+        line=dict(color="orange", width=10),
+        showlegend=False,
     )
 )
-ax = fig.axes[0]
-ax.view_init(elev=40, azim=60)
-ax.plot(
-    [x0, x0, np.nan, x0, x0], [y0, y0, np.nan, y1, y1], [-2, 2, np.nan, -2, 2],
-    lw=3, linestyle=":"
+
+fig.update_layout(
+    showlegend=False,
+    scene=dict(
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        zaxis=dict(visible=False),
+        aspectmode="data",
+    ),
+    margin=dict(l=0, r=0, t=0, b=0),
 )
-ax.axis("off");
+fig
 ```
 
 The Burgers vector is now along the $y$-direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
 
 ```{code-cell} ipython3
-
 kwargs = {
     "k_x": 0,
     "k_y": 0,
@@ -388,11 +469,13 @@ kwargs = {
 
 edge_dislocations = dict(
     BHZ=edge_dislocation(layered_bhz_infinite, L, W),
-    QAH=edge_dislocation(layered_qah_infinite, L, W)
+    QAH=edge_dislocation(layered_qah_infinite, L, W),
 )
 
 edge_dislocation_spectra = {
-    name: spectrum(syst, p=parameters[name], **kwargs).relabel(f"Band structure, {name}")
+    name: spectrum(syst, p=parameters[name], **kwargs).update_layout(
+        title=f"Band structure, {name}"
+    )
     for name, syst in edge_dislocations.items()
 }
 
@@ -400,57 +483,86 @@ k_z = 0.1
 energies, densities = {}, {}
 for name, syst in edge_dislocations.items():
     syst = kwant.wraparound.wraparound(syst).finalized()
-    H = syst.hamiltonian_submatrix(params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name]))
+    H = syst.hamiltonian_submatrix(
+        params=dict(k_x=0, k_y=0, k_z=k_z, **parameters[name])
+    )
     vals, vecs = np.linalg.eigh(H)
     # Select the energies close to the middle of the spectrum
-    indices = slice(len(vals)//2 - 3, len(vals)//2 + 3)
+    indices = slice(len(vals) // 2 - 3, len(vals) // 2 + 3)
     energies[name] = vals[indices]
     densities[name] = [density_array(syst, psi).T for psi in vecs.T[indices]]
 
 
-holoviews.HoloMap({
-    (n, name): (
-        (
-            spectrum
-            * holoviews.Points((k_z, energy)).opts(s=50)
-            * holoviews.VLine(k_z)
+frames = {}
+for name, spec_fig in edge_dislocation_spectra.items():
+    for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
+        fig = make_subplots(
+            rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1
         )
-        + holoviews.Raster(density, label=r"$\left|\psi\right|^2$").opts(
-            cmap='gist_heat_r', interpolation=None
+        for trace in spec_fig.data:
+            fig.add_trace(trace, row=1, col=1)
+        fig.add_trace(
+            go.Scatter(
+                x=[k_z],
+                y=[energy],
+                mode="markers",
+                marker=dict(color="blue", size=8),
+                showlegend=False,
+            ),
+            row=1,
+            col=1,
         )
-    )
-    for name, spectrum in edge_dislocation_spectra.items()
-    for n, (energy, density) in enumerate(zip(energies[name], densities[name]))
-}, kdims=["n", "model"]).collate()
+        fig.update_xaxes(
+            title=spec_fig.layout.xaxis.title.text,
+            tickvals=spec_fig.layout.xaxis.tickvals,
+            ticktext=spec_fig.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec_fig.layout.yaxis.title.text,
+            range=spec_fig.layout.yaxis.range,
+            tickvals=spec_fig.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+        fig.add_trace(
+            go.Heatmap(
+                z=density,
+                colorscale="YlOrRd",
+                colorbar=dict(title=r"$|\psi|^2$"),
+            ),
+            row=1,
+            col=2,
+        )
+        fig.update_xaxes(
+            title="x",
+            showticklabels=False,
+            showgrid=False,
+            scaleanchor="y2",
+            scaleratio=1,
+            row=1,
+            col=2,
+        )
+        fig.update_yaxes(title="y", showticklabels=False, showgrid=False, row=1, col=2)
+        fig.update_layout(title=f"{name}: state {n}")
+        frames[f"{name} n={n}"] = fig
+
+slider_plot(frames, label="state")
 ```
 
-```{code-cell} ipython3
-
-question = (
-    "What would happen in both simulations above if we changed the dislocation, "
-    "making the Burgers vector twice as long?"
-)
-
-answers = [
-    "The wave function would just spread out a bit more because the dislocation is larger.",
-    "The number of gapless states would double for both models.",
-    "The gapless states would be gapped out for both models.",
-    "The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model.",
-]
-
-explanation = (
-    r"Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, "
-    r"and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What would happen in both simulations above if we changed the dislocation, making the Burgers vector twice as long?
+:explanation: Doubling the Burgers vector doubles the topological invariant in the $\mathbb{Z}$ case, and changes it from non-trivial to trivial in the $\mathbb{Z}_2$ case.
+:correct: 3
+- The wave function would just spread out a bit more because the dislocation is larger.
+- The number of gapless states would double for both models.
+- The gapless states would be gapped out for both models.
+- The dislocation would only have gapless states in the quantum anomalous Hall case, not for the BHZ model.
 ```
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("MvcvJiZYSSk")
+```{youtube} MvcvJiZYSSk
+:width: 560
+:height: 315
 ```

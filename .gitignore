@@ -3,6 +3,10 @@
 *~
 \#*\#
 .\#*
+*.egg-info/
+
+# Notebooks themselves
+*.ipynb
 
 # latex auxiliary files:
 *.aux
@@ -27,3 +31,13 @@ auto
 
 # Output files
 _build
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Node
+node_modules/
+
+# jupyter data
+.jupyter/*
+!.jupyter/jupyter_server_config.py

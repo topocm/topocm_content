@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,17 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.functions import (
+    pauli,
+    slider_plot,
+    spectrum,
+)
+from course.init_course import init_notebook
+import kwant
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from pfapack import pfaffian as pf
 
 init_notebook()
 ```
@@ -28,18 +35,16 @@ init_notebook()
 
 Joel Moore from the University of California, Berkeley will introduce this week's topic, by telling us how the idea of a two-dimensional topological insulator was generalized to three dimensions.
 
-```{code-cell} ipython3
-
-Video("NIhMjm7cyug")
+```{youtube} NIhMjm7cyug
+:width: 560
+:height: 315
 ```
 
 ## Making  3D topological invariants out of 2D ones
 
-Let us follow the direction explained by Joel Moore and construct a three-dimensional topological state from the two-dimensional topological state. This time, we'll do this by studying the system in momentum space rather than in real space as we did before. As with two dimensional systems, time-reversal invariant momenta (TRIMs) play an important role in three dimensions. 
+Let us follow the direction explained by Joel Moore and construct a three-dimensional topological state from the two-dimensional topological state. This time, we'll do this by studying the system in momentum space rather than in real space as we did before. As with two dimensional systems, time-reversal invariant momenta (TRIMs) play an important role in three dimensions.
 
 For illustrative purposes, consider the three dimensional irreducible Brillouin Zone (i.e. $k_j\in [0,\pi]$) of a cubic system shown below. Fixing one of the three momenta $k_{x,y,z}$ to a TRIM, say $k_x=0$ without loss of generality, we can think of the Hamiltonian in the $(k_y,k_z)$ plane as a two dimensional Hamiltonian, which may either be topologically trivial ($\mathbb{Z}_2$-index $=0$) or non-trivial ($\mathbb{Z}_2$-index $=1$).
-
-+++
 
 ![](figures/3dbz.svg)
 
@@ -99,7 +104,7 @@ A k_- & -M(\mathbf{k}) & \tilde{A}k_z & 0 \\
 \end{pmatrix}\,.
 $$
 
-This Hamiltonian is known as the **3D BHZ model**. It is gapped at finite $M$, and a transition between the trivial and strong topological insulator phases is achieved by changing the sign of $M$. Just like its two-dimensional counterpart, the 3D BHZ model can be used as a prototype for a strong topological insulator, as well as a starting point to model real materials. 
+This Hamiltonian is known as the **3D BHZ model**. It is gapped at finite $M$, and a transition between the trivial and strong topological insulator phases is achieved by changing the sign of $M$. Just like its two-dimensional counterpart, the 3D BHZ model can be used as a prototype for a strong topological insulator, as well as a starting point to model real materials.
 
 The above derivation makes one important point evident: a necessary ingredient to have a strong topological insulator is to break spin conservation. Above, we achieved this by adding coupling between the spins, to avoid the undesirable gap closing at finite $k_z$
 
@@ -128,22 +133,16 @@ $$
 Let's have a quick look at it to get a more concrete understanding:
 
 ```{code-cell} ipython3
-
-%%output fig='png'
-
 def onsite(site, C, D1, D2, M, B1, B2):
-    return (
-        (C + 2 * D1 + 4 * D2) * pauli.s0s0
-        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
-    )
+    return (C + 2 * D1 + 4 * D2) * pauli.s0s0 + (M + 2 * B1 + 4 * B2) * pauli.s0sz
 
 
 def hopx(site1, site2, D2, B2, A2, Bz):
     x1, y1, z1 = site1.pos
     x2, y2, z2 = site2.pos
-    return (
-        -D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx
-    ) * np.exp(-0.5j * Bz * (x1 - x2) * (y1 + y2))
+    return (-D2 * pauli.s0s0 - B2 * pauli.s0sz + A2 * 0.5j * pauli.sxsx) * np.exp(
+        -0.5j * Bz * (x1 - x2) * (y1 + y2)
+    )
 
 
 def hopy(site1, site2, D2, B2, A2):
@@ -174,12 +173,12 @@ p = dict(A1=1, A2=1.5, B1=1, B2=1, C=0, D1=0, D2=0, M=None, Bz=0)
 
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-1, 1, 5)
-holoviews.HoloMap(
+slider_plot(
     {
         p["M"]: spectrum(slab, p, k_x=k, k_y=k, title=f"$M={p['M']:.3}$", num_bands=2)
         for p["M"] in Ms
     },
-    kdims=[r"$M$"],
+    label=r"M",
 )
 ```
 
@@ -210,9 +209,6 @@ As a final illustration of the relation between weak and strong invariants, let'
 We determine the topological invariant in the same way as for QSHE: we see if the phase of the reflection matrix connects the Pfaffians of $r(k_y=0)$ and $r(k_y=\pi)$.
 
 ```{code-cell} ipython3
-
-%%output fig='png'
-
 # A system for computing the topological invariant
 probe_lead = kwant.Builder(
     kwant.TranslationalSymmetry((-1, 0, 0)), time_reversal=1j * pauli.sys0
@@ -246,45 +242,70 @@ def pfaffian_phase(p, k_x, k_y):
 def invariant_at_k_x(p, k_x, k_x_label, col):
     pfaff = [pfaffian_phase(p, k_x, k_y) for k_y in (0, np.pi)]
     ks = np.linspace(0.0, np.pi, 50)
-    det = np.array([
-        np.linalg.det(
-            kwant.smatrix(
-                top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
-            ).data
-        )
-        for k_y in ks
-    ])
+    det = np.array(
+        [
+            np.linalg.det(
+                kwant.smatrix(
+                    top_invariant_syst, energy=0.0, params=dict(**p, k_x=k_x, k_y=k_y)
+                ).data
+            )
+            for k_y in ks
+        ]
+    )
     phase = np.angle(pfaff[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    xdim, ydim = "$k_y$", "phase"
-    kdims = [xdim, ydim]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims, label=f"$k_x={k_x_label}$").opts(
-        style={"color": col}
-    )
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaff)), kdims=kdims).opts(
-        style={"color": col}
-    )
-    return plot
+    return {
+        "line": (ks[1:], phase),
+        "points": ([0, np.pi], np.angle(pfaff)),
+        "label": f"$k_x={k_x_label}$",
+    }
 
 
 def plot_invariant(p):
-    xdim, ydim = "$k_y$", "phase"
-
-    plot = (
-        invariant_at_k_x(p, 0, "0", "g")
-        * invariant_at_k_x(p, np.pi, r"\pi", "b")
-    )
-    xlims, ylims = (-0.2, np.pi + 0.2), (-np.pi - 0.3, np.pi + 0.3)
+    curves = [
+        invariant_at_k_x(p, 0, "0", "g"),
+        invariant_at_k_x(p, np.pi, r"\pi", "b"),
+    ]
+    fig = go.Figure()
+    colors = ["green", "blue"]
+    for entry, color in zip(curves, colors):
+        x_line, y_line = entry["line"]
+        fig.add_trace(
+            go.Scatter(
+                x=x_line,
+                y=y_line,
+                mode="lines",
+                name=entry["label"],
+                line=dict(color=color),
+            )
+        )
+        x_pts, y_pts = entry["points"]
+        fig.add_trace(
+            go.Scatter(
+                x=x_pts,
+                y=y_pts,
+                mode="markers",
+                marker=dict(color=color, size=8),
+                showlegend=False,
+            )
+        )
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    style_overlay = {
-        "xticks": [(0, "0"), (np.pi, "$\pi$")],
-        "yticks": pi_ticks,
-        "show_legend": True,
-        "legend_position": "top",
-    }
-    style_path = {"show_legend": True}
-    return plot.redim.range(**{xdim: xlims, ydim: ylims}).opts(
-        plot={"Overlay": style_overlay, "Path": style_path}
+    fig.update_layout(
+        title="Reflection phase winding",
+        xaxis=dict(
+            title="$k_y$",
+            range=[-0.2, np.pi + 0.2],
+            tickvals=[0, np.pi],
+            ticktext=["0", r"$\pi$"],
+        ),
+        yaxis=dict(
+            title="phase",
+            range=[-np.pi - 0.3, np.pi + 0.3],
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+        showlegend=True,
     )
+    return fig
 
 
 p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)
@@ -292,18 +313,71 @@ p = dict(A1=1, A2=1, B1=1, B2=0.2, C=0, D1=0.2, D2=0, Bz=0)
 slab = make_slab(15)
 k = np.linspace(-np.pi, np.pi)
 Ms = np.linspace(-2.75, 0.75, 11)
-spectra = holoviews.HoloMap(
-    {
-        p["M"]: spectrum(slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2)
-        for p["M"] in Ms
-    },
-    kdims=["$M$"],
-)
+spectra = {
+    p["M"]: spectrum(
+        slab, p, k_x=k, k_y=k, k_z=0, title=f"$M={p['M']:.3}$", num_bands=2
+    )
+    for p["M"] in Ms
+}
 
-invariant_plots = holoviews.HoloMap(
-    {p["M"]: plot_invariant(p) for p["M"] in Ms}, kdims=[r"$M$"]
-)
-spectra + invariant_plots
+invariant_plots = {p["M"]: plot_invariant(p) for p["M"] in Ms}
+
+frames = {}
+for M in Ms:
+    spec_fig = spectra[M]
+    inv_fig = invariant_plots[M]
+    fig = go.Figure()
+    subplot = make_subplots(
+        rows=2,
+        cols=1,
+        row_heights=[0.6, 0.4],
+        vertical_spacing=0.12,
+        specs=[[{"type": "scene"}], [{"type": "xy"}]],
+    )
+    for trace in spec_fig.data:
+        subplot.add_trace(trace, row=1, col=1)
+    subplot.update_scenes(
+        xaxis_title=spec_fig.layout.scene.xaxis.title.text,
+        yaxis_title=spec_fig.layout.scene.yaxis.title.text,
+        zaxis_title=spec_fig.layout.scene.zaxis.title.text,
+        xaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        yaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        row=1,
+        col=1,
+    )
+    for trace in inv_fig.data:
+        subplot.add_trace(trace, row=2, col=1)
+    subplot.update_xaxes(
+        title=inv_fig.layout.xaxis.title.text,
+        range=inv_fig.layout.xaxis.range,
+        tickvals=inv_fig.layout.xaxis.tickvals,
+        ticktext=inv_fig.layout.xaxis.ticktext,
+        row=2,
+        col=1,
+    )
+    subplot.update_yaxes(
+        title=inv_fig.layout.yaxis.title.text,
+        range=inv_fig.layout.yaxis.range,
+        tickvals=inv_fig.layout.yaxis.tickvals,
+        ticktext=inv_fig.layout.yaxis.ticktext,
+        row=2,
+        col=1,
+    )
+    subplot.update_layout(
+        title=f"M={M:.3f}",
+        height=720,
+        legend=dict(x=0.62, y=0.12),
+    )
+    fig = subplot
+    frames[M] = fig
+
+slider_plot(frames, label="M")
 ```
 
 We see the values of the invariants change several times:
@@ -313,25 +387,13 @@ We see the values of the invariants change several times:
 * When $M$ is lowered further, two new Dirac cones appear at $k = (0,\pi)$ and $k = (\pi, 0)$. This changes the invariants to $\mathcal{Q}(k_x=0) = 0$ and $\mathcal{Q}(k_x=\pi) = 1$.
 * Finally one more Dirac cone appears at $k = (\pi, \pi)$, accompanied by both invariants becoming trivial.
 
-```{code-cell} ipython3
-
-question = "Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?"
-
-answers = [
-    "There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
-    "There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.",
-    "There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.",
-    "There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$.",
-]
-
-explanation = (
-    "We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. "
-    "The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Suppose you have a $(0;100)$ weak topological insulator. Which one of the following statements is correct?
+:explanation: We know that the strong invariant $Q(k_x=0)Q(k_x=\pi)=0$, so there must be an even number of Dirac cones in total. The number at $k_x=\pi$ is odd because $Q(k_x=\pi)=1$, so the number at $k_x=0$ must also be odd.
+:correct: 3
+- There is an even number of Dirac cones for both $k_x=0$ and $k_x=\pi$.
+- There is an even number of Dirac cones for $k_x=0$ and an odd one for $k_x=\pi$.
+- There is an odd number of Dirac cones for $k_x=0$ and an even one for $k_x=\pi$.
+- There is an odd number of Dirac cones for both $k_x=0$ and $k_x=\pi$.
 ```
 
 ## Quantum Hall conductance and the magneto-electric effect
@@ -349,15 +411,13 @@ In total we thus get $\sigma_{xy} = (2n + 1) e^2/h$: an integer, which resolves 
 Finally, let's look at the dispersion of the Landau levels and edge states:
 
 ```{code-cell} ipython3
-
-%%output size=150
 p = dict(A1=1, A2=1, B1=1, B2=1, C=0, D1=0, D2=0, M=-1, Bz=0.125)
 
 wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
 wire.fill(
     bhz_infinite,
     shape=(lambda site: 0 <= site.pos[1] < 20 and 0 <= site.pos[2] < 10),
-    start=(0, 0, 0)
+    start=(0, 0, 0),
 )
 k = np.linspace(-3.5, 1.5)
 kwargs = {"ylims": [-0.8, 0.8], "yticks": 5}
@@ -366,38 +426,20 @@ spectrum(wire, p, k_x=k, **kwargs)
 
 We see that the Landau levels come in pairs. In each such pair, one level comes from the top surface, and one from the bottom surface. The magnetic field is parallel to the side surfaces, so there is no gap there. The edge states propagate freely along the side surfaces and are reflected by the magnetic field as they try to enter either the top or the bottom surfaces.
 
-```{code-cell} ipython3
-
-question = (
-    "Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into "
-    "a very thick Corbino disk. "
-    "You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top "
-    "and bottom surfaces. "
-    "What happens if you throw an additional flux quantum through the inner hole of the disk?"
-)
-
-answers = [
-    "A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-    "An integer number of electron charges is transferred from the inner to the outer surface of the disk.",
-    "An integer number of charges is transferred from the top to the bottom surface of the disk.",
-    "The bulk gap closes.",
-]
-
-explanation = (
-    "The top and bottom surfaces combined form an integer quantum Hall state. "
-    "Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} Suppose that you take the 3D TI slab above, and connect the left and right surfaces, making it into a very thick Corbino disk. You then apply to it a strong perpendicular field in the same direction as in the figure, perpendicular to the top and bottom surfaces. What happens if you throw an additional flux quantum through the inner hole of the disk?
+:explanation: The top and bottom surfaces combined form an integer quantum Hall state. Hence the whole system acts like a Laughlin pump, exactly like in the purely 2D case.
+:correct: 1
+- A half-integer number of electron charges is transferred from the inner to the outer surface of the disk.
+- An integer number of electron charges is transferred from the inner to the outer surface of the disk.
+- An integer number of charges is transferred from the top to the bottom surface of the disk.
+- The bulk gap closes.
 ```
 
 ## Conclusion: integers, half-integers, and two types of electromagnetic response
 
 Before we move on to the next lecture, Joel Moore will tell us more about the origins of the peculiar electromagnetic response of topological insulators, and a fascinating connection to high energy physics.
 
-```{code-cell} ipython3
-
-Video("s7H6oLighOM")
+```{youtube} s7H6oLighOM
+:width: 560
+:height: 315
 ```

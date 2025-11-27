@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations: what about other symmetries
 
@@ -87,17 +63,17 @@ Test your guess about the protecting symmetry by adding to your chain a term whi
 
 For the first week we have these papers:
 
-### arXiv:1103.0780
+### @10.48550/arXiv.1103.0780
 
 **Hint:** Topological classification is not always applied to Hamiltonians.
 Figure out what is the topological quantity in open systems.
-See this idea also applied in arXiv:1405.6896.
+See this idea also applied in @10.48550/arXiv.1405.6896.
 
-### arXiv:1305.2924
+### @10.48550/arXiv.1305.2924
 
 **Hint:** This is a study of statistical properties of topological transitions.
 
-### arXiv:1111.6600
+### @10.48550/arXiv.1111.6600
 
 **Hint:** A toy model may still be useful in practice.
 
@@ -107,5 +83,3 @@ See this idea also applied in arXiv:1405.6896.
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

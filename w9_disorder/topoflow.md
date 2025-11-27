@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,16 +16,16 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
 import os
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import kwant
+import plotly.graph_objects as go
+from plotly.colors import sample_colorscale
+from course.functions import pauli
+from course.init_course import init_notebook
 
 init_notebook()
-from matplotlib.collections import LineCollection
-from matplotlib.colors import ListedColormap, BoundaryNorm
-import scipy.linalg as la
 
 # Set the path to a folder containing data files, to work with filters as well.
 data_folder = (
@@ -37,10 +37,11 @@ data_folder = (
 
 The scaling flow of topological insulators is introduced by Alexander Altland from the University of Cologne
 
-```{code-cell} ipython3
+:::{youtube} 8gkERY6hXTU
+:width: 100%
+:height: 480
+:::
 
-Video("8gkERY6hXTU")
-```
 
 ## A toy model for two-parameter scaling: the disordered Kitaev chain
 
@@ -75,7 +76,6 @@ Let's try the most obvious thing and see what happens to  $\langle Q\rangle$, as
 So below we see $\mathcal{Q}$ averaged over 100 different realizations in a disordered Kitaev chain with 30 sites as we gradually increase $U$:
 
 ```{code-cell} ipython3
-
 def make_kitaev_chain(L=10):
     lat = kwant.lattice.chain(norbs=2)
     syst = kwant.Builder()
@@ -100,9 +100,7 @@ def make_kitaev_chain(L=10):
     syst.attach_lead(lead)
     syst.attach_lead(lead.reversed())
     syst = syst.finalized()
-    syst = syst.precalculate(
-        params=dict(t=1.0, m=0.0, delta=1.0, disorder=0, salt="")
-    )
+    syst = syst.precalculate(params=dict(t=1.0, m=0.0, delta=1.0, disorder=0, salt=""))
 
     return syst
 
@@ -139,34 +137,33 @@ else:
     np.savetxt(data_folder + "first_plot_data_ms.dat", ms)
     np.savetxt(data_folder + "first_plot_data_qs.dat", qs)
 
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.set_prop_cycle("alpha", np.linspace(0, 1, len(qs)))
 
-for q in qs:
-    ax.plot(ms, q)
-
-ax.set_xlabel("$m$")
-ax.set_ylabel(r"$\langle Q \rangle$")
-
-evals = [-0.4, 0, 0.4]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
-
-evals = [-1, 0, 1]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals])
-
-ax.set_xlim(-0.4, 0.4)
-ax.set_ylim(-1.1, 1.1)
-
-ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles="dashed");
+fig = go.Figure()
+alphas = np.linspace(0.2, 1.0, len(qs))
+colors = ["#1f77b4"] * len(qs)
+for q, alpha in zip(qs, alphas):
+    fig.add_trace(
+        go.Scatter(
+            x=ms,
+            y=q,
+            mode="lines",
+            line=dict(color=f"rgba(31,119,180,{alpha})"),
+            showlegend=False,
+        )
+    )
+fig.add_hline(y=0, line_dash="dash", line_color="#555")
+fig.update_layout(
+    xaxis=dict(title="$m$", range=[-0.4, 0.4]),
+    yaxis=dict(title=r"$\langle Q \rangle$", range=[-1.1, 1.1]),
+)
+fig
 ```
 
 (Darker color corresponds to larger $U$.)
 
 What you see is that far away from the transition, when the gap in the clean limit is very large, disorder does not matter. Around the transition, the average value of $\mathcal{Q}$ changes from $-1$ and $+1$.
 
-Increasing disorder changes two things: 
+Increasing disorder changes two things:
 * It makes the width of the region where the transition happens larger. This we can understand relatively well, in a finite system adding fluctuations just means we can be (un)lucky and get an opposite value of the topological invariant.
 * It shifts the separation point between trivial and topological phases towards positive $m$. This looks much more curious: if we start with a trivial and insulating system and add disorder, it appears we can make this system topological!
 
@@ -174,27 +171,13 @@ The second effect, despite looking mysterious, appears just because the disorder
 
 Since this phenomenon appears with disorder, it was initially dubbed "topological Anderson insulator". This name is certainly not accurate: the band structure parameters approach the effective ones on the length scale of mean free path, and before the Anderson scaling flow begins.
 
-```{code-cell} ipython3
-
-question = (
-    r"What would happen if instead of $\det r$ we use $sign \det r$ for invariant?"
-)
-answers = [
-    "We would get a step function instead of a smooth curve.",
-    r"Not well-defined because $\det r$ becomes complex.",
-    "The $Q=\pm 1$ plateaus cancel and give $Q=0$.",
-    "The curve is qualitatively the same.",
-]
-
-explanation = (
-    r"Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect "
-    "the invariant for most disorder realizations. The intermediate values result from averaging over different "
-    "realizations."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What would happen if instead of $\det r$ we use $sign \det r$ for invariant?
+:explanation: Each disorder realization get $\textrm{det} r\sim \pm 1$ except near the transition. So adding sign doesn't affect the invariant for most disorder realizations. The intermediate values result from averaging over different realizations.
+:correct: 3
+- We would get a step function instead of a smooth curve.
+- Not well-defined because $\det r$ becomes complex.
+- The $Q=\pm 1$ plateaus cancel and give $Q=0$.
+- The curve is qualitatively the same.
 ```
 
 ## Two parameter scaling in one dimension
@@ -220,7 +203,6 @@ Let's try and verify our hypothesis by constructing the scaling flow of the diso
 Here's what we get:
 
 ```{code-cell} ipython3
-
 if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
     data_folder + "scaling_data_ts.dat"
 ):
@@ -229,42 +211,36 @@ if os.path.exists(data_folder + "scaling_data_qs.dat") and os.path.exists(
 else:
     p = dict(t=1.0, delta=1.0, disorder=0.8)
     Ls = np.array(np.logspace(np.log10(10), np.log10(180), 6), dtype=int)
-    ms = [np.sign(x) * x ** 2 + 0.2 for x in np.linspace(-1, 1, 40)]
+    ms = [np.sign(x) * x**2 + 0.2 for x in np.linspace(-1, 1, 40)]
     qs, ts = zip(*[phase_diagram(int(L), ms, p, num_average=1000) for L in Ls])
     qs = np.array(qs)
     ts = np.array(ts)
     np.savetxt(data_folder + "scaling_data_qs.dat", qs)
     np.savetxt(data_folder + "scaling_data_ts.dat", ts)
 
-fig, ax = plt.subplots(figsize=(6, 4))
-
-npoints = qs.shape[0]
+fig = go.Figure()
 X, Y = qs.T, ts.T
-
-for x, y in zip(X, Y):
-    points = np.array([x, y]).T.reshape(-1, 1, 2)
-
-    segments = np.concatenate([points[:-1], points[1:]], axis=1)
-    lc = LineCollection(
-        segments, cmap="gist_heat_r", norm=matplotlib.colors.Normalize(0, npoints + 1)
-    )
-    lc.set_array(np.array(list(range(1, npoints + 1))))
-    ax.add_collection(lc)
-
-
-ax.set_xlim(-1, 1)
-ax.set_ylim(0, 0.5)
-
-ax.set_xlabel(r"$\langle Q \rangle$")
-ax.set_ylabel(r"$\langle T \rangle$")
-
-evals = [-1, -0.5, 0, 0.5, 1]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
-
-evals = [0.0, 0.25, 0.50]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals]);
+num_sizes = qs.shape[0]
+size_colors = sample_colorscale("Viridis", np.linspace(0, 0.9, num_sizes).tolist())
+for curve_idx in range(X.shape[0]):
+    x, y = X[curve_idx], Y[curve_idx]
+    for seg in range(num_sizes - 1):
+        color = size_colors[seg]
+        fig.add_trace(
+            go.Scatter(
+                x=x[seg : seg + 2],
+                y=y[seg : seg + 2],
+                mode="lines",
+                line=dict(color=color, width=2),
+                showlegend=False,
+            )
+        )
+fig.update_layout(
+    xaxis=dict(title=r"$\langle Q \rangle$", range=[-1, 1]),
+    yaxis=dict(title=r"$\langle T \rangle$", range=[0, 0.5]),
+    height=520,
+)
+fig
 ```
 
 The lines have a direction, which tells us how $\langle Q \rangle$ and $\langle T \rangle$ change as we increase $L$. In the plot above, $L$ is increasing in going from bright to dark colors.
@@ -283,25 +259,13 @@ The flow, we just calculated is in fact valid for all one-dimensional topologica
 
 It is important to notice that one important result of the standard scaling theory regarding one dimensional system remains true: in the plot above all lines flow to no transmission, or in other words there are no metallic phases in the flow diagram.
 
-```{code-cell} ipython3
-
-question = (
-    "What does the 2 parameter flow diagram predict about the infinite size limit?"
-)
-answers = [
-    "Always topological for all parameters.",
-    "There's a localized topological and non-topological phase separated by a transition point.",
-    "Always localized for every parameter.",
-    "Almost always conducting except at a transition point.",
-]
-explanation = (
-    "The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small T"
-    "i.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) "
-    "except near $Q=0$ has a slower decay."
-)
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What does the 2 parameter flow diagram predict about the infinite size limit?
+:explanation: The phase is determined by the long length (i.e. dark part of the figure) which is almost always in small Ti.e. supporting localized states. Here the states either flow to $Q=+1$ or $Q=-1$ (non-top or top respectively) except near $Q=0$ has a slower decay.
+:correct: 1
+- Always topological for all parameters.
+- There's a localized topological and non-topological phase separated by a transition point.
+- Always localized for every parameter.
+- Almost always conducting except at a transition point.
 ```
 
 ## Critical point
@@ -344,9 +308,9 @@ $$
 Q=r = \tanh\alpha\,.
 $$
 
-We see that the topological transition happens when $\alpha=0$. That is, to model the transition, we think of $m(x)$ as a random function of $x$ which can take positive and negative values with equal probabilities. 
+We see that the topological transition happens when $\alpha=0$. That is, to model the transition, we think of $m(x)$ as a random function of $x$ which can take positive and negative values with equal probabilities.
 
-The details of the probability distribution for $m(x)$ are not very important as long as the distribution is characterized by a finite correlation length $\xi \ll L$ - that is, values of $m$ at points more distant than $\xi$ are statistically uncorrelated. 
+The details of the probability distribution for $m(x)$ are not very important as long as the distribution is characterized by a finite correlation length $\xi \ll L$ - that is, values of $m$ at points more distant than $\xi$ are statistically uncorrelated.
 
 If this is the case, $\alpha$ is the sum of an order $\sim L/\xi$ of uncorrelated values of $m$. By using the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), we can say that $\alpha$ is a normally distributed variable with zero mean and a variance growing linearly in $L$. Since $\alpha$ is a random variable, so is the transmission probability $T=|t^2|=\cosh^{-2}(\alpha)$. From the probability distribution of $\alpha$, we can obtain the scaling behavior of $T$ as
 
@@ -372,7 +336,7 @@ An extra attractive metallic fixed point can make the flow diagram more complica
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("NY6wPiH0E9E")
-```
+:::{youtube} NY6wPiH0E9E
+:width: 100%
+:height: 480
+:::

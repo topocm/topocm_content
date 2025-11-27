@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -44,7 +44,6 @@ For sufficiently small chunks $\Phi_n$ is small and one can get away with comput
 $$
 e^{i\Phi_n}=e^{\oint_{\Gamma_n} d{\bf k}\cdot {\langle u(\bf{k})|\bf{\nabla}(|u(\bf{k})\rangle)}}=\prod_p e^{\delta{\bf k}_{n,p}\cdot {\langle u(\bf{k}_{n,p})|\bf{\nabla}(|u(\bf{k}_{n,p})\rangle)}}\approx \prod_p (1+\delta k_{n,p}\langle u(\bf{k}_{n,p})|\bf{\nabla}(|u(\bf{k}_{n,p})\rangle)\approx \prod_p \langle u(\bf{k}_{n,p})|u(\bf{k}_{n,p+1})\rangle.
 $$
-
 
 +++
 

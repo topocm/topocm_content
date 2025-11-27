@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,13 +16,14 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import add_reference_lines, spectrum
+from course.init_course import init_notebook
+from matplotlib import pyplot as plt
 
 init_notebook()
-%output size=150
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -60,9 +61,6 @@ $$
 H=p_y^2+(\hbar k-e B y-\Phi)^2\,+V(y).
 $$
 
-
-+++
-
 Let's recall that $k=2\pi n/L$ because of periodic boundary conditions over $x$. We do not really care about the particular shape of the potential. Generically, it will be very flat in the middle of the ribbon and very steep right at its boundaries:
 
 ![](figures/confining_potential.svg)
@@ -74,7 +72,6 @@ But let's now move closer to the edges. That is, let's consider states which are
 Because $y_0$ is proportional to $k$, this means the states close to the edge will acquire a dependence on $k$. Let's see if this is true, by plotting $E(k)$ for our ribbon:
 
 ```{code-cell} ipython3
-
 def onsite(site, t, mu):
     return 4 * t - mu
 
@@ -99,10 +96,10 @@ def make_lead_hop_y(x0):
 
 
 def qhe_ribbon(W):
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
 
-    syst[lat.shape((lambda pos: -W//2 <= pos[1] < W - W//2), (0, 0))] = onsite
+    syst[lat.shape((lambda pos: -W // 2 <= pos[1] < W - W // 2), (0, 0))] = onsite
     syst[lat.neighbors()] = hopping
 
     return syst
@@ -120,7 +117,9 @@ kwargs = {
     "ylims": [-0.5, 0.5],
 }
 
-spectrum(syst, p, **kwargs) * holoviews.HLine(0)
+spectrum_plot = spectrum(syst, p, **kwargs)
+add_reference_lines(spectrum_plot, y=0, line_dash="dash", line_color="#555")
+spectrum_plot
 ```
 
 You can see that, as a consequence of this bending of the Landau levels, even if the Fermi level is placed in the middle of a bulk gap as in the figure, there are states crossing it. We can associate the levels at negative $k$ with states localized at the bottom edge of the ribbon, and those at positive $k$ with states localized at the top edge. For each edge, there are as many edge states as there are filled Landau levels in the bulk of the system.
@@ -144,14 +143,13 @@ The velocity is opposite at the two edges because the local electric field $\mat
 An important thing to note is that the presence of edge states does not depend in any way on the particular shape of the sample as well. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a “picture” of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
 
 ```{code-cell} ipython3
-
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
-    """Create a hall bar system. 
+    """Create a hall bar system.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead
     """
 
@@ -176,7 +174,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
         return -t * np.exp(-0.5j * B * (x1 + x2) * (y1 - y2))
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(bar, (0, 0))] = onsite
@@ -237,23 +235,13 @@ kwant.plotter.map(syst, ldos, num_lead_cells=20, colorbar=False, ax=ax)
 
 The local density of states beautifully reveals the presence of edge states in the sample. You can see that each filled Landau level produces a maximum in the density of states, which goes all around the edges of the sample. In this case, our simulation had two filled Landau levels in the bulk.
 
-```{code-cell} ipython3
-
-question = "In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?"
-answers = [
-    "They go at the same velocity.",
-    "The one more towards the bulk, because it is not slowed by the confining potential.",
-    "The one closer to the edge, because the local electric field there is stronger.",
-    "One cannot tell, because it depends on microscopic details.",
-]
-explanation = (
-    "The drift velocity is given by the ratio of the local electric field and the magnetic field. "
-    "The slope of the confinement potential increases sharply at the edge, hence the local electric field "
-    "is stronger there."
-)
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} In the plot above, which edge state moves faster, the one closer to the edge or the one further away ?
+:explanation: The drift velocity is given by the ratio of the local electric field and the magnetic field. The slope of the confinement potential increases sharply at the edge, hence the local electric field is stronger there.
+:correct: 2
+- They go at the same velocity.
+- The one more towards the bulk, because it is not slowed by the confining potential.
+- The one closer to the edge, because the local electric field there is stronger.
+- One cannot tell, because it depends on microscopic details.
 ```
 
 ## The harmless anomaly of the chiral edges
@@ -287,21 +275,21 @@ So let's take again our Corbino disk immersed in an external magnetic field. Wit
 In this new drawing, we have also added arrows to indicate that we now know that each edge of the Corbino supports one chiral  state. We cannot resist the temptation of showing you another beautiful plot of the local density of states, showing edge states in the Corbino geometry:
 
 ```{code-cell} ipython3
-
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead, B, phi
     """
+
     # ring shape
     def ring(pos):
         (x, y) = pos
-        rsq = x ** 2 + y ** 2
-        return r_in ** 2 < rsq < r_out ** 2
+        rsq = x**2 + y**2
+        return r_in**2 < rsq < r_out**2
 
     # Onsite and hoppings
 
@@ -314,7 +302,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
         return hopping(site1, site2, t, B) * np.exp(1j * phi)
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(ring, (0, r_in + 1))] = onsite
@@ -375,28 +363,15 @@ $$
 I_\circlearrowleft = n \,\frac{e^2}{h} V\,.
 $$
 
-
-+++
-
 > Thus, the relevant electromagnetic responses, namely the longitudinal and Hall conductivities $\sigma_L=0$ and $\sigma_H=ne^2/h$, can both be derived directly by only considering the chiral edge states.
 
-```{code-cell} ipython3
-
-question = "At which energy did we set the Fermi level in the density of states plot for the Corbino disk?"
-answers = [
-    "It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.",
-    "Exactly at the same energy as the third Landau level.",
-    "Between the second and the third Landau levels.",
-    "Between the third and the fourth Landau levels.",
-]
-explanation = (
-    "There are three edge states visible in the figure. "
-    "Hence there are three filled Landau levels in the bulk, "
-    "so the Fermi level lies somewhere above the third, but below the fourth Landau level."
-)
-MultipleChoice(
-    question, answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} At which energy did we set the Fermi level in the density of states plot for the Corbino disk?
+:explanation: There are three edge states visible in the figure. Hence there are three filled Landau levels in the bulk, so the Fermi level lies somewhere above the third, but below the fourth Landau level.
+:correct: 3
+- It is impossible to answer on the base of the plot alone, because it depends on the voltages applied to the leads.
+- Exactly at the same energy as the third Landau level.
+- Between the second and the third Landau levels.
+- Between the third and the fourth Landau levels.
 ```
 
 ## Important things to know about edge states
@@ -405,7 +380,7 @@ The physical picture that we presented this week is very simple, and it is also 
 
 In the summary video of this week, Bert Halperin from Harvard University will discuss how disorder and interactions enter in the description of the quantum Hall effect, and where the electric current is really carried. In 1982, Bert was the [first to understand](https://web.archive.org/web/20210415005925/https://sites.fas.harvard.edu/~phys191r/References/e3/halperin1982.pdf) that the quantum Hall effect could be explained by the existence of chiral edge states, so we are very happy that you can learn the story directly from him.
 
-```{code-cell} ipython3
-
-Video("rQs12c-SieE")
+```{youtube} rQs12c-SieE
+:width: 560
+:height: 315
 ```

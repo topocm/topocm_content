@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations: Majorana defects
 
@@ -36,7 +12,7 @@ We are interested in the spectrum below the gap. There are two interesting param
 
 Compare your results to the following paper, particularly Fig. 2.
 
-* arXiv:0804.4469
+* @10.48550/arXiv.0804.4469
 
 ### Majorana in a crystalline defect
 
@@ -54,19 +30,19 @@ Note that Kwant only supports regular lattices, so crystallographic defects can 
 
 ## Review assignment
 
-### arXiv:0707.1692
+### @10.48550/arXiv.0707.1692
 
 **Hint:** In detail, how to create and manipulate Majoranas on the 3D TI surface.
 
-### arXiv:1112.3527
+### @10.48550/arXiv.1112.3527
 
 **Hint:** The Josephson effect on a 3D TI, in real life.
 
-### arXiv:1208.6303
+### @10.48550/arXiv.1208.6303
 
 **Hint:** Disclinations.
 
-### arXiv:1105.4351
+### @10.48550/arXiv.1105.4351
 
 **Hint:** How weak is weak?
 
@@ -74,5 +50,3 @@ Note that Kwant only supports regular lattices, so crystallographic defects can 
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

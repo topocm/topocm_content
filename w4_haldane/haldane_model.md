@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,15 +16,16 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
 import scipy
 
-%output size=150 fig='png'
+import numpy as np
+import kwant
+import plotly.graph_objects as go
+from course.functions import pauli, slider_plot, spectrum
+from course.init_course import init_notebook
+
+init_notebook()
+
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -32,9 +33,9 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he introduced in 1988, and which has become a prototype for the anomalous quantum Hall effect.
 
-```{code-cell} ipython3
-
-Video("7nVO4uMm-do")
+```{youtube} 7nVO4uMm-do
+:width: 560
+:height: 315
 ```
 
 We will now study the model in detail, starting from the beginning.  Along the way, we will also learn about the Chern number, the bulk topological invariant of a quantum Hall state.
@@ -70,15 +71,14 @@ $$
 The energy spectrum $E(\mathbf{k}) = \pm \,\left|h(\mathbf{k})\right|$ gives rise to the famous band structure of graphene, with the two bands touching at the six corners of the Brillouin zone:
 
 ```{code-cell} ipython3
-
-honeycomb = kwant.lattice.honeycomb()
+honeycomb = kwant.lattice.honeycomb(norbs=1)
 a, b = honeycomb.sublattices
 nnn_hoppings_a = (((-1, 0), a, a), ((0, 1), a, a), ((1, -1), a, a))
 nnn_hoppings_b = (((1, 0), b, b), ((0, -1), b, b), ((-1, 1), b, b))
 
 
 def title(p):
-    return fr"$t={p['t']:.2}$, $t_2={p['t_2']:.2}$, $M={p['M']:.2}$"
+    return rf"$t={p['t']:.2},\ t_2={p['t_2']:.2},\ M={p['M']:.2}$"
 
 
 def onsite(site, M):
@@ -136,7 +136,7 @@ The product of (approximate) sublattice and time-reversal symmetries yields a fu
 
 ## Making graphene topological
 
-Let's recall that our goal is to make our graphene sheet enter a quantum Hall state, with chiral edge states. The first necessary step is to make the bulk of the system gapped. 
+Let's recall that our goal is to make our graphene sheet enter a quantum Hall state, with chiral edge states. The first necessary step is to make the bulk of the system gapped.
 
 How can we open a gap in graphene? The Dirac points are protected by both sublattice (inversion) and time-reversal symmetry. So there are many ways we can think of to open an energy gap at $\mathbf{K}$ and $\mathbf{K}'$.
 
@@ -182,13 +182,13 @@ The last term changes sign under time-reversal symmetry, breaking it. This is th
 Let's see what happens to the system when these special second neighbor hoppings are turned on:
 
 ```{code-cell} ipython3
-
 p = dict(t=1.0, M=0.2, phi=np.pi / 2)
 k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
 kwargs = {"k_x": k, "k_y": k, "title": title}
 t_2s = np.linspace(0, 0.10, 11)
-holoviews.HoloMap(
-    {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s}, kdims=[r"$t_2$"]
+slider_plot(
+    {p["t_2"]: spectrum(haldane_infinite, p, **kwargs) for p["t_2"] in t_2s},
+    label="t₂",
 )
 ```
 
@@ -199,10 +199,8 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
+W = 14
 
-%%output fig='svg'
-
-W = 20
 
 def ribbon_shape_zigzag(site):
     return -0.5 / np.sqrt(3) - 0.1 <= site.pos[1] < np.sqrt(3) * W / 2 + 0.01
@@ -231,38 +229,111 @@ style = {
     "title": title,
 }
 t_2s = np.linspace(0, 0.5, 20)
-plots = {
-    (p["t_2"], boundary): spectrum(ribbon, p, **style)
-    for p["t_2"] in t_2s
-    for boundary, ribbon in [("zigzag", zigzag_ribbon), ("armchair", armchair_ribbon)]
+boundaries = ("zigzag", "armchair")
+
+
+def ribbon_for(boundary):
+    return zigzag_ribbon if boundary == "zigzag" else armchair_ribbon
+
+
+def band_structure(boundary, t_2):
+    return spectrum(ribbon_for(boundary), {**p, "t_2": t_2}, **style)
+
+
+spectra = {
+    boundary: {t_2: band_structure(boundary, t_2) for t_2 in t_2s}
+    for boundary in boundaries
 }
-holoviews.HoloMap(plots, kdims=[r"$t_2$", "Boundary"])
+
+
+initial_boundary = "zigzag"
+initial_t2 = t_2s[0]
+frames = []
+for t_2 in t_2s:
+    data = list(spectra["zigzag"][t_2].data) + list(spectra["armchair"][t_2].data)
+    frames.append(
+        go.Frame(name=f"t2:{t_2:.6f}", data=data, layout=spectra["zigzag"][t_2].layout)
+    )
+
+base_zig = spectra["zigzag"][initial_t2]
+base_arm = spectra["armchair"][initial_t2]
+traces = list(base_zig.data) + list(base_arm.data)
+visible_zig = [True] * len(base_zig.data) + [False] * len(base_arm.data)
+
+fig = go.Figure(data=traces, layout=base_zig.layout, frames=frames)
+for idx, vis in enumerate(visible_zig):
+    fig.data[idx].visible = vis
+
+steps = []
+for t_2 in t_2s:
+    steps.append(
+        {
+            "args": [
+                [f"t2:{t_2:.6f}"],
+                {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"},
+            ],
+            "label": f"{t_2:.3g}",
+            "method": "animate",
+        }
+    )
+slider = {
+    "active": 0,
+    "currentvalue": {"prefix": "t₂: "},
+    "steps": steps,
+    "pad": {"t": 40, "b": 12},
+    "y": -0.12,
+}
+fig.update_layout(sliders=[slider])
+
+buttons = []
+for boundary in boundaries:
+    is_zig = boundary == "zigzag"
+    default_fig = spectra[boundary][initial_t2]
+    mask = (
+        [True] * len(base_zig.data) + [False] * len(base_arm.data)
+        if is_zig
+        else [False] * len(base_zig.data) + [True] * len(base_arm.data)
+    )
+    buttons.append(
+        {
+            "label": boundary,
+            "method": "update",
+            "args": [
+                {"visible": mask},
+                {
+                    "title": default_fig.layout.title,
+                    "sliders": [slider],
+                },
+            ],
+        }
+    )
+
+fig.update_layout(
+    updatemenus=[
+        {
+            "type": "dropdown",
+            "direction": "down",
+            "showactive": True,
+            "buttons": buttons,
+            "x": 0.02,
+            "y": 1.14,
+        }
+    ]
+)
+fig
 ```
 
 The appearance of edge states means that graphene has entered a topological phase after the gap closing. This phase is akin to the quantum Hall phase - the edge states are of the same kind. However, as Duncan Haldane explained in the introduction, it is realized without a strong magnetic field.
 
 As you know, this means we have created a **Chern insulator**. The reason for this name will become obvious in the second part of the lecture.
 
-```{code-cell} ipython3
-
-question = (
-    "What happens if we take a Haldane model in the topological phase and turn "
-    "on a weak magnetic field?"
-)
-
-answers = [
-    "Magnetic field introduces Landau levels, which change the number of edge states.",
-    "Since the magnetic field is weak, nothing changes as long as it doesn't close the gap",
-    "The bulk gap closes and there are no edge states anymore.",
-    "The gap doesn't close but the edge states may change direction "
-    "of propagation, depending on the sign of magnetic field.",
-]
-
-explanation = "Topological robustness is still present, so the number of edge states cannot change unless the gap closes."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What happens if we take a Haldane model in the topological phase and turn on a weak magnetic field?
+:explanation: Topological robustness is still present, so the number of edge states cannot change unless the gap closes.
+:correct: 1
+- Magnetic field introduces Landau levels, which change the number of edge states.
+- Since the magnetic field is weak, nothing changes as long as it doesn't close the gap
+- The bulk gap closes and there are no edge states anymore.
+- The gap doesn't close but the edge states may change direction of propagation, depending on the sign of magnetic field.
 ```
 
 ## Pumping in terms of Berry phase
@@ -277,7 +348,7 @@ Let's imagine the adiabatic time-evolution of an eigenstate $\left|\psi(\mathbf{
 
 ![](figures/bz_path.svg)
 
-We then ask: what is the final quantum state at the time $T$? For a long time people guessed that it would just be given by the initial state $\left|\psi(k_x, k_y+2\pi)\right\rangle\equiv\left|\psi(k_x, k_y)\right\rangle$ times  the usual phase $\exp\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)$, which an eigenstate of the Hamiltonian accumulates with time. 
+We then ask: what is the final quantum state at the time $T$? For a long time people guessed that it would just be given by the initial state $\left|\psi(k_x, k_y+2\pi)\right\rangle\equiv\left|\psi(k_x, k_y)\right\rangle$ times  the usual phase $\exp\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)$, which an eigenstate of the Hamiltonian accumulates with time.
 
 This would be rather boring. Berry instead realized that for a closed loops there is an additional phase $\gamma$, which in our case may depend on $k_x$:
 
@@ -291,7 +362,7 @@ $$
 \exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.
 $$
 
-We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.  
+We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.
 
 ### Flux pumping
 
@@ -335,7 +406,7 @@ $$
 
 We did not denote the Berry connection as $\mathbf{A}(\mathbf{k})$ just by chance. We picked that letter because this vector reminds us a lot of the vector potential $\mathbf{A}(\mathbf{r})$ that is used in electromagnetism.
 
-Just like the vector potential, the definition of $\mathbf{A}(\mathbf{k})$ depends on a particular choice of the person making the calculation. If you decide to multiply the quantum state by a phase, $\left|\psi(\mathbf{k})\right\rangle\,\to \exp\,[i\lambda(\mathbf{k})]\,\left|\psi(\mathbf{k})\right\rangle$, then you get that the Berry connection transforms as $\mathbf{A}(\mathbf{k})\,\to\,\mathbf{A}(\mathbf{k})+\nabla_\mathbf{k} \,\lambda$. However, when you take the integral of $\mathbf{A}(\mathbf{k})$ on a closed path, the result is independent of $\lambda$. That's why the Berry phase is only meaningful for closed paths. 
+Just like the vector potential, the definition of $\mathbf{A}(\mathbf{k})$ depends on a particular choice of the person making the calculation. If you decide to multiply the quantum state by a phase, $\left|\psi(\mathbf{k})\right\rangle\,\to \exp\,[i\lambda(\mathbf{k})]\,\left|\psi(\mathbf{k})\right\rangle$, then you get that the Berry connection transforms as $\mathbf{A}(\mathbf{k})\,\to\,\mathbf{A}(\mathbf{k})+\nabla_\mathbf{k} \,\lambda$. However, when you take the integral of $\mathbf{A}(\mathbf{k})$ on a closed path, the result is independent of $\lambda$. That's why the Berry phase is only meaningful for closed paths.
 
 Now that we have established an analogy with the vector potential, we cannot avoid the idea of taking the curl of the Berry connection, which is known as the **Berry curvature**:
 
@@ -367,7 +438,7 @@ Now let's go back to our analogy with electromagnetism. We know that we cannot c
 
 This analogy suggests the following: that the sources for Berry flux in momentum space are points where two bands touch, just like the Dirac points at the $\mathbf{K}$ and $\mathbf{K}'$ points of the Brillouin zone in graphene.
 
-This may sound a bit abstract and confusing: where are these points located? We are used to thinking about sources of flux in real space, not in momentum space. In fact, just like you do with a two-dimensional sphere surrounding a charge in three-dimensional space, you can think of the Brillouin zone as lying in a three-dimensional space, with two directions given by $k_x$ and $k_y$ and the third given by the **magnitude of the energy gap**. 
+This may sound a bit abstract and confusing: where are these points located? We are used to thinking about sources of flux in real space, not in momentum space. In fact, just like you do with a two-dimensional sphere surrounding a charge in three-dimensional space, you can think of the Brillouin zone as lying in a three-dimensional space, with two directions given by $k_x$ and $k_y$ and the third given by the **magnitude of the energy gap**.
 
 The situation is explained by the following sketch, which also gives a bird's-eye view of the phase diagram of the Haldane model as a function of the ratio $t_2/M$:
 
@@ -382,7 +453,6 @@ The Brillouin zones for $|t_2|>M/(3\sqrt{3})$, on the other hand, have Berry cur
 To see this more clearly, we can compute the Berry curvature numerically and plot it over the whole Brillouin zone as a function of $t_2$:
 
 ```{code-cell} ipython3
-
 def berry_curvature(syst, p, ks, num_filled_bands=1):
     """Berry curvature of a system.
 
@@ -415,9 +485,7 @@ def berry_curvature(syst, p, ks, num_filled_bands=1):
         H = syst.hamiltonian_submatrix(params=p, sparse=False)
         return scipy.linalg.eigh(H)[1][:, :num_filled_bands]
 
-    vectors = np.array(
-        [[filled_states(kx, ky) for kx in ks] for ky in ks]
-    )
+    vectors = np.array([[filled_states(kx, ky) for kx in ks] for ky in ks])
 
     # The actual Berry curvature calculation
     vectors_x = np.roll(vectors, 1, 0)
@@ -445,49 +513,62 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
         ks = np.linspace(-np.pi, np.pi, 150, endpoint=False)
     bc = berry_curvature(syst, p, ks)[1:-1, 1:-1]
     vmax = max(np.abs(bc).min(), np.abs(bc).max())
-    kwargs = {
-        "bounds": (ks.min(), ks.min(), ks.max(), ks.max()),
-        "kdims": [r"$k_x$", r"$k_y$"],
-    }
-
-    if callable(title):
-        kwargs["label"] = title(p)
-
-    plot = {"xticks": pi_ticks, "yticks": pi_ticks}
-    style = {"clims": [-vmax, vmax]}
-    return holoviews.Image(bc, **kwargs).opts(plot=plot, style=style)
+    fig = go.Figure(
+        data=[
+            go.Heatmap(
+                z=bc,
+                x=ks[1:-1],
+                y=ks[1:-1],
+                colorscale="RdBu",
+                zmid=0,
+                zmin=-vmax,
+                zmax=vmax,
+                colorbar=dict(title={"text": "Ω", "side": "right"}),
+            )
+        ]
+    )
+    fig.update_layout(
+        title=title(p) if callable(title) else title,
+        xaxis=dict(
+            title=r"$k_x$",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+        yaxis=dict(
+            title=r"$k_y$",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+        ),
+    )
+    fig.update_layout(
+        xaxis=dict(scaleanchor="y", scaleratio=1, constrain="domain"),
+        yaxis=dict(constrain="domain"),
+        width=680,
+        height=560,
+        margin=dict(l=60, r=120, t=70, b=50),
+    )
+    return fig
 ```
 
 ```{code-cell} ipython3
-
 p = dict(t=1.0, M=0.2, phi=(np.pi / 2))
-kwargs = {
-    "title": title,
-    "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)
-}
+kwargs = {"title": title, "ks": np.linspace(-2 * np.pi, 2 * np.pi, 150, endpoint=False)}
 t_2s = np.linspace(-0.1, 0.1, 11)
-holoviews.HoloMap(
+slider_plot(
     {
         p["t_2"]: plot_berry_curvature(haldane_infinite, p, **kwargs)
         for p["t_2"] in t_2s
     },
-    kdims=[r"$t_2$"],
+    label="t₂",
 )
 ```
 
-```{code-cell} ipython3
-
-question = "How does time-reversal symmetry influence the Berry curvature?"
-
-answers = [
-    "The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.",
-    "Time reversal symmetry doesn't constrain Berry curvature at all.",
-    "There is no constraint, only the integral of Berry curvature (Chern number) should be zero.",
-    "The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature "
-    "at one momentum becomes opposite to the Berry curvature at opposite momentum.",
-]
-
-MultipleChoice(question=question, answers=answers, correct_answer=3)
+```{multiple-choice} How does time-reversal symmetry influence the Berry curvature?
+:correct: 3
+- The Berry curvature breaks time-reversal, so it must be zero if time-reversal is present.
+- Time reversal symmetry doesn't constrain Berry curvature at all.
+- There is no constraint, only the integral of Berry curvature (Chern number) should be zero.
+- The Berry curvature and momentum change sign under time-reversal, so that the Berry curvature at one momentum becomes opposite to the Berry curvature at opposite momentum.
 ```
 
 You can see that the Berry curvature is really located around the Dirac points. Around $t_2=0$, the two Dirac points give canceling contributions. After a gap closing however, the contribution of one of the two Dirac points changes sign, so that the two add to $\pm 1$ instead of canceling each other.
@@ -499,8 +580,7 @@ At the same time it's important to know that the particular distribution of the 
 For instance, here is a slider plot for the Berry curvature for the quantum Hall lattice model studied in the previous chapter.
 
 ```{code-cell} ipython3
-
-lat = kwant.lattice.square()
+lat = kwant.lattice.square(norbs=2)
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 
@@ -525,16 +605,14 @@ p = dict(t=1.0, delta=1.0, gamma=-0.5, mu=None)
 
 
 def title_QWZ(p):
-    return (
-        fr"$t={p['t']:.2}$, $\mu={p['mu']:.2}$, "
-        fr"$\Delta={p['delta']:.2}$, $\gamma={p['gamma']:.2}$"
-    )
+    return rf"$t={p['t']:.2},\ \mu={p['mu']:.2},\ \Delta={p['delta']:.2},\ \gamma={p['gamma']:.2}$"
 
 
 kwargs = {"title": title_QWZ}
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap(
-    {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
+slider_plot(
+    {p["mu"]: plot_berry_curvature(QWZ_infinite, p, **kwargs) for p["mu"] in mus},
+    label="μ",
 )
 ```
 
@@ -542,7 +620,7 @@ You can see that for $\mu < -2t - 2\gamma$ there is a net curvature, and that wh
 
 ## Summary: extending the model to spinful electrons and photons
 
-```{code-cell} ipython3
-
-Video("0gxE68kvdmw")
+```{youtube} 0gxE68kvdmw
+:width: 560
+:height: 315
 ```

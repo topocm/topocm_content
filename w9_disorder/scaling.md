@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,11 +16,12 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
 import os
 
-sys.path.append("../code")
-from init_course import *
+
+import numpy as np
+import plotly.graph_objects as go
+from course.init_course import init_notebook
 
 init_notebook()
 
@@ -34,10 +35,11 @@ data_folder = (
 
 Anderson localization is introduced by Piet Brouwer from the Free University of Berlin.
 
-```{code-cell} ipython3
+:::{youtube} sbbyL0RDH-o
+:width: 100%
+:height: 480
+:::
 
-Video("sbbyL0RDH-o")
-```
 
 ## Motivation
 
@@ -71,7 +73,7 @@ The considerations above make it clear that the presence or absence of an energy
 
 How can we really get away with understanding electrons in disordered potentials without doing any real quantum mechanical calculations? We can only do this in the two aforementioned extreme limits, and actually only in certain dimensions. In principle, to see how the "transition" from extended to localized electrons happens as disorder is increased, one must solve the full quantum mechanical problem. So far, it seems impossible to solve this problem exactly in any dimension other than 1D, so we won't bother and instead discuss an educated guess, which gives us most of the answer.
 
-To start with, let us be more specific and consider the conductance $G(L)$ of a $d$-dimensional block with sides $L$. The conductance represents the ease with which electrons can propagate through the block, and is has the natural unit $G_0=e^2/h$. Therefore, we can think of the dimensionless conductance $g(L)=G(L)/G_0$ as sort of a higher dimensional analog of the average transmission of electrons between the ends of the system, multiplied by the number of channels. If we take the analogy with transmission seriously, we can guess that the conductance of a combination of blocks, each with conductance $g(L)$, has conductance $g'$ which depends on $g(L)$. This is not very different from what we expect classically. For example, consider a connected pair of metallic blocks of conductivity $g(L)$ each, such that the total conductivity of the connected blocks is $g'$. If the blocks are connected in series, then $g'=g(L)/2$. If they are connected in parallel, then $g'=2 g(L)$. 
+To start with, let us be more specific and consider the conductance $G(L)$ of a $d$-dimensional block with sides $L$. The conductance represents the ease with which electrons can propagate through the block, and is has the natural unit $G_0=e^2/h$. Therefore, we can think of the dimensionless conductance $g(L)=G(L)/G_0$ as sort of a higher dimensional analog of the average transmission of electrons between the ends of the system, multiplied by the number of channels. If we take the analogy with transmission seriously, we can guess that the conductance of a combination of blocks, each with conductance $g(L)$, has conductance $g'$ which depends on $g(L)$. This is not very different from what we expect classically. For example, consider a connected pair of metallic blocks of conductivity $g(L)$ each, such that the total conductivity of the connected blocks is $g'$. If the blocks are connected in series, then $g'=g(L)/2$. If they are connected in parallel, then $g'=2 g(L)$.
 
 We can extend the above guess due to Thouless to relate the conductance $g(L)$ of a block of size $L$ to that of a block of size $2L$ i.e.
 
@@ -113,22 +115,13 @@ What we see is that for dimensions $d=1,2$ the curve stays below $\beta\leq 0$, 
 
 The situation is different in $d=3$ dimensions. If the conductance $g$ is large enough to begin with, then $\beta > 0$ and the arrow points to larger values of $g$. This means that the conductance grows with increasing system size. On the other hand, if disorder is large enough such that $\beta < 0$ initially, $g$ decreases as the system size increases. The separation point $\beta = 0$ between these two behaviours is the *metal-insulator transition*.
 
-```{code-cell} ipython3
-
-question = "How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?"
-
-answers = [
-    "Nothing changes.",
-    r"$\beta$ is multiplied by 10.",
-    "The scaling hypothesis doesn't apply since we don't have a 1D system anymore.",
-    r"$\beta$ is altered in some way, since we have a different disordered system now.",
-]
-
-explanation = "The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=0, explanation=explanation
-)
+```{multiple-choice} How is the flow in the diagram above altered if we stack 10 1D systems next to each other and weakly couple them?
+:explanation: The scaling hypothesis tells us that the details of the Hamiltonian don't matter, so the scaling flow stays the same.
+:correct: 0
+- Nothing changes.
+- $\beta$ is multiplied by 10.
+- The scaling hypothesis doesn't apply since we don't have a 1D system anymore.
+- $\beta$ is altered in some way, since we have a different disordered system now.
 ```
 
 The 2D case is special: in the classical limit $g \gg 1$, the scaling flow disappears, $\beta \approx 0$. However, there remain *quantum corrections* to it. These are effects that get weaker with increasing conductance, and they depend on the symmetry class of the Hamiltonian.
@@ -152,35 +145,48 @@ The first thing to observe is that at the critical point, we have $d\ln g/ d\ln 
 In practice, this behavior can be observed at a fixed $L$ by varying one parameter $\alpha$ appearing in the model under study, typically the disorder strength or the chemical potential. The average conductance $\langle g \rangle$ is then computed as a function of $\alpha$ for different values of $L$. One then obtains a plot like the following:
 
 ```{code-cell} ipython3
-
 data = np.loadtxt(data_folder + "data_from_doru.dat")
 
-fig, ax = plt.subplots(figsize=(6, 4))
-
-cmap = plt.get_cmap("gist_heat")
+fig = go.Figure()
+colors = ["#1f77b4", "#d62728", "#2ca02c"]
 for i in range(3):
     x, y = data[i::3, 0], data[i::3, 2]
     error = data[i::3, 3]
     L = data[i, 1]
-    color = cmap(np.log(L - 26) / np.log(243 - 26) * 0.7)
-    ax.errorbar(x, y, yerr=error, label="$L=%i$" % L, color=color)
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode="markers+lines",
+            name=f"$L={int(L)}$",
+            marker=dict(color=colors[i], size=6),
+            line=dict(color=colors[i]),
+            error_y=dict(
+                type="data",
+                array=error,
+                visible=True,
+                color=colors[i],
+                thickness=1.2,
+            ),
+        )
+    )
 
-plt.legend()
-
-plt.xlabel("$V$")
-plt.ylabel(r"$\langle G \rangle$")
+fig.update_layout(
+    legend=dict(x=0.5, y=0.9),
+    xaxis=dict(title="$V$"),
+    yaxis=dict(
+        title=r"$\langle G \rangle$",
+    ),
+    height=520,
+)
 
 evals = [5.5, 5.75, 6]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
+fig.update_xaxes(tickvals=evals, ticktext=[f"${i}$" for i in evals], range=[5.5, 6.0])
 
 evals = [1, 1.5, 2]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals])
+fig.update_yaxes(tickvals=evals, ticktext=[f"${i}$" for i in evals], range=[1.0, 2.0])
 
-ax.set_xlim(5.5, 6.0)
-ax.set_ylim(1.0, 2.0)
-plt.show()
+fig
 ```
 
 (We thank Doru Sticlet for providing the data for this plot)
@@ -217,27 +223,13 @@ $$
 
 The length $\xi = L_0\,(V-V_c)^{-\nu}\,$ is the localization length, which diverges at the transition point $V=V_c$. The number $\nu$ is known as the *critical exponent*, and determines the scaling behavior of the conductance close to the critical point.
 
-```{code-cell} ipython3
-
-question = r"What would we see if $\beta$ crossed from positive to negative values?"
-
-answers = [
-    "Small conductances would have a metallic phase, where $g$ grows indefinitely, "
-    "while large $g$ would lead to an insulator.",
-    "We would see a critical phase, where all conductances converge to the same value.",
-    r"This is just the same metal-insulator transition since $\beta(g_c) = 0$",
-    "This is an impossible scaling function.",
-]
-
-explanation = (
-    "Both larger conductances and smaller conductances flow towards the critical value, "
-    "so all systems get the same conductance when their size becomes large enough. "
-    "This is an attractive critical point."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What would we see if $\beta$ crossed from positive to negative values?
+:explanation: Both larger conductances and smaller conductances flow towards the critical value, so all systems get the same conductance when their size becomes large enough. This is an attractive critical point.
+:correct: 1
+- Small conductances would have a metallic phase, where $g$ grows indefinitely, while large $g$ would lead to an insulator.
+- We would see a critical phase, where all conductances converge to the same value.
+- This is just the same metal-insulator transition since $\beta(g_c) = 0$
+- This is an impossible scaling function.
 ```
 
 ## Absence of localization for topological insulators
@@ -250,7 +242,7 @@ It turns out, the scaling flow on the surface of a topological insulator is modi
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("JdDeBJEBO0s")
-```
+:::{youtube} JdDeBJEBO0s
+:width: 100%
+:height: 480
+:::

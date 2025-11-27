@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,13 +16,14 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import pauli
+from course.functions import slider_plot, spectrum
+from course.init_course import init_notebook
 
 init_notebook()
-%output size=150
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 ```
 
@@ -32,9 +33,9 @@ Looking back at the material from the past weeks, you might have the impression 
 
 Xiaoliang Qi from Stanford University will now explain that this is not the case, and will also introduce this week's topic - Chern insulators.
 
-```{code-cell} ipython3
-
-Video("osKP6x0Ewbo")
+```{youtube} osKP6x0Ewbo
+:width: 560
+:height: 315
 ```
 
 ## Pairs of chiral edges in a 1D wire
@@ -81,31 +82,13 @@ At this point you might worry that the Kitaev model has superconductivity, and s
 
 Finally, before we go on with our plan, keep in mind that considering the phase transition point of a lower dimensional model turns out to be a fairly generic strategy to construct higher dimensional topological models.
 
-```{code-cell} ipython3
-
-question = (
-    "It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. "
-    "Apart from the two systems having different dimensionality"
-    ", what's the fundamental difference between the two cases?"
-)
-answers = [
-    "The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.",
-    "The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.",
-    "The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.",
-    (
-        "The Kitaev chiral states exist only at specific parameter values, "
-        "while the quantum Hall edge states don't."
-    ),
-]
-explanation = (
-    "The pair of chiral states in the Kitaev model only exists at "
-    "the phase transition point, when the chain becomes gapless. "
-    "On the other hand, chiral edge states are a topological property of the quantum Hall state. "
-    "They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values."
-)
-MultipleChoice(
-    question, answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} It seems that both a quantum Hall bar and a Kitaev chain can have chiral states. Apart from the two systems having different dimensionality, what's the fundamental difference between the two cases?
+:explanation: The pair of chiral states in the Kitaev model only exists at the phase transition point, when the chain becomes gapless. On the other hand, chiral edge states are a topological property of the quantum Hall state. They are separated by a gapped bulk which protects them, and they exist for a full range of parameter values.
+:correct: 3
+- The quantum Hall edge states go in opposite directions, while the Kitaev states go in the same direction.
+- The quantum Hall edge states go in the same direction, while the Kitaev states go in opposite directions.
+- The quantum Hall edges always cross zero energy at zero momentum while the Kitaev states don't.
+- The Kitaev chiral states exist only at specific parameter values, while the quantum Hall edge states don't.
 ```
 
 ## QHE without a magnetic  field
@@ -114,7 +97,7 @@ MultipleChoice(
 
 Let us now couple the wires to get the quantum Hall system as promised. We take a stack of chains all extending along the horizontal $x$ direction, like in the figure above. We stack them one next to the other along the $y$ direction, so that we form a square lattice. If we take a large (ideally infinite) stack of chains we have a truly two-dimensional system.
 
-Now let us make this formal by first labeling the chains by an index $n_y$, which takes integer values. Let us also replace $k\rightarrow k_x$ to denote the wave-vector along a chain. Hence a single chain has the Hamiltonian $\left[-(2 t\cos{k_x}+\mu)\,\tau_z+\Delta \sin{k_x}\tau_y\right]\,\otimes\,\left|\,n_y\right\rangle\left\langle n_y\right|$. The projector $\left|\,n_y\right\rangle\left\langle n_y\right|$ is needed to single out one chain from the stack. 
+Now let us make this formal by first labeling the chains by an index $n_y$, which takes integer values. Let us also replace $k\rightarrow k_x$ to denote the wave-vector along a chain. Hence a single chain has the Hamiltonian $\left[-(2 t\cos{k_x}+\mu)\,\tau_z+\Delta \sin{k_x}\tau_y\right]\,\otimes\,\left|\,n_y\right\rangle\left\langle n_y\right|$. The projector $\left|\,n_y\right\rangle\left\langle n_y\right|$ is needed to single out one chain from the stack.
 
 Now all that we have to do is to couple the $\tau_y=-1$ branch of one chain to the $\tau_y=+1$ branch of a neighboring chain,  and we will have a quantum Hall state.
 
@@ -149,8 +132,7 @@ $$
 Aside from special points, this spectrum is gapped, just like we wanted. For instance it is gapped if $\mu<-2t-2\gamma$. If we start from this point and increase the value of $\mu$, the gap closes at the point $\mu = -2t-2\gamma$ and then reopens:
 
 ```{code-cell} ipython3
-
-lat = kwant.lattice.square()
+lat = kwant.lattice.square(norbs=2)
 QWZ_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 
 
@@ -172,22 +154,24 @@ QWZ_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 
 def title(p):
-    title = r"$t={:.2}$, $\mu={:.2}$, $\Delta={:.2}$, $\gamma={:.2}$"
-    return title.format(p['t'], p['mu'], p['delta'], p['gamma'])
+    title = r"$t={:.2},\ \mu={:.2},\ \Delta={:.2},\ \gamma={:.2}$"
+    return title.format(p["t"], p["mu"], p["delta"], p["gamma"])
 
 
 p = dict(t=1.0, delta=0.3, gamma=-0.5, mu=None)
 mus = np.linspace(-2, 0, 11)
-holoviews.HoloMap(
-    {p["mu"]: spectrum(QWZ_infinite, p, zticks=[-4, -2, 0, 2, 4], title=title) for p["mu"] in mus},
-    kdims=[r"$\mu$"],
+slider_plot(
+    {
+        p["mu"]: spectrum(QWZ_infinite, p, zticks=[-4, -2, 0, 2, 4], title=title)
+        for p["mu"] in mus
+    },
+    label="μ",
 )
 ```
 
 As a check that everything worked, let's look at the dispersion of a ribbon with finite width along the $y$ direction. If there are edge states, we should see a Dirac-like crossing around $k_x=0$.
 
 ```{code-cell} ipython3
-
 W = 15
 
 ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -205,28 +189,20 @@ style = {
     "title": title,
 }
 
-holoviews.HoloMap({p["mu"]: spectrum(ribbon, p, **style) for p["mu"] in mus}, kdims=[r"$\mu$"])
+slider_plot({p["mu"]: spectrum(ribbon, p, **style) for p["mu"] in mus}, label="μ")
 ```
 
 We see that the crossing is there, and it disappears when the gap closes. So we can identify the point $\mu=-2t-2\gamma$ as a critical point at which the quantum Hall state becomes topologically trivial.
 
 While details such as the bulk spectrum and edge dispersion are different from the case with a magnetic field, the bulk-edge correspondence tells us that the edge states are as robust as those of the quantum Hall effect we studied last week.
 
-```{code-cell} ipython3
-
-question = "How does our lattice model with no magnetic field differ from the original quantum Hall effect?"
-answers = [
-    "Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.",
-    "Quantum Hall effect in a magnetic field has Landau levels "
-    "that do not disperse in k while they disperse in the lattice.",
-    "Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.",
-    "In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the "
-    "lattice the filling fraction per unit cell is arbitrary.",
-]
-explanation = "In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition."
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} How does our lattice model with no magnetic field differ from the original quantum Hall effect?
+:explanation: In a lattice one gets a non-constant bandstructure which forms a Dirac cone near the phase transition.
+:correct: 1
+- Since there is no magnetic field the quantum Hall effect on a lattice preserves time reversal symmetry.
+- Quantum Hall effect in a magnetic field has Landau levels that do not disperse in k while they disperse in the lattice.
+- Quantum Hall effect in the lattice has no chiral edge states, which arise from skipping orbits in a magnetic field.
+- In a magnetic field the filling fraction is fixed to integer per flux quantum, while in the lattice the filling fraction per unit cell is arbitrary.
 ```
 
 ## Dirac equation at the phase transition
@@ -237,20 +213,13 @@ The two phases around this point are easy to understand. One is the quantum Hall
 
 It is once again useful to write down the effective Hamiltonian near to the transition point at $k_x\approx 0$ and $k_y\approx 0$. It is given by a 2D Dirac Hamiltonian:
 
-+++
-
-
-
 $$
 H_{\textrm{Dirac}}=[\Delta k_x\tau_y-2\gamma k_y\tau_x+m\tau_z],
 $$
 
-
-+++
-
 The combination $m=-(\mu +2t+2\gamma)$ serves as the 'mass' in this Dirac model. As before, we see that the gapless phase transition point at $m=0$ is described by a massless Dirac Hamiltonian. The phase transition separates the topological from the trivial phase, and the two phases are characterized by a different sign of the mass (in this case $m>0$ in the topological phase and $m<0$ in the trivial phase).
 
-As with Kitaev chains, the Dirac model gives us another way to construct chiral edge states at the domain wall between topological and non-topological phases. Back in week 1, we saw that for a one dimensional Dirac model, a domain wall in the mass $m$ supports a non-degenerate zero mode. Fixing  $k_y=0$, we see that the one dimensional Dirac Hamiltonian here is identical to the one we saw in week 1, where the zero mode at the domain wall between $m<0$ and $m>0$ was an eigenstate of $\tau_x$ with eigenvalue $+1$. 
+As with Kitaev chains, the Dirac model gives us another way to construct chiral edge states at the domain wall between topological and non-topological phases. Back in week 1, we saw that for a one dimensional Dirac model, a domain wall in the mass $m$ supports a non-degenerate zero mode. Fixing  $k_y=0$, we see that the one dimensional Dirac Hamiltonian here is identical to the one we saw in week 1, where the zero mode at the domain wall between $m<0$ and $m>0$ was an eigenstate of $\tau_x$ with eigenvalue $+1$.
 
 Unlike the one-dimensional case, the zero mode is not stationary in the two dimensional case. By adding $2\gamma k_y\tau_x$ as a perturbation, we see that the energy of the state increases as
 
@@ -262,7 +231,7 @@ so it has a velocity $v=2\gamma$, the direction of which depends on the sign of 
 
 ## Conclusion
 
-```{code-cell} ipython3
-
-Video("CXgAcOOVlag")
+```{youtube} CXgAcOOVlag
+:width: 560
+:height: 315
 ```

@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,15 +16,24 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-
 from scipy import linalg as la
 from functools import reduce
+
+import kwant
+import numpy as np
+import plotly.graph_objects as go
+
+from course.init_course import init_notebook
+
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    pauli,
+)
+
+init_notebook()
 
 pi_ticks = [
     (-np.pi, r"$-\pi$"),
@@ -39,9 +48,9 @@ pi_ticks = [
 
 Today's topic, Floquet topological insulators, is introduced by Mark Rudner from the Niels Bohr Institute at Copenhagen.
 
-```{code-cell} ipython3
-
-Video("1peVp_IZ7Ts")
+```{youtube} 1peVp_IZ7Ts
+:width: 560
+:height: 315
 ```
 
 ## Periodically driven systems
@@ -114,29 +123,13 @@ If the system is translationally invariant, we can study the effective band stru
 
 Of course, selecting a single quasi-energy as the Fermi level is arbitrary, since the equilibrium state of driven systems doesn't correspond to a Fermi distribution of filling factors, but at least it seems close enough for us to try to apply topological ideas.
 
-```{code-cell} ipython3
-
-question = (
-    "But wait, we arbitrarily chose the starting point $t$ in time for calculating the "
-    "Floquet operator. What if we chose a different one?"
-)
-
-answers = [
-    "The starting time is just an extra parameter of our system, and topology depends on it.",
-    "It doesn't matter, the wave function evolution within one period "
-    "can be neglected, since we are interested in many periods.",
-    "There's only one correct starting point in time.",
-    "It doesn't matter since the quasienergies are independent of the starting point.",
-]
-
-explanation = (
-    "Choosing a different starting point applies a unitary transformation "
-    "to the Floquet evolution operator, and so it keeps the quasienergies the same."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} But wait, we arbitrarily chose the starting point $t$ in time for calculating the Floquet operator. What if we chose a different one?
+:explanation: Choosing a different starting point applies a unitary transformation to the Floquet evolution operator, and so it keeps the quasienergies the same.
+:correct: 3
+- The starting time is just an extra parameter of our system, and topology depends on it.
+- It doesn't matter, the wave function evolution within one period can be neglected, since we are interested in many periods.
+- There's only one correct starting point in time.
+- It doesn't matter since the quasienergies are independent of the starting point.
 ```
 
 ## Driven Majorana wire
@@ -162,8 +155,6 @@ $$
 with $H_1$ and $H_2$ the nanowire Hamiltonians with chemical potential $\mu_1$ and $\mu_2$. A peculiar property of driven systems is that as the period becomes large, the band structure 'folds': if the driving is very weak, and the original Hamiltonian has energy $E$, the Floquet Hamiltonian has a much smaller quasienergy $(E\bmod 2\pi /T)$. This means that even when $H_1$ and $H_2$ correspond to trivial systems, we can still obtain nontrivial topology if we make the period large enough, as you can see for yourself:
 
 ```{code-cell} ipython3
-
-%%opts Path {+axiswise}
 def evolution_operator(hamiltonians, T):
     n = len(hamiltonians)
     exps = [la.expm(-1j * h * T / n) for h in hamiltonians]
@@ -201,7 +192,7 @@ def hopping(site1, site2, t, alpha):
     return -t * pauli.szs0 + 0.5 * 1j * alpha * pauli.szsx
 
 
-lat = kwant.lattice.chain()
+lat = kwant.lattice.chain(norbs=4)
 infinite_nanowire = kwant.Builder(kwant.TranslationalSymmetry((-1,)))
 infinite_nanowire[lat(0)] = onsite
 infinite_nanowire[kwant.HoppingKind((1,), lat)] = hopping
@@ -217,8 +208,14 @@ p2 = dict(t=J / 2, mu=-3 * J, B=J, delta=2 * J, alpha=J)
 H1 = finite_nanowire.hamiltonian_submatrix(params=p1)
 H2 = finite_nanowire.hamiltonian_submatrix(params=p2)
 
-h1_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p1, k_x=k_x))
-h2_k = lambda k_x: infinite_nanowire.hamiltonian_submatrix(params=dict(**p2, k_x=k_x))
+
+def h1_k(k_x):
+    return infinite_nanowire.hamiltonian_submatrix(params=dict(**p1, k_x=k_x))
+
+
+def h2_k(k_x):
+    return infinite_nanowire.hamiltonian_submatrix(params=dict(**p2, k_x=k_x))
+
 
 periods = np.linspace(0.2 / J, 1.6 / J, 100)
 momenta = np.linspace(-np.pi, np.pi)
@@ -230,21 +227,33 @@ spectrum = np.array([calculate_bands(momenta, [h1_k, h2_k], T) for T in periods]
 def plot(n):
     T = J * periods[n]
 
-    plot_1 = holoviews.Path(
-        (J * periods, energies),
-        kdims=[r"Driving period $(JT)$", r"Quasi-energy $(ET)$"],
-        label="Finite system",
-    ).opts(plot={"xticks": 5, "yticks": pi_ticks})
+    left = line_plot(
+        J * periods,
+        energies,
+        x_label=r"$JT$",
+        y_label=r"$ET$",
+        x_ticks=5,
+        y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
+        show_legend=False,
+    )
+    add_reference_lines(left, x=T, line_color="blue", line_dash="dash")
+    right = line_plot(
+        momenta,
+        spectrum[n],
+        x_label="$k$",
+        y_label="$E_kT$",
+        x_ticks=pi_ticks,
+        y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
+        show_legend=False,
+    )
+    return combine_plots([left, right], cols=2)
 
-    VLine = holoviews.VLine(T).opts(style={"color": "b", "linestyle": "--"})
 
-    plot_2 = holoviews.Path(
-        (momenta, spectrum[n]), kdims=["$k$", "$E_kT$"], label="Floquet bands"
-    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": "equal"})
-    return plot_1 * VLine + plot_2
-
-
-holoviews.HoloMap({n: plot(n) for n in np.arange(0, 100, 10)}, kdims=["n"]).collate()
+slider_plot(
+    {float(J * periods[idx]): plot(idx) for idx in range(len(periods))}, label="JT"
+)
 ```
 
 On the left you see the Floquet spectrum of a finite system as a function of the driving period measured in units of the hopping strength, and on the right you see the Floquet dispersion in momentum space.
@@ -280,9 +289,6 @@ Every electron makes a closed loop and ends up back at its origin. After every s
 Let's have a look at the dispersion, and also see what happens as we tune the driving period:
 
 ```{code-cell} ipython3
-
-%%output size=200
-
 lat = kwant.lattice.general([[2, 0], [1, 1]], [(0, 0), (1, 0)], norbs=1)
 a, b = lat.sublattices
 infinite_checkerboard = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -291,6 +297,7 @@ infinite_checkerboard[kwant.HoppingKind((0, 0), b, a)] = lambda s1, s2, t1: -t1
 infinite_checkerboard[kwant.HoppingKind((-1, 1), b, a)] = lambda s1, s2, t2: -t2
 infinite_checkerboard[kwant.HoppingKind((1, 0), a, b)] = lambda s1, s2, t3: -t3
 infinite_checkerboard[kwant.HoppingKind((0, 1), a, b)] = lambda s1, s2, t4: -t4
+
 
 def plot_dispersion_2D(T):
     syst = infinite_checkerboard
@@ -322,26 +329,53 @@ def plot_dispersion_2D(T):
     K = np.linspace(-np.pi, np.pi, 50)
     energies = np.array([[get_energies(k_x, k_y) for k_x in K] for k_y in K])
 
-    ticks = {"xticks": pi_ticks[::2], "yticks": pi_ticks[::2], "zticks": 3}
-    kwargs = {
-        "extents": (-np.pi, -np.pi, -4, np.pi, np.pi, 4),
-        "kdims": ["$k_x$", "$k_y$"],
-        "vdims": ["$E$"],
-    }
-
-    title = fr"$T = {T / np.pi:.2} \pi$"
+    title = rf"$T = {T / np.pi:.2} \pi$"
 
     xs = np.linspace(-np.pi, np.pi, energies.shape[1])
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
-    return (
-        holoviews.Surface((xs, ys, energies[:, :, 0]), **kwargs).opts(plot=ticks)
-        * holoviews.Surface((xs, ys, energies[:, :, 1]), **kwargs).opts(plot=ticks)
-    ).relabel(title)
+    fig = go.Figure()
+    max_abs = float(np.nanmax(np.abs(energies)))
+    if not np.isfinite(max_abs) or max_abs == 0:
+        max_abs = 1.0
+    for band in range(energies.shape[-1]):
+        fig.add_surface(
+            x=xs,
+            y=ys,
+            z=energies[:, :, band],
+            colorscale="RdBu",
+            showscale=False,
+            opacity=0.9,
+            cmin=-max_abs,
+            cmax=max_abs,
+        )
+    fig.update_layout(
+        title=title,
+        scene=dict(
+            xaxis=dict(
+                title="kₓ",
+                tickvals=[v for v, _ in pi_ticks[::2]],
+                ticktext=["−π", "0", "π"],
+                range=[-np.pi, np.pi],
+            ),
+            yaxis=dict(
+                title="kᵧ",
+                tickvals=[v for v, _ in pi_ticks[::2]],
+                ticktext=["−π", "0", "π"],
+                range=[-np.pi, np.pi],
+            ),
+            zaxis=dict(title="E", range=[-np.pi, np.pi], nticks=5),
+            aspectmode="cube",
+        ),
+        width=680,
+        height=560,
+        margin=dict(l=30, r=30, t=60, b=20),
+    )
+    return fig
 
 
 Ts = np.linspace(1, 3, 11, endpoint=True)
-holoviews.HoloMap({T: plot_dispersion_2D(np.pi * T) for T in Ts}, kdims=["$T$"])
+slider_plot({T: plot_dispersion_2D(np.pi * T) for T in Ts}, label="T/π")
 ```
 
 Now, there isn't a Hamiltonian which is more topologically trivial than the zero Hamiltonian. We may be tempted to conclude that our system is trivial and, by bulk-boundary correspondence, has no edge states.
@@ -349,14 +383,13 @@ Now, there isn't a Hamiltonian which is more topologically trivial than the zero
 That's something we can also very easily verify by computing the dispersion of a finite size ribbon:
 
 ```{code-cell} ipython3
-
-%%output size=200
-%%opts Path {+axiswise}
-
 W = 10
 ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
-ribbon.fill(infinite_checkerboard, (lambda site: 0 <= site.pos[0] - site.pos[1] < W), (0, 0))
+ribbon.fill(
+    infinite_checkerboard, (lambda site: 0 <= site.pos[0] - site.pos[1] < W), (0, 0)
+)
 ribbon = ribbon.finalized()
+
 
 def get_h_k(lead, p):
     bands = kwant.physics.Bands(ribbon, params=p)
@@ -386,14 +419,19 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 
 
 def plot(n):
-    T = periods[n]
-    title = fr"spectrum: $T={T / np.pi:.2} \pi$"
-    return holoviews.Path(
-        (momenta, spectrum[n]), label=title, kdims=["$k$", "$E_kT$"]
-    ).opts(plot={"xticks": pi_ticks, "yticks": pi_ticks, "aspect": 3})
+    return line_plot(
+        momenta,
+        spectrum[n],
+        x_label="$k$",
+        y_label="$E_kT$",
+        x_ticks=pi_ticks,
+        y_ticks=pi_ticks,
+        y_range=[-np.pi, np.pi],
+        show_legend=False,
+    )
 
 
-holoviews.HoloMap({n: plot(n) for n in range(11)}, kdims=["n"])
+slider_plot({(T / np.pi): plot(idx) for idx, T in enumerate(periods)}, label="T/π")
 ```
 
 We see something very different from our expectations. All the bulk states are indeed at $E=0$, but there are two branches of dispersion that are clearly propagating. These can only belong to the edges, and since the two edges look identical, these two modes have to belong to the opposite edges. We seem to conclude that even though the bulk Hamiltonian is trivial, the edges carry chiral edge states, as if there was a finite Chern number.
@@ -404,25 +442,13 @@ When the driving period is tuned to ensure the absence of bulk dispersion, we ca
 
 So what is happening with bulk-edge correspondence?
 
-```{code-cell} ipython3
-
-question = "How can you change the chirality of the edge states in the figure above?"
-
-answers = [
-    "By changing the driving period.",
-    "By reversing the driving protocol sequence.",
-    "By changing the sign of the nearest neighbor hopping.",
-    "By making the electrons start from the black sublattice.",
-]
-
-explanation = (
-    "Reversing the driving protocol is the same as applying time-reversal symmetry, "
-    "so it will reverse the direction of the chiral edge modes"
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} How can you change the chirality of the edge states in the figure above?
+:explanation: Reversing the driving protocol is the same as applying time-reversal symmetry, so it will reverse the direction of the chiral edge modes
+:correct: 1
+- By changing the driving period.
+- By reversing the driving protocol sequence.
+- By changing the sign of the nearest neighbor hopping.
+- By making the electrons start from the black sublattice.
 ```
 
 ## Bulk-edge correspondence in driven systems
@@ -435,7 +461,7 @@ What do we need to know to derive the full topological invariant from the bulk p
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("DbyqIczcR9c")
+```{youtube} DbyqIczcR9c
+:width: 560
+:height: 315
 ```

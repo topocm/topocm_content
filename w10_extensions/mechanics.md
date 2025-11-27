@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,13 +16,14 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from IPython.display import Latex
+import numpy as np
 
-sys.path.append("../code")
-from init_course import *
+from course import topomech
+from course.functions import slider_plot
+from course.init_course import init_notebook
 
 init_notebook()
-import topomech
 ```
 
 ## Introduction
@@ -31,9 +32,9 @@ Today's lecture will be given by Vincenzo Vitelli, from Leiden University. You w
 
 The main concepts and mathematical ideas will be presented in the context of real mechanical prototypes. Hopefully, this approach will stimulate you to cross the line that too often separates theory from applications.
 
-```{code-cell} ipython3
-
-Video("i-eNPei2zMg")
+```{youtube} i-eNPei2zMg
+:width: 560
+:height: 315
 ```
 
 The materials of this lecture are kindly provided by the Topological Mechanics lab at Leiden University: Vincenzo Vitelli (PI), Bryan Chen, Anne Meeussen, Jayson Paulose, Benny van Zuiden, and Yujie Zhou. They are copyright of their creators, and are available under a
@@ -65,19 +66,23 @@ The constraint counting does not tell you where the mode will be located, but if
 
 A study of the vibrational modes of this chain was presented in the original paper of Kane and Lubensky, which was mentioned in the introductory video:
 
-* arXiv:1308.0554
+* @10.48550/arXiv.1308.0554
 
 We shall now show that the zero mode localized at the edge is a time snaphot of a non-linear object, the kink that separates regions of left and right leaning rotors, a bit like a domain wall in an Ising model:
 
 ![](figures/kink.png)
 
-To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](https://en.wikipedia.org/wiki/Linkage_%28mechanical%29).  
+To see that, it is easier to consider the constraint equation $l^2_{n,n+1}=\bar{l}^2$ that demands that the length of the springs $l_{n, n+1}$ between any two rotors labeled by $n$ and $n+1$ is not stretched. This is certainly the case for the rigid bar systems shown in the video which correspond to the limit of infinite spring constant. Such systems are called [linkages](https://en.wikipedia.org/wiki/Linkage_%28mechanical%29).
 
 In terms of the parameters defined in the first figure, the constraint equation $l^2_{n,n+1}=\bar{l}^2$ reads
 
-$$
+```{code-cell} ipython3
+:tags: [remove-input]
+
+# We display latex as a workaround to force MathJax rather than KaTeX rendering
+
+Latex(r"""$$
 \require{action}
-\require{color}
 \toggle{
 \cos(\theta _{n} + \theta _{n+1}) - \cos(2\bar{\theta}) + \frac{a}{r}(\sin\theta _{n} - \sin\theta _{n+1})=0
 \textit{ (click for explanation)}.}{
@@ -88,7 +93,8 @@ l^2 = 2 r^2 + a^2 + 2r^2 \cos\theta_1\cos\theta_2 - 2r^2\sin\theta_1\sin\theta_2
 (l^2 - 2r^2 - a^2)/2r = \color{red}{r\cos(\theta_1 + \theta_2) + a(\sin\theta_1 - \sin\theta_2) = r\cos(2\bar{\theta})}
 }
 \endtoggle
-$$
+$$""")
+```
 
 To take the continuum limit of the above equation, we define a slowly-varying angular field $\theta (x)$ and subsequently define the field $u(x)=r\sin\theta (x)$, the $x$-component of the position of the mass. When $r/a$ is sufficiently small, we obtain
 
@@ -105,20 +111,12 @@ $$
 
 where $w_0=a^2/2\bar u$ is the width of the static domain wall that interpolates between left-leaning ($u<0$ as $x\rightarrow-\infty$) and right-leaning ($u>0$ as $x\rightarrow+\infty$) states.
 
-```{code-cell} ipython3
-
-question = r"What happens to the kink width $w_0$ when the gap closes?"
-
-answers = ["It goes to zero.", "It does not vary.", "It diverges."]
-
-explanation = (
-    r"We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. "
-    r"This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What happens to the kink width $w_0$ when the gap closes?
+:explanation: We said that a gap equal to zero corresponds to $\bar{\theta}\to0$. This gives $w_0 = a^2/2\bar{u}d \propto 1 / |\sin \bar\theta \to \infty$.
+:correct: 2
+- It goes to zero.
+- It does not vary.
+- It diverges.
 ```
 
 ## Non-linear dynamics
@@ -146,25 +144,25 @@ As discussed in the introductory video, however, something that behaves like an 
 Rather than analyzing mathematically the dynamics of the Lagrangian above, watch the two videos below that
 show the motion in the linkage limit.
 
-```{code-cell} ipython3
-
-Video("BE4NDhfdpBQ")
+```{youtube} BE4NDhfdpBQ
+:width: 560
+:height: 315
 ```
 
-```{code-cell} ipython3
-
-Video("mRjpzC4rJx0")
+```{youtube} mRjpzC4rJx0
+:width: 560
+:height: 315
 ```
 
 If you are curious about the mathematical details and a systematic study of the dynamics in the springs-rotors system, you can check out the following paper:
 
-* arXiv:1404.2263
+* @10.48550/arXiv.1404.2263
 
 Note that with different geometrical parameters, the same chain above can realize the [sine-Gordon Lagrangian](https://en.wikipedia.org/wiki/Sine-Gordon_equation). As before, check out the following movie:
 
-```{code-cell} ipython3
-
-Video("w2k1Y0WON2E")
+```{youtube} w2k1Y0WON2E
+:width: 560
+:height: 315
 ```
 
 The same reference above contains hints on how to build this structure with LEGO - plus of course all the mathematical details!
@@ -173,7 +171,7 @@ The same reference above contains hints on how to build this structure with LEGO
 
 At this point we could expand around the kink solution and find a zero mode localized at its center where the gap closes. Such a zero mode allows the kink to translate as shown in the linkage video.
 
-For now we will simply remark that if one views the orientation along which the rotors lean as a mechanical polarization, then there will be an excess positive ‘‘charge’’ corresponding to a soft mode at the kink center and a negative one at the anti-kink (see the last two figures). Never mind if this electrostatic analogy is not yet clear; we will return to it and show that the antikink harbours a so-called ** state of self stress**, a dual state to the zero mode.  
+For now we will simply remark that if one views the orientation along which the rotors lean as a mechanical polarization, then there will be an excess positive ‘‘charge’’ corresponding to a soft mode at the kink center and a negative one at the anti-kink (see the last two figures). Never mind if this electrostatic analogy is not yet clear; we will return to it and show that the antikink harbours a so-called ** state of self stress**, a dual state to the zero mode.
 
 Before doing that we need to review the Maxwell count which is a **global** relation that stipulates that the number of zero modes $n_\text{m}$, present in an arbitrary mechanical structure, is simply given by the difference between the number of degrees of freedom minus the number of **independent** constraints.
 
@@ -201,23 +199,13 @@ dimensions.)
 
 As a simple test of your knowledge, consider the following question whose answer will prove handy later.
 
-```{code-cell} ipython3
-
-question = (
-    r"What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure "
-    "where all nodes have the same number of bonds (neglecting boundaries)?"
-)
-
-answers = [r"$z_c=d$.", r"$z_c=2d$.", r"$z_c=d(d-1)$.", r"$z_c=d^2$."]
-
-explanation = (
-    "In an isostatic structure we have equal number of degrees of freedom and number of constraints. "
-    "This gives the equation $d N = z N /2$, because each bond is shared by two sites."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What is the number of bonds $z_c$ emanating from each node in a $d$-dimensional isostatic structure where all nodes have the same number of bonds (neglecting boundaries)?
+:explanation: In an isostatic structure we have equal number of degrees of freedom and number of constraints. This gives the equation $d N = z N /2$, because each bond is shared by two sites.
+:correct: 1
+- $z_c=d$.
+- $z_c=2d$.
+- $z_c=d(d-1)$.
+- $z_c=d^2$.
 ```
 
 Why do we call redundant constraints with the name *states of self stress*?
@@ -272,16 +260,16 @@ value of $\nu_\text{T}$ in an arbitrary portion of an isostatic lattice is given
 
 Watch now the following video that explains visually how to insert inside a twisted Kagome lattice a topological defect called a dislocation. You encountered dislocations and disclinations in a previous lecture by Taylor Hughes. (Alternatively, an excellent introduction to topological defects is given in chapter nine of the book by Chaikin and Lubensky, *Principles of Condensed Matter Physics*). The video will show you how to localize topological zero modes or states of self stress in the interior of a lattice with defects that act as internal boundary where the gap locally closes.
 
-```{code-cell} ipython3
-
-Video("Mrm7JH6LJJI")
+```{youtube} Mrm7JH6LJJI
+:width: 560
+:height: 315
 ```
 
 The key point in designing the lattice in the video  is that the dislocations must not change the local balance between degrees of freedom and constraints. The video shows such a dislocation, obtained by pairing a five-coordinated plaquette with a seven-coordinated plaquette.
 
 More details can be found in this paper:
 
-* arXiv:1406.3323
+* @10.48550/arXiv.1406.3323
 
 Since no lattice point disclinations are used, every lattice point still has exactly four bonds emanating from it (remember the condition for isostaticity from the first control question!).
 
@@ -302,25 +290,13 @@ defect in real space, represented by its Burgers vector (or dipole $\mathbf{d}$)
 
 A similar interplay dictates the existence of localized electronic modes at dislocations in conventional topological insulators. One obtains $\nu_\textrm{T}=+1\,(-1)$ for the left (right) dislocation in the deformed Kagome lattice shown in the figure and in the video. The sign of $\nu_\text{T}$  distinguishes zero modes ($+$) or states of self stress ($-$), while its magnitude gives their numbers.
 
-```{code-cell} ipython3
-
-question = (
-    "Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ "
-    r"are of equal length and have an angle $\pi/2$ between them, "
-    r"$P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. "
-    r"What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?"
-)
-
-answers = [r"$(1,-1)$.", r"$(-1,1)$.", r"$(2,-2)$.", r"$(-2,2)$."]
-
-explanation = (
-    r"$P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. "
-    r"The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider the square lattice shown in the following figure, where the primitive vectors $a_i$ are of equal length and have an angle $\pi/2$ between them, $P_T=a_1-a_2$, $d_L = a_1-a_2$, and $d_R=-d_L$. What is the topological mode count $\nu_T$ associated with the left and right dislocation respectively?
+:explanation: $P_T$ is parallel to $d_L$ and anti-parallel to $d_R$, and they all have length $\sqrt{2}$. The unit cell has unit area, so the formula  gives $\nu_T=(2, -2)$.
+:correct: 2
+- $(1,-1)$.
+- $(-1,1)$.
+- $(2,-2)$.
+- $(-2,2)$.
 ```
 
 ![](figures/square.png)
@@ -332,44 +308,47 @@ In the numerical simulation below, you can see explicitly that transforming the 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
 ```{code-cell} ipython3
-
-from holoviews.core.element import Element2D
-from holoviews.plotting.mpl import ElementPlot
-
-
-class Figure(Element2D):
-    pass
-
-
-class FigurePlot(ElementPlot):
-    def initialize_plot(self, ranges=None):
-        element = self.hmap.last
-        self.handles["fig"] = element.data
-        return self.handles["fig"]
-
-    def _init_axis(self, fig, ax):
-        """Override this method to avoid creating a useless figure."""
-        return None, None
-
-    def update_frame(self, key, ranges=None, element=None):
-        element = self._get_frame(key)
-        self.handles["fig"] = element.data
-        return self.handles["fig"]
-
-
-holoviews.Store.register({Figure: FigurePlot}, "matplotlib")
-
-
 def get_figure(x):
     x1 = (0.1, 0.1, 0.1)
     x2 = (x, -x, -x)
     mesh = topomech.dwallslab(x1, x2)
     fig = topomech.showlocalizedmode(mesh)
-    plt.close(fig)
+    fig.update_layout(
+        height=420,
+        xaxis=dict(
+            range=base_xrange,
+            visible=False,
+            scaleanchor="y",
+            scaleratio=1,
+            autorange=False,
+        ),
+        yaxis=dict(range=base_yrange, visible=False, autorange=False),
+        margin=dict(l=0, r=0, t=0, b=0),
+    )
     return fig
 
 
-holoviews.HoloMap({i: Figure(get_figure(i)) for i in np.linspace(-0.1, 0.1, 21)})
+base_mesh = topomech.dwallslab((0.1, 0.1, 0.1), (0, 0, 0))
+base_fig = topomech.showlocalizedmode(base_mesh)
+base_xrange = base_fig.layout.xaxis.range
+base_yrange = base_fig.layout.yaxis.range
+
+figs = {i: get_figure(i) for i in np.linspace(-0.1, 0.1, 21)}
+# ensure consistent layout across frames
+for f in figs.values():
+    f.update_layout(
+        xaxis=dict(
+            range=base_xrange,
+            visible=False,
+            scaleanchor="y",
+            scaleratio=1,
+            autorange=False,
+        ),
+        yaxis=dict(range=base_yrange, visible=False, autorange=False),
+        height=420,
+        margin=dict(l=0, r=0, t=0, b=0),
+    )
+slider_plot(figs, label="deformation")
 ```
 
 (We thank Jayson Paulose for providing the simulation.)
@@ -382,18 +361,16 @@ These examples show how to insert topologically protected mechanical modes anywh
 
 You may get the impression that only the zero modes are potentially useful and the states of self stress are merely bookeeping devices that do nothing. This is far from truth, as will be illustrated in the next video.
 
-```{code-cell} ipython3
-
-Video("RbJTxKFqO7I")
+```{youtube} RbJTxKFqO7I
+:width: 560
+:height: 315
 ```
 
 As you can see, by controlling the position of states of self stress, you can pre-select the region of a material that will fail, for example by buckling. All you have to do is to activate the self stress by pushing on the structure in the same way as you had to activate the zero modes to set them in motion.
 
-+++
-
 You can find out more details in this paper.
 
-* arXiv:1502.03396
+* @10.48550/arXiv.1502.03396
 
 In summary, states of self stress and zero modes represent **propensities** that a structure has to respond by mechanical failure (triggered by stress concentrations) or free motion respectively. In topological mechanics we control how these states of motion or stress are positioned in a material by lattice geometry and topology, rather than variations in local properties like elastic moduli or local coordination.
 
@@ -401,7 +378,7 @@ As a result these states are designed to be topologically robust under smooth de
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("j0X0sVy_6Og")
+```{youtube} j0X0sVy_6Og
+:width: 560
+:height: 315
 ```

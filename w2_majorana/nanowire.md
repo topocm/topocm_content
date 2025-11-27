@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,14 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    pauli,
+    slider_plot,
+    spectrum,
+)
+from course.init_course import init_notebook
+
 
 init_notebook()
-%output size=110
-from holoviews.core.options import Cycle
 
 style = {
     "k_x": np.linspace(-1, 1, 101),
@@ -40,18 +47,18 @@ style = {
 
 We have a special guest to begin this week's lecture, Yuval Oreg from the Weizmann Institute in Rehovot.
 
-```{code-cell} ipython3
-
-Video("GQLfs4i22ms")
+```{youtube} GQLfs4i22ms
+:width: 560
+:height: 315
 ```
 
 ## Small parameters
 
 We are now all set to make Majoranas in a real system. Or at least to invent a way to make Majoranas in a real system.
 
-The way we approach this problem is by considering the Kitaev chain a 'skeleton', and 'dressing' it with real physics phenomena until it becomes real. 
+The way we approach this problem is by considering the Kitaev chain a 'skeleton', and 'dressing' it with real physics phenomena until it becomes real.
 
-> Interestingly, this is not at all how the condensed matter community came to this model. 
+> Interestingly, this is not at all how the condensed matter community came to this model.
 > Instead, the path to it was from complex to simple. The whole story started from what we'll consider in the very end of the course, fractional particles.
 
 > Then it was simplified to topological superconductors (that still do not exist in nature, as far as we know).
@@ -86,17 +93,20 @@ $$
 The effective electron mass $m$ is just the coefficient of the expansion. Let's take a look at the band structure in this regime, both in the topological regime and in the trivial regime:
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.chain(norbs=4)
 spinful_kitaev_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
 
 def onsite(site, t, mu, B):
     return (2 * t - mu) * pauli.szs0 + B * pauli.szsz
 
+
 spinful_kitaev_chain[lat(0)] = onsite
+
 
 def hop(site1, site2, t, delta):
     return -t * pauli.szs0 - 1j * delta * pauli.sys0
+
 
 spinful_kitaev_chain[kwant.HoppingKind((1,), lat)] = hop
 
@@ -104,10 +114,11 @@ spinful_kitaev_chain[kwant.HoppingKind((1,), lat)] = hop
 params_trivial = dict(t=1.0, delta=0.1, mu=-0.3, B=0.0, alpha=0.0)
 params_topological = dict(t=1.0, delta=0.1, mu=0.3, B=0.0, alpha=0.0)
 
-(
-    spectrum(spinful_kitaev_chain, params_trivial, **style).relabel("Trivial bandstructure")
-    + spectrum(spinful_kitaev_chain, params_topological, **style).relabel("Topological bandstructure")
-)
+trivial_band = spectrum(spinful_kitaev_chain, params_trivial, **style)
+trivial_band.update_layout(title="Trivial bandstructure")
+topological_band = spectrum(spinful_kitaev_chain, params_topological, **style)
+topological_band.update_layout(title="Topological bandstructure")
+combine_plots([trivial_band, topological_band], cols=1)
 ```
 
 ## The need for spin
@@ -131,18 +142,18 @@ Whenever the Zeeman energy $|B|$ is larger than $\mu$ we have one Majorana fermi
 Let's look at what happens with the dispersion as we increase the magnetic field from zero to a value larger than $\mu$.
 
 ```{code-cell} ipython3
-
 def title(params):
-    return r"$\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+    return r"$\mu={mu:.2},\ B={B:.2},\ \Delta={delta:.2}$".format(**params)
+
 
 params = dict(t=1.0, delta=0.1, mu=0.3, B=None)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["B"]: spectrum(spinful_kitaev_chain, params, title=title, **style)
         for params["B"] in Bs
     },
-    kdims=[r"$B$"]
+    label="B",
 )
 ```
 
@@ -203,7 +214,7 @@ There is one disadvantage. The particle-hole symmetry now becomes more complicat
 
 ## s-wave superconductor with magnetic field
 
-Let's look at how our chain looks once we change the superconducting coupling to be $s$-wave. The Zeeman field (or anything of magnetic origin) changes sign under time-reversal symmetry. 
+Let's look at how our chain looks once we change the superconducting coupling to be $s$-wave. The Zeeman field (or anything of magnetic origin) changes sign under time-reversal symmetry.
 
 This means that the Zeeman field has the same form for electrons and for holes in the new basis, and the full Hamiltonian is now:
 
@@ -231,25 +242,38 @@ And that is a big problem. Majoranas are their own particle-hole partners, and t
 So does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
 
 ```{code-cell} ipython3
-
 nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
+
 
 def onsite(onsite, t, mu, B, delta):
     return (2 * t - mu) * pauli.szs0 + B * pauli.s0sz + delta * pauli.sxs0
 
+
 nanowire_chain[lat(0)] = onsite
+
 
 def hop(site1, site2, t, alpha):
     return -t * pauli.szs0 - 0.5j * alpha * pauli.szsx
 
+
 nanowire_chain[kwant.HoppingKind((1,), lat)] = hop
 
+
 def title(params):
-    return r"$\alpha={alpha:.2}$, $\mu={mu:.2}$, $B={B:.2}$, $\Delta={delta:.2}$".format(**params)
+    return r"$\alpha={alpha:.2},\ \mu={mu:.2},\ B={B:.2},\ \Delta={delta:.2}$".format(
+        **params
+    )
+
 
 params = dict(t=1.0, mu=0.0, delta=0.1, alpha=0.0)
 Bs = np.linspace(0, 0.4, 10)
-holoviews.HoloMap({params["B"]: spectrum(nanowire_chain, params, **style, title=title) for params["B"] in Bs}, kdims=[r"$B$"])
+slider_plot(
+    {
+        params["B"]: spectrum(nanowire_chain, params, **style, title=title)
+        for params["B"] in Bs
+    },
+    label="B",
+)
 ```
 
 Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That in turn means that they cannot appear, and that means that the system cannot be gapped.
@@ -281,15 +305,14 @@ At $k = 0$, spin-orbit coupling vanishes, so it has no effect on the system bein
 Let's now check that it does what we want, namely open the gap at a finite momentum:
 
 ```{code-cell} ipython3
-
 params = dict(t=1.0, mu=0.1, delta=0.1, B=0.2)
 alphas = np.linspace(0, 0.4, 10)
-holoviews.HoloMap(
+slider_plot(
     {
         params["alpha"]: spectrum(nanowire_chain, params, **style, title=title)
         for params["alpha"] in alphas
     },
-    kdims=[r"$\alpha$"]
+    label="α",
 )
 ```
 
@@ -322,19 +345,14 @@ The smaller the gap, the worse the protection of Majoranas, and the more we need
 Let's calculate the gap as a function of all of the relevant parameters.
 
 ```{code-cell} ipython3
-
-%%opts Curve (color=Cycle(values=['r', 'g', 'b', 'y']))
-%%opts Overlay [show_legend=True legend_position='top']
-
-
 def find_gap(syst, params, resolution=1e-4):
     """
     Find gap in an infinite system by doing a binary search in energy.
-    
+
     This function assumes that the system has particle-hole symmetry,
     and only searches through positive energies.
     """
-    
+
     def has_modes(energy):
         return bool(len(syst.modes(energy, params=params)[0].momenta))
 
@@ -359,28 +377,40 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     params = dict(mu=mu, t=t, delta=delta)
 
     gaps = np.array(
-        [
-            [find_gap(syst, params) for params["B"] in Bs]
-            for params["alpha"] in alphas
-        ]
+        [[find_gap(syst, params) for params["B"] in Bs] for params["alpha"] in alphas]
     )
-    dims = {"kdims": [r"$B$"], "vdims": ["Band gap"]}
-    B_crit = holoviews.VLine(np.sqrt(delta**2 + mu**2))
-    plot = [
-        holoviews.Curve((Bs, gap), label=fr"$\{alpha=}$", **dims)
-        * B_crit
-        for gap, alpha in zip(gaps, alphas)
-    ]
-    title = fr"$\Delta={delta:.2}$, $\mu={mu:.2}$"
-    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1], "fig_size": 150}
-    plot = holoviews.Overlay(plot)
-    return plot.opts(plot=style)
+    title = rf"$\Delta={delta:.2},\ \mu={mu:.2}$"
+    style = {"xticks": [0, 0.1, 0.2, 0.3], "yticks": [0, 0.05, 0.1]}
+    fig = line_plot(
+        Bs,
+        gaps.T,
+        labels=[rf"$\alpha={alpha:.2f}$" for alpha in alphas],
+        x_label=r"$B$",
+        y_label="Band gap",
+        x_ticks=style["xticks"],
+        y_ticks=style["yticks"],
+        show_legend=True,
+        color=["#1f77b4", "#d62728", "#2ca02c", "#9467bd"],
+    )
+    add_reference_lines(fig, x=np.sqrt(delta**2 + mu**2), line_color="#555")
+    fig.update_layout(
+        title=title,
+        legend=dict(
+            x=0.02,
+            y=0.98,
+            xanchor="left",
+            yanchor="top",
+            bgcolor="rgba(255,255,255,0.75)",
+        ),
+    )
+    return fig
 
 
 Bs = np.linspace(0, 0.3, 71)
 mus = np.linspace(-0.05, 0.15, 5)
-holoviews.HoloMap(
-    {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus}, kdims=[r"$\mu$"]
+slider_plot(
+    {mu: spinorbit_band_gap(nanowire_chain, mu, 1.0, 0.1, Bs) for mu in mus},
+    label="μ",
 )
 ```
 
@@ -395,10 +425,15 @@ Let's summarize our observations:
 We finish our investigation of this model for now with a final simple picture of the band structure of our system.
 
 ```{code-cell} ipython3
-
 params = dict(t=1.0, B=0.07, delta=0.03, alpha=0.8)
 mus = np.linspace(-0.18, 0.22, 10)
-holoviews.HoloMap({params["mu"]: spectrum(nanowire_chain, params, **style, title=title) for params["mu"] in mus}, kdims=[r"$\mu$"])
+slider_plot(
+    {
+        params["mu"]: spectrum(nanowire_chain, params, **style, title=title)
+        for params["mu"] in mus
+    },
+    label="μ",
+)
 ```
 
 When $\mu$ is very negative we see two split electron bands at positive energy corresponding to two spin orientations.
@@ -411,29 +446,18 @@ At $k=0$ the spin-orbit coupling is ineffective, so the electron and hole bands 
 
 The non-monotonous behavior of the gap versus $B$ that we saw earlier is a consequence of this complicated band structure: There are different values of momenta where the dispersion has local minima. When we are close to the phase transition, $k=0$ defines the gap, while for large $B$, it is the gap at finite momentum that becomes smallest.
 
-```{code-cell} ipython3
-
-question = "What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?"
-answers = [
-    "Then we do not need spin-orbit coupling anymore in order to get Majoranas.",
-    "Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.",
-    "It's impossible, because a magnetic field can only be applied along $z$.",
-    "Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes.",
-]
-explanation = (
-    "If both the magnetic field and the spin orbit coupling point in the $y$ direction, "
-    + "then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. "
-    + "So we are back to the problem that a gap at finite momentum does not open, "
-    + "and we do not get a topological phase supporting Majoranas."
-)
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What happens if we align the magnetic field $B$ along the $y$-direction instead of the $z$-direction?
+:explanation: If both the magnetic field and the spin orbit coupling point in the $y$ direction, then the Hamiltonian commutes with $\sigma_y$, and spin projection along $y$ is a good quantum number. So we are back to the problem that a gap at finite momentum does not open, and we do not get a topological phase supporting Majoranas.
+:correct: 1
+- Then we do not need spin-orbit coupling anymore in order to get Majoranas.
+- Then the spin projection along the $y$ direction is conserved, so we can't get Majoranas.
+- It's impossible, because a magnetic field can only be applied along $z$.
+- Then the spin-orbit term is automatically modified to point along the $z$ direction, so nothing really changes.
 ```
 
 ## Outlook
 
-```{code-cell} ipython3
-
-Video("MsFyJBAMFLI")
+```{youtube} MsFyJBAMFLI
+:width: 560
+:height: 315
 ```

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "topocm-course"
+version = "0.1.0"
+description = "Utility modules and notebook helpers for the TopoCM course."
+readme = "readme.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Topocondmat authors" }
+]
+dependencies = [
+  "kwant>=1.5",
+  "matplotlib>=3.10",
+  "numpy>=1.26",
+  "scipy>=1.16",
+  "plotly>=6.5",
+]
+
+[tool.setuptools]
+packages = ["course"]
+include-package-data = true

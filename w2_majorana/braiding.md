@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -13,22 +13,11 @@ kernelspec:
 
 # Why Majoranas are cool: braiding and quantum computation
 
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
-
 ## Braiding of Majoranas
 
-```{code-cell} ipython3
-
-Video("Ndf2Z84g1R0")
+```{youtube} Ndf2Z84g1R0
+:width: 560
+:height: 315
 ```
 
 ## Majorana zero modes in nanowire networks
@@ -43,8 +32,6 @@ The only thing that distinguishes the Majorana zero modes is their position in t
 
 >It is very interesting to ask what is the behaviour of the quantum state $\left|\Psi\right\rangle$ of a system of identical particles under the exchange of two of the particles. You already know that for bosons and fermions $\left|\Psi\right\rangle\,\to\,\pm\left|\Psi\right\rangle$. To see what happens in the case of Majoranas, we first have to learn how to write down the quantum state $\left|\Psi\right\rangle$ corresponding to a set of Majoranas like the one sketched above.
 
-+++
-
 ### The Hilbert space of a set of Majoranas
 
 From now on, it is important to keep in mind that by considering only the states corresponding to the Majorana zero modes, we are neglecting the existence of the states that live in the bulk. As mentioned in the video, we assume that the energy spectrum looks like this:
@@ -53,11 +40,7 @@ From now on, it is important to keep in mind that by considering only the states
 
 Based on your knowledge of the Kitaev chain, this assumption should sound reasonable to you. Because you have several Majoranas, there will be several states all at zero energy, forming a “ground state manifold”.
 
-+++
-
 Let's now explore more in detail the ground state manifold defined by this degenerate sets of states.
-
-+++
 
 In the drawing you see six Majoranas, that is three pairs, but let's consider here the more general case of $N$ pairs. It might appear that since the $\gamma_n$s don't appear in the Hamiltonian, there is a degenerate quantum state for each of the $2N$ values of $n$. However, just as Majorana modes appear in pairs, they can be assigned quantum states only in pairs.
 
@@ -69,8 +52,6 @@ c_n =\tfrac{1}{2}(\gamma_{2n-1}-i\gamma_{2n})\,,
 $$
 
 for $n=1,\dots, N$. Using this notation, we have chosen to pair neighboring Majoranas into a fermionic mode. We have now a set of $N$ fermionic modes with corresponding creation and annihilation operators. Every mode can be empty or it can be occupied by a fermion, giving us two possible degenerate quantum states $\left|0\right\rangle$ and $\left|1\right\rangle$ for each pair of Majoranas.
-
-+++
 
 Going back to our sketch, we can represent the situation as follows:
 
@@ -107,17 +88,17 @@ $$
 $$
 
 Of course, the product above can also be simplified: since $\gamma_2^2=1$, you have that $(\gamma_1\gamma_2)(\gamma_2\gamma_3)=\gamma_1\gamma_3$.
- All $P_n$'s commute with each other, because they all involve a different pair of Majoranas. 
- 
+ All $P_n$'s commute with each other, because they all involve a different pair of Majoranas.
+
 > Thus the  Hilbert space of states $|\Psi\rangle$ of a set of $N$ pairs of Majorana modes is spanned by the simultaneous eigenstates $|s_1,s_2,\dots,s_N\rangle$ of the commuting fermion parity operators $P_n$ and is written as
 >
 > $$
   \left|\Psi\right\rangle= \sum_{s_n=0,1} \alpha_{s_1s_2\dots s_N}\,\left| s_1, s_2, \dots, s_N\right\rangle\,
   $$
 
-with complex coefficients $\alpha_{s_1s_2\dots s_N}$. 
+with complex coefficients $\alpha_{s_1s_2\dots s_N}$.
 
- At this point an important consideration is in order. You will remember learning during the first week that, while a superconducting Hamiltonian may not conserve the total number of electrons due to the creation and annihilation of Cooper pairs, the parity of the number of electrons is always conserved. 
+ At this point an important consideration is in order. You will remember learning during the first week that, while a superconducting Hamiltonian may not conserve the total number of electrons due to the creation and annihilation of Cooper pairs, the parity of the number of electrons is always conserved.
 We can obtain the *total fermion parity* by multiplying all the operators $P_n$,
 
 $$
@@ -134,27 +115,14 @@ In particular, linear combinations of states with different total parity are for
 
 This consideration only applies to closed systems. It does not apply if we are considering a system which is in contact with a reservoir of electrons, such as a metallic lead, in which case electrons may tunnel in and out of the lead, changing the total parity of the system. Equivalently, it does not apply if we are considering only a part of the total system. You could for instance imagine that, in our sketch, there are more Majorana zero modes in the part of the network which is not drawn explicitly (represented by the dots which “continue” the nanowire). In such a case it is perfectly possible that the *total* network is in, say, a state of even parity, but that the subsystem under consideration is in a superposition of even and odd parity states.
 
-```{code-cell} ipython3
-
-question = (
-    "Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. "
-    "What is the ground state degeneracy of the system?"
-)
-answers = [
-    "Trick question - it is not possible to get N=7 pairs of Majorana modes with even parity.",
-    "2^7.",
-    "2^6.",
-    "14",
-    "The system has an energy gap, so it cannot be degenerate.",
-]
-explanation = (
-    "7 pairs of Majoranas means a Hilbert space with dimension 2^7, "
-    "out of which half have even total parity and half have odd total parity. "
-    "So the degeneracy at fixed even parity is 2^6."
-)
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. What is the ground state degeneracy of the system?
+:explanation: 7 pairs of Majoranas means a Hilbert space with dimension 2^7, out of which half have even total parity and half have odd total parity. So the degeneracy at fixed even parity is 2^6.
+:correct: 2
+- Trick question - it is not possible to get N=7 pairs of Majorana modes with even parity.
+- 2^7.
+- 2^6.
+- 14
+- The system has an energy gap, so it cannot be degenerate.
 ```
 
 ## Non-Abelian statistics of Majoranas
@@ -163,7 +131,7 @@ Let's now imagine that experimentalists are not only able to build such a networ
 
 ![](figures/nanowire_network_exchange.svg)
 
-Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](https://en.wikipedia.org/wiki/Adiabatic_theorem). 
+Let's suppose that the trajectory takes a time $T$. During the trajectory, the system is described by a time-dependent Hamiltonian $H(t)$, $0\leq t \leq T$. This Hamiltonian contains all the details of the system, such as the positions of the domain walls where the Majoranas are located. Because the final configuration of the system is identical to the initial one, for instance all the domain walls are in the same positions as in the beginning, we have that $H(0)=H(T)$. In other words, we are considering a *closed trajectory* which brings the Hamiltonian back into itself. To ensure that the wave-function for the system does not leave the ground state manifold of states $|\Psi\rangle$, we need to change the Hamiltonian $H(t)$ slowly enough to obey the [adiabatic theorem](https://en.wikipedia.org/wiki/Adiabatic_theorem).
 
 So let's imagine that we are in the adiabatic limit and that we exchange two Majoranas $\gamma_n$ and $\gamma_m$. As usual in quantum mechanics, the initial and final quantum states are connected by a unitary operator $U$ ($U^{-1}=U^\dagger$),
 
@@ -193,16 +161,13 @@ $$
 \gamma_m\,\to\,   \cos (2\beta)\,\gamma_m  + \sin(2\beta)\,\gamma_n\,.
 $$
 
-Now we have to remember that at time $T$ we have completed a closed trajectory, so that the Majorana $\gamma_n$ is now in the place initially occupied by $\gamma_m$, and vice versa. This condition leads to the choice $\beta = \pm \pi/4$. It is not strange that we find that both signs are possible - this distinguishes the clockwise and the counterclockwise exchange of the Majoranas. 
+Now we have to remember that at time $T$ we have completed a closed trajectory, so that the Majorana $\gamma_n$ is now in the place initially occupied by $\gamma_m$, and vice versa. This condition leads to the choice $\beta = \pm \pi/4$. It is not strange that we find that both signs are possible - this distinguishes the clockwise and the counterclockwise exchange of the Majoranas.
 
 >Thus, we can write the unitary operator that exchanges the Majorana modes $\gamma_n$ and $\gamma_m$ in an explicit (and somewhat non-trivial looking!) form as:
 
 $$
 U = \exp \left(\pm\frac{\pi}{4}\gamma_n \gamma_m\right) = \tfrac{1}{\sqrt{2}}\left(1\pm\gamma_n\gamma_m\right)
 $$
-
-
-+++
 
 To fix our ideas and study the consequences of $U$ more closely, it is convenient to just focus on four Majoranas $\gamma_1\,\gamma_2,\gamma_3$ and $\gamma_4$. For this discussion we will assume that counter-clockwise exchanges pick the $+$ sign in $U$. Their ground state manifold has four states, which in the notation introduced before we write down as
 
@@ -258,26 +223,13 @@ $$
 
 Finally, you might object to the fact that the network of nanowires drawn in the figures only allows to exchange neighbouring Majoranas, even though our derivation of $U=\exp(\pi\gamma_n\gamma_m/4)$ seems to hold for any pair of Majoranas. This geometric constraint is not a big problem: by carefully composing many exchanges between neighbours, we can exchange any pair of Majoranas. As an example, you have that $U_{13}\equiv\exp\left(\pi\gamma_1 \gamma_3/4\right) = U_{12}^\dagger\,U^\dagger_{23}\,U_{12}$.
 
-```{code-cell} ipython3
-
-question = (
-    "Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. "
-    "What happens when we exchange the pair of Majorana modes, starting from a given fermion parity eigenstate?"
-)
-answers = [
-    "The fermion parity of the state flips.",
-    "Nothing happens.",
-    "The system wave-function picks up a phase that depends on the fermion parity.",
-    "You end up in a superposition of the two states.",
-]
-explanation = (
-    "The total fermion parity cannot change, "
-    "but the two states can pick up a different phase. "
-    "This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity."
-)
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider a system with only one pair of Majorana modes, thus with just two degenerate states with different fermion parity. What happens when we exchange the pair of Majorana modes, starting from a given fermion parity eigenstate?
+:explanation: The total fermion parity cannot change, but the two states can pick up a different phase. This is indeed what happens since the operator $U$ describing the exchange depends on fermion parity.
+:correct: 2
+- The fermion parity of the state flips.
+- Nothing happens.
+- The system wave-function picks up a phase that depends on the fermion parity.
+- You end up in a superposition of the two states.
 ```
 
 ## Majoranas and quantum computation: basic ideas
@@ -296,11 +248,11 @@ The state of the register is encoded in the fermion parity degrees of freedom, w
 
 On the other hand, every step of the algorithm will be extremely accurate because it is given by an exchange of two Majoranas, which corresponds to *exactly* $\exp(\pi\gamma_n\gamma_m/4)$. When you are in the adiabatic limit, this operator does not depend on any of the details on how the exchange between Majoranas is performed. It does not depend on *how* you move the Majoranas, or on the particular trajectory that $\gamma_n$ and $\gamma_m$ followed, or on the timing of the trajectory. So the final result is extremely reliable.
 
-These are the basic ideas of **topological quantum computation**. It is incredible that we can find condensed matter systems, such as networks of Majoranas, which are naturally endowed with these characteristics. 
+These are the basic ideas of **topological quantum computation**. It is incredible that we can find condensed matter systems, such as networks of Majoranas, which are naturally endowed with these characteristics.
 
 ## Summary
 
-```{code-cell} ipython3
-
-Video("V3e9r4S8GHs")
+```{youtube} V3e9r4S8GHs
+:width: 560
+:height: 315
 ```

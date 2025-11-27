@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,11 +16,21 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course import init_course as course_init
 import scipy.sparse.linalg as sl
+
+from course.init_course import init_notebook
+
+# Bind commonly used names from course modules so ruff can see them
+import numpy as np
+
+import kwant
+from course.functions import pauli
+from matplotlib import pyplot as plt
+import plotly.graph_objects as go
+from plotly.colors import sample_colorscale
+
+scientific_number = course_init.scientific_number
 
 init_notebook()
 ```
@@ -29,9 +39,9 @@ init_notebook()
 
 We have a returning lecturer for the first chapter of this week's lectures: Carlo Beenakker from Leiden University, who will tell us more about different ways to create Majoranas in superconducting vortices.
 
-```{code-cell} ipython3
-
-Video("YVGlfejNH90")
+```{youtube} YVGlfejNH90
+:width: 560
+:height: 315
 ```
 
 ## Different types of bulk-edge correspondence
@@ -68,28 +78,13 @@ We will not repeat our pumping experiment, that is increasing the flux $\Phi$ by
 
 From the point of view of the superconducting junction, this means that advancing the phase difference $\phi$ by $2\pi$, the ground state fermion parity of the junction changes. Recalling what we learned in the second and third weeks, we can say that the Josephson effect is $4\pi$-periodic.
 
-```{code-cell} ipython3
-
-question = "What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?"
-
-answers = [
-    "The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.",
-    "Then you can no longer apply a flux through the disk.",
-    "The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.",
-    "Nothing changes if the inner edge of the Corbino disk is removed.",
-]
-
-explanation = (
-    "Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. "
-    "When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. "
-    "The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken "
-    "Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, "
-    "and Kramers theorem doesn't apply anymore."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What happens to the Josephson current in the setup shown above if you remove the inner edge of the Corbino disk?
+:explanation: Josephson current is a local effect, so it cannot be affected by a removal of the inner edge. When you insert a superconducting flux quantum into the ring, the fermion parity of the edge becomes odd. The extra fermion comes from the gapped bulk of QSHE, which now acquires one broken Kramers pair. That is allowed since there is half a normal flux quantum penetrating the bulk, and Kramers theorem doesn't apply anymore.
+:correct: 3
+- The pumping argument fails and the Josephson effect becomes $2\pi$ periodic.
+- Then you can no longer apply a flux through the disk.
+- The Josephson effect remains $4\pi$ periodic, but the fermion parity becomes fixed.
+- Nothing changes if the inner edge of the Corbino disk is removed.
 ```
 
 ### Majoranas on the quantum spin-Hall edge
@@ -123,7 +118,6 @@ The strength of the Zeeman field $m(x)$ and the pairing $\Delta(x)$ both depend 
 This is shown below in a numerical simulation of a quantum spin-Hall disk. The left panel shows the edge state of the disk without any superconductor or magnet. In the right panel we cover one half of the disk by a superconductor and the other by a magnet, and obtain two well-separated Majoranas:
 
 ```{code-cell} ipython3
-
 my = 0.5 * (pauli.sys0 + pauli.sysz)
 s0s0sz = np.kron(pauli.s0s0, pauli.sz)
 s0szsz = np.kron(pauli.s0sz, pauli.sz)
@@ -172,7 +166,9 @@ densities = []
 for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
     vals, vecs = sl.eigsh(
         qshe_circle.hamiltonian_submatrix(params={**p, **gaps}, sparse=True),
-        sigma=0, k=1, ncv=20
+        sigma=0,
+        k=1,
+        ncv=20,
     )
     energies.append(vals[0])
     densities.append(density(vecs[:, 0]))
@@ -180,7 +176,9 @@ for gaps in (dict(Ez=0, Delta=0), dict(Ez=0.2, Delta=0.3)):
 fig = plt.figure(figsize=(9, 3.5))
 
 axes = fig.subplots(1, 2)
-for ax, axis, energy, density in zip(axes, ["Normal", "Superconducting"], energies, densities):
+for ax, axis, energy, density in zip(
+    axes, ["Normal", "Superconducting"], energies, densities
+):
     kwant.plotter.density(qshe_circle, density, ax=ax, colorbar=False)
     for spine in "left right top bottom".split():
         ax.spines[spine].set_visible(False)
@@ -196,8 +194,8 @@ y = np.sqrt(31**2 - x**2)
 gap_B = sc_plot.fill_between(x, 0, y, facecolor="gold", alpha=0.1)
 gap_Sc = sc_plot.fill_between(x, 0, -y, facecolor="blue", alpha=0.1)
 text_style = dict(fontsize=16, arrowprops=dict(arrowstyle="-", facecolor="black", lw=0))
-ax.text(0, R/3, "$E_Z$", ha="center", fontsize=16)
-ax.text(0, -R/3, r"$\Delta$", ha="center", fontsize=16);
+ax.text(0, R / 3, "$E_Z$", ha="center", fontsize=16)
+ax.text(0, -R / 3, r"$\Delta$", ha="center", fontsize=16);
 ```
 
 The density of states plot of the lowest energy state reveals one Majorana mode at each of the two interfaces between the magnet and the superconductor.
@@ -285,7 +283,6 @@ To answer this question, observe that the energy spectrum $E_n = 2 \pi\,n\,\hbar
 Below, we plot the wave function of the lowest energy state in a $p$-wave disk with a vortex in the middle. The lowest energy wavefunction is an equal superposition of the two Majorana modes. Here you can see that half of it is localized close to the vortex core and half of it close to the edge.
 
 ```{code-cell} ipython3
-
 def onsite(site1, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -293,7 +290,7 @@ def onsite(site1, t, mu):
 def hopx(site1, site2, t, delta):
     (x1, y1) = site1.pos
     (x2, y2) = site2.pos
-    phi = np.arctan2(x1+x2, y1+y2)
+    phi = np.arctan2(x1 + x2, y1 + y2)
     return -t * pauli.sz + 1j * delta * (
         np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
     )
@@ -302,10 +299,11 @@ def hopx(site1, site2, t, delta):
 def hopy(site1, site2, t, delta):
     (x1, y1) = site1.pos
     (x2, y2) = site2.pos
-    phi = np.arctan2(x1+x2, y1+y2) + np.pi/2
+    phi = np.arctan2(x1 + x2, y1 + y2) + np.pi / 2
     return -t * pauli.sz - 1j * delta * (
         np.cos(phi) * pauli.sx + np.sin(phi) * pauli.sy
     )
+
 
 lat = kwant.lattice.square(norbs=2)
 p_wave = kwant.Builder()
@@ -316,13 +314,15 @@ p_wave = p_wave.finalized()
 
 p = dict(t=1.0, mu=0.4, delta=0.5)
 [energy], vecs = sl.eigsh(
-    p_wave.hamiltonian_submatrix(params=p, sparse=True),
-    sigma=0, k=1, ncv=20
+    p_wave.hamiltonian_submatrix(params=p, sparse=True), sigma=0, k=1, ncv=20
 )
 
 
 fig = kwant.plotter.density(
-    p_wave, kwant.operator.Density(p_wave)(vecs[:, 0])**(.5), show=False, colorbar=False
+    p_wave,
+    kwant.operator.Density(p_wave)(vecs[:, 0]) ** (0.5),
+    show=False,
+    colorbar=False,
 )
 ax = fig.axes[0]
 for spine in "left right top bottom".split():
@@ -335,29 +335,13 @@ ax.add_patch(plt.Circle((0, 0), 31, fill=False, color="black"));
 
 The wave function is not zero in the bulk between the edge and the vortex because of the relatively small size of the system. The separation between edge and vortex, or between different vortices, plays the same role as the finite length of a Kitaev chain, i.e. it splits the Majorana modes away from zero energy by an exponentially small amount.
 
-```{code-cell} ipython3
-
-question = (
-    "What happens if you add a second vortex to the superconductor? "
-    "Imagine that the vortices and edge are all very far away from each other"
-)
-
-answers = [
-    "The second vortex has no Majorana.",
-    "Both vortices have a Majorana, and the edge has two Majoranas.",
-    "The Majorana mode at the edge goes away, and each vortex has its own Majorana.",
-    "Vortices can only be added in pairs because Majoranas only come in pairs.",
-]
-
-explanation = (
-    "The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, "
-    "so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. "
-    "And so, of course, the second vortex must have a Majorana as well."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What happens if you add a second vortex to the superconductor? Imagine that the vortices and edge are all very far away from each other
+:explanation: The energy spectrum of the edge is shifted by $\hbar v \pi/L$ by the addition of a second vortex, so the edge has no Majoranas now. The first vortex is not affected, and we know that it has a Majorana. And so, of course, the second vortex must have a Majorana as well.
+:correct: 2
+- The second vortex has no Majorana.
+- Both vortices have a Majorana, and the edge has two Majoranas.
+- The Majorana mode at the edge goes away, and each vortex has its own Majorana.
+- Vortices can only be added in pairs because Majoranas only come in pairs.
 ```
 
 ## Vortices in 3D topological insulator
@@ -390,24 +374,16 @@ To confirm this conclusion, below we show the result of a simulation of a 3D BHZ
 
 ```{code-cell} ipython3
 
-import matplotlib.cm
-import matplotlib.colors as mcolors
-
-colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128))
-colors[:, 3] = np.linspace(0, 1, 128)
-gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
-    "gist_heat_r_transparent", colors
-)
 ```
 
 ```{code-cell} ipython3
-
 lat = kwant.lattice.cubic(norbs=8)
 
 
-def cylinder(pos, h=25, r=5):
+def cylinder(pos, h=25, r=4.9):
     (x, y, z) = pos
     return (0 <= z < h) and (y**2 + x**2) <= r**2
+
 
 def onsite(site, C, D1, D2, M, B1, B2, delta):
     (x, y, z) = site.pos
@@ -418,14 +394,18 @@ def onsite(site, C, D1, D2, M, B1, B2, delta):
         + delta * (np.cos(phi) * s0s0sx + np.sin(phi) * s0s0sy)
     )
 
+
 def hopx(site1, site2, D2, B2, A2):
     return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sxsxsz
+
 
 def hopy(site1, site2, D2, B2, A2):
     return -D2 * s0s0sz - B2 * s0szsz + A2 * 0.5j * sysxsz
 
+
 def hopz(site1, site2, D1, B1, A1):
     return -D1 * s0s0sz - B1 * s0szsz + A1 * 0.5j * szsxsz
+
 
 bhz_wire = kwant.Builder()
 bhz_wire[lat.shape(cylinder, (0, 0, 0))] = onsite
@@ -447,46 +427,44 @@ p = dict(
 )
 
 [energy], vecs = sl.eigsh(
-    bhz_wire.hamiltonian_submatrix(params=p, sparse=True),
-    sigma=0, k=1, ncv=20
+    bhz_wire.hamiltonian_submatrix(params=p, sparse=True), sigma=0, k=1, ncv=20
 )
 
-fig = plt.figure(figsize=(9, 3.5))
+density_values = kwant.operator.Density(bhz_wire)(vecs[:, 0])
+positions = np.array([s.pos for s in bhz_wire.sites])
+norm = density_values / density_values.max()
+rgb = sample_colorscale("Inferno_r", norm.tolist())
 
-ax0 = fig.add_subplot(121, projection="3d")
-kwant.plot(
-    bhz_wire, ax=ax0, site_size=0.3, site_lw=0.01,
-    site_color="#2267f5cc", hop_lw=0.1
+fig = go.Figure(
+    data=[
+        go.Scatter3d(
+            x=positions[:, 0],
+            y=positions[:, 1],
+            z=positions[:, 2],
+            mode="markers",
+            marker=dict(size=5, color=rgb, opacity=0.5),
+            showlegend=False,
+        )
+    ]
 )
-ax0.set_xlim(-6, 6)
-ax0.set_ylim(-6, 6)
-ax0.set_yticks([])
-ax0.set_xticks([])
-ax0.set_zticks([])
-
-ax1 = fig.add_subplot(122, projection="3d")
-kwant.plotter.plot(
-    bhz_wire,
-    site_color=kwant.operator.Density(bhz_wire)(vecs[:, 0]),
-    ax=ax1,
-    cmap=gist_heat_r_transparent,
-    colorbar=False,
-    site_lw=0
+fig.update_layout(
+    scene=dict(
+        xaxis=dict(visible=False, range=[-6, 6]),
+        yaxis=dict(visible=False, range=[-6, 6]),
+        zaxis=dict(visible=False, range=[0, 25]),
+        aspectmode="data",
+        camera=dict(eye=dict(x=0.9, y=0.3, z=3.0)),
+    ),
+    margin=dict(l=10, r=10, t=10, b=10),
 )
-
-ax1.set_xlim(-6, 6)
-ax1.set_ylim(-6, 6)
-ax1.set_yticks([])
-ax1.set_xticks([])
-ax1.set_zticks([])
-plt.show()
+fig
 ```
 
-In the right panel, you can see a plot of the wavefunction of the lowest energy state. You see that it is very well localized at the end points of the vortex line passing through the cube. These are precisely the two Majorana modes that Carlo Beenakker explained at the end of his introductory video.
+The plot of the wavefunction of the lowest energy state shows it is very well localized at the end points of the vortex line passing through the cube. These are precisely the two Majorana modes that Carlo Beenakker explained at the end of his introductory video.
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("B7lMz-NrKec")
+```{youtube} B7lMz-NrKec
+:width: 560
+:height: 315
 ```

@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,16 +16,19 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-
 import scipy
 from time import time
 import scipy.linalg as sla
+
+import numpy as np
+import kwant
+from matplotlib import pyplot as plt
+import plotly.graph_objects as go
+
+from course.functions import pauli, slider_plot
+from course.init_course import init_notebook
+
+init_notebook()
 
 randn = np.random.randn
 ```
@@ -34,9 +37,9 @@ randn = np.random.randn
 
 Fabian Hassler from RWTH Aachen will present the topological invariants
 
-```{code-cell} ipython3
-
-Video("ceyus0cRBi0")
+```{youtube} ceyus0cRBi0
+:width: 560
+:height: 315
 ```
 
 ## Applications of topological invariants
@@ -77,7 +80,6 @@ A scattering matrix is smaller than the matrix of all the eigenvectors, and for 
 This difference is most pronounced in 2D systems, where the cost of diagonalization results in more than an order of magnitude difference in the system size. On most modern computers diagonalization works up to system sizes of $\sim 100$, and scattering matrix calculations work up to system sizes of $\sim 1000$. This can be best seen over here (but you can also test for yourself):
 
 ```{code-cell} ipython3
-
 def two_terminal(L, W):
     t = 1.0
 
@@ -89,7 +91,7 @@ def two_terminal(L, W):
         (x, y) = pos
         return 0 <= y < W
 
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     # definition of system
@@ -125,7 +127,7 @@ def smat_time(N):
 
     start = time()
 
-    smat = kwant.smatrix(syst)
+    kwant.smatrix(syst)
 
     res = time() - start
     return res
@@ -139,7 +141,6 @@ smat_times = [smat_time(N) for N in Ns_smat]
 ```
 
 ```{code-cell} ipython3
-
 plt.plot(Ns_diag, diag_times, "-o", label="diagonalization")
 plt.plot(Ns_smat, smat_times, "-o", label="scattering matrix")
 
@@ -148,7 +149,7 @@ plt.yscale("log")
 
 plt.xlabel("$N$")
 plt.ylabel("$t [s]$")
-plt.ylim(10 ** -3, 10 ** 6)
+plt.ylim(10**-3, 10**6)
 plt.yticks([1e-3, 1, 1e3, 1e6])
 plt.legend()
 plt.show()
@@ -230,7 +231,6 @@ $$
 So by finding all the eigenvalues $z$ we get all the zeros of $h(z)$ inside the unit circle, and immediately obtain the 1D topological invariant:
 
 ```{code-cell} ipython3
-
 def random_sys(N=4):
     onsite = randn(N, N) + 1j * randn(N, N)
     lefthopping = randn(N, N) + 1j * randn(N, N)
@@ -256,28 +256,61 @@ def winding_plot(onsite, lefthopping, righthopping):
     winding = sum(abs(singularities) < 1) - len(onsite)
     circle = np.exp(1j * np.linspace(-np.pi, np.pi, 30))
     title = f"Winding number: ${winding}$"
-    kdims = [r"$\operatorname{Re}(z)$", r"$\operatorname{Im}(z)$"]
-    pl = holoviews.Path((circle.real, circle.imag), kdims=kdims).opts(
-        style={"color": "k", "linestyle": "--"}
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=circle.real,
+            y=circle.imag,
+            mode="lines",
+            line=dict(color="black", dash="dash"),
+            showlegend=False,
+        )
     )
-    pl *= holoviews.Points((singularities.real, singularities.imag)).opts(
-        style={"color": "r"}
+    fig.add_trace(
+        go.Scatter(
+            x=singularities.real,
+            y=singularities.imag,
+            mode="markers",
+            marker=dict(color="red", size=8),
+            name="zeros",
+        )
     )
-    pl *= holoviews.Points((0, 0)).opts(style={"color": "b"})
-    return pl[-2:2, -2:2].relabel(title).opts(plot={"xticks": 3, "yticks": 3})
+    fig.add_trace(
+        go.Scatter(
+            x=[0],
+            y=[0],
+            mode="markers",
+            marker=dict(color="blue", size=8),
+            showlegend=False,
+        )
+    )
+    fig.update_layout(
+        title=title,
+        xaxis=dict(
+            title=r"$\operatorname{Re}(z)$",
+            range=[-2, 2],
+            scaleanchor="y",
+            scaleratio=1,
+        ),
+        yaxis=dict(title=r"$\operatorname{Im}(z)$", range=[-2, 2]),
+        showlegend=True,
+    )
+    return fig
 
 
 np.random.seed(30)
-onsite, lefthopping, righthopping = random_sys()
-winding_scale = lambda scale: winding_plot(
-    4 * onsite * 1.2 ** -abs(scale),
-    lefthopping * 1.2 ** scale,
-    righthopping * 1.2 ** -scale,
-)
+onsite_mat, lefthopping, righthopping = random_sys()
 
-holoviews.HoloMap(
-    {scale: winding_scale(scale) for scale in range(-10, 10)}, kdims=[r"$\alpha$"]
-)
+
+def winding_scale(scale):
+    return winding_plot(
+        4 * onsite_mat * 1.2 ** -abs(scale),
+        lefthopping * 1.2**scale,
+        righthopping * 1.2**-scale,
+    )
+
+
+slider_plot({scale: winding_scale(scale) for scale in range(-10, 10)}, label="α")
 ```
 
 In the graph above, we see the zeros (red) and poles (blue) of $h(z)$ for some randomly generated system, while we tune a parameter $\alpha$ that gradually changes the topology of the system.
@@ -327,11 +360,6 @@ So the **Bott index** $m$ looks like a Chern number, behaves like a Chern number
 To illustrate its behavior let's plot the cumulative sum of the eigenvalues of $\log\varPhi_x \varPhi_y \varPhi_x^\dagger \varPhi_y^\dagger$, taking a disordered Chern insulator as a sample system:
 
 ```{code-cell} ipython3
-
-%%opts Points {+framewise}
-%%opts Path {+framewise}
-
-
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
 
@@ -342,6 +370,7 @@ def hopx(site1, site2, t, delta):
 
 def hopy(site1, site2, t, delta):
     return -t * pauli.sz - 1j * delta * pauli.sy
+
 
 # Construct the system
 W = L = 12
@@ -389,23 +418,42 @@ def evaluate_m(syst, p, energy=0):
     y = np.append([0], ys)
     title = f"$m={p['mu']:.2}$, Chern number $={res:1.0f}$"
     window_widening = (max(x) - min(x)) * 0.05
-    pl = holoviews.Path((x, y)).opts(style={"color": "b"})
-    pl *= holoviews.Points((x, y)).opts(style={"color": "b"})
-    xlim = slice(min(x) - window_widening, max(x) + window_widening)
-    ylim = slice(-2 * np.pi - 0.5, 0.5)
-    ticks = {"xticks": 2, "yticks": [(-2 * np.pi, r"$-2\pi$"), (0, r"$0$")]}
-    return pl[xlim, ylim].relabel(title).opts(plot=ticks)
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode="lines+markers",
+            line=dict(color="blue"),
+            marker=dict(size=6),
+            showlegend=False,
+        )
+    )
+    fig.update_layout(
+        title=title,
+        xaxis=dict(
+            title="", range=[min(x) - window_widening, max(x) + window_widening]
+        ),
+        yaxis=dict(
+            title="",
+            range=[-2 * np.pi - 0.5, 0.5],
+            tickvals=[-2 * np.pi, 0],
+            ticktext=[r"$-2\pi$", r"$0$"],
+        ),
+    )
+    return fig
 
 
 p = dict(t=1.0, mu=0.1, delta=0.1, k_x=0, k_y=0)
-holoviews.HoloMap(
-    {p["mu"]: evaluate_m(chern_torus, p) for p["mu"] in np.linspace(-0.2, 0.4, 16)}, kdims=[r"$m$"]
+slider_plot(
+    {p["mu"]: evaluate_m(chern_torus, p) for p["mu"] in np.linspace(-0.2, 0.4, 16)},
+    label="m",
 )
 ```
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("9qCSXEfSlqE")
+```{youtube} 9qCSXEfSlqE
+:width: 560
+:height: 315
 ```

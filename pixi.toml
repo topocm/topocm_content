@@ -1,0 +1,51 @@
+[workspace]
+authors = ["Anton Akhmerov <anton.akhmerov@gmail.com>"]
+channels = ["conda-forge"]
+name = "python3"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[activation.env]
+JUPYTER_CONFIG_DIR = ".jupyter"
+JUPYTER_DATA_DIR = ".jupyter"
+JUPYTER_PATH = ".jupyter"
+OPENBLAS_NUM_THREADS = "1"
+OMP_NUM_THREADS = "1"
+MKL_NUM_THREADS = "1"
+MKL_DYNAMIC = "FALSE"
+
+[dependencies]
+python = ">=3.14.0,<3.15"
+matplotlib-base = ">=3.10.7,<4"
+kwant = ">=1.5.0,<2"
+scipy = ">=1.16.3,<2"
+sympy = ">=1.14.0,<2"
+pfapack = ">=0.3.1,<0.4"
+ipython = ">=9.7.0,<10"
+ipykernel = ">=7.1.0,<8"
+jupyter_server = ">=2.17.0,<3"
+jupytext = ">=1.18.1,<2"
+pre-commit = ">=4.4.0,<5"
+mystmd = ">=1.6.4,<2"
+plotly = ">=6.5.0,<7"
+openssh = ">=10.2p1,<11"
+rsync = ">=3.4.1,<4"
+
+[pypi-dependencies]
+jupyter-book = ">=2.0.2, <3"
+topocm-course = { path = ".", editable = true }
+
+[tasks.clean-cache]
+# Cache busting task to force rebuilds when the package or the env changes
+cmd = "jupyter book clean --execute -y"
+inputs = ["course/*.py", "course/matplotlibrc"]
+
+[tasks.build-html]
+cmd = "jupyter book build --execute --html --strict"
+inputs = ["myst.yml", "**/*.md"]
+outputs = ["_build/site", "_build/html"]
+depends-on = ["clean-cache"]
+
+[tasks.postprocess-html]
+cmd = "python scripts/postprocess_html.py"
+depends-on = ["build-html"]

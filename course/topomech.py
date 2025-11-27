@@ -33,11 +33,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-from random import randint
-
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
+import plotly.graph_objects as go
 from numpy.linalg import norm
 from scipy import linalg as la
 
@@ -83,17 +80,17 @@ class Bond:
 
 
 class Mesh:
-    def __init__(self, dim=2, l=None):
+    def __init__(self, dim=2, L=None):
         self.Points = []
         self.Bonds = []
         self.N = 0
         self.nbrinfo = []
-        self.l = l
+        self.L = L
         self.dim = dim
         self.dislocations = []
-        if self.l is None:
-            self.l = np.zeros(dim)
-        if len(self.l) != dim:
+        if self.L is None:
+            self.L = np.zeros(dim)
+        if len(self.L) != dim:
             print("error: box lengths must be of correct dimension")
 
     def points(self):
@@ -128,8 +125,8 @@ class Mesh:
         for i in range(self.dim):
             dx[i] = (
                 dx[i]
-                if abs(dx[i]) < 0.5 * self.l[i]
-                else dx[i] - abs(dx[i] + 0.5 * self.l[i]) + abs(dx[i] - 0.5 * self.l[i])
+                if abs(dx[i]) < 0.5 * self.L[i]
+                else dx[i] - abs(dx[i] + 0.5 * self.L[i]) + abs(dx[i] - 0.5 * self.L[i])
             )
         return dx
 
@@ -137,7 +134,7 @@ class Mesh:
 def klbasis(x1, x2, x3, z=0):
     """Calculates the *s* vectors in the Kane-Lubensky parametrization (*Nat Phys 2014*) of the
     deformed kagome lattices.
-    
+
     :param x1,x2,x3,z: The four parameters used by Kane and Lubensky in their parametrization.
     :returns: List of the three vectors *s1,s2,s3* as defined in Fig. 2a of the paper.
     """
@@ -154,8 +151,8 @@ def klbasis(x1, x2, x3, z=0):
 
 def klbasispoints(x1, x2, x3, z=0):
     """Calculate the positions of the three points in the unit cell of the deformed kagome
-    lattice under the Kane-Lubensky parametrization. 
-    
+    lattice under the Kane-Lubensky parametrization.
+
     :param x1,x2,x3,z: Four parameters used in the Kane-Lubensky parametrization.
     :returns: List of three position vectors *d3,d1,d2* of the basis points in the unit cell as
         defined in Fig. 2a of the paper.
@@ -181,113 +178,99 @@ def vis2d(
     quiverwidth=None,
     bondcolor=(0.3, 0.3, 0.3, 1.0),
     pad=1,
-    **kwargs
+    **kwargs,
 ):
-    """Function for visualizing a mesh.
-    
-    :param mesh: Input mesh, a :class:`Mesh` instance.
-    :param draw_points: If :const:`True`, draw all points with 'o' markers.
-    :param draw_edges: If:const:`True`, draw bonds as lines of thickness ``lw``.
-    :param eigenfunction: Pass an eigenmode for visualization. This is a 1D numpy array
-        whose length is either ``2*mesh.N`` or ``2*mesh.N+Nb``, where ``N`` and ``Nb`` are the
-        number of points and bonds in ``mesh``. If former, draws arrows corresponding to displacements 
-        at each point (two consecutive numbers per point to give first ``2*mesh.N`` entries). 
-        If latter, also colours bonds according to tensions which are the last ``Nb`` entries. 
-    :param eigenfunctions: List of ``eigenfunction`` arrays to plot simultaneously.
-    :param ecolors: Single color or list of colors with which to draw arrows for ``eigenfunction(s)`` visualization.
-        Accepts any color specifications recognized by :mod:`matplotlib`.
-    :param figname: String that, if passed, becomes filename in which visualization is saved. Should be a valid
-        format for the :meth:`savefig()` command of :mod:`matplotlib.pyplot`.
-    :param noshow: If :const:`True`, does not call :func:`plt.show()` at end of plotting.
-    :param figidx,ax: Specify a figure index (integer) or axis (:obj:`matplotlib.pyplot.Axes` object) within
-        which to plot the mesh. Useful if you want to predefine a figure and axes to plot in. If :const:`None`,
-        a blank figure and axes for the plot are created from scratch.
-    :param clear: If :const:`True`, clear pre-existing stuff on ``figidx`` or ``ax``.
-    :param cutoff: Length of the longest bonds that are actually drawn. If :const:`None`, assigned to be 
-        the smaller of ``mesh.lx/2`` or ``mesh.ly/2``, so that bonds that wrap around the system due to 
-        periodic boundary conditions are not drawn. Set to some very large number to make sure all bonds are drawn.
-    :param offset: A shift to every point. Can be either a single vector (1D array with two entries) to add 
-        to every point, or a ``Nx2`` array giving a unique shift to each of the ``N`` points.
-    :param colormap: Colormap to use for eigenfunction tension visualization as bond colors. String (name) or ColorMap
-        instance as recognized by :mod:`matplotlib`.
-    :param colorbar: If :const:`True`, show a colorbar of the colormap values.
-    :param lw: Line width of bond lines.
-    :param quiverwidth: Width of quiver arrows used for eigenmode visualization.
-    :param bondcolor: Color of bonds (if eigenfunction tensions are not defined). Any olor recognized by 
-        :mod:`matplotlib` will work.
-    :param linecollection: If :const:`True`, uses a slightly slower method to draw the edges which behaves 
-        much better under zooming in an interactive session.
-    :param ptidx: List of specific points to be drawn if ``draw_points`` is :const:`True`. 
-        If :const:`None`, all points are drawn.
-    :param bondforces: A 1D array of length ``Nb`` of scalar values used to color each bond. All parameters that 
-        affect eigenfunction tension plotting also affect this.
-    :param pad: Padding around mesh extremities to make sure all points are visible.
-    :param colorbarsymm: if :const:`True`, color bar is symmetric abound zero.
-    
-    """
-
-    fig = plt.figure(figsize=(8, 4))
-    ax = fig.add_subplot(1, 1, 1, xticks=[], yticks=[])
-
-    ax.set_aspect("equal")
-    ax.set_axis_off()
+    """Visualize a mesh using Plotly (bonds + displacement arrows)."""
 
     pts = mesh.points() + offset
     lenmode = 2 * len(pts)
 
-    zorder = 0
     cutoff = mesh.lx / 2 if mesh.lx < mesh.ly else mesh.ly / 2
 
-    xpairs = [
-        [pts[bd.p1][0], pts[bd.p2][0]]
-        for bd in mesh.Bonds
-        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff
-    ]
-    ypairs = [
-        [pts[bd.p1][1], pts[bd.p2][1]]
-        for bd in mesh.Bonds
-        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff
-    ]
-    xlist = []
-    ylist = []
-    for xends, yends in zip(xpairs, ypairs):
-        xlist.extend(xends)
-        xlist.append(None)
-        ylist.extend(yends)
-        ylist.append(None)
-    ax.plot(xlist, ylist, "-", color=bondcolor, lw=lw, zorder=zorder)
-    zorder += 1
-    ax.quiver(
-        pts[:, 0],
-        pts[:, 1],
-        eigenfunction[:lenmode:2],
-        eigenfunction[1:lenmode:2],
-        color=ecolors,
-        zorder=zorder,
-        width=quiverwidth,
-        **kwargs
+    x_lines = []
+    y_lines = []
+    for bd in mesh.Bonds:
+        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff:
+            x_lines.extend([pts[bd.p1][0], pts[bd.p2][0], None])
+            y_lines.extend([pts[bd.p1][1], pts[bd.p2][1], None])
+
+    x_arrows = []
+    y_arrows = []
+    if eigenfunction is not None:
+        disp = eigenfunction[:lenmode].reshape(len(pts), 2)
+        disp *= kwargs.get("scale", 1)
+        for pt, d in zip(pts, disp):
+            x_arrows.extend([pt[0], pt[0] + d[0], None])
+            y_arrows.extend([pt[1], pt[1] + d[1], None])
+
+    def _rgba(color):
+        if isinstance(color, tuple) and len(color) == 4:
+            r, g, b, a = color
+            return f"rgba({r * 255},{g * 255},{b * 255},{a})"
+        if isinstance(color, str):
+            return {"r": "red", "g": "green", "b": "blue"}.get(color, color)
+        return color
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x_lines,
+            y=y_lines,
+            mode="lines",
+            line=dict(color=_rgba(bondcolor), width=lw),
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_arrows,
+            y=y_arrows,
+            mode="lines",
+            line=dict(color=_rgba(ecolors), width=2),
+            showlegend=False,
+        )
+    )
+    xmin, xmax = pts[:, 0].min() - pad, pts[:, 0].max() + pad
+    ymin, ymax = pts[:, 1].min() - pad, pts[:, 1].max() + pad
+    fig.update_layout(
+        xaxis=dict(
+            visible=False,
+            range=[xmin, xmax],
+            scaleanchor="y",
+            scaleratio=1,
+            fixedrange=True,
+            autorange=False,
+        ),
+        yaxis=dict(
+            visible=False,
+            range=[ymin, ymax],
+            fixedrange=True,
+            autorange=False,
+        ),
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=120,
     )
     return fig
 
 
-def periodicize(mesh, l, eps=0.101231):
-    mesh += np.ones_like(l) * eps
-    l = np.array(l)
+def periodicize(mesh, L, eps=0.101231):
+    mesh += np.ones_like(L) * eps
+    L = np.array(L)
     for pt in mesh:
-        wrap = np.round((pt - l / 2) / l)
-        pt -= wrap * l
-    mesh -= np.ones_like(l) * eps
+        wrap = np.round((pt - L / 2) / L)
+        pt -= wrap * L
+    mesh -= np.ones_like(L) * eps
 
 
 def makeLattice(
     a, basis, bondlist, n, rectangle=True, periodic=True, boundaryshift=None
 ):
     """
-        Tile a unit cell to get a lattice. General dimensions
-        a: list of primitive lattice vectors (length gives dimension)
-        basis: set of point positions for a lattice
-        bondlist: adjacency list connecting points across respective boundaries
-        n: repeating units in each dimension
+    Tile a unit cell to get a lattice. General dimensions
+    a: list of primitive lattice vectors (length gives dimension)
+    basis: set of point positions for a lattice
+    bondlist: adjacency list connecting points across respective boundaries
+    n: repeating units in each dimension
     """
     dim = len(a)
 
@@ -301,8 +284,8 @@ def makeLattice(
         internalidx = sum([latticept[i] * np.prod(n[i + 1 :]) for i in range(dim)])
         return int(internalidx + basisidx * np.prod(n))
 
-    totalsize = np.prod(n) * len(basis)
-    mesh = Mesh(dim, l=10000 * np.ones(dim))
+    # totalsize = np.prod(n) * len(basis)  # unused; removed to satisfy ruff
+    mesh = Mesh(dim, L=10000 * np.ones(dim))
 
     slices = tuple([slice(0, ni) for ni in n])
     grid = np.mgrid[slices]
@@ -310,9 +293,9 @@ def makeLattice(
     # print lattice.shape
     if rectangle:
         dx = np.max(np.abs(np.array(a)), axis=0)
-        l = dx * np.array(n)
-        periodicize(lattice, l)
-        mesh.l = l
+        L = dx * np.array(n)
+        periodicize(lattice, L)
+        mesh.L = L
     allpts = np.vstack([lattice + b for b in basis])
     for p in allpts:
         mesh.add_point(p)
@@ -339,7 +322,7 @@ def makeLattice(
                     mesh.add_bond(idx1, idx2)
                 else:
                     dx = np.abs(mesh.Points[idx1] - mesh.Points[idx2])
-                    if np.all(dx < mesh.l / 2):
+                    if np.all(dx < mesh.L / 2):
                         mesh.add_bond(idx1, idx2)
 
     return mesh
@@ -362,17 +345,17 @@ def kagome2d(lx, ly, x, rect=True, periodic=True):
 
 
 def to2dlattice(mesh):
-    mesh.lx = mesh.l[0]
-    mesh.ly = mesh.l[1]
+    mesh.lx = mesh.L[0]
+    mesh.ly = mesh.L[1]
     return mesh
 
 
 def replacepoints(mesh1, mesh2, x1frac=0.33, x2frac=0.66):
     """
-        replace points in mesh1 with points from mesh2 for x between x1 and x2
+    replace points in mesh1 with points from mesh2 for x between x1 and x2
     """
     for i, pt in enumerate(mesh1.Points):
-        if x1frac * mesh1.l[0] < pt[0] < x2frac * mesh2.l[0]:
+        if x1frac * mesh1.L[0] < pt[0] < x2frac * mesh2.L[0]:
             mesh1.Points[i] = mesh2.Points[i]
     return mesh1
 

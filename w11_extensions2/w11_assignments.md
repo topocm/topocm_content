@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulation: powers combined
 
@@ -40,19 +16,19 @@ Take care however: if you take a topologically nontrivial system and just apply 
 
 ## Review assignment
 
-### arXiv:1010.6126
+### @10.48550/arXiv.1010.6126
 
 **Hint:** Computes topological edge states from Floquet Hamiltonian.
 
-### arXiv:1212.3324
+### @10.48550/arXiv.1212.3324
 
 **Hint:** Points out and explains why the floquet Hamiltonian in momentum space does not capture the presence of Floquet edge states.
 
-### arXiv:1202.1003
+### @10.48550/arXiv.1202.1003
 
 **Hint:** Theoretical prediction of topological crystalline insulator.
 
-### arXiv:1212.6191
+### @10.48550/arXiv.1212.6191
 
 **Hint:** Are topological crystalline surface states stable against disorder?
 
@@ -60,5 +36,3 @@ Take care however: if you take a topologically nontrivial system and just apply 
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

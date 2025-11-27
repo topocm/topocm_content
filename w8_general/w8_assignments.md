@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,10 +16,7 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+from course.init_course import init_notebook
 
 init_notebook()
 ```
@@ -58,19 +55,19 @@ Then implement an algorithm which uses this check to find the lowest and the hig
 
 ## Review assignment
 
-### arXiv:1006.0690
+### @10.48550/arXiv.1006.0690
 
 **Hint:** The most general classification.
 
-### arXiv:1310.5281
+### @10.48550/arXiv.1310.5281
 
 **Hint:** Beyond classification.
 
-### arXiv:1012.1019
+### @10.48550/arXiv.1012.1019
 
 **Hint:** The non-commutative invariants.
 
-### arXiv:1106.6351
+### @10.48550/arXiv.1106.6351
 
 **Hint:** All about scattering.
 
@@ -78,5 +75,3 @@ Then implement an algorithm which uses this check to find the lowest and the hig
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

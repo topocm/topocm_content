@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,13 +16,20 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+import numpy as np
+from copy import deepcopy
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    line_plot,
+    slider_plot,
+    spectrum,
+)
+from course.init_course import init_notebook
 
 init_notebook()
-%output size = 150
 ```
 
 ## Introduction
@@ -32,9 +39,9 @@ Ady Stern from the Weizmann Institute of Science will introduce the quantum Hall
 Ady thanks Dr. Dan Arav and Gil Novik from the School of Media Studies of the
 College of Management - Academic Studies for their help in preparing the videos.
 
-```{code-cell} ipython3
-
-Video("QC3tQT7MD00")
+```{youtube} QC3tQT7MD00
+:width: 560
+:height: 315
 ```
 
 ## The Hall effect
@@ -82,12 +89,9 @@ $$
 E_y \equiv \frac{V_1+V_2-V_4-V_3}{2W}.
 $$
 
+The Hall bar can only measure the conductance completely for isotropic or rotationally invariant systems. If we rotate the system by 90 degrees we can transform $x\rightarrow y$ and $y\rightarrow -x$. So we expect $\sigma_{xx}=\sigma_{yy}=\sigma_L$, the longitudinal conductance. If we apply this same rotation transformation we conclude that $\sigma_{xy}=-\sigma_{yx}=\sigma_H$, the *Hall conductance*.
 
-+++
-
-The Hall bar can only measure the conductance completely for isotropic or rotationally invariant systems. If we rotate the system by 90 degrees we can transform $x\rightarrow y$ and $y\rightarrow -x$. So we expect $\sigma_{xx}=\sigma_{yy}=\sigma_L$, the longitudinal conductance. If we apply this same rotation transformation we conclude that $\sigma_{xy}=-\sigma_{yx}=\sigma_H$, the *Hall conductance*. 
-
-So with rotational invariance the 4 component conductance tensor has only 2 independent components i.e. the longitudinal and Hall conductance. We can calculate these using the two electric fields $E_{x,y}$ that we measure using the Hall bar. 
+So with rotational invariance the 4 component conductance tensor has only 2 independent components i.e. the longitudinal and Hall conductance. We can calculate these using the two electric fields $E_{x,y}$ that we measure using the Hall bar.
 To do this, we solve the set of equations $j_y=\sigma_L E_y - \sigma_H E_x=0$ and $j_x=\sigma_L E_x+\sigma_H E_y$ to obtain $\sigma_{L,H}$. We obtain the Hall conductance
 
 $$
@@ -96,7 +100,7 @@ $$
 
 ## The classical Hall effect is a linear effect
 
-Let's now try to obtain an alternative expression for the Hall conductance $\sigma_H$ of our Hall bar. In general we expect the electric and magnetic fields present in our Hall bar to apply a force to the electrons, and increase their velocity. 
+Let's now try to obtain an alternative expression for the Hall conductance $\sigma_H$ of our Hall bar. In general we expect the electric and magnetic fields present in our Hall bar to apply a force to the electrons, and increase their velocity.
 
 Instead of solving the problem directly, let us make the ansatz that the electrons enter a state, which is obtained from the usual electron ground state by doing a Galilean transformation to a reference frame moving with velocity $\bf{v}$ with respect to the original reference frame.
 
@@ -116,21 +120,15 @@ $$
 
 This relation, which says that $\sigma_H\propto n$, is extremely general in the sense that it does not depend on how the electrons interact with each other or anything else. It is referred to as the Streda relation. If we define the so-called "filling factor" as $\nu=n h/ e B$ the Hall conductance can be written as a multiple of the quantum of conductance as $\sigma_H=\nu \frac{e^2}{h}$.
 
-As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder. 
+As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder.
 
-```{code-cell} ipython3
-
-question = "What is the longitudinal conductance for the ideal electron gas in a magnetic field?"
-answers = [
-    "Infinity since there are no impurities in the system.",
-    "Finite and inversely proportional to the magnetic field like the Hall conductance.",
-    "Finite and proportional to density but independent of magnetic field.",
-    "Zero since current is perpendicular to electric field.",
-]
-explanation = "As we saw the velocity is related to the cross-product of the electric and magnetic field."
-MultipleChoice(
-    question, answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What is the longitudinal conductance for the ideal electron gas in a magnetic field?
+:explanation: As we saw the velocity is related to the cross-product of the electric and magnetic field.
+:correct: 3
+- Infinity since there are no impurities in the system.
+- Finite and inversely proportional to the magnetic field like the Hall conductance.
+- Finite and proportional to density but independent of magnetic field.
+- Zero since current is perpendicular to electric field.
 ```
 
 ## The quantum Hall effect: experimental data
@@ -139,12 +137,11 @@ Instead, a completely unexpected result was measured for the first time by Klaus
 
 ![](figures/QHE.png)
 
-> As the average density is varied, the Hall conductance $\sigma_H$ appears to form plateaus at integer filling fractions $\nu=1,2,3,\dots$. These plateaus are incredibly sample independent and occur at the same value in many other materials. At the same time, the longitudinal conductivity appears to vanish except at the transition points between the plateaus. This is the integer "Quantum Hall effect". 
+> As the average density is varied, the Hall conductance $\sigma_H$ appears to form plateaus at integer filling fractions $\nu=1,2,3,\dots$. These plateaus are incredibly sample independent and occur at the same value in many other materials. At the same time, the longitudinal conductivity appears to vanish except at the transition points between the plateaus. This is the integer "Quantum Hall effect".
 
 This setup is easy to try to reproduce numerically, but there's one complication:
 
 ```{code-cell} ipython3
-
 def onsite(site, t, mu):
     return 4 * t - mu
 
@@ -167,13 +164,14 @@ def make_lead_hop_y(x0):
 
     return hopping_Ay
 
+
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
-    """Create a hall bar system. 
+    """Create a hall bar system.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead
     """
 
@@ -198,7 +196,7 @@ def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
         return -t * np.exp(-0.5j * B * (x1 + x2) * (y1 - y2))
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(bar, (0, 0))] = onsite
@@ -255,31 +253,30 @@ def conductivities(syst, p):
     # Consider the 2x2 conductance now: Use I = sigma U
     E_x = V[0] - V[1]
     E_y = V[1] - V[3]
-    sigma_xx = E_x / (E_x ** 2 + E_y ** 2)
-    sigma_xy = E_y / (E_x ** 2 + E_y ** 2)
+    sigma_xx = E_x / (E_x**2 + E_y**2)
+    sigma_xy = E_y / (E_x**2 + E_y**2)
     return sigma_xx, sigma_xy
 ```
 
 ```{code-cell} ipython3
-
 syst = qhe_hall_bar(L=60, W=80, w_lead=70, w_vert_lead=28).finalized()
 p = dict(t=1.0, mu=0.3, mu_lead=0.3, B=None)
 Bs = np.linspace(0.02, 0.15, 200)
 ```
 
 ```{code-cell} ipython3
-
 sigmasxx, sigmasxy = zip(*[conductivities(syst, p) for p["B"] in Bs])
 
-kdims = [r"$B^{-1} [a.u.]$", r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$"]
-plot_xx = holoviews.Path((1 / Bs, sigmasxx), label=r"$\sigma_{xx}$", kdims=kdims).opts(
-    style={"color": "k"}
+line_plot(
+    1 / Bs,
+    np.vstack([sigmasxx, sigmasxy]).T,
+    labels=[r"$\sigma_{xx}$", r"$\sigma_{xy}$"],
+    x_label=r"$B^{-1} [a.u.]$",
+    y_label=r"$\sigma_{xx}, \sigma_{xy}\,[e^2/h]$",
+    y_ticks=list(range(8)),
+    show_legend=True,
+    color=["#1f77b4", "#d62728"],
 )
-plot_xy = holoviews.Path((1 / Bs, sigmasxy), label=r"$\sigma_{xy}$", kdims=kdims).opts(
-    style={"color": "r"}
-)
-
-(plot_xx * plot_xy).opts(plot={"xticks": 0, "yticks": list(range(8))})
 ```
 
 Numerical systems are so good that the longitudinal conductivity always stays low even at the transition.
@@ -300,7 +297,7 @@ To start with, we imagine doing the Hall measurement in a system cut out as an a
 
 We will also try to do the experiment in reverse i.e. apply an electric field along the circumference of the disk and measure the current $I$ in the radial direction, as shown in the figure. The radial current is easy to measure - we just measure the amount of charge $\Delta Q$ transferred between the inner and outer edges of the Corbino geometry and obtain the radial current $I=\Delta Q/\Delta T$, where $\Delta T$ is the time over which this is done.
 
-But how do we apply an electric field in the tangential direction?  The easiest way to do this is to apply a time-dependent magnetic field in the centre of the disc and use the Faraday effect. 
+But how do we apply an electric field in the tangential direction?  The easiest way to do this is to apply a time-dependent magnetic field in the centre of the disc and use the Faraday effect.
 
 We can calculate the electric field from the changing magnetic field using Faraday's law as $\oint d{\bf{r}\cdot\bf{E}}=\partial_t \Phi$, where $\Phi$ is the magnetic flux resulting from the field in the center of the disk. Assuming that the electric field depends only on the radius $R$ we find that the resulting tangential electric field is given by
 
@@ -308,7 +305,7 @@ $$
 E(R,t)=\frac{1}{2\pi R}\,\partial_t \Phi.
 $$
 
-Given $I$, we can also calculate the other component of the measurement of the Hall conductance $\sigma_H$ i.e. the radial current density $j=I/(2\pi R)$ at the same radius $R$ as we calculated the electric field. 
+Given $I$, we can also calculate the other component of the measurement of the Hall conductance $\sigma_H$ i.e. the radial current density $j=I/(2\pi R)$ at the same radius $R$ as we calculated the electric field.
 
 Now that we know both the circumferential electric field and also the radial current density, the Hall conductance can be measured easily in this geometry as
 
@@ -340,24 +337,22 @@ What you notice at this point is that we basically have a pump similar to the la
 
 Here an integer number of charges is pumped from one edge to the other as the flux $\Phi$ is increased by $\Phi_0$. As one sees below, one can simulate electrons in a Corbino geometry and check that indeed an integer number of charges is pumped between the edges as the flux $\Phi$ is changed by $\Phi_0$.
 
-
-
 ```{code-cell} ipython3
-
 def qhe_corbino(r_out=100, r_in=65, w_lead=10):
     """Create corbino disk.
 
     Square lattice, one orbital per site.
     Returns kwant system.
 
-    Arguments required in onsite/hoppings: 
+    Arguments required in onsite/hoppings:
         t, mu, mu_lead, B, phi
     """
+
     # ring shape
     def ring(pos):
         (x, y) = pos
-        rsq = x ** 2 + y ** 2
-        return r_in ** 2 < rsq < r_out ** 2
+        rsq = x**2 + y**2
+        return r_in**2 < rsq < r_out**2
 
     # Onsite and hoppings
 
@@ -370,7 +365,7 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
         return hopping(site1, site2, t, B) * np.exp(1j * phi)
 
     # Building system
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder()
 
     syst[lat.shape(ring, (0, r_in + 1))] = onsite
@@ -402,58 +397,62 @@ def qhe_corbino(r_out=100, r_in=65, w_lead=10):
 
 
 def plot_pumping(syst, p):
+    """Compute pumped charge vs flux for the given system and parameters.
+
+    Returns a HoloViews Path with explicit plotting options (xticks, yticks, aspect).
+    """
+    p = dict(p)  # copy to avoid mutating caller
     p["mu_lead"] = p["mu"]
     phis = np.linspace(0, 2 * np.pi, 40)
     syst = syst.finalized()
-    rs = [kwant.smatrix(syst, energy=0.0, params=p).submatrix(1, 1) for p["phi"] in phis]
+    rs = [
+        kwant.smatrix(syst, energy=0.0, params=p).submatrix(1, 1) for p["phi"] in phis
+    ]
 
     determinants = [np.linalg.det(r) for r in rs]
     charges = -np.unwrap(np.angle(determinants)) / (2 * np.pi)
-
     charges -= charges[0]
-    kdims = ["$\phi/2\pi$", "$q_{pump}$"]
-    title = f"$\mu = {p['mu']:.2}$, $\sigma_H = {round(charges[-1])} \cdot e^2/h$"
-    return holoviews.Path((phis / (2 * np.pi), charges), kdims=kdims, label=title).opts(
-        plot={"xticks": [0, 1], "yticks": [0, 1, 2, 3], "aspect": "square"}
-    )[:, 0:3.1]
+
+    title = f"$\\mu = {p['mu']:.2f}, \\sigma_H = {round(charges[-1])} \\cdot e^2/h$"
+
+    fig = line_plot(
+        phis / (2 * np.pi),
+        charges,
+        x_label=r"$\phi/2\pi$",
+        y_label=r"$q_{pump}$",
+        x_ticks=[0, 1],
+        y_ticks=[0, 1, 2, 3],
+        show_legend=False,
+    )
+    fig.update_yaxes(range=[0, 3.1])
+    fig.update_layout(title=title, height=350)
+    return fig
 ```
 
 ```{code-cell} ipython3
-
 W = 20
-p = dict(t=1, B=(2 * np.pi / W))
+base_params = dict(t=1, B=(2 * np.pi / W))
 syst = qhe_corbino(r_out=(2 * W), r_in=20, w_lead=10)
 mus = np.linspace(0.4, 1.5, 11)
-pumping_map = holoviews.HoloMap({p["mu"]: plot_pumping(syst, p) for p["mu"] in mus}, kdims=[r"$\mu$"])
+pumping_frames = {mu: plot_pumping(syst, {**base_params, "mu": mu}) for mu in mus}
+pumping_map = slider_plot(pumping_frames, label="μ")
 pumping_map
 ```
 
-```{code-cell} ipython3
-
-question = (
-    "Experimentally the quantum Hall conductance jumps - what does this mean about the "
-    "robustness of the Laughlin pumping argument?"
-)
-answers = [
-    "The Laughlin argument breaks down because it assumes specific values of the magnetic field.",
-    "The Laughlin argument assumes there is no longitudinal conductivity.",
-    "The Hall conductance is not a topological invariant since it changes.",
-    "The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum.",
-]
-explanation = (
-    "The key ingredient in the Laughlin argument was that there is no states at the fermi level in "
-    "the bulk which is equivalent to no longitudinal conductivity"
-)
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} Experimentally the quantum Hall conductance jumps - what does this mean about the robustness of the Laughlin pumping argument?
+:explanation: The key ingredient in the Laughlin argument was that there is no states at the fermi level in the bulk which is equivalent to no longitudinal conductivity
+:correct: 1
+- The Laughlin argument breaks down because it assumes specific values of the magnetic field.
+- The Laughlin argument assumes there is no longitudinal conductivity.
+- The Hall conductance is not a topological invariant since it changes.
+- The flux in the corbino geometry was changed by a value that was not a multiple of the flux quantum.
 ```
 
 ## Landau levels: a microscopic model for the quantum hall effect
 
 The general argument so far is great in that it applies to virtually any complicated electron system with interactions and in a real material, but we would probably feel better if we could calculate the Hall conductance directly for some simple system. So let us try to do this for the simplest case of electrons in a magnetic field.
 
-For starters, let us forget about the Corbino disk and just ask what do quantum mechanical electrons do in a magnetic field. 
+For starters, let us forget about the Corbino disk and just ask what do quantum mechanical electrons do in a magnetic field.
 
 ### Landau levels on the back of an envelope
 
@@ -468,8 +467,6 @@ $$
 These quantized energy levels of electrons in a magnetic field are called **Landau levels**.
 
 You can put many electrons in the same Landau level: one for every flux quantum of the magnetic flux passing through the system. Therefore Landau levels have a huge degeneracy, proportional to the area of the sample.
-
-+++
 
 ### Landau levels from the Hamiltonian
 
@@ -518,10 +515,7 @@ $$
 H=p_y^2+\left(\frac{\hbar 2\pi n}{L}-e B y-\frac{e\Phi}{L}\right)^2\,.
 $$
 
-
-+++
-
-Comparing the above equation to the quantum harmonic oscillator, we see that the harmonic oscillator levels 
+Comparing the above equation to the quantum harmonic oscillator, we see that the harmonic oscillator levels
 must be centered at
 
 $$
@@ -533,53 +527,65 @@ $$
 We can now look again at the Laughlin pump, monitoring at the same time the Landau levels. You can see that the total pumped charge jumps in integer steps each time a Landau level passes through the Fermi level.
 
 ```{code-cell} ipython3
-
 def qhe_cylinder(W):
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=1)
     syst = kwant.Builder(kwant.TranslationalSymmetry((-1, 0)))
 
     syst[lat.shape((lambda pos: 0 <= pos[1] < W), (0, 0))] = onsite
-    syst[lat.neighbors()] = syst[lat(0, 0), lat(0, W-1)] = hopping
+    syst[lat.neighbors()] = syst[lat(0, 0), lat(0, W - 1)] = hopping
 
     return syst
 
 
 kwargs = {
-    "ylims": [-1.1, 1.1],
+    "ylims": [0, 1.7],
     "xticks": 0,
-    "yticks": [-1, 0, 1],
+    "yticks": [0, 1],
     "xdim": r"$k$",
     "ydim": r"$E$",
-    "k_x": np.linspace(-np.pi, np.pi, 10),
+    "k_x": np.linspace(-np.pi, np.pi, 2),
     "title": lambda p: "Landau levels",
 }
 
 sys1 = qhe_cylinder(W)
-HLine = holoviews.HLine(0).opts(style={"linestyle": "--", "color": "r"})
+landau_params = {**base_params, "mu": 0}
+base_landau_levels = spectrum(sys1, landau_params, **kwargs)
+landau_level_frames = {}
+for mu in mus:
+    fig = deepcopy(base_landau_levels)
+    add_reference_lines(fig, y=mu, line_color="red", line_dash="dash")
+    landau_level_frames[mu] = fig
+combined_frames = {}
+for mu in mus:
+    title_text = pumping_frames[mu].layout.title.text
+    combined = combine_plots(
+        [pumping_frames[mu], landau_level_frames[mu]],
+        cols=2,
+        titles=["Pumped charge", "Landau levels"],
+    )
+    margin = combined.layout.margin.to_plotly_json()
+    margin["t"] = max(margin.get("t", 0), 105)
+    combined.update_layout(
+        title=dict(text=title_text, y=0.955, yanchor="top", pad=dict(t=5)),
+        margin=margin,
+    )
+    combined_frames[mu] = combined
 
-landau_levels = holoviews.HoloMap(
-    {p["mu"]: spectrum(sys1, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"]
-)
-pumping_map + landau_levels * HLine
+slider_plot(combined_frames, label="μ")
 ```
 
-```{code-cell} ipython3
-
-question = (
-    "Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, "
-    "and with 2 Landau levels filled. "
-    "Approximately, how many electrons does it contain?"
-)
-answers = ["$2.\,$", "$2 W/L\,.$", "$2 B WL / \Phi_0\, $.", "$ B L^2/\Phi_0\,$."]
-explanation = "Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$."
-MultipleChoice(
-    question, answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider a cylinder of height $W$, circumference $L$, subject to a magnetic field $B$, and with 2 Landau levels filled. Approximately, how many electrons does it contain?
+:explanation: Based on the form of the Hamiltonian, $y$ goes from $0$ to $W$ and therefore $n$ goes from 0 to $B W L/\Phi_0$.
+:correct: 2
+- $2.\,$
+- $2 W/L\,.$
+- $2 B WL / \Phi_0\, $.
+- $ B L^2/\Phi_0\,$.
 ```
 
 ## Summary
 
-```{code-cell} ipython3
-
-Video("2u8_2isyi7o")
+```{youtube} 2u8_2isyi7o
+:width: 560
+:height: 315
 ```

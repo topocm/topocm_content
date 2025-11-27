@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations: more Chern insulators
 
@@ -52,15 +28,15 @@ We know that Berry curvature is concentrated close to the Dirac points. Do you n
 
 ## Review assignment
 
-### arXiv:1012.4723
+### @10.48550/arXiv.1012.4723
 
 **Hint:** The hunt for flat bands.
 
-### arXiv:1409.6715
+### @10.48550/arXiv.1409.6715
 
 **Hint:** Making a Chern insulator more like quantum Hall effect.
 
-### arXiv:1208.4579
+### @10.48550/arXiv.1208.4579
 
 **Hint:** A Chern insulator without lattice.
 
@@ -68,5 +44,3 @@ We know that Berry curvature is concentrated close to the Dirac points. Do you n
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,42 +16,28 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+from IPython.display import Latex
+from course.init_course import init_notebook
 
 init_notebook()
 
-from IPython.display import HTML
-from nbconvert.filters.markdown import markdown2html_pandoc
-
-displaymd = lambda markdown: display_html(HTML(markdown2html_pandoc(markdown)))
 
 # Markdown tables are ugly, and Mathjax doesn't support \tabular,
 # therefore we use math mode + \array + add a command \T to make
 # the \array rows less dense.
 
 table_header = r"""$$
-\require{color}
-colordefs
-\newcommand\T{\Rule{0pt}{1em}{.3em}}
-\begin{array}{fmt}
+\require{{color}}
+\require{{action}}
+{colordefs}
+\newcommand\T{{\Rule{{0pt}}{{1em}}{{.3em}}}}
+\begin{{array}}{{{fmt}}}
 \hline
-body\\
+{body}\\
 \hline
-\end{array}
+\end{{array}}
 $$"""
-
-replacements = [
-    ("{", "{{"),
-    ("}", "}}"),
-    ("colordefs", "{colordefs}"),
-    ("fmt", "{fmt}"),
-    ("body", "{body}"),
-]
-for i, j in replacements:
-    table_header = table_header.replace(i, j)
 
 # Symmetry classes names and their symmetry properties
 symmetry_classes = ("A", "AIII", "AI", "BDI", "D", "DIII", "AII", "CII", "C", "CI")
@@ -60,11 +46,27 @@ phs = 3 * ("",) + 3 * ("1",) + ("",) + 3 * ("-1",)
 trs = 2 * ("",) + 2 * ("1",) + ("",) + 3 * ("-1",) + ("", "1")
 
 # Locations of non-empty entries in the periodic table
-primary_seq = lambda n: np.arange(n) % 2
-z_descendant = lambda n: np.arange(n) % 8
-z2_descendant = lambda n: np.arange(1, n + 1) % 8
-z2_descendant2 = lambda n: np.arange(2, n + 2) % 8
-twoz_descendant = lambda n: np.arange(4, n + 4) % 8
+
+
+def primary_seq(n):
+    return np.arange(n) % 2
+
+
+def z_descendant(n):
+    return np.arange(n) % 8
+
+
+def z2_descendant(n):
+    return np.arange(1, n + 1) % 8
+
+
+def z2_descendant2(n):
+    return np.arange(2, n + 2) % 8
+
+
+def twoz_descendant(n):
+    return np.arange(4, n + 4) % 8
+
 
 line_end = "\\T\\\\\n"
 sep = " & "
@@ -80,7 +82,7 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
     show_symmetries : bool
         Show symmetry information for each symmetry class.
     sort_order : int array or None
-        Ordering to apply to the symmetry classes 
+        Ordering to apply to the symmetry classes
         (can be trivially used to discard entries).
 
     Returns:
@@ -89,7 +91,7 @@ def make_table(n=4, show_symmetries=True, sort_order=None):
         A string array with the entries of the periodic table.
     format_string : str
         An alignment string that can be used to feed the resulting
-        table to a Latex \array environment. 
+        table to a Latex \array environment.
     """
 
     dimensions = np.array([[str(i) for i in range(n)]], dtype="S100")
@@ -136,13 +138,13 @@ def color_table(table, color_array):
 
     Returns the string of color definitions required for coloring the table.
     """
-    apply_color = lambda text, color: r"\color{{{}}}{{{}}}".format(color, text)
+
+    def apply_color(text, color):
+        return r"\color{{{}}}{{{}}}".format(color, text)
 
     colors = {}
     for idx in np.indices(table.shape).reshape(2, -1).T:
         idx = tuple(idx)
-        if not any(color_array[idx]):
-            pass
         color = ",".join("{:1.2}".format(i) for i in color_array[idx])
         val = str(abs(hash(color)))[:8]
         colors[color] = val
@@ -158,20 +160,19 @@ def color_table(table, color_array):
 
 Shinsei Ryu from the University of Illinois will introduce the general classification of topological insulators and superconductors.
 
-```{code-cell} ipython3
-
-Video("cKzUuQyZjFo")
+```{youtube} cKzUuQyZjFo
+:width: 560
+:height: 315
 ```
 
 ## At a glance: periodic table
-
-+++
 
 Let us now look at all the possible symmetry classes in dimensions from $0$ to $3$, and see what kind of topological insulators are possible.
 
 There are quite a few, here is the full list:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 full_table, format_string = make_table(
     show_symmetries=False, sort_order=np.argsort(symmetry_classes)
@@ -183,12 +184,13 @@ rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 colordefs = "{}"
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 This table has a lot of logic in it, but to you it most likely looks no better than this:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 np.random.seed(1)
 
@@ -203,7 +205,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in full_table]
 rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 But don't worry, we are going to learn exactly what these tables mean.
@@ -248,7 +250,7 @@ Thus, a system can behave in three ways under time-reversal symmetry $\mathcal{T
 
 ### Combining symmetries
 
-How do we arrive to having ten symmetry classes? Let's count all the possible cases carefully. By combining the three cases for $\mathcal{P}$ and the three cases for $\mathcal{T}$ we arrive at nine possible combinations. 
+How do we arrive to having ten symmetry classes? Let's count all the possible cases carefully. By combining the three cases for $\mathcal{P}$ and the three cases for $\mathcal{T}$ we arrive at nine possible combinations.
 
 The important thing to notice now is that $\mathcal{C}$ is not completely independent from $\mathcal{T}$ and $\mathcal{P}$. Whenever a system has both $\mathcal{T}$ and $\mathcal{P}$, there is also a chiral symmetry $\mathcal{C}=\mathcal{P\cdot T}$.
 
@@ -269,6 +271,7 @@ The second term in the sum covers the two cases when there are no anti-unitary s
 Let's have another look at the 10 rows in the table, this time specifying which combination of the three fundamental symmetries each row has:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 np.random.seed(1)
 
@@ -281,25 +284,21 @@ rows[1] = r"\hline " + rows[1]
 
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 The somewhat cryptic notations in the leftmost column are just the names of the different symmetry classes. (Also the 'I's appearing there are Roman cardinal numbers, so for instance BDI is 'B D one', and AIII is "A three".)
 
-Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field. 
+Their names come from an elegant mathematical classification of [symmetric spaces](https://en.wikipedia.org/wiki/Symmetric_space) worked out by [Elie Cartan](https://en.wikipedia.org/wiki/%C3%89lie_Cartan) in 1926. While it is definitely intriguing that a group theory result from 1926 reappears in a totally different context almost 80 years later, the origin of this nomenclature is not directly relevant to most of the theory done in the field.
 The two complex classes are A and AIII.
 
-```{code-cell} ipython3
-
-question = "Which symmetry class do we get if we break Kramers degeneracy in class BDI?"
-
-answers = ["D", "AIII", "DIII", "None, class BDI has no Kramers degeneracy"]
-
-explanation = "Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI."
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Which symmetry class do we get if we break Kramers degeneracy in class BDI?
+:explanation: Kramers degeneracy requires that time reversal squares to -1, while it squares to 1 in class BDI.
+:correct: 3
+- D
+- AIII
+- DIII
+- None, class BDI has no Kramers degeneracy
 ```
 
 Finally, let us make an extra observation:
@@ -313,6 +312,7 @@ To get some confidence with the table and these obscure names, it is useful to s
 Every red entry in the table below corresponds to something which we already know and studied in the previous weeks of the course, as you can discover by moving the mouse over it.
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 tooltips = {
     (1, 6): "Chern insulator: no symmetries, d=2",
@@ -346,13 +346,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in table]
 rows[1] = r"\hline " + rows[1]
 block = line_end.join(rows)
 
-HTML(
-    markdown2html_pandoc(
-        table_header.format(
-            colordefs=("\\require{action}\n" + colordefs), fmt=format_string, body=block
-        )
-    )
-)
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 As you can see, the Majorana wire and the $p$-wave superconductor are in class D, the Chern insulators in class A, and the time-reversal invariant topological insulators in class AII. These names occur quite often in the literature.
@@ -401,7 +395,7 @@ $$
 H_{d+1} = H_d\,\cos k_{d+1}\,\tau_x + \sin k_{d+1}\,\tau_y.
 $$
 
-Note that just like in our previous argument, the topological invariant of $H_{d+1}$ must be the same as that of $H_d$. Also, by construction, $H_{d+1}$ has a chiral symmetry given by $\mathcal{C}=\tau_z$, which anticommutes with all the terms in the Hamiltonian. 
+Note that just like in our previous argument, the topological invariant of $H_{d+1}$ must be the same as that of $H_d$. Also, by construction, $H_{d+1}$ has a chiral symmetry given by $\mathcal{C}=\tau_z$, which anticommutes with all the terms in the Hamiltonian.
 
 What are the symmetries of $H_{d+1}$ in this case? To begin with, $H_d$ cannot have both anti-unitary symmetries, because then it would have $\mathcal{C}$ as well. It either has none (class A) or just one of them (classes AI, AII, C, or D). We thus have two cases:
 
@@ -433,6 +427,7 @@ The grey entries in the table are the chiral classes, and the arrows show which 
 Finally, let's see what the table looks like when we order the rows according to the Bott clock above:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 np.random.seed(5)
 n = 8
@@ -453,7 +448,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 Finally some order appears!
@@ -473,6 +468,7 @@ The first thing to observe is that the complex classes only have $\mathbb{Z}$ in
 The higher dimensional invariants are simple generalizations of these two. Their mathematical expression can be found in several papers, for instance [this one](https://arxiv.org/abs/1104.1602).
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 n = 8
 
@@ -486,7 +482,7 @@ rows = [sep.join([c.decode("utf-8") for c in line]) for line in periodic_table]
 rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 ### Reading the table by columns
@@ -494,6 +490,7 @@ displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block
 Another useful feature of the table is that in a given column, all $\mathbb{Z}$ or $2\mathbb{Z}$ entries, which are grouped by the color gradients below, have the same topological invariant.
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 np.random.seed(15)
 n = 8
@@ -511,7 +508,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 We can check this statement for some cases we know. For instance, in $d=0$ the $\mathbb{Z}$ topological invariant is the number of filled energy levels, which applies to quantum dots with broken time-reversal symmetry (class A), spinless time-reversal symmetry (class AI) and spinful time-reversal symmetry (class AII, which has $2\mathbb{Z}$ because of Kramers degeneracy). In $d=2$, the $\mathbb{Z}$ topological invariant is the Chern number, and we saw how it applies to both the Chern insulators in class A and the $p$-wave superconductor in class D.
@@ -521,6 +518,7 @@ We can check this statement for some cases we know. For instance, in $d=0$ the $
 An important pattern visible in the table is the descending sequence $\mathbb{Z} \,\to\,\mathbb{Z}_2\,\to\,\mathbb{Z}_2$ that appears in every symmetry class. That is, starting from the $\mathbb{Z}$ invariant, reducing the dimensionaility twice by one we encounter two $\mathbb{Z}_2$ invariants in a row:
 
 ```{code-cell} ipython3
+:tags: [remove-input]
 
 np.random.seed(4)
 n = 8
@@ -538,7 +536,7 @@ rows[1] = r"\hline " + rows[1]
 rows[3] = r"\hline " + rows[3]
 block = line_end.join(rows)
 
-displaymd(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
+Latex(table_header.format(colordefs=colordefs, fmt=format_string, body=block))
 ```
 
 Again, this dimensional reduction can best be understood with an example we already know. Consider the symmetry class $D$. In $d=2$ it has a $\mathbb{Z}$ topological phase, the $p$-wave superconductor.
@@ -549,33 +547,18 @@ You can now view this cylinder as a one-dimensional system whose ends are the tw
 
 We can proceed further with our dimensional reduction. If we take our one dimensional system and make it into a ring, we obtain a zero-dimensional system. Depending on how the two ends are coupled, the two Majorana modes can favour the even or odd fermion parity state, and this quantity cannot change without a Fermi level crossing. This is the $\mathbb{Z}_2$ invariant of zero-dimensional systems in class D.
 
-```{code-cell} ipython3
-
-question = (
-    "What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, "
-    "like we did when making a 3D TI out of QSHE?"
-)
-
-answers = [
-    "We get another $Z_2$ topological invariant",
-    "A 4D system with the Chern number as invariant.",
-    "This construction cannot be repeated anymore.",
-    "The topological invariant stays the same.",
-]
-
-explanation = (
-    "A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, "
-    "and it should be the second Chern number."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What sort of topological invariant do we get if we take a 3D TI, and try to make a 4D system with strong invariant, like we did when making a 3D TI out of QSHE?
+:explanation: A quick check with the table shows that symmetry class AII in 4D has a $Z$ invariant, and it should be the second Chern number.
+:correct: 1
+- We get another $Z_2$ topological invariant
+- A 4D system with the Chern number as invariant.
+- This construction cannot be repeated anymore.
+- The topological invariant stays the same.
 ```
 
 ## Conclusions
 
-```{code-cell} ipython3
-
-Video("nnzPiJ3Q3_8")
+```{youtube} nnzPiJ3Q3_8
+:width: 560
+:height: 315
 ```

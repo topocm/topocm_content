@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,25 +16,34 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from pfapack import pfaffian as pf
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import kwant
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    pauli,
+    slider_plot,
+    spectrum,
+)
+from course.init_course import pprint_matrix
+from course.init_course import init_notebook
 
 init_notebook()
-%output size = 150
-import scipy
-from matplotlib import cm
 ```
 
 ## Introduction
 
 Charles Kane from the University of Pennsylvania will introduce today's lecture on two dimensional topological insulators with time-reversal symmetry.
 
-```{code-cell} ipython3
+:::{youtube} n5oUQvvsYd0
+:width: 100%
+:height: 480
+:::
 
-Video("n5oUQvvsYd0")
-```
 
 ## Adding symmetry to a topological insulator
 
@@ -169,7 +178,6 @@ We are forced to conclude that it is impossible to have $r$ unitary, and therefo
 This is the discovery that Charles Kane described in the introductory video. We can quickly check it by randomly selecting an antisymmetric scattering matrix with odd $N$, like the following one with $N=3$,
 
 ```{code-cell} ipython3
-
 N = 3
 np.random.seed(12)
 S = kwant.rmt.circular(N * 2, sym="AII")
@@ -177,18 +185,7 @@ S = kwant.rmt.circular(N * 2, sym="AII")
 pprint_matrix(S)
 ```
 
-and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
-
-```{code-cell} ipython3
-
-r = S[:N, :N]
-print("Reflection eigenvalues")
-pprint_matrix(np.linalg.eigvalsh(r @ r.T.conj()))
-
-t = S[:N, N:]
-print("Transmission eigenvalues")
-pprint_matrix(np.linalg.eigvalsh(t @ t.T.conj())[::-1])
-```
+This scattering matrix has eigenvalues of $r r^\dagger$ equal to {eval}`str(np.linalg.eigvalsh(S[:N, :N] @ S[:N, :N].T.conj()))` and transmission eigenvalues of $t t^\dagger$ equal to {eval}`str(np.linalg.eigvalsh(S[:N, N:] @ S[:N, N:].T.conj())[::-1])`.
 
 > We conclude that if $\mathcal{T}^2=-1$ and the number of edge states going in one direction is odd, they cannot be gapped out, and the system is topological. On the other hand, if there is an even number of such edge states, they can be gapped out. Since these are the only two options, the integer invariant of a Chern insulator is reduced to a $\pm 1$ invariant in the presence of time reversal symmetry. These topologically protected, counterpropagating edge states are often referred to as **helical edge states**.
 
@@ -224,29 +221,13 @@ In particular, let's again make the simple assumption that the spin projection a
 
 However, the quantized spin Hall current is not a general property of a quantum spin Hall insulator. Here, it arises because we have combined time reversal symmetry with a spin conservation law, and as we learned in the first week, conservation laws are boring from a topological point of view.
 
-```{code-cell} ipython3
-
-question = (
-    "Consider the simple case where spin is conserved. "
-    "In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, "
-    "you manage to apply a *spin-polarized* current between terminals 1 and 2?"
-)
-
-answers = [
-    "The system will develop an opposite spin-polarized current to compensate the effect.",
-    "A spin-polarized current will develop between terminals 3 and 4.",
-    "A voltage difference will develop between terminals 3 and 4.",
-    "It is impossible to apply such a current unless the bulk gap closes.",
-]
-
-explanation = (
-    "The spin-polarized current will create an electron population imbalance between terminals 3 and 4. "
-    "Hence, similar to the Hall effect, a voltage will develop orthogonal to the current."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} Consider the simple case where spin is conserved. In the quantum spin Hall bar system above, what happens if, instead of applying a voltage between terminals 1 and 2, you manage to apply a *spin-polarized* current between terminals 1 and 2?
+:explanation: The spin-polarized current will create an electron population imbalance between terminals 3 and 4. Hence, similar to the Hall effect, a voltage will develop orthogonal to the current.
+:correct: 2
+- The system will develop an opposite spin-polarized current to compensate the effect.
+- A spin-polarized current will develop between terminals 3 and 4.
+- A voltage difference will develop between terminals 3 and 4.
+- It is impossible to apply such a current unless the bulk gap closes.
 ```
 
 ## A model for the quantum spin Hall insulator
@@ -273,7 +254,6 @@ You can see that it is basically two copies of the massive Dirac Hamiltonian we 
 By changing the sign of $M$ from negative to positive, you get a gap closing at $\mathbf{k}=\pmb{0}$:
 
 ```{code-cell} ipython3
-
 # Onsite and hoppings for bhz model
 def onsite(site, M, B, D, del_z):
     return (M - 4 * B) * pauli.s0sz - 4 * D * pauli.s0s0 + del_z * pauli.sysy
@@ -288,7 +268,7 @@ def hopy(site1, site2, B, D, A):
 
 
 def title(p):
-    return fr"$A={p['A']:.2}$, $B={p['B']:.2}$, $D={p['D']:.2}$, $M={p['M']:.2}$"
+    return rf"$A={p['A']:.2}$, $B={p['B']:.2}$, $D={p['D']:.2}$, $M={p['M']:.2}$"
 
 
 lat = kwant.lattice.square(norbs=4)
@@ -300,17 +280,14 @@ bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 bhz_parameters = {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0}
 
-k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
+k = (4 / 3) * np.linspace(-np.pi, np.pi, 51)
 kwargs = {"k_x": k, "k_y": k, "title": title}
-Ms = np.linspace(-1, 1, 12)
-dispersion_plots = holoviews.HoloMap(
-    {
-        bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
-        for bhz_parameters["M"] in Ms
-    },
-    kdims=[r"$M$"]
-)
-dispersion_plots
+Ms = np.linspace(-1, 1.5, 15)
+dispersion_frames = {
+    bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
+    for bhz_parameters["M"] in Ms
+}
+slider_plot(dispersion_frames, label="M")
 ```
 
 This gap closing turns your trivial insulator into a topologically non-trivial quantum spin Hall insulator.
@@ -338,7 +315,6 @@ To make things more simple, you may actually imagine that the circumference of t
 So let's look at the energy spectrum of a cylinder as a function of $k$ (or equivalently $\Phi$), and compare a cylinder in the quantum spin Hall phase with a cylinder in the trivial insulating phase.
 
 ```{code-cell} ipython3
-
 W = 20
 
 bhz_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
@@ -364,19 +340,33 @@ style = {
 
 
 ribbon_parameters = {
-    "A_slowed": 0.05, "B_slowed": -0.2, "D_slowed": 0.15,
-    "M_slowed": -0.3, "del_z_slowed": 0.5,
-    **bhz_parameters
+    "A_slowed": 0.05,
+    "B_slowed": -0.2,
+    "D_slowed": 0.15,
+    "M_slowed": -0.3,
+    "del_z_slowed": 0.5,
+    **bhz_parameters,
 }
 
 
 (
-    spectrum(
-        bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style
-    ).relabel("Topological") * holoviews.HLine(0)
-    + spectrum(
-        bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style
-    ).relabel("Trivial") * holoviews.HLine(0)
+    combine_plots(
+        [
+            add_reference_lines(
+                spectrum(bhz_ribbon, {**ribbon_parameters, "M": 1.0}, **style),
+                y=0,
+                line_dash="dash",
+                line_color="#666",
+            ).update_layout(title="Topological"),
+            add_reference_lines(
+                spectrum(bhz_ribbon, {**ribbon_parameters, "M": -1.0}, **style),
+                y=0,
+                line_dash="dash",
+                line_color="#666",
+            ).update_layout(title="Trivial"),
+        ],
+        cols=1,
+    )
 )
 ```
 
@@ -422,28 +412,29 @@ This gives us a curve which starts at $\textrm{Pf}[r(0)]$ and ends at either $\t
 In the plot below, we show how this trajectory changes for our cylinder geometry as the BHZ model is driven through the topological phase transition. In the right panel, the green dots give you the phase of $\textrm{Pf}[r(0)]$ and $\textrm{Pf}[r(\pi)]$, and the blue line the phase of $\det[r(k)]$.
 
 ```{code-cell} ipython3
-
-%%output fig='png'
-
 cylinder_W = 3
 infinite_cylinder = kwant.Builder(kwant.TranslationalSymmetry((1, 0), (0, cylinder_W)))
 infinite_cylinder.fill(bhz_infinite, shape=(lambda site: True), start=(0, 0))
 infinite_cylinder = kwant.wraparound.wraparound(infinite_cylinder, keep=0)
 
 top_invariant_probe = kwant.Builder(kwant.TranslationalSymmetry((0, cylinder_W)))
-top_invariant_probe.fill(bhz_infinite, shape=(lambda site: site.pos[0]==0), start=(0, 0))
-top_invariant_probe = kwant.wraparound.wraparound(top_invariant_probe, coordinate_names='yxz')
+top_invariant_probe.fill(
+    bhz_infinite, shape=(lambda site: site.pos[0] == 0), start=(0, 0)
+)
+top_invariant_probe = kwant.wraparound.wraparound(
+    top_invariant_probe, coordinate_names="yxz"
+)
 
 # Prepare a "probe" lead which is never gapped and respects time-reversal symmetry.
 probe_lead = kwant.Builder(
-    kwant.TranslationalSymmetry((-1, 0)),
-    time_reversal=1j * pauli.sys0
+    kwant.TranslationalSymmetry((-1, 0)), time_reversal=1j * pauli.sys0
 )
 probe_lead[lat.shape((lambda pos: 0 <= pos[1] < cylinder_W), (0, 0))] = 0 * pauli.s0s0
 probe_lead[kwant.HoppingKind((1, 0), lat)] = pauli.s0s0
 top_invariant_probe.attach_lead(probe_lead)
 top_invariant_probe.attach_lead(infinite_cylinder)
 top_invariant_probe = top_invariant_probe.finalized()
+
 
 def scattering_det_pfaff(syst, p):
     pfaffians = []
@@ -453,34 +444,119 @@ def scattering_det_pfaff(syst, p):
         pfaffians.append(pf.pfaffian(s - s.T))
 
     ks = np.linspace(0.0, np.pi, 50)
-    det = [np.linalg.det(kwant.smatrix(syst, energy=0.0, params=p).data) for p["k_y"] in ks]
+    det = [
+        np.linalg.det(kwant.smatrix(syst, energy=0.0, params=p).data) for p["k_y"] in ks
+    ]
     det = np.array(det)
 
     phase = np.angle(pfaffians[0]) + 0.5 * np.cumsum(np.angle(det[1:] / det[:-1]))
-    kdims = ["$k_y$", "phase"]
-    plot = holoviews.Path((ks[1:], phase), kdims=kdims).opts(style={"color": "b"})
-    plot *= holoviews.Points(([0, np.pi], np.angle(pfaffians)), kdims=kdims).opts(
-        style={"color": "g"}
-    )
-    xlims, ylims = slice(-0.2, np.pi + 0.2), slice(-np.pi - 0.2, np.pi + 0.2)
     pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
-    ticks = {"xticks": [(0, "0"), (np.pi, "$\pi$")], "yticks": pi_ticks}
-    return plot.relabel("Winding", depth=1)[xlims, ylims].opts(plot=ticks)
-
-(
-    dispersion_plots
-    + holoviews.HoloMap(
-        {
-            bhz_parameters["M"]: scattering_det_pfaff(top_invariant_probe, bhz_parameters)
-            for bhz_parameters["M"] in Ms
-        }, kdims=[r"$M$"]
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=ks[1:],
+            y=phase,
+            mode="lines",
+            line=dict(color="blue"),
+            name="Phase",
+        )
     )
-)
+    fig.add_trace(
+        go.Scatter(
+            x=[0, np.pi],
+            y=np.angle(pfaffians),
+            mode="markers",
+            marker=dict(color="green", size=8),
+            name="Pfaffian phase",
+        )
+    )
+    fig.update_layout(
+        title="Winding",
+        xaxis=dict(
+            title="$k_y$",
+            tickvals=[0, np.pi],
+            ticktext=["0", r"$\pi$"],
+            range=[-0.2, np.pi + 0.2],
+        ),
+        yaxis=dict(
+            title="phase",
+            tickvals=[v for v, _ in pi_ticks],
+            ticktext=[t for _, t in pi_ticks],
+            range=[-np.pi - 0.2, np.pi + 0.2],
+        ),
+        showlegend=False,
+    )
+    return fig
+
+
+combined = {}
+for M in Ms:
+    disp_fig = dispersion_frames[M]
+    params = dict(bhz_parameters)
+    params["M"] = M
+    pfaff_fig = scattering_det_pfaff(top_invariant_probe, params)
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        column_widths=[0.55, 0.45],
+        horizontal_spacing=0.1,
+        specs=[[{"type": "scene"}, {"type": "xy"}]],
+    )
+    for trace in disp_fig.data:
+        fig.add_trace(trace, row=1, col=1)
+    if hasattr(disp_fig.layout, "scene"):
+        fig.update_scenes(
+            xaxis_title=disp_fig.layout.scene.xaxis.title.text,
+            yaxis_title=disp_fig.layout.scene.yaxis.title.text,
+            zaxis_title=disp_fig.layout.scene.zaxis.title.text,
+            row=1,
+            col=1,
+        )
+    else:
+        fig.update_xaxes(title=disp_fig.layout.xaxis.title.text, row=1, col=1)
+        fig.update_yaxes(title=disp_fig.layout.yaxis.title.text, row=1, col=1)
+    for trace in pfaff_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+    fig.update_xaxes(
+        title=pfaff_fig.layout.xaxis.title.text,
+        range=pfaff_fig.layout.xaxis.range,
+        tickvals=pfaff_fig.layout.xaxis.tickvals,
+        ticktext=pfaff_fig.layout.xaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    fig.update_yaxes(
+        title=pfaff_fig.layout.yaxis.title.text,
+        range=pfaff_fig.layout.yaxis.range,
+        tickvals=pfaff_fig.layout.yaxis.tickvals,
+        ticktext=pfaff_fig.layout.yaxis.ticktext,
+        row=1,
+        col=2,
+    )
+    fig.update_layout(
+        title=rf"$M={M:.2f}$",
+        legend=dict(x=0.62, y=0.92),
+    )
+    fig.update_scenes(
+        xaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        yaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        row=1,
+        col=1,
+    )
+    combined[M] = fig
+
+slider_plot(combined, label="M")
 ```
 
 We now have a quantity equal to $\pm 1$, which cannot change continuously unless there's a gap closing (when there's a gap closing, $\det r$ becomes equal to $0$). It is relatively hard to prove that this invariant counts the pumping of fermion parity, but if you're interested, check out this paper:
 
-* arXiv:1107.2215
+* @10.48550/arXiv.1107.2215
 
 From reading the paper, or just from the above discussion, you see that it takes a lot of effort to derive an explicit expression for a topological invariant. Even though it is a hard task, sometimes one can guess the right result (one of us was indeed able to guess the above expression for $Q$ before it was known). Other times, one can invoke some simplification and obtain some important insight. This is what we will do in the next unit.
 
@@ -504,8 +580,6 @@ Our next step is to calculate the effective description of helical edge states a
 Let's imagine that the helical edge runs along the $y$ direction, and that the domain wall is described by a mass profile $M(x)$ along the $x$ direction, which is zero at the domain wall:
 
 ![](figures/qsh_domain_wall.svg)
-
-+++
 
 In this configuration, $k_y$ is still a good quantum number, and we can study the energy dispersion of states bound to the domain wall as a function of $k_y$. If the edge is gapless there must be a momentum, say $\bar{k}_y$, where counterpropagating modes cross at the Fermi level. Let's fix $k_y=\bar{k}_y$, and write down an effective Hamiltonian for the motion transverse to the domain wall.
 
@@ -563,35 +637,18 @@ As a bonus, thanks to the previous arguments we can begin to understand how to l
 
 Such a band inversion is not impossible to achieve in real materials, and can be captured using the BHZ model. But let's leave this to the next lecture.
 
-```{code-cell} ipython3
-
-question = (
-    "What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  "
-    "in the topological phase (i.e., both with $Q=-1$)?"
-)
-
-answers = [
-    "The system has edge states and is therefore topologically non-trivial.",
-    "The total number of odd parity occupied orbitals must be even, so you get $Q=1$.",
-    "It depends on whether the helical states in the two layers have same "
-    "or opposite spin for a given direction.",
-    "The invariant depends on the number of edge Dirac points at $k$ away from 0.",
-]
-
-explanation = (
-    "Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  "
-    "we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be "
-    "$Q=1$."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} What is the value of the parity invariant $Q$ if you stack together two quantum spin Hall systems  in the topological phase (i.e., both with $Q=-1$)?
+:explanation: Both layers have $Q=-1$ and hence an odd number of odd parity orbitals. Therefore, by combining the layers  we get an even number of odd parity orbitals. Hence $Q$, which is the parity of odd parity orbitals must be $Q=1$.
+:correct: 1
+- The system has edge states and is therefore topologically non-trivial.
+- The total number of odd parity occupied orbitals must be even, so you get $Q=1$.
+- It depends on whether the helical states in the two layers have same or opposite spin for a given direction.
+- The invariant depends on the number of edge Dirac points at $k$ away from 0.
 ```
 
 ## Summary
 
-```{code-cell} ipython3
-
-Video("ft9ppqqLhH4")
-```
+:::{youtube} ft9ppqqLhH4
+:width: 100%
+:height: 480
+:::

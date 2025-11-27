@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,29 +16,28 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
-
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import kwant
+from course.functions import pauli, spectrum
+from course.init_course import init_notebook
 
 init_notebook()
-%output size=150
 ```
 
 ## Introduction
 
 Crystalline topological insulators are introduced by Liang Fu from MIT.
 
-```{code-cell} ipython3
-
-Video("N9-tUYjXC1s")
+```{youtube} N9-tUYjXC1s
+:width: 560
+:height: 315
 ```
 
 ## The role of crystalline symmetries
 
 In the very beginning of the course, we told you that conservation laws - unitary symmetries of the Hamiltonian - do not lead to striking consequences on topology. They allow to reduce the problem by making the Hamiltonian block-diagonal, but not much else (see also Shinsei Ryu's introductory video to week eight).
 
-At first sight, it may seem that crystalline symmetries: mirror or reflection symmetries, rotation symmetries, and so on - are no exception to the above consideration. They are unitary symmetries whose operators commute with the Hamiltonian. 
+At first sight, it may seem that crystalline symmetries: mirror or reflection symmetries, rotation symmetries, and so on - are no exception to the above consideration. They are unitary symmetries whose operators commute with the Hamiltonian.
 
 Nevertheless, the role of crystalline symmetries can be quite subtle and it can have important consequences. The reason is that crystalline symmetries are non-local. They relate one point in a crystal to another point, possibly a very distant point. This means that in terms of the Bloch Hamiltonian of the crystal, these symmetries mix different values of momentum.
 
@@ -48,22 +47,13 @@ Due to this type of constraint on the Brillouin zone, crystalline symmetries can
 
 Note however, that sometimes the mere presence of a surface can break a crystalline symmetry of the bulk, so that one should be careful when applying the bulk-boundary correspondence to properties based on crystalline symmetries.
 
-```{code-cell} ipython3
-
-question = r"In which case can inversion symmetry protect gapless surface states?"
-
-answers = [
-    "Never.",
-    "In the case of 2D TIs with inversion symmetry.",
-    "Only in three dimensions.",
-    "Only in combination with particle-hole or time-reversal symmetry. ",
-]
-
-explanation = "Any surface would break inversion symmetry of a crystal."
-
-MultipleChoice(
-    question, answers, correct_answer=0, explanation=explanation
-)
+```{multiple-choice} In which case can inversion symmetry protect gapless surface states?
+:explanation: Any surface would break inversion symmetry of a crystal.
+:correct: 0
+- Never.
+- In the case of 2D TIs with inversion symmetry.
+- Only in three dimensions.
+- Only in combination with particle-hole or time-reversal symmetry.
 ```
 
 ## Reflection symmetry
@@ -78,7 +68,7 @@ Reflection symmetry also applies a 180 degree rotation about the $z$-axis to the
 
 Next, if we consider the application of reflection symmetry to either a two-dimensional material or a plane in a three dimensional material, then we can choose $k_z=0$ and the reflection symmetry just becomes a regular unitary symmetry i.e., the $C_2$ rotation.
 
-In this case, the topological classification follows rather simply from our earlier discussion. $C_2$ is a unitary symmetry with eigenvalues $\pm i$. We can split our Hamiltonian into the corresponding two sector $H_{\pm}$ acting on the $C_2=\pm i$ sectors respectively. Each of the Hamiltonians $H_{\pm}$ are 2 dimensional Hamiltonians in class A (i.e. with no symmetry) and therefore we can associate a Chern number $N_{\pm}$ with each of them. 
+In this case, the topological classification follows rather simply from our earlier discussion. $C_2$ is a unitary symmetry with eigenvalues $\pm i$. We can split our Hamiltonian into the corresponding two sector $H_{\pm}$ acting on the $C_2=\pm i$ sectors respectively. Each of the Hamiltonians $H_{\pm}$ are 2 dimensional Hamiltonians in class A (i.e. with no symmetry) and therefore we can associate a Chern number $N_{\pm}$ with each of them.
 
 >If the Hamiltonian overall is trivial then the total Chern number $N_++N_-=0$ so we can classify the 2 dimensional mirror symmetric Hamiltonians by a **mirror Chern number** $N_M=N_+-N_-$.
 
@@ -86,29 +76,13 @@ The mirror Chern number is a topological invariant in the sense that it cannot c
 
 Naturally, the same recipe allows to construct a reflection symmetric topological insulator starting from any other topological invariant, not just a Chern number. We will now try to do this.
 
-```{code-cell} ipython3
-
-question = (
-    "How would you attempt to make a model of a topological"
-    " insulator with surface states protected by reflection symmetry?"
-)
-
-answers = [
-    "By using the interface of a material with reflection symmetry, and that of one without it.",
-    "By stacking many layers of a lower dimensional topological insulator, "
-    "and coupling them in a reflection-symmetric fashion.",
-    "Reflection symmetry alone cannot protect any gapless surface state.",
-    "By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero.",
-]
-
-explanation = (
-    "Such a stack would have a reflection symmetry around any of the layers, "
-    "which is not broken by the presence of a surface parallel to the stacking direction."
-)
-
-MultipleChoice(
-    question, answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} How would you attempt to make a model of a topological insulator with surface states protected by reflection symmetry?
+:explanation: Such a stack would have a reflection symmetry around any of the layers, which is not broken by the presence of a surface parallel to the stacking direction.
+:correct: 1
+- By using the interface of a material with reflection symmetry, and that of one without it.
+- By stacking many layers of a lower dimensional topological insulator, and coupling them in a reflection-symmetric fashion.
+- Reflection symmetry alone cannot protect any gapless surface state.
+- By making a narrow ribbon of the material where only the momentum orthogonal to the reflection axis can be non-zero.
 ```
 
 ## Examples
@@ -126,7 +100,6 @@ On the other hand, if the hopping between the nanowires is reflection invariant,
 If we do everything right (this does require some trial and error in searching for the hopping that actually can couple the two Majoranas from the edge), we get a painfully familiar dispersion:
 
 ```{code-cell} ipython3
-
 def nanowire_chains(length=40, n=2):
     def onsite(site, t, mu, B, delta):
         (x, y) = site.pos
@@ -149,7 +122,7 @@ def nanowire_chains(length=40, n=2):
         (x, y) = pos
         return (0 <= x < n) and (0 <= y < length)
 
-    lat = kwant.lattice.square()
+    lat = kwant.lattice.square(norbs=4)
     sym = kwant.TranslationalSymmetry((n, 0))
     syst = kwant.Builder(sym)
 
@@ -180,7 +153,6 @@ This means that the Chern number of the alternating layers has to have opposite 
 Once again, coupling the layers we get a familiar Dirac cone on the surface:
 
 ```{code-cell} ipython3
-
 def stacked_qwz(w=50):
     def shape(pos):
         return 0 <= pos[2] < w
@@ -197,7 +169,7 @@ def stacked_qwz(w=50):
     def onsite(site, t, mu):
         return pauli.sz * (4 * t + mu)
 
-    lat = kwant.lattice.general(np.eye(3))
+    lat = kwant.lattice.general(np.eye(3), norbs=4)
     syst = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0), (0, 2, 0)))
 
     syst[lat.shape(shape, (0, 0, 0))] = onsite
@@ -208,8 +180,8 @@ def stacked_qwz(w=50):
     return syst
 
 
-xticks = [(-np.pi, r"$-\pi$"), (0, r"$0$"), (np.pi, r"$\pi$")]
-yticks = [(0, r"$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
+xticks = [(-np.pi, "-π"), (0, "0"), (np.pi, "π")]
+yticks = [(0, "0"), (np.pi / 2, "π/2"), (np.pi, "π")]
 
 p = dict(t=1.0, delta=1, gamma=0.5, mu=-0.5)
 syst = stacked_qwz(30)
@@ -230,9 +202,9 @@ Again, the dispersion of the edge states looks exactly like what we saw already 
 
 ## Experimental realization of a 3D crystalline topological insulator
 
-As mentioned by Liang Fu, three dimensional crystalline topological insulators have been both predicted and also found in nature. The magical material, which is topological turns out to be SnTe, which is actually a "rock-salt" structure. We won't bore you with the details of the rock-salt structure, which you can find for yourself on [Wikipedia](https://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure). 
+As mentioned by Liang Fu, three dimensional crystalline topological insulators have been both predicted and also found in nature. The magical material, which is topological turns out to be SnTe, which is actually a "rock-salt" structure. We won't bore you with the details of the rock-salt structure, which you can find for yourself on [Wikipedia](https://en.wikipedia.org/wiki/Cubic_crystal_system#Rock-salt_structure).
 
-We will just start with the key ingredients for the crystalline topological insulator, namely the symmetries of the crystal. These include, spatial inversion $P$, time-reversal symmetry $\Theta$ and most importantly the three mirror planes in the cubic Brillouin zone. The three mirror planes $\Gamma L_1 L_2$, $\Gamma L_3 L_4$ and $\Gamma L_3 L_1$ in the Brillouin zone are reflection-symmetric directions that are created out of four time-reversal invariant momenta $\Gamma, L_1, L_2, L_3, L_4$. 
+We will just start with the key ingredients for the crystalline topological insulator, namely the symmetries of the crystal. These include, spatial inversion $P$, time-reversal symmetry $\Theta$ and most importantly the three mirror planes in the cubic Brillouin zone. The three mirror planes $\Gamma L_1 L_2$, $\Gamma L_3 L_4$ and $\Gamma L_3 L_1$ in the Brillouin zone are reflection-symmetric directions that are created out of four time-reversal invariant momenta $\Gamma, L_1, L_2, L_3, L_4$.
 
 While the reflection symmetry acts non-trivially on general wave-vectors $\bf k$, the symmetry preserves the mirror planes in the Brillouin zone. Following the idea of dimensional reduction that we used for three dimensional topological insulators (week 6) and also in subsequent weeks, we can define the topological invariant for the crystalline topological insulator in terms of the three mirror Chern numbers for the three mirror planes. For SnTe, all these mirror Chern numbers turn out to be $N_{M}(\Gamma L_i L_j)=-2$. This topological invariant leads to surface Dirac cones on certain surfaces as shown below.
 

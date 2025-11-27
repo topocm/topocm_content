@@ -1,51 +1,73 @@
-image: topocourse/topocourse
-stages:
-  - build
-  - deploy
-
-
-execute_ipynbs:
-  stage: build
-  script:
-    - jupyter-book build .
-    # Workaround of https://github.com/executablebooks/MyST-NB/issues/287
-    - cp _static/mystnb.css _build/html/_static/
-  artifacts:
-    paths:
-      - _build/html
-    expire_in: 7d
+default:
+  image:
+    name: ghcr.io/prefix-dev/pixi
   cache:
-    - key: global
-      paths:
-        - _build/
-
-.upload_website:
-  stage: deploy
-  image: eeacms/rsync
+    key: "$CI_JOB_NAME"
+    paths:
+      - .pixi
+      - _build
   before_script:
-      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-      - eval $(ssh-agent -s)
-      - echo "$WEBSITE_UPLOAD_KEY" | tr -d '\r' | ssh-add - > /dev/null
-      - mkdir -p ~/.ssh
-      - chmod 700 ~/.ssh
-  script:
-    - "rsync -ravz _build/html/* -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH"
+    - eval $(pixi shell-hook --shell bash)
+    - pixi global install git
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - pixi install
+    - eval "$(pixi run ssh-agent -s)"
+    - chmod 400 "$WEBSITE_UPLOAD_KEY"
+    - pixi run ssh-add "$WEBSITE_UPLOAD_KEY" >/dev/null
 
-upload test website:
-  extends: .upload_website
-  environment: test
-  only:
-    - branches@qt/topocm
-  except:
-    - master@qt/topocm
+variables:
+  FF_USE_FASTZIP: "true"
+  CACHE_COMPRESSION_LEVEL: "fastest"
+  SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  JUPYTER_NUM_PROCS: "10"
+  HOST: "127.0.0.1"  # Needed to avoid binding to ::1.
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        BASE_URL: "/branch_${CI_COMMIT_REF_SLUG}"
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - when: never
+
+build branch website:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   variables:
-    WEBSITE_UPLOAD_PATH: /test
+    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
+  environment:
+    name: branch/$CI_COMMIT_REF_SLUG
+    on_stop: stop branch website
+    url: https://topocondmat.org/branch_${CI_COMMIT_REF_SLUG}/
+  script:
+    - pixi run postprocess-html
+    - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
 
-
-upload main website:
-  extends: .upload_website
-  environment: published
+build main website:
   only:
     - master@qt/topocm
   variables:
     WEBSITE_UPLOAD_PATH: /
+  environment:
+    name: published
+    url: https://topocondmat.org/
+  script:
+    - pixi run postprocess-html
+    - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
+
+stop branch website:
+  needs:
+    - build branch website
+  script:
+    - mkdir -p /tmp/empty_dir
+    - pixi run rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
+  when: manual
+  environment:
+    name: branch/$CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+  variables:
+    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
+  allow_failure: true

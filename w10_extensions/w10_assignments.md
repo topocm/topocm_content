@@ -1,28 +1,5 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
 
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations
 
@@ -54,21 +31,21 @@ Try to remove the edge states completely by tweaking the sublattice symmetry bre
 
 ## Review assignment
 
-### arXiv:1504.01350
+### @10.48550/arXiv.1504.01350
 
-### arXiv:1503.06808
+### @10.48550/arXiv.1503.06808
 
 **Hint:** Different mechanical TI
 
-### arXiv:1309.5846
+### @10.48550/arXiv.1309.5846
 
 **Hint:** Weyl + disorder
 
-### arXiv:1410.1320
+### @10.48550/arXiv.1410.1320
 
 **Hint:** The best of both worlds
 
-### arXiv:0909.5680
+### @10.48550/arXiv.0909.5680
 
 **Hint:** A general approach to gapless superconductors.
 
@@ -76,5 +53,3 @@ Try to remove the edge states completely by tweaking the sublattice symmetry bre
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

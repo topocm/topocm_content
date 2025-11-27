@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,14 +16,22 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from matplotlib.colors import hsv_to_rgb
 
-sys.path.append("../code")
-from init_course import *
+import numpy as np
+import kwant
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from course.functions import (
+    add_reference_lines,
+    combine_plots,
+    pauli,
+    slider_plot,
+    spectrum,
+)
+from course.init_course import init_notebook
 
 init_notebook()
-from matplotlib import cm
-from matplotlib.colors import hsv_to_rgb
 
 pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 ```
@@ -32,9 +40,9 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "$0$"), (np.pi, r"$\pi$")]
 
 Ashvin Vishwanath from the University of California, Berkeley will introduce Weyl semimetals and other examples of gapless, yet topological, systems.
 
-```{code-cell} ipython3
-
-Video("MAWwa4r1qIc")
+```{youtube} MAWwa4r1qIc
+:width: 560
+:height: 315
 ```
 
 ## Topological invariants of Fermi surfaces
@@ -53,7 +61,7 @@ So we are left with only two symmetry classes: A and AIII (no symmetry at all or
 
 ## Graphene and protected Dirac cones
 
-We've already analysed the 0D Chern number that stabilizes the usual Fermi surfaces. Let's go one dimension higher, and study winding numbers in systems with sublattice symmetry around 1D loops. 
+We've already analysed the 0D Chern number that stabilizes the usual Fermi surfaces. Let's go one dimension higher, and study winding numbers in systems with sublattice symmetry around 1D loops.
 
 For a winding number to be nonzero, we need to consider 1D loops in momentum space. As a reminder, with sublattice symmetry the Hamiltonian can always be brought to the form
 
@@ -77,10 +85,6 @@ where $t_1, t_2, t_3$ are the three hoppings connecting a site in one of the two
 To consider something specific, let's take $t_2 = t_3 = t$ and vary $t_1$. This is what the band structure and $\det h$ look like:
 
 ```{code-cell} ipython3
-
-%%output size=150 fig='png'
-
-
 def plot_dets(syst, p, ks, chiral=False):
     B = np.array(syst.symmetry.periods).T
     A = B @ np.linalg.inv(B.T @ B)
@@ -105,19 +109,46 @@ def plot_dets(syst, p, ks, chiral=False):
     V = np.abs(dets)
     H = np.mod(H, 1)
     V /= np.max(V)
-    V = 1 - V ** 2
+    V = 1 - V**2
     S = np.ones_like(H)
     HSV = np.dstack((H, S, V))
     RGB = hsv_to_rgb(HSV)
-    bounds = (ks.min(), ks.min(), ks.max(), ks.max())
-    pl = holoviews.RGB(RGB, bounds=bounds, label=r"$\det(h)$", kdims=["$k_x$", "$k_y$"])
-    return pl.opts(plot={"xticks": pi_ticks, "yticks": pi_ticks}).opts(
-        style={"interpolation": None}
+    dx = (ks.max() - ks.min()) / RGB.shape[1]
+    dy = (ks.max() - ks.min()) / RGB.shape[0]
+    fig = go.Figure(
+        data=[
+            go.Image(
+                z=(RGB * 255).astype(np.uint8),
+                x0=ks.min(),
+                y0=ks.min(),
+                dx=dx,
+                dy=dy,
+            )
+        ]
     )
+    fig.update_layout(
+        title=r"$\det(h)$",
+        xaxis=dict(
+            title="$k_x$",
+            range=[ks.min(), ks.max()],
+            tickvals=[val for val, _ in pi_ticks],
+            ticktext=[txt for _, txt in pi_ticks],
+        ),
+        yaxis=dict(
+            title="$k_y$",
+            range=[ks.min(), ks.max()],
+            tickvals=[val for val, _ in pi_ticks],
+            ticktext=[txt for _, txt in pi_ticks],
+        ),
+    )
+    fig.update_layout(
+        xaxis=dict(scaleanchor="y", scaleratio=1, constrain="domain"),
+        yaxis=dict(constrain="domain"),
+    )
+    return fig
 
 
-
-lat = kwant.lattice.honeycomb()
+lat = kwant.lattice.honeycomb(norbs=1)
 a, b = lat.sublattices
 graphene = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 graphene[lat.shape(lambda pos: True, (0, 0))] = 0
@@ -128,22 +159,53 @@ graphene[kwant.builder.HoppingKind((-1, 1), a, b)] = lambda site1, site2, t_23: 
 
 p = dict(t_1=1.0, t_23=1.0)
 ks = np.sqrt(3) * np.linspace(-np.pi, np.pi, 80)
-kwargs = dict(
-    title=(lambda p: rf"Graphene, $t_1 = {p['t_1']:.2} \times t$"), zticks=3
-)
+kwargs = dict(title=(lambda p: f"Graphene, t₁ = {p['t_1']:.2} × t"), zticks=3)
 ts = np.linspace(1, 2.4, 8)
-(
-    holoviews.HoloMap(
-        {p["t_1"]: spectrum(graphene, p, k_x=ks, k_y=ks, **kwargs) for p["t_1"] in ts},
-        kdims=["$t_1$"],
+frames = {}
+for p["t_1"] in ts:
+    spec = spectrum(graphene, p, k_x=ks, k_y=ks, **kwargs)
+    det_fig = plot_dets(graphene, p, ks)
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        column_widths=[0.6, 0.4],
+        horizontal_spacing=0.1,
+        specs=[[{"type": "scene"}, {"type": "xy"}]],
     )
-    + holoviews.HoloMap(
-        {p["t_1"]: plot_dets(graphene, p, ks) for p["t_1"] in ts}, kdims=["$t_1$"]
-    )
-)
+    for trace in spec.data:
+        fig.add_trace(trace, row=1, col=1)
+    if hasattr(spec.layout, "scene"):
+        fig.update_scenes(
+            xaxis_title=spec.layout.scene.xaxis.title.text,
+            yaxis_title=spec.layout.scene.yaxis.title.text,
+            zaxis_title=spec.layout.scene.zaxis.title.text,
+            row=1,
+            col=1,
+        )
+    else:
+        fig.update_xaxes(
+            title=spec.layout.xaxis.title.text,
+            tickvals=spec.layout.xaxis.tickvals,
+            ticktext=spec.layout.xaxis.ticktext,
+            row=1,
+            col=1,
+        )
+        fig.update_yaxes(
+            title=spec.layout.yaxis.title.text,
+            range=spec.layout.yaxis.range,
+            tickvals=spec.layout.yaxis.tickvals,
+            row=1,
+            col=1,
+        )
+    for trace in det_fig.data:
+        fig.add_trace(trace, row=1, col=2)
+    fig.update_layout(title=kwargs["title"](p))
+    frames[p["t_1"]] = fig
+
+slider_plot(frames, label="t₁")
 ```
 
-The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see 6, but this is because we plot more than one Brillouin zone). 
+The left panel shows the band structure, and you see that it has gapless points. The right panel shows $\det h$ by using hue as a phase and intensity as magnitude (so white is $\det h = 0$). There are two Dirac points (you see 6, but this is because we plot more than one Brillouin zone).
 
 We also see that the winding numbers around these two Dirac points have opposite signs (because by going around them clockwise you encounter red, blue and green colors in opposite orders). This must always be the case since the winding number around the edges of the complete Brillouin zone must vanish - as you walk down every edge of the Brillouin zone twice in opposite directions, their contributions always cancel.
 
@@ -197,25 +259,13 @@ This means that a Dirac point at momentum $k$ and positive winding must come tog
 
 The $d$-wave superconductor Hamiltonian gives just that: there are 4 Dirac points at $|k_x| = |k_y| = k_F / \sqrt{2}$.
 
-```{code-cell} ipython3
-
-question = r"What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?"
-
-answers = [
-    "The Dirac points couple and gap out.",
-    "In 3D you cannot have a $d$-wave pairing.",
-    "There will remain isolated gapless points in the larger 3D Brillouin zone.",
-    "You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone.",
-]
-
-explanation = (
-    r"The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces "
-    r"in the Brillouin zone. The intersection of these two surfaces is a line."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} What happens if you make the 2D $d$-wave Hamiltonian 3D, by adding coupling between 2D layers?
+:explanation: The real and imaginary parts of the solutions of $\det h(\mathbf{k})=0$ form two surfaces in the Brillouin zone. The intersection of these two surfaces is a line.
+:correct: 3
+- The Dirac points couple and gap out.
+- In 3D you cannot have a $d$-wave pairing.
+- There will remain isolated gapless points in the larger 3D Brillouin zone.
+- You get a closed 1D Dirac line of gap closings in the 3D Brillouin zone.
 ```
 
 ### Edge states
@@ -227,19 +277,19 @@ Whenever the line corresponding to a constant $k_\parallel$ crosses a Dirac poin
 For a $d$-wave superconductor this will only happen for some crystalline orientations, as you can see for yourself:
 
 ```{code-cell} ipython3
-
-%%opts VLine (color='k')  Curve (linestyle='--')
-
 def onsite(site, t, mu):
     return (4 * t - mu) * pauli.sz
+
 
 def hopx(site1, site2, t, delta):
     return -t * pauli.sz - delta * pauli.sx
 
+
 def hopy(site1, site2, t, delta):
     return -t * pauli.sz + delta * pauli.sx
 
-lat = kwant.lattice.square()
+
+lat = kwant.lattice.square(norbs=2)
 dwave_infinite = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
 dwave_infinite[lat(0, 0)] = onsite
 dwave_infinite[kwant.HoppingKind((1, 0), lat)] = hopx
@@ -250,9 +300,7 @@ dwave_ribbon = kwant.Builder(kwant.TranslationalSymmetry((1, 0)))
 dwave_ribbon.fill(dwave_infinite, (lambda site: 0 <= site.pos[1] < W), (0, 0))
 dwave_diagonal = kwant.Builder(kwant.TranslationalSymmetry((1, 1)))
 dwave_diagonal.fill(
-    dwave_infinite,
-    (lambda site: 0 <= site.pos[1] - site.pos[0] < W),
-    (0, 0)
+    dwave_infinite, (lambda site: 0 <= site.pos[1] - site.pos[0] < W), (0, 0)
 )
 
 p = dict(mu=2.0, t=1.0, delta=1.0)
@@ -263,28 +311,73 @@ ks = np.linspace(-np.pi, np.pi, 51)
 
 det_plot = plot_dets(dwave_infinite, p, ks, chiral=True)
 
-det_plot1 = (
-    det_plot
-    * holoviews.Curve(([-np.pi, np.pi], [np.pi, -np.pi]))
-    * holoviews.Curve(([-np.pi, np.pi - 2 * k], [np.pi - 2 * k, -np.pi]))
-    * holoviews.Curve(([-np.pi + 2 * k, np.pi], [np.pi, -np.pi + 2 * k]))
-).relabel("$\det(h)$")
+det_plot1 = go.Figure(det_plot)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi, np.pi],
+        y=[np.pi, -np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi, np.pi - 2 * k],
+        y=[np.pi - 2 * k, -np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot1.add_trace(
+    go.Scatter(
+        x=[-np.pi + 2 * k, np.pi],
+        y=[np.pi, -np.pi + 2 * k],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
 
-det_plot2 = det_plot * holoviews.VLine(k) * holoviews.VLine(-k)
+det_plot2 = go.Figure(det_plot)
+det_plot2.update_layout(title="det(h) with k∥ markers")
+det_plot2.add_trace(
+    go.Scatter(
+        x=[k, k],
+        y=[-np.pi, np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
+det_plot2.add_trace(
+    go.Scatter(
+        x=[-k, -k],
+        y=[-np.pi, np.pi],
+        mode="lines",
+        line=dict(color="black", dash="dash"),
+        showlegend=False,
+    )
+)
 
 kwargs = dict(k_x=ks, ylims=[-2, 2], xticks=pi_ticks, yticks=3)
 
-(
-    spectrum(dwave_diagonal, p, title="Ribbon with edge states", **kwargs)
-    * holoviews.VLine(-2 * k)
-    * holoviews.VLine(0)
-    * holoviews.VLine(2 * k)
-    + det_plot1
-    + spectrum(dwave_ribbon, p, title="Ribbon without edge states", **kwargs)
-    * holoviews.VLine(-k)
-    * holoviews.VLine(k)
-    + det_plot2
-).cols(2)
+spec_with_edges = spectrum(dwave_diagonal, p, title="Ribbon with edge states", **kwargs)
+add_reference_lines(spec_with_edges, x=-2 * k)
+add_reference_lines(spec_with_edges, x=0)
+add_reference_lines(spec_with_edges, x=2 * k)
+
+spec_without_edges = spectrum(
+    dwave_ribbon, p, title="Ribbon without edge states", **kwargs
+)
+add_reference_lines(spec_without_edges, x=-k)
+add_reference_lines(spec_without_edges, x=k)
+
+combine_plots(
+    [spec_with_edges, det_plot1, spec_without_edges, det_plot2],
+    cols=2,
+)
 ```
 
 On the right panels you once again see $\det h$, with added lines denoting different the values of $k_{\parallel}$ crossing the Dirac points. If the sample boundary is along the $(1, 0)$ axis, the Dirac points have coinciding $k_{\parallel}$, and their windings cancel, so that no single value of $k_{\parallel}$ carries an edge state.
@@ -320,11 +413,6 @@ $$
 > So applying the most general perturbation we can think of does not gap out the Weyl point where the energy vanishes. Instead, the perturbation only shifts the Weyl point around in momentum space. This feels like some kind of topological protection.
 
 ```{code-cell} ipython3
-
-%%output fig='png'
-%%opts Surface [azimuth=45]
-
-
 def onsite(site, t, mu):
     return 6 * t * pauli.sz - mu * pauli.sz
 
@@ -334,11 +422,12 @@ def hopx(site1, site2, t):
 
 
 def hopy(site1, site2, t):
-
     return -t * pauli.sz
+
 
 def hopz(site1, site2, t):
     return 0.5j * t * pauli.sy - t * pauli.sz
+
 
 W = 10
 lat = kwant.lattice.cubic(norbs=2)
@@ -355,11 +444,11 @@ mus = np.linspace(-0.4, 2, 13)
 kwargs = dict(
     k_x=np.linspace(-np.pi, 0),
     k_y=np.linspace(-np.pi, np.pi),
-    title=lambda p: f"Weyl semimetal, $\mu = {p['mu']:.2}$",
+    title=lambda p: f"Weyl semimetal, μ = {p['mu']:.2}",
     num_bands=4,
 )
 
-holoviews.HoloMap({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, kdims=[r"$\mu$"])
+slider_plot({p["mu"]: spectrum(weyl_slab, p, **kwargs) for p["mu"] in mus}, label="μ")
 ```
 
 Is there a sense in which Weyl points are "topological"? They are clearly protected, but is there some topological reason for the protection? As in the rest of this section, the topology of gapless system becomes apparent by looking at the Hamiltonian in lower dimensional subspaces of momentum space. For the case of Weyl, the momentum space is three dimensional, so let us look at two dimensional subspaces of momentum space.
@@ -370,7 +459,7 @@ $$
 H_{2D,Dirac}(k_x,k_y;m)\equiv H(k_x,k_y,k_z=m)=(\sigma_x k_x+\sigma_y k_y+m\sigma_z).
 $$
 
-As we talked about in week 4 with Chern insulators, the massive Dirac model has a Chern number, which changes by $1$ if $m$ changes sign. 
+As we talked about in week 4 with Chern insulators, the massive Dirac model has a Chern number, which changes by $1$ if $m$ changes sign.
 
 > So we can think of the Weyl Hamiltonian in the momentum planes at fixed $k_z$ as Chern insulators with Chern numbers $n_{Ch}=0$ (i.e. trivial) if $k_z < 0$ and $n_{Ch}=1$ (topological) if $k_z > 0$.  The Hamiltonian at $k_z=0$ is at the phase transition point of the Chern insulator, which supports a gapless Dirac point.
 
@@ -380,31 +469,19 @@ $$
 E(k_x,k_z)\approx v(k_z)k_x.
 $$
 
-We can consider the edge states over a range of $k_z$ together to visualize the "surface states". 
+We can consider the edge states over a range of $k_z$ together to visualize the "surface states".
 
 > The unique property of the surface states is that if we set $k_x=0$ then the energy vanishes on a line in the surface spectrum. This line actually terminates at $k_z=0$, where the Chern number changes. Such lines, which are referred to as "Fermi arcs," are the unique bounday properties (hence the bulk-boundary correspondence) of Weyl semimetals.
 
-At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z)$ becomes trivial i.e. $n_{Ch}(|k_z|\rightarrow \infty)=0$. This means that if the Chern number is $n_{Ch}=1$ in a range of $k_z$, then $n_{Ch}(k_z)$ must change twice resulting in two Weyl points. So Weyl points come in pairs. These points map onto the ends of the Fermi arcs on the surface. 
+At large enough $k_z$, the two dimensional Hamiltonian $H_{2D,Dirac}(k_x,k_y;k_z)$ becomes trivial i.e. $n_{Ch}(|k_z|\rightarrow \infty)=0$. This means that if the Chern number is $n_{Ch}=1$ in a range of $k_z$, then $n_{Ch}(k_z)$ must change twice resulting in two Weyl points. So Weyl points come in pairs. These points map onto the ends of the Fermi arcs on the surface.
 
 ![](figures/weyl.svg)
 
-```{code-cell} ipython3
-
-question = r"What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?"
-
-answers = [
-    "Chiral symmetry.",
-    "The energy gap in the bulk.",
-    "Absence of scattering.",
-    "The non-zero Chern number of the bulk.",
-]
-
-explanation = (
-    r"The bulk has gapless states due to the Weyl point. "
-    "Therefore, only momentum conservation protects surface states from going into the bulk."
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=2, explanation=explanation
-)
+```{multiple-choice} What protects the surface state of Weyl semi-metals from scattering inside the bulk Weyl point?
+:explanation: The bulk has gapless states due to the Weyl point. Therefore, only momentum conservation protects surface states from going into the bulk.
+:correct: 2
+- Chiral symmetry.
+- The energy gap in the bulk.
+- Absence of scattering.
+- The non-zero Chern number of the bulk.
 ```

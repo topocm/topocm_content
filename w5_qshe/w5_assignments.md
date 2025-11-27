@@ -1,28 +1,4 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.4
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
 # Topics for self-study
-
-```{code-cell} ipython3
-:tags: [remove-cell]
-
-import sys
-
-sys.path.append("../code")
-from init_course import *
-
-init_notebook()
-```
 
 ## Simulations
 
@@ -48,23 +24,23 @@ What about conductance in a two terminal geometry: can you see the crossover fro
 
 ## Review assignment
 
-### arXiv:1306.1925
+### @10.48550/arXiv.1306.1925
 
 **Hint:** A better material?
 
-### arXiv:0808.1723
+### @10.48550/arXiv.0808.1723
 
 **Hint:** What happens when edge states meet.
 
-### arXiv:1104.3282
+### @10.48550/arXiv.1104.3282
 
 **Hint:** A completely different approach.
 
-### arXiv:1312.2559
+### @10.48550/arXiv.1312.2559
 
 **Hint:** Adding superconductors.
 
-### arXiv:1303.1766
+### @10.48550/arXiv.1303.1766
 
 **Hint:** Sources of back-scattering in QSHE edge.
 
@@ -72,5 +48,3 @@ What about conductance in a two terminal geometry: can you see the crossover fro
 
 Do you know of another paper that fits into the topics of this week, and you think is good?
 Then you can get bonus points by reviewing that paper instead!
-
-+++

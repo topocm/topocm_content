@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.4
+    jupytext_version: 1.18.1
 kernelspec:
   display_name: Python 3
   language: python
@@ -16,21 +16,16 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-import sys
+from course.functions import combine_plots, line_plot, pauli, spectrum
+from course.init_course import init_notebook
 
-sys.path.append("../code")
-from init_course import *
+import kwant
+import matplotlib
+import numpy as np
+import plotly.graph_objects as go
+
 
 init_notebook()
-
-import scipy
-import scipy.linalg as sla
-from matplotlib import cm
-
-
-import warnings
-
-warnings.simplefilter("ignore", UserWarning)
 ```
 
 ## Introduction: searching the periodic table for topological materials
@@ -39,9 +34,9 @@ How do we find a topological insulator? In the first video of today, David Vande
 
 This is an expertise that no one from the course team has, so pay close attention to it: this material stands apart from the rest.
 
-```{code-cell} ipython3
-
-Video("62ZObitJ4DM")
+```{youtube} 62ZObitJ4DM
+:width: 560
+:height: 315
 ```
 
 In the rest of the lecture, we will instead discuss the experimental signatures of 3D topological insulators, similarly to what we did in the previous week for their 2D counterparts.
@@ -55,13 +50,9 @@ Both the quantum Hall and quantum spin Hall states have striking conductance qua
 The 3D topological insulators do not posses similar striking conductance properties. In a slab geometry, the surface states contribute with a finite density of propagating states. This density has a minimum at the Dirac point. The conductance increases roughly with a hyperbolic shape if the chemical potential is tuned away from the Dirac point as shown in the plot below:
 
 ```{code-cell} ipython3
-
 # BHZ model
 def onsite(site, mu, D1, D2, M, B1, B2):
-    return (
-        (2 * D1 + 4 * D2 - mu) * pauli.s0s0
-        + (M + 2 * B1 + 4 * B2) * pauli.s0sz
-    )
+    return (2 * D1 + 4 * D2 - mu) * pauli.s0s0 + (M + 2 * B1 + 4 * B2) * pauli.s0sz
 
 
 def hopx(site1, site2, D2, B2, A2):
@@ -92,11 +83,7 @@ def scattering_region_shape(site):
 
 
 finite_ti = kwant.Builder()
-finite_ti.fill(
-    bhz_infinite,
-    shape=scattering_region_shape,
-    start=(0, 0, 0)
-)
+finite_ti.fill(bhz_infinite, shape=scattering_region_shape, start=(0, 0, 0))
 
 
 def wire_shape(site):
@@ -105,11 +92,7 @@ def wire_shape(site):
 
 
 wire = kwant.Builder(kwant.TranslationalSymmetry((1, 0, 0)))
-wire.fill(
-    bhz_infinite.substituted(mu="mu_lead"),
-    shape=wire_shape,
-    start=(0, 0, 0)
-)
+wire.fill(bhz_infinite.substituted(mu="mu_lead"), shape=wire_shape, start=(0, 0, 0))
 finite_ti.attach_lead(wire)
 finite_ti.attach_lead(wire.reversed())
 finite_ti = finite_ti.finalized()
@@ -120,14 +103,21 @@ mus = np.linspace(-0.4, 0.4, 40)
 # Precalculate lead modes
 finite_ti = finite_ti.precalculate(energy=0, params=p)
 conductances = [
-    kwant.smatrix(finite_ti, params={**p, "mu": mu}).transmission(1, 0)
-    for mu in mus
+    kwant.smatrix(finite_ti, params={**p, "mu": mu}).transmission(1, 0) for mu in mus
 ]
 
 xdim, ydim = [r"$\mu$", r"$G\,[e^2/h]$"]
-conductance_plot = holoviews.Path((mus, conductances), kdims=[xdim, ydim]).opts(
-    plot={"xticks": 3, "yticks": [0, 2, 4, 6, 8]}
-).redim.range(**{xdim: (-0.4, 0.4), ydim: (0, 8)}).relabel("Conductance")
+conductance_plot = line_plot(
+    mus,
+    conductances,
+    x_label=xdim,
+    y_label=ydim,
+    x_range=(-0.4, 0.4),
+    y_range=(0, 8),
+    y_ticks=[0, 2, 4, 6, 8],
+    show_legend=False,
+)
+conductance_plot.update_layout(title="Conductance")
 
 kwargs = {
     "k_x": np.linspace(-np.pi / 3, np.pi / 3, 101),
@@ -136,7 +126,8 @@ kwargs = {
     "xticks": [(-np.pi / 3, r"$-\pi/3$"), (0, r"$0$"), (np.pi / 3, r"$\pi/3$")],
 }
 
-conductance_plot + spectrum(wire, {**p, "mu_lead": 0}, **kwargs).relabel("Spectrum")
+spec_fig = spectrum(wire, {**p, "mu_lead": 0}, **kwargs).update_layout(title="Spectrum")
+combine_plots([conductance_plot, spec_fig], cols=2)
 ```
 
 It is also the behavior that is observed experimentally. In the figure below, you see that the resistance of a 3D TI slab reaches a maximum and then decreases as the chemical potential difference between its top and bottom surfaces is varied.
@@ -173,26 +164,13 @@ Therefore, rather than observing a sequence $e^2/h\,(2n+1)$, we observe a more c
 
 So, even by studying the Landau levels experimentally, we do not get a topological signature. But do not despair, luckily there is a much better thing that we can do rather than just measuring conductance: looking at the energy spectrum of the surface states directly.
 
-```{code-cell} ipython3
-
-question = "Which control parameter can remove the 0th plateau in the QHE measurement? "
-
-answers = [
-    "Increasing the magnetic field.",
-    "Gate voltage difference (which controls difference in electron density) between the surfaces.",
-    "Increasing topological mass.",
-    "Adding an in-plane magnetic field.",
-]
-
-explanation = (
-    "Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. "
-    "This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the "
-    " $0^{th}$ plateau to begin with so cannot eliminate it. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=1, explanation=explanation
-)
+```{multiple-choice} Which control parameter can remove the 0th plateau in the QHE measurement?
+:explanation: Gate voltage difference changes the filling of the individual states without shifting the total density of electrons. This can therefore shift the plateaus of each surface. Magnetic field and topological mass are part of generating the  $0^{th}$ plateau to begin with so cannot eliminate it.
+:correct: 1
+- Increasing the magnetic field.
+- Gate voltage difference (which controls difference in electron density) between the surfaces.
+- Increasing topological mass.
+- Adding an in-plane magnetic field.
 ```
 
 ## Spectroscopy of the surface of a 3D topological insulator
@@ -213,25 +191,13 @@ In the top panel of the figure above, we see that by changing the chemical poten
 
 While the top panels shows where the occupied states lie in the $(k_x, k_y)$ plane, in the second and third rows we see a cross-section of the energy as a function of momentum, where the Dirac cone is clearly visible, emerging from a bulk valence band filled with electrons.
 
-```{code-cell} ipython3
-
-question = "Why do you think ARPES observes surface states even if there is conductance through the bulk?"
-
-answers = [
-    "ARPES can only observe occupied states and therefore bulk conductance is not an issue. ",
-    "Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.",
-    "ARPES does not measure conductance and therefore bulk electronic states are not an issue.",
-    "Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap.",
-]
-
-explanation = (
-    "The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out "
-    "surface states from bulk states, which are in different energy ranges. "
-)
-
-MultipleChoice(
-    question=question, answers=answers, correct_answer=3, explanation=explanation
-)
+```{multiple-choice} Why do you think ARPES observes surface states even if there is conductance through the bulk?
+:explanation: The surface states live within the energy gap of the bulk. Since ARPES directly measure $E(k)$, it separates out surface states from bulk states, which are in different energy ranges.
+:correct: 3
+- ARPES can only observe occupied states and therefore bulk conductance is not an issue.
+- Since ARPES measures the spectrum in a momentum resolved way, it can separate out surface and bulk states.
+- ARPES does not measure conductance and therefore bulk electronic states are not an issue.
+- Since ARPES measures the spectrum in an energy resolved way, it can selectively choose the surface states in the bulk gap.
 ```
 
 ## Quasiparticle interference (QPI)
@@ -245,7 +211,7 @@ Clearly, we can expect to map out some properties of the momentum space scatteri
 In the simulation below. we see that the Fourier transform shows an interesting pattern:
 
 ![](figures/QPI_pic_adapted.png)
-(adapted, copyright Hasan lab, Princeton, see license in the beginning of the chapter)  
+(adapted, copyright Hasan lab, Princeton, see license in the beginning of the chapter)
 
 By comparing the QPI patterns showing spin-dependent and spin-independent scattering (respectively on the left and right column on the right side of the arrow), we see that the intensity at momenta connecting opposite points on the Fermi surface is suppressed in the case of spin-independent scattering.
 
@@ -280,7 +246,7 @@ It's clear that this shape cannot be explained by the Dirac Hamiltonian with its
 
 This is exactly what was done in this article:
 
-* arXiv:0908.1418
+* @10.48550/arXiv.0908.1418
 
 There Liang Fu made a relatively simple theoretical exercise. He listed all the terms in the Hamiltonian allowed by time-reversal and crystalline symmetries, that are proportional to $k^3.$ This is the result:
 
@@ -293,9 +259,6 @@ You see a correction to the Dirac velocity proportional to $\alpha \mathbf{k}^2$
 Let's plot the spectrum of this extended effective Hamiltonian:
 
 ```{code-cell} ipython3
-
-%%output fig='png'
-
 A = 1.2
 B = 1.8
 C = 1.5
@@ -311,11 +274,10 @@ k_x, k_y = r * np.cos(p), r * np.sin(p)
 k_x = k_x[..., np.newaxis, np.newaxis]
 k_y = k_y[..., np.newaxis, np.newaxis]
 s0, sx, sy, sz = (
-    i.reshape(1, 1, 2, 2) for i in
-    (pauli.s0, pauli.sx, pauli.sy, pauli.sz)
+    i.reshape(1, 1, 2, 2) for i in (pauli.s0, pauli.sx, pauli.sy, pauli.sz)
 )
 H = (
-    A * (k_x ** 2 + k_y ** 2) * s0
+    A * (k_x**2 + k_y**2) * s0
     + B * (k_x * sy - k_y * sx)
     + C * 0.5 * ((k_x + 1j * k_y) ** 3 + (k_x - 1j * k_y) ** 3) * sz
 )
@@ -332,11 +294,7 @@ vdims = [r"E"]
 xy_ticks = [-1.2, 0, 1.2]
 zticks = [-1.0, 0.0, 1.0, 2.0, 3.0]
 style = {"xticks": xy_ticks, "yticks": xy_ticks, "zticks": zticks}
-kwargs = {
-    "extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1]),
-    "kdims": kdims,
-    "vdims": vdims,
-}
+kwargs = {"extents": (xylims[0], xylims[0], zlims[0], xylims[1], xylims[1], zlims[1])}
 
 # Custom colormap for the hexagonal warping plot
 cmap_list = [
@@ -345,15 +303,37 @@ cmap_list = [
 ]
 hex_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("custom", cmap_list)
 
-# hex_cmap colormap is defined below.
-holoviews.Overlay(
-    [
-        holoviews.TriSurface(
-            (k_x.flat, k_y.flat, band.flat), **kwargs
-        ).opts(style=dict(cmap=hex_cmap, linewidth=0), plot=style)
-        for band in energies
-    ]
-).opts(plot={"Overlay": {"fig_size": 350}})
+fig = go.Figure()
+colorscale = [
+    [pos, matplotlib.colors.to_hex(hex_cmap(pos))] for pos in np.linspace(0, 1, 7)
+]
+max_abs = float(np.nanmax(np.abs(energies)))
+if not np.isfinite(max_abs) or max_abs == 0:
+    max_abs = max(abs(zlims[0]), abs(zlims[1]))
+for band in energies:
+    fig.add_surface(
+        x=k_x.squeeze(),
+        y=k_y.squeeze(),
+        z=band.squeeze(),
+        colorscale=colorscale,
+        showscale=False,
+        opacity=0.9,
+        cmin=-max_abs,
+        cmax=max_abs,
+    )
+fig.update_layout(
+    title="Hexagonal warping",
+    scene=dict(
+        xaxis=dict(title="kₓ", range=xylims, tickvals=xy_ticks),
+        yaxis=dict(title="kᵧ", range=xylims, tickvals=xy_ticks),
+        zaxis=dict(title="E", range=zlims, tickvals=zticks),
+        aspectmode="cube",
+    ),
+    width=680,
+    height=560,
+    margin=dict(l=30, r=30, t=60, b=20),
+)
+fig
 ```
 
 This Hamiltonian reproduces correctly the *hexagonal warping* of the Fermi surface. In particular, independently of the parameters $\lambda$ and $\alpha$, the vertices of the hexagon are always aligned with the $x$ crystal axis, as is observed experimentally.
@@ -364,7 +344,7 @@ In addition to modifying the shape of the Fermi surface, we see that the extra t
 
 David Vanderbilt will conclude this week's lectures by offering a perspective on the future of the field.
 
-```{code-cell} ipython3
-
-Video("WZmNeEwM1N4")
+```{youtube} WZmNeEwM1N4
+:width: 560
+:height: 315
 ```
