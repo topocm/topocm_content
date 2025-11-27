@@ -18,8 +18,6 @@ kernelspec:
 
 from IPython.display import Latex
 import numpy as np
-from matplotlib import pyplot as plt
-import plotly.graph_objects as go
 
 from course import topomech
 from course.functions import slider_plot
@@ -310,20 +308,24 @@ In the numerical simulation below, you can see explicitly that transforming the 
 The unit cell chosen on the outside has topological polarization zero, while the topological polarization on the inside changes as you deform the unit cell by moving the slider. What you see plotted as you move the slider is the eigenvector associated with the lowest-energy eigenstate of the dynamical matrix, represented as a set of displacements on the lattice points (red arrows).
 
 ```{code-cell} ipython3
-def matplotlib_to_plotly(fig):
-    fig.canvas.draw()
-    image = np.asarray(fig.canvas.renderer.buffer_rgba())
-    plt.close(fig)
-    return go.Figure(go.Image(z=image))
-
-
 def get_figure(x):
     x1 = (0.1, 0.1, 0.1)
     x2 = (x, -x, -x)
     mesh = topomech.dwallslab(x1, x2)
     fig = topomech.showlocalizedmode(mesh)
-    return matplotlib_to_plotly(fig)
+    fig.update_layout(
+        height=520,
+        xaxis=dict(range=base_xrange, visible=False, scaleanchor="y", scaleratio=1),
+        yaxis=dict(range=base_yrange, visible=False),
+        margin=dict(l=0, r=0, t=0, b=0),
+    )
+    return fig
 
+
+base_mesh = topomech.dwallslab((0.1, 0.1, 0.1), (0, 0, 0))
+base_fig = topomech.showlocalizedmode(base_mesh)
+base_xrange = base_fig.layout.xaxis.range
+base_yrange = base_fig.layout.yaxis.range
 
 slider_plot({i: get_figure(i) for i in np.linspace(-0.1, 0.1, 21)}, label="deformation")
 ```

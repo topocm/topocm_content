@@ -77,6 +77,11 @@ def _axis_config(label=None, ticks=None, limits=None, *, allow_latex=True):
 def _copy_axis_settings(source_axis):
     keys = [
         "range",
+        "autorange",
+        "scaleanchor",
+        "scaleratio",
+        "constrain",
+        "fixedrange",
         "tickmode",
         "tickvals",
         "ticktext",
@@ -381,6 +386,8 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
         updatemenus=updatemenus,
         template=pio.templates.default,
         margin=base_margin,
+        height=base_fig.layout.height,
+        width=base_fig.layout.width,
     )
     return fig
 

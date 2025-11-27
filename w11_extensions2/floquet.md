@@ -446,7 +446,7 @@ spectrum = np.array([calculate_bands(momenta, hamiltonians_k, T) for T in period
 
 def plot(n):
     T = periods[n]
-    title = rf"spectrum: $T={T / np.pi:.2} \pi$"
+    title = rf"$\textrm{{spectrum: }}T={T / np.pi:.2} \pi$"
     return line_plot(
         momenta,
         spectrum[n],

@@ -33,8 +33,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 from numpy.linalg import norm
 from scipy import linalg as la
 
@@ -180,89 +180,69 @@ def vis2d(
     pad=1,
     **kwargs,
 ):
-    """Function for visualizing a mesh.
-
-    :param mesh: Input mesh, a :class:`Mesh` instance.
-    :param draw_points: If :const:`True`, draw all points with 'o' markers.
-    :param draw_edges: If:const:`True`, draw bonds as lines of thickness ``lw``.
-    :param eigenfunction: Pass an eigenmode for visualization. This is a 1D numpy array
-        whose length is either ``2*mesh.N`` or ``2*mesh.N+Nb``, where ``N`` and ``Nb`` are the
-        number of points and bonds in ``mesh``. If former, draws arrows corresponding to displacements
-        at each point (two consecutive numbers per point to give first ``2*mesh.N`` entries).
-        If latter, also colours bonds according to tensions which are the last ``Nb`` entries.
-    :param eigenfunctions: List of ``eigenfunction`` arrays to plot simultaneously.
-    :param ecolors: Single color or list of colors with which to draw arrows for ``eigenfunction(s)`` visualization.
-        Accepts any color specifications recognized by :mod:`matplotlib`.
-    :param figname: String that, if passed, becomes filename in which visualization is saved. Should be a valid
-        format for the :meth:`savefig()` command of :mod:`matplotlib.pyplot`.
-    :param noshow: If :const:`True`, does not call :func:`plt.show()` at end of plotting.
-    :param figidx,ax: Specify a figure index (integer) or axis (:obj:`matplotlib.pyplot.Axes` object) within
-        which to plot the mesh. Useful if you want to predefine a figure and axes to plot in. If :const:`None`,
-        a blank figure and axes for the plot are created from scratch.
-    :param clear: If :const:`True`, clear pre-existing stuff on ``figidx`` or ``ax``.
-    :param cutoff: Length of the longest bonds that are actually drawn. If :const:`None`, assigned to be
-        the smaller of ``mesh.lx/2`` or ``mesh.ly/2``, so that bonds that wrap around the system due to
-        periodic boundary conditions are not drawn. Set to some very large number to make sure all bonds are drawn.
-    :param offset: A shift to every point. Can be either a single vector (1D array with two entries) to add
-        to every point, or a ``Nx2`` array giving a unique shift to each of the ``N`` points.
-    :param colormap: Colormap to use for eigenfunction tension visualization as bond colors. String (name) or ColorMap
-        instance as recognized by :mod:`matplotlib`.
-    :param colorbar: If :const:`True`, show a colorbar of the colormap values.
-    :param lw: Line width of bond lines.
-    :param quiverwidth: Width of quiver arrows used for eigenmode visualization.
-    :param bondcolor: Color of bonds (if eigenfunction tensions are not defined). Any olor recognized by
-        :mod:`matplotlib` will work.
-    :param linecollection: If :const:`True`, uses a slightly slower method to draw the edges which behaves
-        much better under zooming in an interactive session.
-    :param ptidx: List of specific points to be drawn if ``draw_points`` is :const:`True`.
-        If :const:`None`, all points are drawn.
-    :param bondforces: A 1D array of length ``Nb`` of scalar values used to color each bond. All parameters that
-        affect eigenfunction tension plotting also affect this.
-    :param pad: Padding around mesh extremities to make sure all points are visible.
-    :param colorbarsymm: if :const:`True`, color bar is symmetric abound zero.
-
-    """
-
-    fig = plt.figure(figsize=(8, 4))
-    ax = fig.add_subplot(1, 1, 1, xticks=[], yticks=[])
-
-    ax.set_aspect("equal")
-    ax.set_axis_off()
+    """Visualize a mesh using Plotly (bonds + displacement arrows)."""
 
     pts = mesh.points() + offset
     lenmode = 2 * len(pts)
 
-    zorder = 0
     cutoff = mesh.lx / 2 if mesh.lx < mesh.ly else mesh.ly / 2
 
-    xpairs = [
-        [pts[bd.p1][0], pts[bd.p2][0]]
-        for bd in mesh.Bonds
-        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff
-    ]
-    ypairs = [
-        [pts[bd.p1][1], pts[bd.p2][1]]
-        for bd in mesh.Bonds
-        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff
-    ]
-    xlist = []
-    ylist = []
-    for xends, yends in zip(xpairs, ypairs):
-        xlist.extend(xends)
-        xlist.append(None)
-        ylist.extend(yends)
-        ylist.append(None)
-    ax.plot(xlist, ylist, "-", color=bondcolor, lw=lw, zorder=zorder)
-    zorder += 1
-    ax.quiver(
-        pts[:, 0],
-        pts[:, 1],
-        eigenfunction[:lenmode:2],
-        eigenfunction[1:lenmode:2],
-        color=ecolors,
-        zorder=zorder,
-        width=quiverwidth,
-        **kwargs,
+    x_lines = []
+    y_lines = []
+    for bd in mesh.Bonds:
+        if norm(pts[bd.p1] - pts[bd.p2]) < cutoff:
+            x_lines.extend([pts[bd.p1][0], pts[bd.p2][0], None])
+            y_lines.extend([pts[bd.p1][1], pts[bd.p2][1], None])
+
+    x_arrows = []
+    y_arrows = []
+    if eigenfunction is not None:
+        disp = eigenfunction[:lenmode].reshape(len(pts), 2)
+        disp *= kwargs.get("scale", 1)
+        for pt, d in zip(pts, disp):
+            x_arrows.extend([pt[0], pt[0] + d[0], None])
+            y_arrows.extend([pt[1], pt[1] + d[1], None])
+
+    def _rgba(color):
+        if isinstance(color, tuple) and len(color) == 4:
+            r, g, b, a = color
+            return f"rgba({r * 255},{g * 255},{b * 255},{a})"
+        if isinstance(color, str):
+            return {"r": "red", "g": "green", "b": "blue"}.get(color, color)
+        return color
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x_lines,
+            y=y_lines,
+            mode="lines",
+            line=dict(color=_rgba(bondcolor), width=lw),
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x_arrows,
+            y=y_arrows,
+            mode="lines",
+            line=dict(color=_rgba(ecolors), width=2),
+            showlegend=False,
+        )
+    )
+    xmin, xmax = pts[:, 0].min() - pad, pts[:, 0].max() + pad
+    ymin, ymax = pts[:, 1].min() - pad, pts[:, 1].max() + pad
+    fig.update_layout(
+        xaxis=dict(
+            visible=False,
+            range=[xmin, xmax],
+            scaleanchor="y",
+            scaleratio=1,
+            fixedrange=True,
+        ),
+        yaxis=dict(visible=False, range=[ymin, ymax], fixedrange=True),
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=500,
     )
     return fig
 
