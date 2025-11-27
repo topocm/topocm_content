@@ -180,8 +180,8 @@ def stacked_qwz(w=50):
     return syst
 
 
-xticks = [(-np.pi, r"$-\pi$"), (0, r"$0$"), (np.pi, r"$\pi$")]
-yticks = [(0, r"$0$"), (np.pi / 2, r"$\pi/2$"), (np.pi, r"$\pi$")]
+xticks = [(-np.pi, "-π"), (0, "0"), (np.pi, "π")]
+yticks = [(0, "0"), (np.pi / 2, "π/2"), (np.pi, "π")]
 
 p = dict(t=1.0, delta=1, gamma=0.5, mu=-0.5)
 syst = stacked_qwz(30)
