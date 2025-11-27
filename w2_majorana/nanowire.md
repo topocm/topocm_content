@@ -384,15 +384,25 @@ def spinorbit_band_gap(syst, mu, t, delta, Bs):
     fig = line_plot(
         Bs,
         gaps.T,
-        labels=[rf"$\\alpha={alpha:.2f}$" for alpha in alphas],
+        labels=[rf"$\alpha={alpha:.2f}$" for alpha in alphas],
         x_label=r"$B$",
         y_label="Band gap",
         x_ticks=style["xticks"],
         y_ticks=style["yticks"],
         show_legend=True,
+        color=["#1f77b4", "#d62728", "#2ca02c", "#9467bd"],
     )
     add_reference_lines(fig, x=np.sqrt(delta**2 + mu**2), line_color="#555")
-    fig.update_layout(title=title)
+    fig.update_layout(
+        title=title,
+        legend=dict(
+            x=0.02,
+            y=0.98,
+            xanchor="left",
+            yanchor="top",
+            bgcolor="rgba(255,255,255,0.75)",
+        ),
+    )
     return fig
 
 

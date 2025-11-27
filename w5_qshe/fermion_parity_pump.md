@@ -280,9 +280,9 @@ bhz_infinite[kwant.HoppingKind((0, 1), lat)] = hopy
 
 bhz_parameters = {"A": 0.5, "B": 1.00, "D": 0.3, "M": 1.0, "del_z": 0.0}
 
-k = (4 / 3) * np.linspace(-np.pi, np.pi, 101)
+k = (4 / 3) * np.linspace(-np.pi, np.pi, 51)
 kwargs = {"k_x": k, "k_y": k, "title": title}
-Ms = np.linspace(-1, 1, 12)
+Ms = np.linspace(-1, 1.5, 15)
 dispersion_frames = {
     bhz_parameters["M"]: spectrum(bhz_infinite, bhz_parameters, **kwargs)
     for bhz_parameters["M"] in Ms

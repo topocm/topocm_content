@@ -224,7 +224,7 @@ def combine_plots(figures, *, cols=2, shared_x=False, shared_y=False, titles=Non
     set_default_plotly_template()
     cols = max(1, int(cols))
     rows = math.ceil(len(figures) / cols)
-    height = max(420, 380 * rows)
+    height = max(460, 380 * rows)
     subplot_titles = titles or [fig.layout.title.text or "" for fig in figures]
     subplot_titles = [
         _validate_plot_text(t, where="subplot title") for t in subplot_titles
@@ -315,12 +315,39 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
         return str(value)
 
     base_value, base_fig = next((v, f) for v, f in items if v == initial)
+    base_xaxis = _copy_axis_settings(base_fig.layout.xaxis)
+    base_yaxis = _copy_axis_settings(base_fig.layout.yaxis)
+
+    def _apply_aspect_defaults(xaxis, yaxis):
+        """Ensure anchored axes keep their domain-based constraint."""
+        has_anchor = bool(xaxis.get("scaleanchor") or yaxis.get("scaleanchor"))
+        if has_anchor:
+            if xaxis.get("constrain") is None:
+                xaxis["constrain"] = "domain"
+            if yaxis.get("constrain") is None:
+                yaxis["constrain"] = "domain"
+
+    _apply_aspect_defaults(base_xaxis, base_yaxis)
+
+    def _merge_axis_defaults(defaults, overrides):
+        merged = dict(defaults)
+        for key, value in overrides.items():
+            if value is not None:
+                merged[key] = value
+        return merged
 
     def _frame_layout(fig):
         text = fig.layout.title.text
         layout = {"title": {"text": text}} if text else {}
-        layout["xaxis"] = _copy_axis_settings(fig.layout.xaxis)
-        layout["yaxis"] = _copy_axis_settings(fig.layout.yaxis)
+        frame_xaxis = _merge_axis_defaults(
+            base_xaxis, _copy_axis_settings(fig.layout.xaxis)
+        )
+        frame_yaxis = _merge_axis_defaults(
+            base_yaxis, _copy_axis_settings(fig.layout.yaxis)
+        )
+        _apply_aspect_defaults(frame_xaxis, frame_yaxis)
+        layout["xaxis"] = frame_xaxis
+        layout["yaxis"] = frame_yaxis
         shapes = fig.layout.shapes or []
         if shapes:
             layout["shapes"] = []
@@ -383,14 +410,24 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
             }
         )
     fig = go.Figure(data=base_fig.data, layout=base_fig.layout, frames=frames)
-    base_margin = base_fig.layout.margin.to_plotly_json()
+    fig.update_xaxes(**base_xaxis)
+    fig.update_yaxes(**base_yaxis)
+    template_margin = (
+        pio.templates[pio.templates.default].layout.margin.to_plotly_json() or {}
+    )
+    fig_margin = base_fig.layout.margin.to_plotly_json()
+    base_margin = {**template_margin, **fig_margin}
+    base_height = base_fig.layout.height
+    target_height = (
+        base_height or pio.templates[pio.templates.default].layout.height or 460
+    )
     base_margin["b"] = base_margin.get("b", 0) + 8
     fig.update_layout(
         sliders=[slider],
         updatemenus=updatemenus,
         template=pio.templates.default,
         margin=base_margin,
-        height=base_fig.layout.height,
+        height=target_height,
         width=base_fig.layout.width,
     )
     return fig

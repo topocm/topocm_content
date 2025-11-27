@@ -433,11 +433,7 @@ p = dict(
 density_values = kwant.operator.Density(bhz_wire)(vecs[:, 0])
 positions = np.array([s.pos for s in bhz_wire.sites])
 norm = density_values / density_values.max()
-rgb = sample_colorscale("Inferno_r", norm.tolist())  # 'rgb(68, 1, 84)' strings
-# rgba = [
-#     c.replace("rgb(", "rgba(")[:-1] + f", {vv:.3f})"
-#     for c, vv in zip(rgb, norm)
-# ]
+rgb = sample_colorscale("Inferno_r", norm.tolist())
 
 fig = go.Figure(
     data=[
@@ -451,14 +447,16 @@ fig = go.Figure(
         )
     ]
 )
-
-fig.update_scenes(
-    xaxis=dict(visible=False, range=[-6, 6]),
-    yaxis=dict(visible=False, range=[-6, 6]),
-    zaxis=dict(visible=False, range=[0, 25]),
-    aspectmode="data",
+fig.update_layout(
+    scene=dict(
+        xaxis=dict(visible=False, range=[-6, 6]),
+        yaxis=dict(visible=False, range=[-6, 6]),
+        zaxis=dict(visible=False, range=[0, 25]),
+        aspectmode="data",
+        camera=dict(eye=dict(x=0.9, y=0.3, z=3.0)),
+    ),
+    margin=dict(l=10, r=10, t=10, b=10),
 )
-fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
 fig
 ```
 

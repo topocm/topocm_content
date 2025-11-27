@@ -145,8 +145,6 @@ def color_table(table, color_array):
     colors = {}
     for idx in np.indices(table.shape).reshape(2, -1).T:
         idx = tuple(idx)
-        if not any(color_array[idx]):
-            pass
         color = ",".join("{:1.2}".format(i) for i in color_array[idx])
         val = str(abs(hash(color)))[:8]
         colors[color] = val

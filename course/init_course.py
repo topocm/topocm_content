@@ -13,8 +13,6 @@ import plotly
 from IPython import display, get_ipython
 from IPython.display import HTML
 
-# A bunch of functions and modules to pass on, we never use them here
-
 from . import functions
 
 init_course = [

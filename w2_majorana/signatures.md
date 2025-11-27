@@ -191,10 +191,11 @@ def plot_spectroscopy(V_barrier):
         "xticks": [-0.1, 0.0, 0.1],
         "yticks": [0.0, 0.5, 1.0, 1.5, 2.0],
     }
-    return line_plot(
+    fig = line_plot(
         energies,
         ys,
         labels=["trivial", "topological"],
+        color=["#1f77b4", "#d62728"],
         x_label=dims["V_bias"],
         y_label=dims["G"],
         x_ticks=style_overlay["xticks"],
@@ -202,6 +203,16 @@ def plot_spectroscopy(V_barrier):
         show_legend=True,
         add_zero_line=True,
     )
+    fig.update_layout(
+        legend=dict(
+            x=0.98,
+            y=0.98,
+            xanchor="right",
+            yanchor="top",
+            bgcolor="rgba(255,255,255,0.8)",
+        )
+    )
+    return fig
 ```
 
 ```{code-cell} ipython3
