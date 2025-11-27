@@ -17,6 +17,8 @@ project:
     - file: index.md
     - file: license.md
       hidden: true
+    - file: whatsnew.md
+      hidden: true
     - title: Before you begin
       children:
         - file: w0_background/intro.md
@@ -98,5 +100,9 @@ site:
   options:
     logo: logo_small.jpg
     folders: true
-    style: "styles/plotly.css"
   template: book-theme
+  nav:
+    - title: What's new
+      url: /whatsnew
+    - title: Course materials
+      url: /w0-background/intro
