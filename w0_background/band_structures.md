@@ -212,7 +212,7 @@ The resulting eigenvalues $E^{(n)}(k)$ consitute the bandstructure of a material
 Let us now work through an example.
 The Su-Schrieffer-Heeger (SSH) model is the simplest model for polyacetylene, which to a physicist can be thought of as a chain of atoms with one orbital per atom.
 However, the hopping strength alternates (corresponding to the alternating bond-length ) between $t_1$ and $t_2$.
-Ususally you could assume that since each orbital has one atom there is only one atom per unit cell.
+Usually you could assume that since each orbital has one atom there is only one atom per unit cell.
 But this would mean all the atoms are identical.
 On the other hand, in polyacetylene, half the atoms are on the right end of a short bond and half of them are on the left.
 Thus there are two kinds of atoms - the former kind we label $R$ and the latter $L$. Thus there are two orbitals per unit cell that we label $|L,n\rangle$ and $|R,n\rangle$ with $n$ being the unit-cell label.
@@ -286,7 +286,7 @@ $$
 #### Discretizing continuum models for materials
 The series expansion of $H(k)$ that we discussed in the previous paragraph is a continuum description of a material.
 This is because the series expansion is valid for small $k$ that is much smaller than the Brillouin zone.
-The continuum Hamiltonian is obtained by replacing $k$ in the series expasion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator.
+The continuum Hamiltonian is obtained by replacing $k$ in the series expansion by $\hbar^{-1}p$, where $p=-i\hbar\partial_x$ is the momentum operator.
 
 A continuum Hamiltonian is sometimes easier to work with analytically than the crystal lattice of orbitals.
 On the other hand, we need to discretize the continuum Hamiltonian to simulate it numerically. We can do this representing $k$ as a discrete derivative operator:
