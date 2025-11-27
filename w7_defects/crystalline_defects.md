@@ -21,7 +21,7 @@ import kwant
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from course.functions import add_reference_lines, combine_plots, pauli, slider_plot, spectrum
+from course.functions import pauli, slider_plot, spectrum
 
 from course.init_course import init_notebook
 
@@ -212,24 +212,40 @@ def displacement(x, y):
     return -np.angle(np.sqrt((y - y0 - 1j * x) * (y - y1 + 1j * x))) / (np.pi)
 
 
-fig = kwant.plot(
+kwant.plotter.set_engine("plotly")
+fig = kwant.plotter.plot(
     bzh_screw_dislocation,
-    site_size=0.02,
-    hop_lw=0.05,
-    fig_size=(9, 9),
+    site_size=0.2,
+    hop_lw=0.12,
     show=False,
     pos_transform=(lambda pos: [pos[0], pos[1], pos[2] + displacement(pos[0], pos[1])]),
 )
-ax = fig.axes[0]
-ax.view_init(elev=40, azim=60)
-ax.plot(
-    [x0, x0, np.nan, x0, x0],
-    [y0, y0, np.nan, y1, y1],
-    [-2, 2, np.nan, -2, 2],
-    lw=3,
-    linestyle=":",
+# Workaround for a Kwant plotly backend bug.
+for tr in fig.data:
+    if tr.mode == "lines":
+        tr.update(line=dict(width=3))
+fig.add_trace(
+    go.Scatter3d(
+        x=[x0, x0, None, x0, x0],
+        y=[y0, y0, None, y1, y1],
+        z=[-2, 2, None, -2, 2],
+        mode="lines",
+        line=dict(color="orange", width=10),
+        showlegend=False,
+    )
 )
-ax.axis("off");
+
+fig.update_layout(
+    showlegend=False,
+    scene=dict(
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        zaxis=dict(visible=False),
+        aspectmode="data",
+    ),
+    margin=dict(l=0, r=0, t=0, b=0),
+)
+fig
 ```
 
 The figure above shows a single unit cell in the $z$-direction that is infinitely repeated to obtain the dispersion relation. Along the $x$ and $y$ directions the system has periodic boundary conditions.
@@ -296,7 +312,9 @@ for name, syst in screw_dislocations.items():
 frames = {}
 for name, spec_fig in screw_dislocation_spectra.items():
     for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
-        fig = make_subplots(rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1)
+        fig = make_subplots(
+            rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1
+        )
         for trace in spec_fig.data:
             fig.add_trace(trace, row=1, col=1)
         fig.add_trace(
@@ -333,8 +351,16 @@ for name, spec_fig in screw_dislocation_spectra.items():
             row=1,
             col=2,
         )
-        fig.update_xaxes(title="x", row=1, col=2)
-        fig.update_yaxes(title="y", row=1, col=2)
+        fig.update_xaxes(
+            title="x",
+            showticklabels=False,
+            showgrid=False,
+            scaleanchor="y2",
+            scaleratio=1,
+            row=1,
+            col=2,
+        )
+        fig.update_yaxes(title="y", showticklabels=False, showgrid=False, row=1, col=2)
         fig.update_layout(title=f"{name}: state {n}")
         frames[f"{name} n={n}"] = fig
 
@@ -393,24 +419,40 @@ x0, y0, y1 = L // 2, W // 4 + 0.5, 3 * W // 4 - 0.5
 bzh_edge_dislocation = edge_dislocation(layered_bhz_infinite, L, W)
 
 
-fig = kwant.plot(
+kwant.plotter.set_engine("plotly")
+fig = kwant.plotter.plot(
     bzh_edge_dislocation,
-    site_size=0.02,
-    hop_lw=0.05,
-    fig_size=(9, 9),
+    site_size=0.2,
+    hop_lw=0.12,
     show=False,
     pos_transform=(lambda pos: [pos[0] + displacement(pos[0], pos[1]), pos[1], pos[2]]),
 )
-ax = fig.axes[0]
-ax.view_init(elev=40, azim=60)
-ax.plot(
-    [x0, x0, np.nan, x0, x0],
-    [y0, y0, np.nan, y1, y1],
-    [-2, 2, np.nan, -2, 2],
-    lw=3,
-    linestyle=":",
+# Workaround for a Kwant plotly backend bug.
+for tr in fig.data:
+    if tr.mode == "lines":
+        tr.update(line=dict(width=3))
+fig.add_trace(
+    go.Scatter3d(
+        x=[x0, x0, None, x0, x0],
+        y=[y0, y0, None, y1, y1],
+        z=[-2, 2, None, -2, 2],
+        mode="lines",
+        line=dict(color="orange", width=10),
+        showlegend=False,
+    )
 )
-ax.axis("off");
+
+fig.update_layout(
+    showlegend=False,
+    scene=dict(
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        zaxis=dict(visible=False),
+        aspectmode="data",
+    ),
+    margin=dict(l=0, r=0, t=0, b=0),
+)
+fig
 ```
 
 The Burgers vector is now along the $y$-direction, and it still has unit length. The band structure and the wave function plots show similar behavior.
@@ -454,7 +496,9 @@ for name, syst in edge_dislocations.items():
 frames = {}
 for name, spec_fig in edge_dislocation_spectra.items():
     for n, (energy, density) in enumerate(zip(energies[name], densities[name])):
-        fig = make_subplots(rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1)
+        fig = make_subplots(
+            rows=1, cols=2, column_widths=[0.6, 0.4], horizontal_spacing=0.1
+        )
         for trace in spec_fig.data:
             fig.add_trace(trace, row=1, col=1)
         fig.add_trace(
@@ -491,8 +535,16 @@ for name, spec_fig in edge_dislocation_spectra.items():
             row=1,
             col=2,
         )
-        fig.update_xaxes(title="x", row=1, col=2)
-        fig.update_yaxes(title="y", row=1, col=2)
+        fig.update_xaxes(
+            title="x",
+            showticklabels=False,
+            showgrid=False,
+            scaleanchor="y2",
+            scaleratio=1,
+            row=1,
+            col=2,
+        )
+        fig.update_yaxes(title="y", showticklabels=False, showgrid=False, row=1, col=2)
         fig.update_layout(title=f"{name}: state {n}")
         frames[f"{name} n={n}"] = fig
 

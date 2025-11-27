@@ -310,6 +310,10 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
         title = getattr(fig.layout, "title", None)
         text = getattr(title, "text", title)
         layout = {"title": {"text": text}} if text else {}
+        if hasattr(fig.layout, "xaxis"):
+            layout["xaxis"] = _copy_axis_settings(fig.layout.xaxis)
+        if hasattr(fig.layout, "yaxis"):
+            layout["yaxis"] = _copy_axis_settings(fig.layout.yaxis)
         if getattr(fig.layout, "shapes", None):
             layout["shapes"] = [s.to_plotly_json() for s in fig.layout.shapes]
         return layout
@@ -338,8 +342,8 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
         "currentvalue": {"prefix": f"{label_text}: "},
         "steps": steps,
     }
-    slider["pad"] = {"t": 56, "b": 16}
-    slider["y"] = -0.15
+    slider["pad"] = {"t": 40, "b": 12}
+    slider["y"] = -0.12
     updatemenus = []
     if play:
         updatemenus.append(
@@ -371,7 +375,7 @@ def slider_plot(figures, *, label="value", initial=None, play=False):
         if getattr(base_fig.layout, "margin", None)
         else pio.templates[pio.templates.default].layout.margin.to_plotly_json()
     )
-    base_margin["b"] = base_margin.get("b", 0) + 30
+    base_margin["b"] = base_margin.get("b", 0) + 8
     fig.update_layout(
         sliders=[slider],
         updatemenus=updatemenus,
@@ -524,25 +528,39 @@ def spectrum(
             )
         )
         fig = go.Figure()
+        # Use a shared divergent colormap centered at zero for all bands
+        max_abs_energy = float(np.nanmax(np.abs(energies)))
+        if not np.isfinite(max_abs_energy) or max_abs_energy == 0:
+            max_abs_energy = 1.0
+        colorscale = "RdBu"
         for idx in range(start, stop):
             fig.add_surface(
                 z=energies[:, :, idx],
-                showscale=idx == start,
-                colorscale="RdBu",
+                showscale=False,
+                colorscale=colorscale,
                 opacity=0.85,
+                cmin=-max_abs_energy,
+                cmax=max_abs_energy,
                 **kwargs,
             )
+        # If no z-limits are supplied, center them symmetrically around zero.
+        if zlims is None:
+            zlims = (-max_abs_energy, max_abs_energy)
 
-            fig.update_layout(
-                title=title(p) if callable(title) else title,
-                scene=dict(
-                    xaxis=_axis_config(xdim, xticks, xlims, allow_latex=False),
-                    yaxis=_axis_config(ydim, yticks, ylims, allow_latex=False),
-                    zaxis=_axis_config(zdim, zticks, zlims, allow_latex=False),
-                ),
-                template=pio.templates.default,
-            )
-            return fig
+        fig.update_layout(
+            title=title(p) if callable(title) else title,
+            scene=dict(
+                xaxis=_axis_config(xdim, xticks, xlims, allow_latex=False),
+                yaxis=_axis_config(ydim, yticks, ylims, allow_latex=False),
+                zaxis=_axis_config(zdim, zticks, zlims, allow_latex=False),
+                aspectmode="cube",
+            ),
+            template=pio.templates.default,
+            width=680,
+            height=560,
+            margin=dict(l=30, r=30, t=60, b=20),
+        )
+        return fig
 
     raise ValueError("Cannot make 4D plots.")
 

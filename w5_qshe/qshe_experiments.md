@@ -192,12 +192,14 @@ for M, color, label in [
     (-0.2, "teal", "trivial"),
     (0.2, "orange", "topological"),
 ]:
-    p["M"] = M
+    params = {**p, "M": M}
     labels.append(label)
     conductance_values.append(
         [
-            kwant.smatrix(syst, energy=0.0, params=p).transmission(1, 0)
-            for p["mu"] in mus
+            kwant.smatrix(syst, energy=0.0, params={**params, "mu": mu}).transmission(
+                1, 0
+            )
+            for mu in mus
         ]
     )
 
@@ -210,6 +212,7 @@ conductance_fig = line_plot(
     x_ticks=list(np.linspace(-0.8, 0.8, 5)),
     y_ticks=[0, 0.5, 1.0, 1.5, 2.0],
     show_legend=True,
+    color=["teal", "orange"],
 )
 conductance_fig.update_layout(title="Conductance")
 
@@ -290,10 +293,12 @@ We can very easily calculate that this is the case if we plot the conductance of
 
 ```{code-cell} ipython3
 E_zs = np.linspace(0, 0.15, 50)
-p["mu"] = 0
-p["M"] = 1
+base_params = {**p, "mu": 0, "M": 1}
 
-G = [kwant.smatrix(syst, params=p).transmission(1, 0) for p["ez_y"] in E_zs]
+G = [
+    kwant.smatrix(syst, params={**base_params, "ez_y": ez}).transmission(1, 0)
+    for ez in E_zs
+]
 conductance_curve = line_plot(
     E_zs,
     np.array(G),
@@ -317,7 +322,8 @@ kwargs = {
 
 
 def frame(ez):
-    spec = spectrum(ribbon, p, **kwargs)
+    params = {**base_params, "ez_y": ez}
+    spec = spectrum(ribbon, params, **kwargs)
     add_reference_lines(spec, y=0, line_dash="dash", line_color="#555")
     fig = make_subplots(
         rows=1, cols=2, column_widths=[0.4, 0.6], horizontal_spacing=0.12

@@ -361,6 +361,9 @@ def plot_dispersion_2D(T):
     ys = np.linspace(-np.pi, np.pi, energies.shape[0])
 
     fig = go.Figure()
+    max_abs = float(np.nanmax(np.abs(energies)))
+    if not np.isfinite(max_abs) or max_abs == 0:
+        max_abs = 1.0
     for band in range(energies.shape[-1]):
         fig.add_surface(
             x=xs,
@@ -369,6 +372,8 @@ def plot_dispersion_2D(T):
             colorscale="RdBu",
             showscale=False,
             opacity=0.9,
+            cmin=-max_abs,
+            cmax=max_abs,
         )
     fig.update_layout(
         title=title,
@@ -386,7 +391,11 @@ def plot_dispersion_2D(T):
                 range=[-np.pi, np.pi],
             ),
             zaxis=dict(title="E", range=[-4, 4], nticks=4),
+            aspectmode="cube",
         ),
+        width=680,
+        height=560,
+        margin=dict(l=30, r=30, t=60, b=20),
     )
     return fig
 

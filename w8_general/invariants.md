@@ -286,7 +286,12 @@ def winding_plot(onsite, lefthopping, righthopping):
     )
     fig.update_layout(
         title=title,
-        xaxis=dict(title=r"$\operatorname{Re}(z)$", range=[-2, 2]),
+        xaxis=dict(
+            title=r"$\operatorname{Re}(z)$",
+            range=[-2, 2],
+            scaleanchor="y",
+            scaleratio=1,
+        ),
         yaxis=dict(title=r"$\operatorname{Im}(z)$", range=[-2, 2]),
         showlegend=True,
     )

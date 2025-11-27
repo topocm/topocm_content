@@ -18,15 +18,11 @@ kernelspec:
 
 import os
 
-
-from matplotlib.collections import LineCollection
-import matplotlib
-
-
 import numpy as np
 import kwant
+import plotly.graph_objects as go
+from plotly.colors import sample_colorscale
 from course.functions import pauli
-from matplotlib import pyplot as plt
 from course.init_course import init_notebook
 
 init_notebook()
@@ -141,27 +137,26 @@ else:
     np.savetxt(data_folder + "first_plot_data_ms.dat", ms)
     np.savetxt(data_folder + "first_plot_data_qs.dat", qs)
 
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.set_prop_cycle("alpha", np.linspace(0, 1, len(qs)))
 
-for q in qs:
-    ax.plot(ms, q)
-
-ax.set_xlabel("$m$")
-ax.set_ylabel(r"$\langle Q \rangle$")
-
-evals = [-0.4, 0, 0.4]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
-
-evals = [-1, 0, 1]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals])
-
-ax.set_xlim(-0.4, 0.4)
-ax.set_ylim(-1.1, 1.1)
-
-ax.hlines(0, ax.get_xlim()[0], ax.get_xlim()[1], linestyles="dashed");
+fig = go.Figure()
+alphas = np.linspace(0.2, 1.0, len(qs))
+colors = ["#1f77b4"] * len(qs)
+for q, alpha in zip(qs, alphas):
+    fig.add_trace(
+        go.Scatter(
+            x=ms,
+            y=q,
+            mode="lines",
+            line=dict(color=f"rgba(31,119,180,{alpha})"),
+            showlegend=False,
+        )
+    )
+fig.add_hline(y=0, line_dash="dash", line_color="#555")
+fig.update_layout(
+    xaxis=dict(title="$m$", range=[-0.4, 0.4]),
+    yaxis=dict(title=r"$\langle Q \rangle$", range=[-1.1, 1.1]),
+)
+fig
 ```
 
 (Darker color corresponds to larger $U$.)
@@ -223,35 +218,29 @@ else:
     np.savetxt(data_folder + "scaling_data_qs.dat", qs)
     np.savetxt(data_folder + "scaling_data_ts.dat", ts)
 
-fig, ax = plt.subplots(figsize=(6, 4))
-
-npoints = qs.shape[0]
+fig = go.Figure()
 X, Y = qs.T, ts.T
-
-for x, y in zip(X, Y):
-    points = np.array([x, y]).T.reshape(-1, 1, 2)
-
-    segments = np.concatenate([points[:-1], points[1:]], axis=1)
-    lc = LineCollection(
-        segments, cmap="gist_heat_r", norm=matplotlib.colors.Normalize(0, npoints + 1)
-    )
-    lc.set_array(np.array(list(range(1, npoints + 1))))
-    ax.add_collection(lc)
-
-
-ax.set_xlim(-1, 1)
-ax.set_ylim(0, 0.5)
-
-ax.set_xlabel(r"$\langle Q \rangle$")
-ax.set_ylabel(r"$\langle T \rangle$")
-
-evals = [-1, -0.5, 0, 0.5, 1]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
-
-evals = [0.0, 0.25, 0.50]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals]);
+num_sizes = qs.shape[0]
+size_colors = sample_colorscale("Viridis", np.linspace(0, 0.9, num_sizes).tolist())
+for curve_idx in range(X.shape[0]):
+    x, y = X[curve_idx], Y[curve_idx]
+    for seg in range(num_sizes - 1):
+        color = size_colors[seg]
+        fig.add_trace(
+            go.Scatter(
+                x=x[seg : seg + 2],
+                y=y[seg : seg + 2],
+                mode="lines",
+                line=dict(color=color, width=2),
+                showlegend=False,
+            )
+        )
+fig.update_layout(
+    xaxis=dict(title=r"$\langle Q \rangle$", range=[-1, 1]),
+    yaxis=dict(title=r"$\langle T \rangle$", range=[0, 0.5]),
+    height=520,
+)
+fig
 ```
 
 The lines have a direction, which tells us how $\langle Q \rangle$ and $\langle T \rangle$ change as we increase $L$. In the plot above, $L$ is increasing in going from bright to dark colors.

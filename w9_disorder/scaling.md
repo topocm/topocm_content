@@ -20,7 +20,7 @@ import os
 
 
 import numpy as np
-from matplotlib import pyplot as plt
+import plotly.graph_objects as go
 from course.init_course import init_notebook
 
 init_notebook()
@@ -147,32 +147,46 @@ In practice, this behavior can be observed at a fixed $L$ by varying one paramet
 ```{code-cell} ipython3
 data = np.loadtxt(data_folder + "data_from_doru.dat")
 
-fig, ax = plt.subplots(figsize=(6, 4))
-
-cmap = plt.get_cmap("gist_heat")
+fig = go.Figure()
+colors = ["#1f77b4", "#d62728", "#2ca02c"]
 for i in range(3):
     x, y = data[i::3, 0], data[i::3, 2]
     error = data[i::3, 3]
     L = data[i, 1]
-    color = cmap(np.log(L - 26) / np.log(243 - 26) * 0.7)
-    ax.errorbar(x, y, yerr=error, label="$L=%i$" % L, color=color)
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode="markers+lines",
+            name=f"$L={int(L)}$",
+            marker=dict(color=colors[i], size=6),
+            line=dict(color=colors[i]),
+            error_y=dict(
+                type="data",
+                array=error,
+                visible=True,
+                color=colors[i],
+                thickness=1.2,
+            ),
+        )
+    )
 
-plt.legend()
-
-plt.xlabel("$V$")
-plt.ylabel(r"$\langle G \rangle$")
+fig.update_layout(
+    legend=dict(x=0.5, y=0.9),
+    xaxis=dict(title="$V$"),
+    yaxis=dict(
+        title=r"$\langle G \rangle$",
+    ),
+    height=520,
+)
 
 evals = [5.5, 5.75, 6]
-ax.set_xticks(evals)
-ax.set_xticklabels([f"${i}$" for i in evals])
+fig.update_xaxes(tickvals=evals, ticktext=[f"${i}$" for i in evals], range=[5.5, 6.0])
 
 evals = [1, 1.5, 2]
-ax.set_yticks(evals)
-ax.set_yticklabels([f"${i}$" for i in evals])
+fig.update_yaxes(tickvals=evals, ticktext=[f"${i}$" for i in evals], range=[1.0, 2.0])
 
-ax.set_xlim(5.5, 6.0)
-ax.set_ylim(1.0, 2.0)
-plt.show()
+fig
 ```
 
 (We thank Doru Sticlet for providing the data for this plot)

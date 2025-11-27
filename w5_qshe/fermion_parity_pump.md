@@ -185,17 +185,7 @@ S = kwant.rmt.circular(N * 2, sym="AII")
 pprint_matrix(S)
 ```
 
-and looking at the eigenvalues of $r^\dagger r$ and $t^\dagger t$:
-
-```{code-cell} ipython3
-r = S[:N, :N]
-print("Reflection eigenvalues")
-pprint_matrix(np.linalg.eigvalsh(r @ r.T.conj()))
-
-t = S[:N, N:]
-print("Transmission eigenvalues")
-pprint_matrix(np.linalg.eigvalsh(t @ t.T.conj())[::-1])
-```
+This scattering matrix has eigenvalues of $r r^\dagger$ equal to {eval}`str(np.linalg.eigvalsh(S[:N, :N] @ S[:N, :N].T.conj()))` and transmission eigenvalues of $t t^\dagger$ equal to {eval}`str(np.linalg.eigvalsh(S[:N, N:] @ S[:N, N:].T.conj())[::-1])`.
 
 > We conclude that if $\mathcal{T}^2=-1$ and the number of edge states going in one direction is odd, they cannot be gapped out, and the system is topological. On the other hand, if there is an even number of such edge states, they can be gapped out. Since these are the only two options, the integer invariant of a Chern insulator is reduced to a $\pm 1$ invariant in the presence of time reversal symmetry. These topologically protected, counterpropagating edge states are often referred to as **helical edge states**.
 
@@ -543,7 +533,22 @@ for M in Ms:
         row=1,
         col=2,
     )
-    fig.update_layout(title=rf"$M={M:.2f}$")
+    fig.update_layout(
+        title=rf"$M={M:.2f}$",
+        legend=dict(x=0.62, y=0.92),
+    )
+    fig.update_scenes(
+        xaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        yaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        row=1,
+        col=1,
+    )
     combined[M] = fig
 
 slider_plot(combined, label="M")

@@ -27,6 +27,8 @@ import numpy as np
 import kwant
 from course.functions import pauli
 from matplotlib import pyplot as plt
+import plotly.graph_objects as go
+from plotly.colors import sample_colorscale
 
 scientific_number = course_init.scientific_number
 
@@ -371,21 +373,14 @@ In fact, the magnet was only a crutch that we used to make our argument. We can 
 To confirm this conclusion, below we show the result of a simulation of a 3D BHZ model in a cube geometry, with a vortex line passing through the middle of the cube. To make things simple, we have added superconductivity everywhere in the cube, and not just on the surface (nothing prevents us from doing this, even though in real life materials like Bi$_2$Te$_3$ are not naturally superconducting).
 
 ```{code-cell} ipython3
-import matplotlib.cm
-import matplotlib.colors as mcolors
 
-colors = matplotlib.cm.gist_heat_r(np.linspace(0, 1, 128))
-colors[:, 3] = np.linspace(0, 1, 128)
-gist_heat_r_transparent = mcolors.LinearSegmentedColormap.from_list(
-    "gist_heat_r_transparent", colors
-)
 ```
 
 ```{code-cell} ipython3
 lat = kwant.lattice.cubic(norbs=8)
 
 
-def cylinder(pos, h=25, r=5):
+def cylinder(pos, h=25, r=4.9):
     (x, y, z) = pos
     return (0 <= z < h) and (y**2 + x**2) <= r**2
 
@@ -435,37 +430,39 @@ p = dict(
     bhz_wire.hamiltonian_submatrix(params=p, sparse=True), sigma=0, k=1, ncv=20
 )
 
-fig = plt.figure(figsize=(9, 3.5))
+density_values = kwant.operator.Density(bhz_wire)(vecs[:, 0])
+positions = np.array([s.pos for s in bhz_wire.sites])
+norm = density_values / density_values.max()
+rgb = sample_colorscale("Inferno_r", norm.tolist())  # 'rgb(68, 1, 84)' strings
+# rgba = [
+#     c.replace("rgb(", "rgba(")[:-1] + f", {vv:.3f})"
+#     for c, vv in zip(rgb, norm)
+# ]
 
-ax0 = fig.add_subplot(121, projection="3d")
-kwant.plot(
-    bhz_wire, ax=ax0, site_size=0.3, site_lw=0.01, site_color="#2267f5cc", hop_lw=0.1
+fig = go.Figure(
+    data=[
+        go.Scatter3d(
+            x=positions[:, 0],
+            y=positions[:, 1],
+            z=positions[:, 2],
+            mode="markers",
+            marker=dict(size=5, color=rgb, opacity=0.5),
+            showlegend=False,
+        )
+    ]
 )
-ax0.set_xlim(-6, 6)
-ax0.set_ylim(-6, 6)
-ax0.set_yticks([])
-ax0.set_xticks([])
-ax0.set_zticks([])
 
-ax1 = fig.add_subplot(122, projection="3d")
-kwant.plotter.plot(
-    bhz_wire,
-    site_color=kwant.operator.Density(bhz_wire)(vecs[:, 0]),
-    ax=ax1,
-    cmap=gist_heat_r_transparent,
-    colorbar=False,
-    site_lw=0,
+fig.update_scenes(
+    xaxis=dict(visible=False, range=[-6, 6]),
+    yaxis=dict(visible=False, range=[-6, 6]),
+    zaxis=dict(visible=False, range=[0, 25]),
+    aspectmode="data",
 )
-
-ax1.set_xlim(-6, 6)
-ax1.set_ylim(-6, 6)
-ax1.set_yticks([])
-ax1.set_xticks([])
-ax1.set_zticks([])
-plt.show()
+fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
+fig
 ```
 
-In the right panel, you can see a plot of the wavefunction of the lowest energy state. You see that it is very well localized at the end points of the vortex line passing through the cube. These are precisely the two Majorana modes that Carlo Beenakker explained at the end of his introductory video.
+The plot of the wavefunction of the lowest energy state shows it is very well localized at the end points of the vortex line passing through the cube. These are precisely the two Majorana modes that Carlo Beenakker explained at the end of his introductory video.
 
 ## Conclusions
 

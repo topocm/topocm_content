@@ -199,7 +199,7 @@ Adding a small $t_2$ initially does not change the situation, but when $t_2$ pas
 And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
-W = 20
+W = 14
 
 
 def ribbon_shape_zigzag(site):
@@ -229,12 +229,98 @@ style = {
     "title": title,
 }
 t_2s = np.linspace(0, 0.5, 20)
-plots = {
-    (p["t_2"], boundary): spectrum(ribbon, p, **style)
-    for p["t_2"] in t_2s
-    for boundary, ribbon in [("zigzag", zigzag_ribbon), ("armchair", armchair_ribbon)]
+boundaries = ("zigzag", "armchair")
+
+
+def ribbon_for(boundary):
+    return zigzag_ribbon if boundary == "zigzag" else armchair_ribbon
+
+
+def band_structure(boundary, t_2):
+    return spectrum(ribbon_for(boundary), {**p, "t_2": t_2}, **style)
+
+
+spectra = {
+    boundary: {t_2: band_structure(boundary, t_2) for t_2 in t_2s}
+    for boundary in boundaries
 }
-slider_plot(plots, label="t₂")
+
+
+initial_boundary = "zigzag"
+initial_t2 = t_2s[0]
+frames = []
+for t_2 in t_2s:
+    data = list(spectra["zigzag"][t_2].data) + list(spectra["armchair"][t_2].data)
+    frames.append(
+        go.Frame(name=f"t2:{t_2:.6f}", data=data, layout=spectra["zigzag"][t_2].layout)
+    )
+
+base_zig = spectra["zigzag"][initial_t2]
+base_arm = spectra["armchair"][initial_t2]
+traces = list(base_zig.data) + list(base_arm.data)
+visible_zig = [True] * len(base_zig.data) + [False] * len(base_arm.data)
+
+fig = go.Figure(data=traces, layout=base_zig.layout, frames=frames)
+for idx, vis in enumerate(visible_zig):
+    fig.data[idx].visible = vis
+
+steps = []
+for t_2 in t_2s:
+    steps.append(
+        {
+            "args": [
+                [f"t2:{t_2:.6f}"],
+                {"frame": {"duration": 0, "redraw": True}, "mode": "immediate"},
+            ],
+            "label": f"{t_2:.3g}",
+            "method": "animate",
+        }
+    )
+slider = {
+    "active": 0,
+    "currentvalue": {"prefix": "t₂: "},
+    "steps": steps,
+    "pad": {"t": 40, "b": 12},
+    "y": -0.12,
+}
+fig.update_layout(sliders=[slider])
+
+buttons = []
+for boundary in boundaries:
+    is_zig = boundary == "zigzag"
+    default_fig = spectra[boundary][initial_t2]
+    mask = (
+        [True] * len(base_zig.data) + [False] * len(base_arm.data)
+        if is_zig
+        else [False] * len(base_zig.data) + [True] * len(base_arm.data)
+    )
+    buttons.append(
+        {
+            "label": boundary,
+            "method": "update",
+            "args": [
+                {"visible": mask},
+                {
+                    "title": default_fig.layout.title,
+                    "sliders": [slider],
+                },
+            ],
+        }
+    )
+
+fig.update_layout(
+    updatemenus=[
+        {
+            "type": "dropdown",
+            "direction": "down",
+            "showactive": True,
+            "buttons": buttons,
+            "x": 0.02,
+            "y": 1.14,
+        }
+    ]
+)
+fig
 ```
 
 The appearance of edge states means that graphene has entered a topological phase after the gap closing. This phase is akin to the quantum Hall phase - the edge states are of the same kind. However, as Duncan Haldane explained in the introduction, it is realized without a strong magnetic field.
@@ -437,7 +523,7 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
                 zmid=0,
                 zmin=-vmax,
                 zmax=vmax,
-                colorbar=dict(title="Berry curvature"),
+                colorbar=dict(title={"text": "Ω", "side": "right"}),
             )
         ]
     )
@@ -457,6 +543,9 @@ def plot_berry_curvature(syst, p, ks=None, title=None):
     fig.update_layout(
         xaxis=dict(scaleanchor="y", scaleratio=1, constrain="domain"),
         yaxis=dict(constrain="domain"),
+        width=680,
+        height=560,
+        margin=dict(l=60, r=120, t=70, b=50),
     )
     return fig
 ```

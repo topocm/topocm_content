@@ -328,54 +328,52 @@ for M in Ms:
     inv_fig = invariant_plots[M]
     fig = go.Figure()
     subplot = make_subplots(
-        rows=1,
-        cols=2,
-        column_widths=[0.6, 0.4],
-        horizontal_spacing=0.12,
-        specs=[[{"type": "scene"}, {"type": "xy"}]],
+        rows=2,
+        cols=1,
+        row_heights=[0.6, 0.4],
+        vertical_spacing=0.12,
+        specs=[[{"type": "scene"}], [{"type": "xy"}]],
     )
     for trace in spec_fig.data:
         subplot.add_trace(trace, row=1, col=1)
-    if hasattr(spec_fig.layout, "scene"):
-        subplot.update_scenes(
-            xaxis_title=spec_fig.layout.scene.xaxis.title.text,
-            yaxis_title=spec_fig.layout.scene.yaxis.title.text,
-            zaxis_title=spec_fig.layout.scene.zaxis.title.text,
-            row=1,
-            col=1,
-        )
-    else:
-        subplot.update_xaxes(
-            title=spec_fig.layout.xaxis.title.text,
-            range=spec_fig.layout.xaxis.range,
-            row=1,
-            col=1,
-        )
-        subplot.update_yaxes(
-            title=spec_fig.layout.yaxis.title.text,
-            range=spec_fig.layout.yaxis.range,
-            row=1,
-            col=1,
-        )
+    subplot.update_scenes(
+        xaxis_title=spec_fig.layout.scene.xaxis.title.text,
+        yaxis_title=spec_fig.layout.scene.yaxis.title.text,
+        zaxis_title=spec_fig.layout.scene.zaxis.title.text,
+        xaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        yaxis=dict(
+            tickvals=[-np.pi, 0, np.pi],
+            ticktext=["−π", "0", "π"],
+        ),
+        row=1,
+        col=1,
+    )
     for trace in inv_fig.data:
-        subplot.add_trace(trace, row=1, col=2)
+        subplot.add_trace(trace, row=2, col=1)
     subplot.update_xaxes(
         title=inv_fig.layout.xaxis.title.text,
         range=inv_fig.layout.xaxis.range,
         tickvals=inv_fig.layout.xaxis.tickvals,
         ticktext=inv_fig.layout.xaxis.ticktext,
-        row=1,
-        col=2,
+        row=2,
+        col=1,
     )
     subplot.update_yaxes(
         title=inv_fig.layout.yaxis.title.text,
         range=inv_fig.layout.yaxis.range,
         tickvals=inv_fig.layout.yaxis.tickvals,
         ticktext=inv_fig.layout.yaxis.ticktext,
-        row=1,
-        col=2,
+        row=2,
+        col=1,
     )
-    subplot.update_layout(title=f"M={M:.3f}")
+    subplot.update_layout(
+        title=f"M={M:.3f}",
+        height=720,
+        legend=dict(x=0.62, y=0.12),
+    )
     fig = subplot
     frames[M] = fig
 

@@ -307,6 +307,9 @@ fig = go.Figure()
 colorscale = [
     [pos, matplotlib.colors.to_hex(hex_cmap(pos))] for pos in np.linspace(0, 1, 7)
 ]
+max_abs = float(np.nanmax(np.abs(energies)))
+if not np.isfinite(max_abs) or max_abs == 0:
+    max_abs = max(abs(zlims[0]), abs(zlims[1]))
 for band in energies:
     fig.add_surface(
         x=k_x.squeeze(),
@@ -315,6 +318,8 @@ for band in energies:
         colorscale=colorscale,
         showscale=False,
         opacity=0.9,
+        cmin=-max_abs,
+        cmax=max_abs,
     )
 fig.update_layout(
     title="Hexagonal warping",
@@ -322,9 +327,11 @@ fig.update_layout(
         xaxis=dict(title="kₓ", range=xylims, tickvals=xy_ticks),
         yaxis=dict(title="kᵧ", range=xylims, tickvals=xy_ticks),
         zaxis=dict(title="E", range=zlims, tickvals=zticks),
+        aspectmode="cube",
     ),
-    width=700,
-    height=500,
+    width=680,
+    height=560,
+    margin=dict(l=30, r=30, t=60, b=20),
 )
 fig
 ```
