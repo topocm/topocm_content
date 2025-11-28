@@ -1,6 +1,6 @@
 version: 1
 project:
-  title: 'Topology in condensed matter: tying quantum knots'
+  title: "Topology in condensed matter: tying quantum knots"
   copyright: 2025, TU Delft
   license:
     code: BSD-3-Clause
@@ -8,13 +8,13 @@ project:
   exclude:
     - _build
     - src
-    - '**.ipynb_checkpoints'
+    - "**.ipynb_checkpoints"
     - readme.md
   settings:
     output_stderr: remove-error
   github: topocm/topocm_content
   toc:
-    - file: index.md
+    - file: landing.md
     - file: license.md
       hidden: true
     - file: whatsnew.md
@@ -34,7 +34,7 @@ project:
         - file: w2_majorana/signatures.md
         - file: w2_majorana/braiding.md
         - file: w2_majorana/w2_assignments.md
-    - title: 'More parameters: charge pumping'
+    - title: "More parameters: charge pumping"
       children:
         - file: w3_pump_QHE/pumps.md
         - file: w3_pump_QHE/Laughlinargument.md
