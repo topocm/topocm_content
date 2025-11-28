@@ -7,36 +7,32 @@ The script is idempotent and safe to run repeatedly.
 
 from __future__ import annotations
 
-import json
 import shutil
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Sequence
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
+MYST_CONFIG = ROOT / "myst.yml"
 STATIC_SRC = ROOT / "_static"
-SITE_PUBLIC = ROOT / "_build" / "site" / "public"
 BUILD_HTML = ROOT / "_build" / "html"
-BUILD_TARGETS = [path for path in (SITE_PUBLIC, BUILD_HTML) if path.exists()]
-CONFIG_CANDIDATES = [
-    ROOT / "_build" / "site" / "config.json",
-    BUILD_HTML / "config.json",
-]
+BUILD_TARGETS = [BUILD_HTML]
 
 QUIZ_SNIPPET = '<script src="/_static/quiz.js" defer></script>'
 ANALYTICS_SNIPPET = '<script src="/_static/matomo.js" defer></script>'
-# Markers used to detect redirect pages and quiz DOM. The redirect marker detection
-# is intentionally conservative to avoid injecting JS into pages that are pure
-# redirects. The quiz DOM markers reflect the output emitted by quizzes.mjs.
-HTML_REDIRECT_DETECTORS = ('<meta http-equiv="refresh"', "window.location.replace(")
-QUIZ_DOM_MARKERS = (
-    'data-type="quiz-html"',
-    "data-quiz-wrapper",
-    'data-role="quiz-option"',
-)
 
 HTML_REDIRECT_TEMPLATE = """<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>Redirecting…</title>\n  <meta http-equiv=\"refresh\" content=\"0; url={target_href}\">\n  <link rel=\"canonical\" href=\"{canonical_url}\">\n  <script>window.location.replace('{target_href}');</script>\n</head>\n<body>\n  <p>This page has moved to <a href=\"{canonical_url}\">{canonical_url}</a>.</p>\n</body>\n</html>\n"""
+
+
+def load_config() -> dict:
+    if not MYST_CONFIG.exists():
+        raise FileNotFoundError(
+            "Could not locate myst.yml. Please build the book before running redirects."
+        )
+    return yaml.safe_load(MYST_CONFIG.read_text(encoding="utf-8"))
 
 
 @dataclass(frozen=True)
@@ -52,35 +48,17 @@ class RedirectSpec:
 
 
 def _iter_toc_files(entries: Iterable[dict]) -> Iterable[str]:
-    for item in entries or []:
+    for item in entries:
         file_path = item.get("file")
         if file_path:
             yield file_path
-        children = item.get("children") or []
-        if children:
-            yield from _iter_toc_files(children)
+        yield from _iter_toc_files(item.get("children", []))
 
 
 def load_markdown_sources() -> list[Path]:
-    config_data = None
-    for candidate in CONFIG_CANDIDATES:
-        if candidate.exists():
-            config_data = json.loads(candidate.read_text(encoding="utf-8"))
-            break
-    if config_data is None:
-        raise FileNotFoundError(
-            "Could not locate a MyST config.json. Please build the book before running redirects."
-        )
-
-    projects = config_data.get("projects") or []
-    if not projects:
-        return []
-
-    files = {
-        Path(file_path)
-        for file_path in _iter_toc_files(projects[0].get("toc", []))
-        if file_path
-    }
+    config_data = load_config()
+    toc_entries = config_data["project"]["toc"]
+    files = {Path(file_path) for file_path in _iter_toc_files(toc_entries) if file_path}
     markdown_files = [path for path in files if path.suffix.lower() == ".md"]
     return sorted(markdown_files, key=lambda path: path.as_posix())
 
@@ -100,13 +78,9 @@ def build_redirect_specs() -> list[RedirectSpec]:
     specs: list[RedirectSpec] = []
 
     for rel_path in markdown_files:
-        if not rel_path.parts:
-            continue
-
         parent_parts = rel_path.parts[:-1]
         is_root_index = not parent_parts and rel_path.stem.lower() == "index"
         if is_root_index:
-            # The homepage already lives at index.html, so there is nothing to redirect.
             continue
 
         slug_dirs = [
@@ -157,20 +131,10 @@ def copy_static(dest: Path) -> None:
 def inject_scripts(page: Path) -> bool:
     html = page.read_text(encoding="utf-8")
 
-    # Do not inject into redirect pages (either pre-existing or created by previous runs)
-    # to avoid polluting a redirect with site-wide scripts.
-    if any(detector in html for detector in HTML_REDIRECT_DETECTORS):
-        return False
-
     snippets = []
-    # Only inject the quiz widget loader if the page looks like it contains a quiz
-    # produced by the quizzes.mjs plugin. This avoids adding quiz.js to pages that don't
-    # need it.
-    if "/_static/quiz.js" not in html:
-        if any(marker in html for marker in QUIZ_DOM_MARKERS):
-            snippets.append(QUIZ_SNIPPET)
-
-    if "/_static/matomo.js" not in html:
+    if QUIZ_SNIPPET not in html:
+        snippets.append(QUIZ_SNIPPET)
+    if ANALYTICS_SNIPPET not in html:
         snippets.append(ANALYTICS_SNIPPET)
 
     if not snippets:
@@ -198,22 +162,9 @@ def process_html() -> None:
         copy_static(static_dest)
 
         injected = 0
-        # Avoid injecting into pages that we will generate as legacy redirects below.
-        legacy_paths = {spec.legacy_html for spec in redirect_specs}
-        for html_file in target.rglob("*.html"):
-            try:
-                rel_html = html_file.relative_to(target)
-            except Exception:
-                # Should not happen in normal operation, but be tolerant.
-                rel_html = html_file
-            if rel_html in legacy_paths:
-                # Skip injecting into pages we plan to replace with redirect files.
-                continue
-            try:
-                if inject_scripts(html_file):
-                    injected += 1
-            except UnicodeDecodeError:
-                continue
+        for index_html in target.rglob("index.html"):
+            if inject_scripts(index_html):
+                injected += 1
 
         print(f"Processed {target} -> injected scripts into {injected} HTML files.")
 
