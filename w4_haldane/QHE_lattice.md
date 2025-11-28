@@ -29,7 +29,7 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 ## Introduction: stacking wires
 
-Looking back at the material from the past weeks, you might have the impression that the quantum Hall effect and one dimensional topological superconductors are really different topics, and not connected at all.
+Looking back at the material from the past weeks, you might have the impression that the quantum Hall effect and one-dimensional topological superconductors are really different topics, and not connected at all.
 
 Xiaoliang Qi from Stanford University will now explain that this is not the case, and will also introduce this week's topic - Chern insulators.
 
@@ -42,17 +42,17 @@ Xiaoliang Qi from Stanford University will now explain that this is not the case
 
 Last week, we started with a phenomenological description of the quantum Hall effect. We learned that one way to get a quantum Hall state is to place electrons in an external magnetic field.
 
-However, we still don't have a simple lattice Hamiltonian describing the quantum Hall effect - we'd like to have something like the Kitaev chain model, which was very useful to understand Majoranas in the first two weeks of the course. An added benefit of finding this tight binding model is that it would not need an external magnetic field to exhibit the unique properties of quantum Hall effect.
+However, we still don't have a simple lattice Hamiltonian describing the quantum Hall effect—we'd like to have something like the Kitaev chain model, which was very useful to understand Majoranas in the first two weeks of the course. An added benefit of finding this tight-binding model is that it would not need an external magnetic field to exhibit the unique properties of quantum Hall effect.
 
 These models exist, and they are referred to as *Chern insulators*. The quantum Hall effect without an external magnetic field is also referred to as the *quantum anomalous Hall effect*. Duncan Haldane, from who we will hear in the next chapter, invented the first model of a Chern insulator now known as *Haldane model*. However, in this chapter, we will use a more natural route that fits better into the context of our course so far.
 
 ### General strategy to construct a lattice model for the Quantum Hall Effect
 
-What we will do to get a model for a Chern insulator is to follow a "domino prescription", as we did to get the Kitaev model in week 1. Our strategy will have two key aspects:
+What we will do to get a model for a Chern insulator is to follow a "domino prescription," as we did to get the Kitaev model in week 1. Our strategy will have two key aspects:
 
 * Focusing on the unique property of the quantum Hall edge that cannot exist in isolation from a bulk, and can only be present because of bulk-boundary correspondence. For the Kitaev chain, this property was the presence of unpaired Majorana modes. In the quantum Hall effect, it is the chiral edge states.
 
-* Finding a lower dimensional building block, from which we can somehow “extract“ in a clever way the exotic object we are interested in. In the Kitaev chain, these were the fermionic sites, which we could think of as a pair of Majorana modes.
+* Finding a lower dimensional building block, from which we can somehow "extract" in a clever way the exotic object we are interested in. In the Kitaev chain, these were the fermionic sites, which we could think of as a pair of Majorana modes.
 
 So we need to find a one-dimensional system which can host a pair of chiral edge states. Since they are one-dimensional, these states will necessarily be spatially on top of each other, essentially a pair of propagating modes with opposite velocity. Once we have this building block, we can follow the domino prescription: couple the counter-propagating states in pairs, just like we did with Majorana modes. We then end up with a pair of spatially separated chiral edge states, and so a quantum Hall insulator without magnetic field.
 
@@ -62,11 +62,11 @@ So our plan is to turn the system on the left into the system on the right:
 
 Voilà - we have a lattice model for the 2D quantum Hall state!
 
-### Getting a one dimensional wire with a pair of edge states
+### Getting a one-dimensional wire with a pair of edge states
 
 Let's focus on the first essential step of our plan: finding a one dimensional system with a pair of counter-propagating chiral states.
 
-You might guess that the easiest way to get a pair of states moving in opposite directions is to take the usual one dimensional single electron Hamiltonian with an effective mass. Such a system has a parabolic dispersion and the low energy excitations at a finite Fermi wave-vector $k=\pm k_F$ move in opposite directions. The catch is that these two states have different momenta, and it is tricky (though not impossible) to deal with momentum conservation when pairing the edges. So we will avoid this approach.
+You might guess that the easiest way to get a pair of states moving in opposite directions is to take the usual one-dimensional single-electron Hamiltonian with an effective mass. Such a system has a parabolic dispersion and the low-energy excitations at a finite Fermi wave-vector $k=\pm k_F$ move in opposite directions. The catch is that these two states have different momenta, and it is tricky (though not impossible) to deal with momentum conservation when pairing the edges. So we will avoid this approach.
 
 The more educated guess we make a model that we have already encountered, the Dirac model $H= \Delta\,k\, \tau_y$ of the Kitaev chain at the topological phase transition.
 
@@ -99,7 +99,7 @@ Let us now couple the wires to get the quantum Hall system as promised. We take 
 
 Now let us make this formal by first labeling the chains by an index $n_y$, which takes integer values. Let us also replace $k\rightarrow k_x$ to denote the wave-vector along a chain. Hence a single chain has the Hamiltonian $\left[-(2 t\cos{k_x}+\mu)\,\tau_z+\Delta \sin{k_x}\tau_y\right]\,\otimes\,\left|\,n_y\right\rangle\left\langle n_y\right|$. The projector $\left|\,n_y\right\rangle\left\langle n_y\right|$ is needed to single out one chain from the stack.
 
-Now all that we have to do is to couple the $\tau_y=-1$ branch of one chain to the $\tau_y=+1$ branch of a neighboring chain,  and we will have a quantum Hall state.
+Now all that we have to do is to couple the $\tau_y=-1$ branch of one chain to the $\tau_y=+1$ branch of a neighboring chain, and we will have a quantum Hall state.
 
 A term coupling opposite movers from different chains is $\left|\,n_y\right\rangle\left\langle n_y+1\right|\otimes (\tau_z+i\tau_x)$. The first part couples neighboring chains and the matrix $(\tau_z+i\tau_x)$ turns a right mover into a left mover, which is what we want. Let's call the strength of this coupling $\gamma$.
 

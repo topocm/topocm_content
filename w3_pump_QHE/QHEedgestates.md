@@ -29,7 +29,7 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 ## Where do the pumped electrons come from and go to?
 
-You have just seen that Laughlin's argument explains the quantization of the Hall conductance in terms of a pump which moves electrons through the bulk of a Hall cylinder, from one edge to the other of the cylinder.
+You have just seen that Laughlin's argument explains the quantization of the Hall conductance in terms of a pump which moves electrons through the bulk of a Hall cylinder, from one edge of the cylinder to the other.
 
 Compare the situation with the simple electron pump which you studied earlier in the lecture. There, the pump moved electrons from one metallic lead to the other. Clearly the pump worked thanks to the availability of electronic states at the Fermi level in the two metallic leads. Otherwise, it would have no electrons to take and no place to drop them. Without the metallic leads, the pump would be like an empty carousel.
 
@@ -37,7 +37,7 @@ When applied to the Hall cylinder, this simple reasoning shows that Laughlin's a
 
 It is in fact very easy to convince ourselves that such states must exist. We just need to think again about the classical trajectory of an electron with velocity $v$ moving in a perpendicular magnetic field $B$. This trajectory is a circular orbit with radius given by the cyclotron radius.
 
-What happens to the classical trajectory of an electron when the center of the orbit is too close to the edge of the cylinder, say closer than a cyclotron radius? It is easier drawn than said:
+What happens to the classical trajectory of an electron when the center of the orbit is too close to the edge of the cylinder, say closer than a cyclotron radius? It is easier shown than said:
 
 ![](figures/skipping_orbits.svg)
 
@@ -47,13 +47,13 @@ The electrons cannot exit the sample, and need to bounce back inside. This creat
 
 The chirality of the edges is determined by the orientation of the magnetic field (out of the plane vs. into the plane), and it would be reversed at both edges if the magnetic field were reversed.
 
-The cartoon above is purely based on classical physics, and needs to be supplemented with quantum considerations before it can give quantitative predictions. We will soon see that the quantum version of the cartoon above can give an explanation of the quantized Hall effect, complementary to Laughlin's argument.
+The cartoon above is purely based on classical physics, and needs to be supplemented with quantum considerations before it can give quantitative predictions. We will soon see that the quantum version of the cartoon above can explain the quantized Hall effect, complementary to Laughlin's argument.
 
 But before we move on to that, we should realize that the picture above is in fact a manifestation of the **bulk-boundary correspondence**. Chiral edge states could not exist without the bulk of the quantum Hall sample.
 
 ## A closer look at the chiral edge states
 
-So let's look at the edges of a Hall system in more detail. Let's think about the ribbon geometry, that we used when we discussed the Laughlin pump in a Hall cylinder. This time, we will take into account explicitly that the ribbon has a finite width $W$ in the $y$ direction.
+So let's look at the edges of a Hall system in more detail. Let's think about the ribbon geometry that we used when we discussed the Laughlin pump in a Hall cylinder. This time, we will take into account explicitly that the ribbon has a finite width $W$ in the $y$ direction.
 
 In practice, in order to confine the electrons in this region there must be a potential barrier $V(y)$, which has to be added to the Hamiltonian:
 
@@ -140,7 +140,7 @@ $$
 
 The velocity is opposite at the two edges because the local electric field $\mathcal{E}$ created by the confining potential always points towards the interior of the sample.
 
-An important thing to note is that the presence of edge states does not depend in any way on the particular shape of the sample as well. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a “picture” of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
+An important thing to note is that the presence of edge states does not depend on the particular shape of the sample. You can cut a quantum Hall system in any way you want, but as long as it has edges, it will have edge states. To demonstrate this, let's take a "picture" of the edge states by plotting the local density of states at the Fermi level in a Hall bar.
 
 ```{code-cell} ipython3
 def qhe_hall_bar(L=50, W=10, w_lead=10, w_vert_lead=None):
@@ -258,11 +258,11 @@ $$
 
 with $\Phi_0=h/e$ a flux quantum! Since the number of electrons is changing, **charge is not conserved**. In particular, after a time such that $\mathcal{E}L t = \Phi_0$, it seems that exactly one electron has popped out of nowhere at the edge.
 
-At this point, you should understand what's happening. This is just how the Laughlin pump manifests itself if you only look at one edge. The number of electrons at one edge can increase, because electrons are being depleted from the other edge (which is not included in our “theory”) and pumped through the bulk until they appear.
+At this point, you should understand what's happening. This is just how the Laughlin pump manifests itself if you only look at one edge. The number of electrons at one edge can increase because electrons are being depleted from the other edge (which is not included in our "theory") and pumped through the bulk until they appear.
 
 > This property of the edge is referred to as the **chiral anomaly**. The chiral anomaly tells us that we cannot have a consistent theory for a chiral edge state without a bulk, which at the same time conserves electric charge. Chiral edge states, or anything else that exhibits a chiral anomaly, are an example of the bulk edge correspondence, since they can only appear at the edge of a two dimensional system and never in isolation.
 
-We called the anomaly “harmless” since the non-conservation of charge at the edge has a very simple explanation when the rest of the system is included in the picture. If you ever encounter other “anomalous” theories, it might well be a sign that the system under consideration is only the edge of something else!
+We called the anomaly "harmless" since the non-conservation of charge at the edge has a very simple explanation when the rest of the system is included in the picture. If you ever encounter other "anomalous" theories, it might well be a sign that the system under consideration is only the edge of something else!
 
 ## Quantization of Hall Conductance from edge states
 

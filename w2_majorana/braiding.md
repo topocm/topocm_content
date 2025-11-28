@@ -26,11 +26,11 @@ As you just heard in the video, the goal of this lecture is to compute the quant
 
 ![](figures/nanowire_network.svg)
 
-In the drawing, you can see a nanowire with many T-shaped junctions in between several Majorana zero modes (which is why we call it a network). We will not worry about the microscopic description of the nanowire network, which will differ in irrelevant ways from similar structures in alternative platforms for Majoranas (we'll learn about those later, in week 7). Just to fix the ideas, you can imagine that the system can be effectively described by the Kitaev chain toy-model, and that the Majoranas are at the positions of domain walls where the gap changes sign, as you saw in the first week of the course.
+In the drawing, you can see a nanowire with many T-shaped junctions in between several Majorana zero modes (which is why we call it a network). We will not worry about the microscopic description of the nanowire network, which will differ in irrelevant ways from similar structures in alternative platforms for Majoranas (we'll learn about those later, in week 7). Just to fix the ideas, you can imagine that the system can be effectively described by the Kitaev chain toy model, and that the Majoranas are at the positions of domain walls where the gap changes sign, as you saw in the first week of the course.
 
-The only thing that distinguishes the Majorana zero modes is their position in the network. They have no other “flavour” that would allow us to characterize them. They are identical to each other, just like all electrons are identical to each other. If we exchanged two Majoranas in space, the system after the exchange would look exactly the same as it looked before the exchange.
+The only thing that distinguishes the Majorana zero modes is their position in the network. They have no other "flavour" that would allow us to characterize them. They are identical to each other, just like all electrons are identical to each other. If we exchanged two Majoranas in space, the system after the exchange would look exactly the same as it looked before the exchange.
 
->It is very interesting to ask what is the behaviour of the quantum state $\left|\Psi\right\rangle$ of a system of identical particles under the exchange of two of the particles. You already know that for bosons and fermions $\left|\Psi\right\rangle\,\to\,\pm\left|\Psi\right\rangle$. To see what happens in the case of Majoranas, we first have to learn how to write down the quantum state $\left|\Psi\right\rangle$ corresponding to a set of Majoranas like the one sketched above.
+>It is very interesting to ask what is the behavior of the quantum state $\left|\Psi\right\rangle$ of a system of identical particles under the exchange of two of the particles. You already know that for bosons and fermions $\left|\Psi\right\rangle\,\to\,\pm\left|\Psi\right\rangle$. To see what happens in the case of Majoranas, we first have to learn how to write down the quantum state $\left|\Psi\right\rangle$ corresponding to a set of Majoranas like the one sketched above.
 
 ### The Hilbert space of a set of Majoranas
 
@@ -38,9 +38,9 @@ From now on, it is important to keep in mind that by considering only the states
 
 ![](figures/gs_manifold.svg)
 
-Based on your knowledge of the Kitaev chain, this assumption should sound reasonable to you. Because you have several Majoranas, there will be several states all at zero energy, forming a “ground state manifold”.
+Based on your knowledge of the Kitaev chain, this assumption should sound reasonable to you. Because you have several Majoranas, there will be several states all at zero energy, forming a "ground state manifold."
 
-Let's now explore more in detail the ground state manifold defined by this degenerate sets of states.
+Let's now explore in more detail the ground state manifold defined by this degenerate set of states.
 
 In the drawing you see six Majoranas, that is three pairs, but let's consider here the more general case of $N$ pairs. It might appear that since the $\gamma_n$s don't appear in the Hamiltonian, there is a degenerate quantum state for each of the $2N$ values of $n$. However, just as Majorana modes appear in pairs, they can be assigned quantum states only in pairs.
 
@@ -113,7 +113,7 @@ $$
 
 In particular, linear combinations of states with different total parity are forbidden. You can see this condition as a constraint on the allowed values of the coefficients $\alpha_{s_1s_2\dots s_N}$.
 
-This consideration only applies to closed systems. It does not apply if we are considering a system which is in contact with a reservoir of electrons, such as a metallic lead, in which case electrons may tunnel in and out of the lead, changing the total parity of the system. Equivalently, it does not apply if we are considering only a part of the total system. You could for instance imagine that, in our sketch, there are more Majorana zero modes in the part of the network which is not drawn explicitly (represented by the dots which “continue” the nanowire). In such a case it is perfectly possible that the *total* network is in, say, a state of even parity, but that the subsystem under consideration is in a superposition of even and odd parity states.
+This consideration only applies to closed systems. It does not apply if we are considering a system which is in contact with a reservoir of electrons, such as a metallic lead, in which case electrons may tunnel in and out of the lead, changing the total parity of the system. Equivalently, it does not apply if we are considering only a part of the total system. You could for instance imagine that, in our sketch, there are more Majorana zero modes in the part of the network which is not drawn explicitly (represented by the dots that "continue" the nanowire). In such a case it is perfectly possible that the *total* network is in, say, a state of even parity, but that the subsystem under consideration is in a superposition of even and odd parity states.
 
 ```{multiple-choice} Consider an isolated system with N=7 pairs of Majoranas, and an even total fermion parity. What is the ground state degeneracy of the system?
 :explanation: 7 pairs of Majoranas means a Hilbert space with dimension 2^7, out of which half have even total parity and half have odd total parity. So the degeneracy at fixed even parity is 2^6.

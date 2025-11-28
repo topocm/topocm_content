@@ -42,7 +42,7 @@ Our second guest lecturer for this week is Carlo Beenakker, from Leiden Universi
 
 ## Andreev reflection
 
-To understand how conductance through a Majorana works, we first have to learn how charge is transferred from a metallic lead to a superconductor. In general this transfer takes place via a mechanism known as Andreev reflection. Before we discuss the conductance signatures of a Majorana zero mode, it is useful to learn what Andreev reflection is.
+To understand how conductance through a Majorana works, we first have to learn how charge is transferred from a metallic lead to a superconductor. In general, this transfer takes place via a mechanism known as Andreev reflection. Before we discuss the conductance signatures of a Majorana zero mode, it is useful to learn what Andreev reflection is.
 
 Let's consider the following very simple circuit with two electrodes:
 
@@ -66,7 +66,7 @@ You can see that a net charge of $2e$ is transferred from the left to the right 
 
 Above the superconducting gap, $eV > \Delta$ transmission of an incident electron into the superconductor also contributes to the current.
 
-You can also think of Andreev *reflection* as a *transmission* problem. Because of the presence of the superconductor, both electrons and holes participate in the transfer of charge in the normal metal lead. Conceptually, you can imagine to separate the left lead into two leads, one only carrying electrons and one only carrying holes. These two leads are connected by the superconductor, which converts incoming electrons in the first lead into outgoing holes in the second lead, and vice versa:
+You can also think of Andreev *reflection* as a *transmission* problem. Because of the presence of the superconductor, both electrons and holes participate in the transfer of charge in the normal metal lead. Conceptually, you can imagine separating the left lead into two leads, one only carrying electrons and one only carrying holes. These two leads are connected by the superconductor, which converts incoming electrons in the first lead into outgoing holes in the second lead, and vice versa:
 
 ![](figures/andreev_as_transmission.svg)
 
@@ -80,7 +80,7 @@ $$
 
 We will not derive this equation, since it can be understood intuitively. The conductance is proportional to the probability $|r_{eh}|^2$ of Andreev reflection, since we know that at low voltages this is the only process that transfers electric charge from the left to the right electrode.
 
-The factor of $2$ is due to each Andreev reflection transferring a charge of a Cooper pair, $2e$. Finally, $G_0=e^2/h$ is the **conductance quantum**, the fundamental proportionality constant which relates currents to voltages.
+The factor of $2$ is due to each Andreev reflection transferring the charge of a Cooper pair, $2e$. Finally, $G_0=e^2/h$ is the **conductance quantum**, the fundamental proportionality constant which relates currents to voltages.
 
 ## Andreev reflection off a Majorana zero mode
 
@@ -88,7 +88,7 @@ Now that we understand a conventional NS interface, let's see what happens if ou
 
 ![](figures/ns_majorana_interface.svg)
 
-You can imagine that the superconducting electrode is now a nanowire in the topological phase, like the one you have just studied. Because the superconductor is topological, there is a Majorana mode at the NS interface, whose wave function will “leak” a bit into the normal metal, through the barrier. Of course, there will be also a second Majorana mode, but we place it far enough from the NS interface, so that it does not have a role in the transport. Does the Majorana zero mode at the interface change the Andreev reflection properties?
+You can imagine that the superconducting electrode is now a nanowire in the topological phase, like the one you have just studied. Because the superconductor is topological, there is a Majorana mode at the NS interface, whose wave function will "leak" a bit into the normal metal through the barrier. Of course, there will also be a second Majorana mode, but we place it far enough from the NS interface so that it does not have a role in the transport. Does the Majorana zero mode at the interface change the Andreev reflection properties?
 
 Yes, and in a rather drastic way. Going back to the picture of Andreev reflection as a transmission process through a double barrier, the crucial difference is that the Majorana mode now appears as a bound state between the two barriers:
 
@@ -100,7 +100,7 @@ In the double barrier problem in quantum mechanics, you can have **resonant** tr
 
 Seeing the resonant peak is the most direct way we know to measure the presence of a Majorana zero mode.
 
-However, the presence of a resonance associated with Majorana modes is not uniquely topological, because tunneling into any low energy bound state produces resonance.
+However, the presence of a resonance associated with Majorana modes is not uniquely topological because tunneling into any low-energy bound state produces a resonance.
 
 Is there anything in particular which distinguishes the Majorana resonance from any other resonance?
 

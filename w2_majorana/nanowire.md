@@ -54,9 +54,9 @@ We have a special guest to begin this week's lecture, Yuval Oreg from the Weizma
 
 ## Small parameters
 
-We are now all set to make Majoranas in a real system. Or at least to invent a way to make Majoranas in a real system.
+We are now all set to make Majoranas in a real system—or at least to invent a way to make Majoranas in a real system.
 
-The way we approach this problem is by considering the Kitaev chain a 'skeleton', and 'dressing' it with real physics phenomena until it becomes real.
+The way we approach this problem is by considering the Kitaev chain a 'skeleton' and 'dressing' it with real physical phenomena until it becomes real.
 
 > Interestingly, this is not at all how the condensed matter community came to this model.
 > Instead, the path to it was from complex to simple. The whole story started from what we'll consider in the very end of the course, fractional particles.
@@ -70,11 +70,11 @@ $$
 H_{Kitaev} = (-2 t \cos k -\mu) \tau_z + 2 \Delta \tau_y \sin k.
 $$
 
-The model seems OK for a start, because it has some superconducting pairing $\Delta$ and some normal dispersion given by terms proportional to $\mu$ and $t$.
+The model seems OK for a start because it has some superconducting pairing $\Delta$ and some normal dispersion given by terms proportional to $\mu$ and $t$.
 
 Before we proceed further, let's understand the relation between these parameters.
 
-First of all, we want to make a controllable system, so that we can tweak its parameters. That means that we need a **semiconductor**. In semiconductors the electron density is very low, so that the chemical potential is near the bottom of the band. This makes it easier to define $\mu$ with respect to the bottom of the band:
+First of all, we want to make a controllable system so that we can tweak its parameters. That means that we need a **semiconductor**. In semiconductors the electron density is very low, so the chemical potential is near the bottom of the band. This makes it easier to define $\mu$ with respect to the bottom of the band:
 
 $$
 \mu \rightarrow \mu - 2t.
@@ -82,7 +82,7 @@ $$
 
 Now the transition between trivial and non-trivial states happens when $\mu = 0$.
 
-Of course semiconductors are never additionally superconducting. Luckily this is easy for us to resolve. We just paste a superconductor and semiconductor together into a hybrid structure, and let the superconductor induce superconductivity in the semiconductor. Making such a hybrid is extremely challenging from the material science point of view, but it's definitely not our problem for now.
+Of course, semiconductors are never additionally superconducting. Luckily this is easy for us to resolve. We just paste a superconductor and semiconductor together into a hybrid structure and let the superconductor induce superconductivity in the semiconductor. Making such a hybrid is extremely challenging from the materials science point of view, but it's not our problem for now.
 
 The next thing we should consider is that $\mu$ will always stay small compared to the bandwidth, so $\mu \ll 2t$. The same holds for superconducting pairing: $\Delta \ll t$. This is because superconductivity is a very weak effect compared to the kinetic energy of electrons. These two inequalities combined mean that we can expand the $\cos k$ term and only work with the continuum limit of the Kitaev model:
 
@@ -186,8 +186,8 @@ This means that now we need to modify the pairing, but before that we'll need to
 
 ### Important and useful basis change.
 
-When you see Bogoliubov-de-Gennes Hamiltonians in the literature, you will find them written in two different bases.
-One variant is the one which we introduced last week:
+When you see Bogoliubov-de Gennes Hamiltonians in the literature, you will find them written in two different bases.
+One variant is the one we introduced last week:
 
 $$
 H_\textrm{BdG} = \begin{pmatrix} H & \Delta \\ -\Delta^* & -H^* \end{pmatrix}.
@@ -195,7 +195,7 @@ $$
 
 It has the particle-hole symmetry $H_\textrm{BdG} = - \tau_x H^*_\textrm{BdG} \tau_x$. In this basis, the $s$-wave pairing is proportional to $\sigma_y$.
 
-However for systems with complicated spin and orbital structure, there is a different basis which makes the bookkeeping much easier.
+However, for systems with complicated spin and orbital structure, there is a different basis that makes the bookkeeping much easier.
 
 If we have a time-reversal symmetry operator $\mathcal{T} = U \mathcal{K}$, we can apply the unitary transformation $U$ to the holes, so that in the new basis we get the Bogoliubov-de-Gennes Hamiltonian
 
@@ -222,7 +222,7 @@ $$
 H_\textrm{BdG} = (k^2/2m - \mu)\tau_z + B \sigma_z + \Delta \tau_x.
 $$
 
-This Hamiltonian is easy to diagonalize since every term only has either a $\tau$ matrix or a $\sigma$ matrix. At $k=0$ it has 4 levels with energies $E = \pm B \pm \sqrt{\mu^2 + \Delta^2}$.
+This Hamiltonian is easy to diagonalize since every term only has either a $\tau$ matrix or a $\sigma$ matrix. At $k=0$ it has four levels with energies $E = \pm B \pm \sqrt{\mu^2 + \Delta^2}$.
 
 We can use this expression to track the crossings. We also know that when $B=0$ the system is trivial due to spin degeneracy.
 Together this means that we expect the system to be non-trivial (and will have a negative Pfaffian invariant) when
@@ -235,11 +235,11 @@ Are we now done? Not quite.
 
 ### Problem with singlets
 
-A singlet superconductor has an important property: Since electrons are created in singlets, the total spin of every excitation is conserved. Zeeman field conserves the spin in $z$-direction, so together every single state of our system has to have a definite spin, *including the Majoranas*.
+A singlet superconductor has an important property: since electrons are created in singlets, the total spin of every excitation is conserved. The Zeeman field conserves the spin in the $z$-direction, so every single state of our system has to have a definite spin, *including the Majoranas*.
 
 And that is a big problem. Majoranas are their own particle-hole partners, and that means that they cannot have any spin (energy, charge, or any other observable property at all).
 
-So does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
+Does this now mean that we "broke" the bulk-edge correspondence? Let's look at the band structure (tweak the Zeeman energy):
 
 ```{code-cell} ipython3
 nanowire_chain = kwant.Builder(kwant.TranslationalSymmetry(*lat.prim_vecs))
@@ -276,9 +276,9 @@ slider_plot(
 )
 ```
 
-Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That in turn means that they cannot appear, and that means that the system cannot be gapped.
+Of course we didn't break bulk-edge correspondence. Majoranas in our system would have to have a spin, which isn't possible. That, in turn, means that they cannot appear, and that the system cannot be gapped.
 
-We can also approach this differently. From all the spin Pauli matrices, only $\sigma_z$ appears in the Hamiltonian, so there's a conservation law. The two bands that cross at zero energy in the band structure above belong to opposite spin bands, and so cannot be coupled.
+We can also approach this differently. Of all the spin Pauli matrices, only $\sigma_z$ appears in the Hamiltonian, so there's a conservation law. The two bands that cross at zero energy in the band structure above belong to opposite spin bands, and so cannot be coupled.
 
 Now we need to solve this final problem before we are done.
 
@@ -288,13 +288,13 @@ The final stretch is straightforward.
 
 We know that there is no gap because of conservation of one of the spin projections, so we need to break the spin conservation.
 
-If we don't want to create an inhomogeneous magnetic field, we have to use a different term that couples to spin. That term is spin-orbit interaction. In it's [simplest form](https://en.wikipedia.org/wiki/Rashba_effect) this interaction appears in our wire as
+If we don't want to create an inhomogeneous magnetic field, we have to use a different term that couples to spin. That term is spin-orbit interaction. In its [simplest form](https://en.wikipedia.org/wiki/Rashba_effect), this interaction appears in our wire as
 
 $$
 H_{SO} = \alpha \sigma_y k,
 $$
 
-so it is like a Zeeman field pointing in $y$-direction with a strength proportional to the particle momentum. Note that this term is invariant under time reversal symmetry (both $\sigma_y$ and $k$ change sign). So now we have our final Hamiltonian:
+so it is like a Zeeman field pointing in $y$-direction with a strength proportional to the particle momentum. Note that this term is invariant under time-reversal symmetry (both $\sigma_y$ and $k$ change sign). So now we have our final Hamiltonian:
 
 $$
 H_\textrm{wire} = (k^2/2m + \alpha \sigma_y k - \mu)\tau_z + B \sigma_z + \Delta \tau_x.

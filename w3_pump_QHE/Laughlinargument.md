@@ -52,9 +52,9 @@ But let's start from the classical [Hall effect](https://en.wikipedia.org/wiki/H
 
 How does one get a Hall effect? The key is to break time-reversal symmetry. A flowing current breaks time-reversal symmetry, while an electric field doesn't. Hence, any system with a Hall effect must somehow break time-reversal symmetry.
 
-But wait a minute, you might catch me and ask, what about a normal electric current flowing parallel to an electric field? This is what happens in a metal on a regular basis, and a metal does not break time-reversal symmetry.
+But wait a minute, you might catch me and ask: what about a normal electric current flowing parallel to an electric field? This is what happens in a metal on a regular basis, and a metal does not break time-reversal symmetry.
 
-The key difference there is that such a longitudinal current breaks time-reversal through energy dissipation, which turns into heat that breaks time-reversal by the second law of thermodynamics. A Hall current is special in that it is **dissipationless**. We can drive a Hall current without wasting any energy because the current flows perpendicular to the voltage gradient.
+The key difference is that such a longitudinal current breaks time-reversal through energy dissipation, which turns into heat that breaks time-reversal by the second law of thermodynamics. A Hall current is special in that it is **dissipationless**. We can drive a Hall current without wasting any energy because the current flows perpendicular to the voltage gradient.
 
 > Thus to get a Hall effect we must somehow break time-reversal symmetry. We will examine the simplest way to achieve this, an external magnetic field.
 
@@ -110,7 +110,7 @@ $$
 {\bf F}= e\,(\mathbf{E}+\mathbf{v}\times \mathbf{B}).
 $$
 
-If we want to be a steady state then $\bf F=0$, which means that ${\bf v}= (\mathbf{E}\times \mathbf{B})/B^2$. Since the electrons move with an average velocity $\bf v$, and if $n$ denotes the electron density, we can easily guess that the current density is ${\bf j}=n e {\bf v}=(n e/ B) \,(\mathbf{E}\times \mathbf{z})$.
+If we want a steady state then $\bf F=0$, which means that ${\bf v}= (\mathbf{E}\times \mathbf{B})/B^2$. Since the electrons move with an average velocity $\bf v$, and if $n$ denotes the electron density, we can easily guess that the current density is ${\bf j}=n e {\bf v}=(n e/ B) \,(\mathbf{E}\times \mathbf{z})$.
 
 > Comparing with the previous subsection, we can thus conclude that simply based on Galilean invariance, an electron gas in a magnetic field must have a Hall conductance that is given by
 
@@ -118,7 +118,7 @@ $$
 \sigma_H=n e B^{-1}.
 $$
 
-This relation, which says that $\sigma_H\propto n$, is extremely general in the sense that it does not depend on how the electrons interact with each other or anything else. It is referred to as the Streda relation. If we define the so-called "filling factor" as $\nu=n h/ e B$ the Hall conductance can be written as a multiple of the quantum of conductance as $\sigma_H=\nu \frac{e^2}{h}$.
+This relation, which says that $\sigma_H\propto n$, is extremely general in the sense that it does not depend on how the electrons interact with each other or anything else. It is referred to as the Streda relation. If we define the so-called "filling factor" as $\nu=n h/ e B$, the Hall conductance can be written as a multiple of the quantum of conductance as $\sigma_H=\nu \frac{e^2}{h}$.
 
 As you already heard from Ady Stern in the intro video, people have measured the Hall conductance of this exact system to incredible precision. At relatively high density, the Hall conductance of this system behaves itself accordingly and scales linearly with gate voltage, which is tuned to control the density. At low filling factors, one would expect many non-idealities like disorder and interaction to break the Galilean invariance based argument and lead to a Hall conductance $\sigma_H$ that varies from sample to sample and depends on disorder.
 

@@ -31,7 +31,7 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 ## Intro
 
-Duncan Haldane from Princeton University will teach us about an interesting two dimensional toy-model which he introduced in 1988, and which has become a prototype for the anomalous quantum Hall effect.
+Duncan Haldane from Princeton University will teach us about an interesting two-dimensional toy model which he introduced in 1988 and which has become a prototype for the anomalous quantum Hall effect.
 
 ```{youtube} 7nVO4uMm-do
 :width: 560
@@ -62,7 +62,7 @@ $$
 h(\mathbf{k}) = t_1\,\sum_i\,\exp\,\left(i\,\mathbf{k}\cdot\mathbf{a}_i\right)\,.
 $$
 
-Here $\mathbf{a}_i$ are the three vectors in the figure, connecting nearest neighbors of the lattice [we set the lattice spacing to one, so that for instance $\mathbf{a}_1=(1,0)$].  Introducing a set of Pauli matrices $\sigma$ which act on the sublattice degree of freedom, we can write the Hamiltonian in a compact form as
+Here $\mathbf{a}_i$ are the three vectors in the figure, connecting nearest neighbors of the lattice [we set the lattice spacing to one, so that for instance $\mathbf{a}_1=(1,0)$]. Introducing a set of Pauli matrices $\sigma$ which act on the sublattice degree of freedom, we can write the Hamiltonian in a compact form as
 
 $$
 H_0(\mathbf{k}) = t_1\,\sum_i\,\left[\sigma_x\,\cos(\mathbf{k}\cdot\mathbf{a}_i)-\sigma_y \,\sin(\mathbf{k}\cdot\mathbf{a}_i)\right]\,.
@@ -120,7 +120,7 @@ $$
 \sigma_z\,H_0(\mathbf{k})\,\sigma_z = -H_0(\mathbf{k})\,.
 $$
 
-Sublattice symmetry is only approximate, and it is consequence of the nearest neighbor tight-binding model. Just like the inversion symmetry mentioned in the video, it protects the Dirac points and needs to be broken in order to open a gap.
+Sublattice symmetry is only approximate, and it is a consequence of the nearest-neighbor tight-binding model. Just like the inversion symmetry mentioned in the video, it protects the Dirac points and needs to be broken in order to open a gap.
 
 In addition to sublattice and inversion symmetry, the honeycomb lattice also has a three-fold rotation symmetry around the center of the unit cell. This symmetry is important to make the Dirac cones appear in the first place, but it will not play a role in all that follows.
 
@@ -168,8 +168,8 @@ With the direction of the arrow, we denote the direction in which the hopping is
 
 Note the following things about these hoppings:
 
-* they are purely imaginary and, furthermore, they all have the same chirality, in the sense that they all follow the orientation of your right hand, if the thumb points out from the screen.
-* they couple sites of same type: $A$ with $A$ and $B$ with $B$.
+* they are purely imaginary and, furthermore, they all have the same chirality, in the sense that they all follow the orientation of your right hand if the thumb points out from the screen.
+* they couple sites of the same type: $A$ with $A$ and $B$ with $B$.
 
 These characteristics tell us that the new hoppings break both time-reversal symmetry and sublattice symmetry. Now the full Hamiltonian becomes
 
@@ -196,7 +196,7 @@ When $t_2=0$ and at a finite $M$, the system is in a boring gapped phase, generi
 
 Adding a small $t_2$ initially does not change the situation, but when $t_2$ passes through a value $\pm M/3\sqrt{3}$ the gap closes and changes sign. Importantly, the gap closes *only at one of the two Dirac points*: at $\mathbf{K}'$ for $t_2=M/3\sqrt{3}$ and at $\mathbf{K}$ for $t_2=-M/3\sqrt{3}$.
 
-And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the bandstructure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
+And when it does, chiral edge states appear! We can see this by looking at the one-dimensional band structure of a ribbon of graphene. To convince you that they are of topological origin, let's look at the band structure for ribbons with two different lattice terminations: armchair and zigzag. In a zigzag ribbon, $\mathbf{K}$ and $\mathbf{K}'$ correspond to different momenta parallel to the ribbon direction, while in an armchair one they correspond to the same one.
 
 ```{code-cell} ipython3
 W = 14
@@ -362,7 +362,7 @@ $$
 \exp\,\left[i\gamma(k_x)\right]\,\exp\,\left(-i \int_0^T E[\mathbf{k}(t)]\,d t\right)\,\left|\psi(\mathbf{k})\right\rangle\,.
 $$
 
-We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrödinger equation, see for instance [here](https://arxiv.org/abs/0907.2021). What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.
+We have made explicit the fact that $\gamma$ in our case may depend on $k_x$. We will not derive the formula for the Berry phase, something which can be done directly from the Schrodinger equation; see for instance in @10.48550/arXiv.0907.2021. What is important to know about $\gamma$ is that it is a **geometric phase**: its value depends on the path $C$ but not on how the path is performed in time, so not on the particular expression for $\mathbf{k}(t)$. We'll soon see that sometimes it can have an even stronger, topological character.
 
 ### Flux pumping
 
@@ -444,9 +444,9 @@ The situation is explained by the following sketch, which also gives a bird's-ey
 
 ![Phase diagram](figures/phasediagram.svg)
 
-What you see in the sketch above is a schematic illustration of the energy spectrum close to the Dirac points in the Brillouin zone, for some representative values of $t_2/M$ (for simplicity we drew the Brillouin zone as a square and not a hexagon, but that's not essential). The two massless Dirac cones appearing for $t_2=\pm M/(3\sqrt{3})$ are the sources of the Berry curvature, which then “spreads“ along the vertical axis, passing through the Brillouin zones of the gapped phases.
+What you see in the sketch above is a schematic illustration of the energy spectrum close to the Dirac points in the Brillouin zone, for some representative values of $t_2/M$ (for simplicity we drew the Brillouin zone as a square and not a hexagon, but that's not essential). The two massless Dirac cones appearing for $t_2=\pm M/(3\sqrt{3})$ are the sources of the Berry curvature, which then "spreads" along the vertical axis, passing through the Brillouin zones of the gapped phases.
 
-The $t_2=0$ Brillouin zone is “sandwiched“ between the two gap closings: it has opposite curvature for the two Dirac points, and a total Chern number of zero.
+The $t_2=0$ Brillouin zone is "sandwiched" between the two gap closings: it has opposite curvature for the two Dirac points, and a total Chern number of zero.
 
 The Brillouin zones for $|t_2|>M/(3\sqrt{3})$, on the other hand, have Berry curvature with the same sign for both Dirac points, and a total Chern number equal to $\pm 1$.
 

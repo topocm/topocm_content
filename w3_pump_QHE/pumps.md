@@ -37,7 +37,7 @@ pi_ticks = [(-np.pi, r"$-\pi$"), (0, "0"), (np.pi, r"$\pi$")]
 
 ## Thouless pumps
 
-Dganit Meidan from Ben Gurion University will introduce Thouless pumps,.
+Dganit Meidan from Ben Gurion University will introduce Thouless pumps.
 
 ```{youtube} gKZK9IGY9wo
 :width: 560
@@ -56,7 +56,7 @@ $$
 
 or we could equivalently study a finite system with only a small number of degrees of freedom (corresponding to a single unit cell), and a Hamiltonian which depends on some continuous periodic parameter $k$.
 
-Of course, without specifying that $k$ is the real space momentum, there is no meaning in bulk-edge correspondence (since the edge is an edge in real space), but the topological properties are still well-defined.
+Of course, without specifying that $k$ is the real-space momentum, there is no meaning in bulk-edge correspondence (since the edge is an edge in real space), but the topological properties are still well-defined.
 
 Sometimes we want to know how a physical system changes if we slowly vary some parameters of the system, for example a bias voltage or a magnetic field. Because the parameters change with time, the Hamiltonian becomes time-dependent, namely
 
@@ -473,9 +473,11 @@ $$
 dq = \frac{d \log \det r}{2\pi i} = \operatorname{Tr}\frac{r^\dagger dr }{ 2 \pi i}.
 $$
 
-While we derived this relation only for the case when all incoming particles reflect, and $r$ is unitary, written in form of trace it also has physical implications even if there is transmission.[¹](https://arxiv.org/abs/cond-mat/9808347)
+While we derived this relation only for the case when all incoming particles reflect and $r$ is unitary, written in the form of a trace it also has physical implications even if there is transmission[^1].
 
-Let's check if this expression holds to our expectations. If $||r||=1$, this is just the number of times the phase of $\det r$ winds around zero, and it is certainly an integer, as we expected.
+[^1]: @10.48550/arXiv.cond-mat/9808347
+
+Let's check if this expression holds to our expectations. If $\lVert r \rVert=1$, this is just the number of times the phase of $\det r$ winds around zero, and it is certainly an integer, as we expected.
 
 This provides an independent argument (in addition to the movement of energy levels from the last section ) for why the pumped charge is quantized as long as the gap is preserved.
 

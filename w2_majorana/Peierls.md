@@ -19,7 +19,7 @@ kernelspec:
 # This first cell will be removed by the converter.
 ```
 
-To understand how the vector potential enters a tight-binding model by the so-called Peierls substitution, let us remind ourselves that the gauge-invariance of the Schrodinger equation requires us to transform the wave-function amplitude or equivalently the creation operator of an electron at a site as
+To understand how the vector potential enters a tight-binding model through the Peierls substitution, let us remind ourselves that the gauge invariance of the Schrodinger equation requires us to transform the wave-function amplitude, or equivalently the creation operator of an electron at a site, as
 
 $$
 c_j^\dagger \rightarrow c_j^\dagger \exp\left(-i\frac{e}{\hbar c}\Lambda(\bf r_j)\right),
@@ -31,17 +31,17 @@ $$
 H_t=t_{jl} \exp\left(-i\frac{e}{\hbar c}(\Lambda(\bf r_j)-\Lambda(\bf r_l))\right)c_j^\dagger c_l+h.c=t_{jl} \exp\left(-i\frac{e}{\hbar c}(\int_{\bf r_l}^{\bf r_j} d\bf r'\cdot\bf A(\bf r')\right)c_j^\dagger c_l+h.c.
 $$
 
-While this expression is derived for zero magnetic field, by choosing the integration path to be the shortest distance over nearest neighbor bond, this expression is used to include magnetic fields in lattice models. This is referred to as the Peierls substitution for lattices.
+While this expression is derived for zero magnetic field, by choosing the integration path to be the shortest distance over the nearest-neighbor bond, this expression is used to include magnetic fields in lattice models. This is referred to as the Peierls substitution for lattices.
 
 +++
 
-If we put our topological nanowire in a ring (as with the Aharonov-Bohm effect) with a junction (as in the figure) and concentrate the magnetic field in the center of the ring, the vector potential $\bf A$ is constrained  by the magnetic flux $\Phi$ as
+If we put our topological nanowire in a ring (as with the Aharonov-Bohm effect) with a junction (as in the figure) and concentrate the magnetic field in the center of the ring, the vector potential $\bf A$ is constrained by the magnetic flux $\Phi$ as
 
 $$
 \oint d\bf {r'\cdot\bf A(\bf r')}=\int d^2\bf {r'\bf \nabla\times \bf A(\bf r')}=\Phi.
 $$
 
-Choosing a gauge for the vector potential so that it vanishes everywhere except in the junction the hopping phase $\theta$ for the junction i.e. $H_t=t_{N,1}e^{i\theta}c_N^\dagger c_1+h.c.$ is written as
+Choosing a gauge for the vector potential so that it vanishes everywhere except in the junction, the hopping phase $\theta$ for the junction, i.e. $H_t=t_{N,1}e^{i\theta}c_N^\dagger c_1+h.c.$, is written as
 
 $$
 \theta=\int_{\bf r_l}^{\bf r_j} d\bf r'\cdot\bf A(\bf r')=\pi \Phi/\Phi_0,

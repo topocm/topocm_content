@@ -27,7 +27,7 @@ $$
 \Phi=\oint d^2\bf{k}\bf{z}\cdot \bf{b}(\bf{k}).
 $$
 
-Numerically it is more convenient to compute the integral $\Phi$ by breaking them down into small plaquettes. So that
+Numerically it is more convenient to compute the integral $\Phi$ by breaking it down into small plaquettes, so that
 
 $$
 \Phi=\sum_n \oint_{\Gamma_n} d^2\bf{k}\bf{z}\cdot \bf{b}(\bf{k})=\sum_n \oint_{\Gamma_n} d{\bf k}\cdot {\bf a(k)},
