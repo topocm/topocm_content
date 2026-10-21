@@ -7,6 +7,7 @@ default:
       - .pixi
       - _build
   before_script:
+    - !reference [.tls-trust, before_script]
     - eval $(pixi shell-hook --shell bash)
     - pixi global install git
     - git config --global --add safe.directory $CI_PROJECT_DIR
@@ -71,3 +72,8 @@ stop branch website:
   variables:
     WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
   allow_failure: true
+
+include:
+- project: qt/ci
+  ref: 6206078f05b154de82c569a20aa6b3dff137212e
+  file: /TLS.gitlab-ci.yml
