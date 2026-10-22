@@ -12,6 +12,8 @@ project:
     - readme.md
   settings:
     output_stderr: remove-error
+  static_files:
+    - _static/matomo.js
   github: topocm/topocm_content
   toc:
     - file: landing.md
@@ -93,6 +95,10 @@ project:
     - type: javascript
       path: myst_plugins/youtube.mjs
     - type: javascript
+      path: myst_plugins/plotly.mjs
+    - type: javascript
+      path: myst_plugins/latex-output.mjs
+    - type: javascript
       path: myst_plugins/quizzes.mjs
     - type: javascript
       path: myst_plugins/hide-input.mjs
@@ -100,7 +106,8 @@ site:
   options:
     logo: logo_small.jpg
     folders: true
-  template: book-theme
+  # Stable book theme 1.4.1; pin the archive so CI cannot reuse an older cached theme.
+  template: https://github.com/myst-templates/book-theme/archive/23f2df5493e23dfb1d9433c8aa64c87beb4232a3.zip
   nav:
     - title: What's new
       url: /whatsnew

@@ -17,7 +17,7 @@ dependencies = [
   "matplotlib>=3.10",
   "numpy>=1.26",
   "scipy>=1.16",
-  "plotly>=6.5",
+  "plotly>=7.1,<8",
 ]
 
 [tool.setuptools]
