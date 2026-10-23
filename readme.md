@@ -45,3 +45,8 @@ Run infrastructure tests with `pixi run python -m unittest discover -s tests` an
 `pixi run node --test tests/*.test.mjs`. After changing rendering code, also check
 plots, sliders, quizzes, videos, and legacy URLs in a browser, including under a
 branch prefix.
+
+Merge requests expose a one-week preview through the GitLab review environment's
+**View app** link. The preview is served from job artifacts and does not upload
+to topocondmat.org. The build sets `BASE_URL` to the artifact directory so scripts,
+chapter links, and legacy redirects remain within the preview.
