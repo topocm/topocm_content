@@ -104,6 +104,7 @@ project:
       path: myst_plugins/hide-input.mjs
 site:
   options:
+    style: _static/landing.css
     logo: logo_small.jpg
     folders: true
   # Stable book theme 1.4.1; pin the archive so CI cannot reuse an older cached theme.
