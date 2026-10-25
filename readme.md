@@ -37,9 +37,10 @@ preview, including assets and legacy redirects.
 The course retains its `youtube`, `multiple-choice`, and `checkboxes` directives.
 Quizzes use MyST widgets because the former fabricated notebook outputs are
 incompatible with MyST 1.11. Plot widgets use Plotly.js 4 and MathJax 4 rather than
-the stable theme's bundled Plotly 2 renderer. Standalone notebook LaTeX uses native
-MyST math, avoiding the theme's competing MathJax 2 loader. Downloadable notebooks
-retain their original output data.
+the stable theme's bundled Plotly 2 renderer. Standalone notebook LaTeX uses the
+same shared MathJax 4 instance through a MyST widget, avoiding the theme's
+competing MathJax 2 loader. Downloadable notebooks retain their original output
+data.
 
 Run infrastructure tests with `pixi run python -m unittest discover -s tests` and
 `pixi run node --test tests/*.test.mjs`. After changing rendering code, also check

@@ -1,4 +1,6 @@
-// Use MyST's native math renderer for standalone notebook LaTeX (e.g. matrices).
+import { randomUUID } from 'node:crypto';
+
+// Use the shared MathJax instance for standalone notebook LaTeX (e.g. matrices).
 // The stable theme otherwise creates a separate MathJax loader for every output,
 // racing Plotly's use of the shared MathJax instance. Notebook downloads keep
 // their original MIME bundles; this only changes the rendered document tree.
@@ -13,7 +15,12 @@ export function nativeLatex(tree) {
         if (value.startsWith('$$') && value.endsWith('$$')) value = value.slice(2, -2);
         else if (value.startsWith('\\[') && value.endsWith('\\]')) value = value.slice(2, -2);
         else if (value.startsWith('$') && value.endsWith('$')) value = value.slice(1, -1);
-        return { type: 'math', value, key: node.key };
+        // Document transforms run after MyST's math typesetting pass, so a new
+        // math node here would have no rendered HTML. Use a native widget.
+        return {
+          type: 'anywidget', id: randomUUID(), esm: '/_static/latex.mjs',
+          model: { latex: value },
+        };
       }
     }
     return nativeLatex(node);

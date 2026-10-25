@@ -6,11 +6,15 @@ function output(data) {
   return { type: 'output', key: 'matrix', jupyter_data: { output_type: 'display_data', data }, children: [] };
 }
 
-test('standalone notebook math becomes native math without changing its formula', () => {
+test('standalone notebook math uses the shared renderer without changing its formula', () => {
   const formula = String.raw`\begin{pmatrix}1 & 2 \\ 3 & 4\end{pmatrix}`;
   for (const latex of [formula, `$$${formula}$$`, String.raw`\[${formula}\]`, [formula]]) {
     const tree = { type: 'outputs', children: [output({ 'text/latex': latex, 'text/plain': 'matrix' })] };
-    assert.deepEqual(nativeLatex(tree).children, [{ type: 'math', value: formula, key: 'matrix' }]);
+    const [widget] = nativeLatex(tree).children;
+    assert.equal(widget.type, 'anywidget');
+    assert.equal(widget.esm, '/_static/latex.mjs');
+    assert.deepEqual(widget.model, { latex: formula });
+    assert.ok(widget.id);
   }
 });
 
