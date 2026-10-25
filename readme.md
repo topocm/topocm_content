@@ -46,10 +46,11 @@ Run infrastructure tests with `pixi run python -m unittest discover -s tests` an
 plots, sliders, quizzes, videos, and legacy URLs in a browser, including under a
 branch prefix.
 
-Merge requests expose a one-week preview through the GitLab review environment's
-**View app** link. The preview is served from job artifacts and does not upload
-to topocondmat.org. The build sets `BASE_URL` to the artifact directory so scripts,
-chapter links, and legacy redirects remain within the preview.
+Merge requests publish a GitLab Pages preview through the environment's
+**View app** link. The latest MR build replaces the project's shared preview;
+production remains on topocondmat.org. Downloadable job artifacts expire after
+one week. The artifact file viewer cannot host MyST's directory-style routes,
+so use the Pages link to browse the preview. `BASE_URL` follows `CI_PAGES_URL`.
 
 The main-branch job publishes to the OVH VPS as the restricted `topocondmat`
 account, using the existing `WEBSITE_UPLOAD_KEY` and the SSH host key pinned in
