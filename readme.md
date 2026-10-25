@@ -50,3 +50,7 @@ Merge requests expose a one-week preview through the GitLab review environment's
 **View app** link. The preview is served from job artifacts and does not upload
 to topocondmat.org. The build sets `BASE_URL` to the artifact directory so scripts,
 chapter links, and legacy redirects remain within the preview.
+
+The main-branch job publishes to the OVH VPS as the restricted `topocondmat`
+account, using the existing `WEBSITE_UPLOAD_KEY` and the SSH host key pinned in
+`.ci/known_hosts`. The account's rsync root is `/srv/www/topocondmat`.
