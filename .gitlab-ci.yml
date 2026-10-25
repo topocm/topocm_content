@@ -28,18 +28,17 @@ workflow:
 build branch website:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  resource_group: pages-preview
   script:
-    - export BASE_URL="$(python -c 'import os; from urllib.parse import urlsplit; print(urlsplit(os.environ["CI_PAGES_URL"]).path.rstrip("/"))')"
+    - export BASE_URL="/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/_build/html"
     - pixi run postprocess-html
-  pages:
-    publish: _build/html
+    - python scripts/artifact_preview.py
   artifacts:
     paths: [_build/html/]
     expire_in: 1 week
   environment:
-    name: preview
-    url: $CI_PAGES_URL
+    name: review/$CI_COMMIT_REF_SLUG
+    url: https://$CI_PROJECT_ROOT_NAMESPACE.$CI_PAGES_DOMAIN/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/_build/html/index.html
+    auto_stop_in: 1 week
 
 build main website:
   only:
