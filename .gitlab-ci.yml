@@ -11,37 +11,34 @@ default:
     - pixi global install git
     - git config --global --add safe.directory $CI_PROJECT_DIR
     - pixi install
-    - eval "$(pixi run ssh-agent -s)"
-    - chmod 400 "$WEBSITE_UPLOAD_KEY"
-    - pixi run ssh-add "$WEBSITE_UPLOAD_KEY" >/dev/null
 
 variables:
   FF_USE_FASTZIP: "true"
   CACHE_COMPRESSION_LEVEL: "fastest"
-  SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  SSH_COMMAND: "ssh -o UserKnownHostsFile=.ci/known_hosts -o StrictHostKeyChecking=yes"
   JUPYTER_NUM_PROCS: "10"
   HOST: "127.0.0.1"  # Needed to avoid binding to ::1.
 
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      variables:
-        BASE_URL: "/branch_${CI_COMMIT_REF_SLUG}"
     - if: '$CI_COMMIT_BRANCH == "master"'
     - when: never
 
 build branch website:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  variables:
-    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
-  environment:
-    name: branch/$CI_COMMIT_REF_SLUG
-    on_stop: stop branch website
-    url: https://topocondmat.org/branch_${CI_COMMIT_REF_SLUG}/
   script:
+    - export BASE_URL="/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/_build/html"
     - pixi run postprocess-html
-    - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
+    - python scripts/artifact_preview.py
+  artifacts:
+    paths: [_build/html/]
+    expire_in: 1 week
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: https://$CI_PROJECT_ROOT_NAMESPACE.$CI_PAGES_DOMAIN/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/_build/html/index.html
+    auto_stop_in: 1 week
 
 build main website:
   only:
@@ -52,22 +49,8 @@ build main website:
     name: published
     url: https://topocondmat.org/
   script:
+    - eval "$(pixi run ssh-agent -s)"
+    - chmod 400 "$WEBSITE_UPLOAD_KEY"
+    - pixi run ssh-add "$WEBSITE_UPLOAD_KEY" >/dev/null
     - pixi run postprocess-html
-    - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH
-
-stop branch website:
-  needs:
-    - build branch website
-  script:
-    - mkdir -p /tmp/empty_dir
-    - pixi run rsync -av --delete /tmp/empty_dir/ -e "$SSH_COMMAND" uploader@tnw-qn1.tudelft.net:$WEBSITE_UPLOAD_PATH/
-  when: manual
-  environment:
-    name: branch/$CI_COMMIT_REF_SLUG
-    action: stop
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
-  variables:
-    WEBSITE_UPLOAD_PATH: /branch_${CI_COMMIT_REF_SLUG}
-  allow_failure: true
+    - pixi run rsync -ravz _build/html/ -e "$SSH_COMMAND" topocondmat@vps-cf5b3a69.vps.ovh.net:$WEBSITE_UPLOAD_PATH

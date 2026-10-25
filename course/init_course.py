@@ -11,7 +11,6 @@ import matplotlib
 import numpy as np
 import plotly
 from IPython import display, get_ipython
-from IPython.display import HTML
 
 from . import functions
 
@@ -88,19 +87,6 @@ def init_notebook():
     check_versions()
 
     functions.set_default_plotly_template()
-
-    # Ensure MathJax is available for Plotly LaTeX rendering in all contexts.
-    mathjax_loader = """
-    <script type="text/javascript">
-    if (!window.MathJax) {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
-      document.head.appendChild(script);
-    }
-    </script>
-    """
-    display.display(HTML(mathjax_loader))
 
     # Enable inline plotting in the notebook
     get_ipython().enable_matplotlib(gui="inline")

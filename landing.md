@@ -35,33 +35,91 @@ site:
   hide_title_block: true
 ---
 
-+++ { "kind": "split-image" }
+::::::{div}
+:class: course-landing col-page
 
-## Topology in Condensed Matter: Tying Quantum Knots
+:::{div}
+:class: course-intro
 
-Open-source graduate-level course \
-Built for curious students, educators, and researchers.
+Open graduate-level course
 
-{button}`Start learning <w0_background/intro>`
+## Topology in condensed matter
 
-![Topology in Condensed Matter logo](logo_small.jpg)
+*Tying quantum knots*
 
-+++
+Explore topological phases through physical models, mathematical ideas, and simulations you can interact with.
+
+:::
+
+:::{div}
+:class: course-actions
+
+[Start the course →](w0_background/intro.md) [Jump to a topic ↓](#explore-the-course)
+
+:::
+
+:::{div}
+:class: course-preparation
+
+**Before you begin** · [Prerequisites and course guide](w0_background/intro.md#prerequisites) · [Review band structures](w0_background/band_structures.md)
+
+:::
+
+(explore-the-course)=
+## Explore the course
+
+Twelve weeks of explanations, expert videos, interactive figures, and questions. Follow the sequence or revisit a topic.
+
+:::::{div}
+:class: course-map
+
+::::{div}
+
+### 01–04 · Building intuition
+
+- [01 · Topology in toy models](w1_topointro/0d.md)
+- [02 · Majorana modes](w2_majorana/nanowire.md)
+- [03 · Pumping and the quantum Hall effect](w3_pump_QHE/pumps.md)
+- [04 · Chern insulators](w4_haldane/QHE_lattice.md)
+
+::::
+
+::::{div}
+
+### 05–08 · Symmetry and classification
+
+- [05 · Quantum spin Hall effect](w5_qshe/fermion_parity_pump.md)
+- [06 · Three-dimensional insulators](w6_3dti/bhz.md)
+- [07 · Topological defects](w7_defects/ti_majoranas.md)
+- [08 · The periodic table](w8_general/classification.md)
+
+::::
+
+::::{div}
+
+### 09–12 · Further directions
+
+- [09 · Disorder and localization](w9_disorder/scaling.md)
+- [10 · Gapless systems and mechanics](w10_extensions/gapless.md)
+- [11 · Floquet and crystalline phases](w11_extensions2/floquet.md)
+- [12 · Beyond single particles](w12_manybody/fqhe.md)
+
+::::
+
+:::::
 
 ## About the course
 
 This is an [open](license.md) online course on topology in condensed matter.
 Initially developed for the edX platform in 2015, its development continues here.
 
-:::{important} Learning goals
+### Learning goals
 
 After following this course, you will:
 
 - Discover how topological concepts manifest in condensed matter systems
 - Get an overview of different research directions and important developments
 - Combine the relevant math with simulations and physical arguments to improve your understanding
-
-:::
 
 ## Authors
 
@@ -104,7 +162,7 @@ The course videos were generously contributed by multiple experts in the field:
 - Sankar Das Sarma (University of Maryland)
 - Barbara Terhal (RWTH Aachen)
 
-+++ { "part": "acknowledgments" }
+## Acknowledgments
 
 When working on the course, we greatly benefited from the support of:
 
@@ -125,4 +183,4 @@ For support with implementing the technical aspects of the course, we thank
 
 Finally, we thank all the external speakers for contributing the course videos.
 
-+++
+::::::

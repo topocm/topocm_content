@@ -1,0 +1,77 @@
+/* Scope the course index layout to the landing page; keep the book theme palette. */
+.course-landing {
+  width: min(100%, 1080px);
+  justify-self: center;
+  padding: 1rem 0 3rem;
+}
+.course-landing .course-intro { max-width: 760px; }
+.course-landing .course-intro p { margin-block: 1rem; }
+.course-landing .course-intro > p:first-child {
+  color: #3b82f6;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.course-landing .course-intro h2 {
+  margin: .75rem 0 .5rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+}
+.course-landing .course-intro h2 + p {
+  margin-top: 0;
+  font-size: 1.65rem;
+}
+.course-landing .course-intro h2 + p em { font-style: normal; }
+.course-landing .course-actions p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1rem 0 1.5rem;
+}
+.course-landing .course-actions p > a:first-child {
+  background: #3b82f6;
+  color: white;
+  padding: .65rem 1rem;
+  border-radius: .25rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.course-landing .course-actions p > a:first-child:hover { background: #2563eb; }
+.course-landing .course-preparation {
+  border-block: 1px solid #d1d5db;
+  padding: .5rem 0;
+  margin-bottom: 1.5rem;
+}
+.course-landing .course-preparation p { margin-block: .5rem; }
+.course-landing .course-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+.course-landing .course-map h3 { font-size: 1rem; margin-top: 1rem; }
+.course-landing .course-map ul { list-style: none; padding: 0; margin: 0; }
+.course-landing .course-map li {
+  border-bottom: 1px solid #d1d5db;
+  padding: 0;
+  margin: 0;
+}
+.course-landing .course-map li > p { margin: 0; }
+.course-landing .course-map li a {
+  display: block;
+  padding: 1rem 0;
+  min-height: 4.5rem;
+  text-decoration: none;
+}
+.course-landing .course-map li a:hover { text-decoration: underline; }
+.dark .course-landing .course-preparation,
+.dark .course-landing .course-map li { border-color: #374151; }
+.dark .course-landing .course-intro > p:first-child { color: #60a5fa; }
+@media (max-width: 767px) {
+  .course-landing { padding-top: 1rem; }
+  .course-landing .course-map { grid-template-columns: 1fr; gap: 1rem; }
+  .course-landing .course-map li a { min-height: 0; padding: .8rem 0; }
+}

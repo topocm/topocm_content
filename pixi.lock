@@ -166,7 +166,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/mistune-3.1.4-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/mpmath-1.3.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/munkres-1.1.4-pyhd8ed1ab_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/mystmd-1.6.4-pyhcf101f3_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/mystmd-1.11.0-pyh5ded981_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/narwhals-2.11.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nbclient-0.10.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nbconvert-core-7.16.6-pyhcf101f3_1.conda
@@ -179,7 +179,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/parso-0.8.4-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.5.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/plotly-6.5.0-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/plotly-7.1.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pluggy-1.6.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/pre-commit-4.4.0-pyha770c72_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/prometheus_client-0.23.1-pyhd8ed1ab_0.conda
@@ -225,7 +225,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/websocket-client-1.9.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhd8ed1ab_0.conda
       - pypi: ./
-      - pypi: https://files.pythonhosted.org/packages/46/0d/0a6fdf9587634452b9ced1de89280a3daeb1fee16878ca442dfe76c9b0a8/jupyter_book-2.0.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/fd/49/b166f24e2638d3227dd3e8c6f8a6fb2d9b6a012696660bb5d1f71730bb6a/jupyter_book-2.1.7-py3-none-any.whl
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-6_kmp_llvm.conda
   build_number: 6
@@ -2306,19 +2306,20 @@ packages:
   - pkg:pypi/munkres?source=hash-mapping
   size: 15851
   timestamp: 1749895533014
-- conda: https://conda.anaconda.org/conda-forge/noarch/mystmd-1.6.4-pyhcf101f3_0.conda
-  sha256: 1554068c601ac3b8b04c25a1b5a5f30b2c1094999dff8c83a4620612a6a10bf7
-  md5: c683e9f2f0b35e73d25155215e8310af
+- conda: https://conda.anaconda.org/conda-forge/noarch/mystmd-1.11.0-pyh5ded981_0.conda
+  sha256: 7c23cb0fb3edc848abc5e38f39a32d14f2419d6ee2c00b4af6acd02fa1e388f6
+  md5: 086cb364b481891c156427339dbcf4c2
   depends:
-  - python >=3.10
-  - nodejs >=18
+  - python >=3.11
+  - nodejs >=20
   - python
   license: MIT
   license_family: MIT
   purls:
   - pkg:pypi/mystmd?source=hash-mapping
-  size: 2165371
-  timestamp: 1762199751260
+  run_exports: {}
+  size: 2193428
+  timestamp: 1792619612217
 - conda: https://conda.anaconda.org/conda-forge/noarch/narwhals-2.11.0-pyhcf101f3_0.conda
   sha256: 08956ad8e26aa96301a242a46ef768a83de73ce764ee0afb8264aab1210fa2b1
   md5: 5bf50f2d7bc9ee87a95ed3d1941664eb
@@ -2482,21 +2483,22 @@ packages:
   - pkg:pypi/platformdirs?source=hash-mapping
   size: 23625
   timestamp: 1759953252315
-- conda: https://conda.anaconda.org/conda-forge/noarch/plotly-6.5.0-pyhd8ed1ab_0.conda
-  sha256: 13b06d2380fc46c299d2ae3465f90f156929b7f98597fc22b0e7ac0cfd40c20d
-  md5: 6d4c79b604d50c1140c32164f7eca72a
+- conda: https://conda.anaconda.org/conda-forge/noarch/plotly-7.1.0-pyhd8ed1ab_0.conda
+  sha256: 156c3109d9fbe41b61b1b4001d59ebedbec17c803ee1dab878444bce0516bd44
+  md5: 7842399da4895e5c5174cf6b44ef1c36
   depends:
   - narwhals >=1.15.1
   - packaging
-  - python >=3.10
+  - python >=3.11
   constrains:
   - ipywidgets >=7.6
   license: MIT
   license_family: MIT
   purls:
-  - pkg:pypi/plotly?source=hash-mapping
-  size: 5179039
-  timestamp: 1763430425844
+  - pkg:pypi/plotly?source=compressed-mapping
+  run_exports: {}
+  size: 4790089
+  timestamp: 1790103412929
 - conda: https://conda.anaconda.org/conda-forge/noarch/pluggy-1.6.0-pyhd8ed1ab_0.conda
   sha256: a8eb555eef5063bbb7ba06a379fa7ea714f57d9741fe0efdb9442dbbc2cccbcc
   md5: 7da7ccd349dbf6487a7778579d2bb971
@@ -3036,12 +3038,12 @@ packages:
   - matplotlib>=3.10
   - numpy>=1.26
   - scipy>=1.16
-  - plotly>=6.5
+  - plotly>=7.1,<8
   requires_python: '>=3.10'
-- pypi: https://files.pythonhosted.org/packages/46/0d/0a6fdf9587634452b9ced1de89280a3daeb1fee16878ca442dfe76c9b0a8/jupyter_book-2.0.2-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/fd/49/b166f24e2638d3227dd3e8c6f8a6fb2d9b6a012696660bb5d1f71730bb6a/jupyter_book-2.1.7-py3-none-any.whl
   name: jupyter-book
-  version: 2.0.2
-  sha256: 7ccbb5f00dc55d172f148eae179d257e4cfe815ee297050553733d13018cae57
+  version: 2.1.7
+  sha256: eeef6ee8f25df129a1428c7c97ac0e8f63665879942cdb7b46fc4ef42547cb76
   requires_dist:
   - ipykernel
   - jupyter-core
@@ -3050,5 +3052,4 @@ packages:
   - nodeenv>=1.9.1
   - markdown ; extra == 'docs'
   - pandas ; extra == 'docs'
-  - pooch ; extra == 'docs'
   requires_python: '>=3.9'
