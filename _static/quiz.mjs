@@ -61,7 +61,7 @@ async function render({ model, el }) {
   }, { once: true });
   root.append(reveal, explanation);
   el.append(root);
-  await window.MathJax.startup.promise;
+  await window.loadCourseMathJax();
   await window.MathJax.typesetPromise([root]);
   return () => {
     window.MathJax.typesetClear([root]);

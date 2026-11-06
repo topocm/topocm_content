@@ -40,7 +40,9 @@ incompatible with MyST 1.11. Plot widgets use Plotly.js 4 and MathJax 4 rather t
 the stable theme's bundled Plotly 2 renderer. Standalone notebook LaTeX uses the
 same shared MathJax 4 instance through a MyST widget, avoiding the theme's
 competing MathJax 2 loader. Downloadable notebooks retain their original output
-data.
+data. MathJax loads on demand from pinned jsDelivr; Plotly.js 4.2.0 is
+vendored locally. All three widgets await the same MathJax readiness promise,
+so library downloads do not block page parsing or hydration.
 
 Run infrastructure tests with `pixi run python -m unittest discover -s tests` and
 `pixi run node --test tests/*.test.mjs`. After changing rendering code, also check

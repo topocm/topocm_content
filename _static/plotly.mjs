@@ -1,5 +1,12 @@
 export async function render({ model, el }) {
-  await window.MathJax.startup.promise;
+  try {
+    await window.loadCoursePlotly();
+  } catch (error) {
+    el.textContent = 'Interactive figure could not load. Please reload the page to retry.';
+    el.setAttribute('role', 'alert');
+    console.error('Course plot library loading failed', error);
+    return;
+  }
   const figure = model.get('figure');
   const plot = document.createElement('div');
   el.append(plot);

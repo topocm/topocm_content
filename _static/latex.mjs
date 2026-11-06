@@ -1,5 +1,5 @@
 export async function render({ model, el }) {
-  await window.MathJax.startup.promise;
+  await window.loadCourseMathJax();
   const math = await window.MathJax.tex2svgPromise(model.get('latex'), { display: true });
   // MathJax installs its display spacing and SVG rules in document.head;
   // MyST's widget shadow root needs its own copy.

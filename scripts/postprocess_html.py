@@ -5,18 +5,21 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 from html import escape
 from pathlib import Path
 
 BUILD_HTML = Path(__file__).resolve().parents[1] / "_build" / "html"
 
-# Load once, before hydration. The Plotly transform awaits MathJax startup.
-MATHJAX_SNIPPET = (
-    "<script>window.MathJax = {startup: {typeset: false},"
-    "tex: {inlineMath: [['$', '$']]}, svg: {fontCache: 'local'}};</script>"
-    '<script src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-svg.js"></script>'
-    '<script src="https://cdn.plot.ly/plotly-4.1.2.min.js"></script>'
-)
+# Only configuration is injected into the head; widgets load libraries on demand.
+PLOTLY_BUNDLE = "plotly-4.2.0.min.js"
+
+
+def plotly_config(base_url: str) -> str:
+    prefix = "/" + base_url.strip("/") if base_url.strip("/") else ""
+    url = json.dumps(f"{prefix}/_static/vendor/{PLOTLY_BUNDLE}")
+    loader = (Path(__file__).resolve().parents[1] / "_static" / "libraries.js").read_text()
+    return f"<script>window.coursePlotlyUrl = {url};\n{loader}</script>"
 
 
 def write_redirects(build: Path, base_url: str = "") -> int:
@@ -56,8 +59,9 @@ def inject_scripts(page: Path, base_url: str = "") -> bool:
     if "</body>" not in html:
         return False  # Skip MyST's meta-only redirect pages.
     updated = html
-    if MATHJAX_SNIPPET not in updated:
-        updated = updated.replace("<head>", f"<head>{MATHJAX_SNIPPET}", 1)
+    config = plotly_config(base_url)
+    if config not in updated:
+        updated = updated.replace("<head>", f"<head>{config}", 1)
     if snippet not in updated:
         updated = updated.replace("</body>", f"{snippet}\n</body>", 1)
     if updated == html:
@@ -69,6 +73,12 @@ def inject_scripts(page: Path, base_url: str = "") -> bool:
 def process_html() -> None:
     if not (BUILD_HTML / "index.html").exists():
         raise FileNotFoundError("Build the book before injecting shared scripts.")
+    # Explicitly copy dynamically loaded assets: MyST cannot discover these URLs.
+    vendor = BUILD_HTML / "_static" / "vendor"
+    vendor.mkdir(parents=True, exist_ok=True)
+    source = Path(__file__).resolve().parents[1] / "_static" / "vendor"
+    for name in (PLOTLY_BUNDLE, "plotly-LICENSE"):
+        shutil.copy2(source / name, vendor / name)
     base_url = os.environ.get("BASE_URL", "")
     injected = sum(
         inject_scripts(page, base_url) for page in BUILD_HTML.rglob("index.html")
